@@ -4,8 +4,7 @@ services:
   web:
     build:
         context: ./mysite
-        dockerfile: Dockerfile
-    command: python manage.py runserver 0.0.0.0:8000
+        dockerfile: Dockerfile.dev
     volumes:
        - .:/src
     ports:

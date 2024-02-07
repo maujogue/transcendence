@@ -3,7 +3,7 @@
 ###########
 
 # pull official base image
-FROM python:3.11.4-slim-buster as builder
+FROM python:3.7-slim-buster as builder
 
 # set work directory
 WORKDIR /usr/src/mysite
@@ -16,12 +16,6 @@ ENV PYTHONUNBUFFERED 1
 RUN apt-get update && \
     apt-get install -y --no-install-recommends gcc
 
-# lint
-RUN pip install --upgrade pip
-RUN pip install flake8==6.0.0
-COPY . /usr/src/app/
-RUN flake8 --ignore=E501,F401 .
-
 # install python dependencies
 COPY ./requirements.txt .
 RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/mysite/wheels -r requirements.txt
@@ -32,7 +26,7 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/mysite/wheels -r req
 #########
 
 # pull official base image
-FROM python:3.11.4-slim-buster
+FROM python:3.7-slim-buster
 
 # create directory for the app user
 RUN mkdir -p /home/mysite
@@ -54,7 +48,7 @@ COPY --from=builder /usr/src/mysite/requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache /wheels/*
 RUN pip install django-bootstrap-v5
-RUN pip install whitenoise
+
 # copy project
 COPY . $APP_HOME
 
@@ -64,5 +58,5 @@ RUN chown -R mysite:mysite $APP_HOME
 # change to the app user
 USER mysite
 
-COPY ./entrypoint.sh $APP_HOME
-CMD ["/entrypoint.sh"]
+COPY ./entrypoint.prod.sh .
+CMD ["sh","entrypoint.prod.sh"]

@@ -3,7 +3,7 @@ version: '3.8'
 services:
   web:
     build:
-        context: ./mysite
+        context: ./pong_app
         dockerfile: Dockerfile.dev
     volumes:
        - .:/src
@@ -27,7 +27,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=pass
-      - POSTGRES_DB=mysite
+      - POSTGRES_DB=pong_app
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 10s

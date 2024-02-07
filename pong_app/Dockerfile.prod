@@ -6,7 +6,7 @@
 FROM python:3.7-slim-buster as builder
 
 # set work directory
-WORKDIR /usr/src/mysite
+WORKDIR /usr/src/pong_app
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -18,7 +18,7 @@ RUN apt-get update && \
 
 # install python dependencies
 COPY ./requirements.txt .
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/mysite/wheels -r requirements.txt
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/pong_app/wheels -r requirements.txt
 
 
 #########
@@ -29,22 +29,22 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/mysite/wheels -r req
 FROM python:3.7-slim-buster
 
 # create directory for the app user
-RUN mkdir -p /home/mysite
+RUN mkdir -p /home/pong_app
 
 # create the app user
-RUN addgroup --system mysite && adduser --system --group mysite
+RUN addgroup --system pong_app && adduser --system --group pong_app
 
 # create the appropriate directories
-ENV HOME=/home/mysite
-ENV APP_HOME=/home/mysite/web
+ENV HOME=/home/pong_app
+ENV APP_HOME=/home/pong_app/web
 RUN mkdir $APP_HOME
 RUN mkdir $APP_HOME/staticfiles
 WORKDIR $APP_HOME
 
 # install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends netcat
-COPY --from=builder /usr/src/mysite/wheels /wheels
-COPY --from=builder /usr/src/mysite/requirements.txt .
+COPY --from=builder /usr/src/pong_app/wheels /wheels
+COPY --from=builder /usr/src/pong_app/requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache /wheels/*
 RUN pip install django-bootstrap-v5
@@ -53,10 +53,10 @@ RUN pip install django-bootstrap-v5
 COPY . $APP_HOME
 
 # chown all the files to the app user
-RUN chown -R mysite:mysite $APP_HOME
+RUN chown -R pong_app:pong_app $APP_HOME
 
 # change to the app user
-USER mysite
+USER pong_app
 
 COPY ./entrypoint.prod.sh .
 CMD ["sh","entrypoint.prod.sh"]

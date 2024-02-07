@@ -45,7 +45,17 @@ prod_re: prod_fclean
 dev_re: dev_fclean
 		$(MAKE) all
 
-fclean:	prod_fclean dev_fclean
-
 clean:	prod_clean dev_clean
 
+fclean:	removecontainers	prod_fclean dev_fclean
+
+removecontainers:
+		docker stop	$$(docker ps -aq)
+		docker	rm	$$(docker ps -aq)
+
+
+armageddon:	removecontainers
+		docker	network	prune	-f
+		docker	rmi	-f	$$(docker images --filter dangling=true -qa)
+		docker	volume	rm $$(docker volume ls --filter dangling=true -q)
+		docker	rmi	-f $$(docker images -qa)

@@ -4,7 +4,7 @@ from django.http import HttpResponse, Http404
 
 # Create your views here.
 # def index(request):
-#     return render(request, "singlepage/upload.html")
+#     return render(request, "upload.html")
 
 
 # texts = ["Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam tortor mauris, maximus semper volutpat vitae, varius placerat dui. Nunc consequat dictum est, at vestibulum est hendrerit at. Mauris suscipit neque ultrices nisl interdum accumsan. Sed euismod, ligula eget tristique semper, lecleo mi nec orci. Curabitur hendrerit, est in ",
@@ -18,6 +18,10 @@ from django.http import HttpResponse, Http404
 #         raise Http404("No such section")
     
 from django.core.files.storage import FileSystemStorage
+
+
+def index(request):
+    return render(request, "tests/index.html", context={'numero': 1, 'string': "ciao", 'lista': [1, 2, 3]})
 
 
 def image_upload(request):

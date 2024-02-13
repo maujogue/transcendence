@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+		{% load static %}
+	  <link rel="stylesheet" href="{% static 'main.css' %}">
+	  {% block title %}
+      <title>Local Library</title>
+    {% endblock %}
+  </head>
+  <body>
+    {% block sidebar %}
+		<p>hey! I'm the sidebar</p>
+      <!-- insert default navigation text for every page -->
+    {% endblock %}
+    {% block content %}
+		<p>hi! I'm the default text</p>
+      <!-- default content text (typically empty) -->
+    {% endblock %}
+  </body>
+</html>

@@ -6,7 +6,7 @@ services:
         context: ./pong_app
         dockerfile: Dockerfile.dev
     volumes:
-       - .:/src
+       - ./pong_app:/code
     ports:
        - "8000:8000"
     env_file:

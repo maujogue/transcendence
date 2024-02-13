@@ -39,11 +39,9 @@ prod_fclean: prod_clean
 dev_fclean: dev_clean
 		rm -rf $(VOLUMES)
 
-prod_re: prod_down
-		$(MAKE) prod_up
+prod_re: prod_down prod_up
 
-dev_re: dev_down
-		$(MAKE) all
+dev_re: dev_down dev_up
 
 clean:	prod_clean dev_clean
 

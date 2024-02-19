@@ -3,7 +3,7 @@
 ###########
 
 # pull official base image
-FROM python:3.7-slim-buster as builder
+FROM python:3.10-slim-buster as builder
 
 # set work directory
 WORKDIR /usr/src/pong_app
@@ -26,7 +26,7 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/pong_app/wheels -r r
 #########
 
 # pull official base image
-FROM python:3.7-slim-buster
+FROM python:3.10-slim-buster
 
 # create directory for the app user
 RUN mkdir -p /home/pong_app

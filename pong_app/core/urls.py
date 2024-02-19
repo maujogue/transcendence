@@ -6,7 +6,7 @@ from django.views.generic.base import TemplateView
 
 urlpatterns = [
     # path('/*', redirect_view)
-    # re_path(r'^.*$', TemplateView.as_view(template_name='tests/index.html'), name='index'),
+    # re_path(r'^.*$', TemplateView.as_view(template_name='index.html'), name='index'),
     path("", views.index, name='index'),
     path("index", views.index, name='index'),
     path("homepage", views.homepage, name='homepage'),

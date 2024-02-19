@@ -35,10 +35,7 @@ function physicsBall(ball, paddleBox) {
         ball.direction.x -= 0.009;
     else if (ball.direction.x > 0 && ball.direction.x < 0.55)
         ball.direction.x += 0.009;
-    if (ball.mesh.position.y > center.y)
-        ball.direction.y = 0.08 * (ball.mesh.position.y - center.y);
-    else if (ball.mesh.position.y < center.y)
-        ball.direction.y = 0.08 * (ball.mesh.position.y - center.y);
+    ball.direction.y = 0.08 * (ball.mesh.position.y - center.y);
 }
 
 function checkCollisionWithBorder(ball, ballBox, environment) {
@@ -49,7 +46,9 @@ function checkCollisionWithBorder(ball, ballBox, environment) {
         else
             ball.direction.x -= 0.02;
         ball.direction.y *= -1;
+        return (true);
     }
+    return (false);
 }
 
 function checkCollision(ball, player1, player2, environment) {
@@ -64,11 +63,9 @@ function checkCollision(ball, player1, player2, environment) {
     if (bbox2.intersectsBox(ballBox))
         physicsBall(ball, bbox2);
     checkCollisionWithBorder(ball, ballBox, environment);
-    ball.mesh.position.set(
-        ball.mesh.position.x + ball.direction.x,
-        ball.mesh.position.y + ball.direction.y, 
-        ball.mesh.position.z);
+    ball.mesh.translateX(ball.direction.x);
+    ball.mesh.translateY(ball.direction.y);
     checkIfScored(ball, player1, player2, environment);
 }
 
-export { checkCollision }
+export { checkCollision, checkCollisionWithBorder, physicsBall }

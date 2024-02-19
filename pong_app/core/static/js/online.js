@@ -5,6 +5,8 @@ import { clearAll } from "./createEnvironment.js";
 import { initGame } from "./initGame.js";
 import { getColorChoose } from "./getColorChoose.js";
 import { displayMainMenu } from "./menu.js";
+import { translateBall, sendIfScored, actualizeScoreOnline } from "./onlineCollision.js";
+import { createEndScreen } from "./createEndScreen.js";
 import * as THREE from 'three';
 
 let env;
@@ -17,6 +19,13 @@ let isReady = false;
 let start = false;
 let keyUp = false;
 let name;
+let ball = {
+    positionX: 0,
+    positionY: 0,
+    dirX: 0.055,
+    dirY: 0,
+}
+
 const playersMove = new Map();
 
 document.addEventListener('keypress', function(event) {
@@ -61,7 +70,8 @@ async function connectToLobby(field) {
             });
         }
         if (data['type'] && data['type'] == 'status') {
-            console.log(data['message']);
+            if (data['message'] == 'connected')
+                sendColor(webSocket);
             if (data['message'] == 'disconnected') {
                 console.log('disconnected');
                 env.scene.remove(env.scene.getObjectByName(data['name']));
@@ -73,6 +83,21 @@ async function connectToLobby(field) {
                 displayMainMenu();
                 webSocket.close();
             }
+            if (data['message'] == 'endGame') {
+                start = false;
+                createEndScreen(data['name']);
+            }
+        }
+        if (data['type'] == 'ball_data') {
+            console.log('ball_data');
+            if (env.ball) {
+                env.ball.direction.x = data['dirX'];
+                env.ball.direction.y = data['dirY'];
+                env.ball.mesh.position.y = data['posY'];
+                env.ball.mesh.position.x = data['posX'];
+            }
+            ball.dirX = data['dirX'];
+            ball.dirY = data['dirY'];
         }
         if (data['color_data']) {
             displayCharacter(opp, env, data['color_data'], data['name']).then((res) => {
@@ -83,6 +108,12 @@ async function connectToLobby(field) {
             gameIsInit = true;
         if (data['type'] == 'player_pos')
             playersMove.set(data['name'], data['move']);
+        if (data['type'] == 'score') {
+            console.log('score');
+            actualizeScoreOnline(data, env);
+            player.paddle.mesh.position.y = 0;
+            opp.paddle.mesh.position.y = 0;
+        }
     }
 
     webSocket.onclose = function(e) {
@@ -120,7 +151,7 @@ function sendMove(webSocket) {
     const move = (keysPressed["w"]) ? 1 : -1;
 
     if (keyPress && (keysPressed["w"] || keysPressed["s"])) {
-        if (playersMove.get(name) == move)
+        if (Math.sign(playersMove.get(name)) == move)
             return ;
         webSocket.send(JSON.stringify({
             'type': 'player_pos',
@@ -160,8 +191,11 @@ async function setGameIsStart() {
     if (player && opp) {
         clearAll(env);
         env = await initGame(player, opp);
+        console.log(env.ball.mesh.position.x);
         gameIsInit = false;
         start = true;
+        env.ball.direction.x = ball.dirX;
+        env.ball.direction.y = ball.dirY;
         env.renderer.render(env.scene, env.camera);
     }
 }
@@ -169,6 +203,7 @@ async function setGameIsStart() {
 
 async function onlineGameLoop(webSocket) {
     if (!start && keysPressed['Enter']) {
+        console.log('ready');
         const status = setIsReady();  
         keysPressed['Enter'] = false;
         keyPress = false;
@@ -187,6 +222,8 @@ async function onlineGameLoop(webSocket) {
     if (start) {
         sendMove(webSocket);
         movePlayers();
+        translateBall(env.ball, webSocket, player, env);
+        // sendIfScored(env.ball, player, webSocket, env);
         env.renderer.render(env.scene, env.camera);
     }
     requestAnimationFrame(() => onlineGameLoop(webSocket));

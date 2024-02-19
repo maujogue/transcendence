@@ -18,16 +18,16 @@ def section(request, num):
 
 
 # def index(request):
-#     return render(request, "tests/index.html", context={'numero': 1, 'string': "ciao", 'lista': [1, 2, 3]})
+#     return render(request, "index.html", context={'numero': 1, 'string': "ciao", 'lista': [1, 2, 3]})
 def index(request):
-	return render(request, "tests/index.html")
+	return render(request, "index.html")
 
 def homepage(request):
-	return render(request, "tests/homepage.html")
+	return render(request, "homepage.html")
 
 def pong(request):
-    return render(request, "tests/pong.html")
-	# return render(request, "tests/pong.html")
+    return render(request, "pong.html")
+	# return render(request, "pong.html")
 
 from django.core.files.storage import FileSystemStorage
 
@@ -38,4 +38,4 @@ def image_upload(request):
         filename = fs.save(image_file.name, image_file)
         image_url = fs.url(filename)
         print(image_url)
-    return render(request, "tests/upload.html")
+    return render(request, "upload.html")

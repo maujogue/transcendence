@@ -7,13 +7,14 @@ import { createTexturedMaterial, load3DTextures } from './loadTextures.js';
 async function loadFont() {
 	return new Promise((resolve, reject) => {
 	  const loader = new FontLoader();
-	  loader.load('../../static/views/assets/fonts/Digital-7_Regular.json', (font) => {
+	  loader.load('../assets/fonts/Digital-7_Regular.json', (font) => {
 		resolve(font);
 	  });
 	});
 }
   
 async function createTextMesh(text, font, environment, name) {
+	console.log(name);
 	const geometry = new TextGeometry(text, {
 	  font: font,
 	  size: 1,
@@ -32,14 +33,13 @@ async function createTextMesh(text, font, environment, name) {
 }
 
 async function actualizeScore(player1, player2, environment, font) {
-    removeObject("scoreP1", environment);
-	removeObject("scoreP2", environment);
+    removeObject("scorePlayer1", environment);
+	removeObject("scorePlayer2", environment);
 
-    const scoreP1 = await createTextMesh(player1.score + '', font, environment, "scoreP1");
-	const scoreP2 = await createTextMesh(player2.score + '', font, environment, "scoreP2");
+    const scoreP1 = await createTextMesh(player1.score + '', font, environment, "scorePlayer1");
+	const scoreP2 = await createTextMesh(player2.score + '', font, environment, "scorePlayer2");
     scoreP1.position.set(-0.60, -0.2, 0.935).unproject(environment.camera);
 	scoreP2.position.set(0.20, -0.2, 0.935).unproject(environment.camera);
-
 }
 
 export { createTextMesh, loadFont, actualizeScore };

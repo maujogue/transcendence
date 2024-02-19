@@ -107,7 +107,7 @@ function createDivText() {
 
 function createTitle(div) {
 	const logo = document.createElement("img");
-	logo.src = "../../static/views/assets/img/pong.svg";
+	logo.src = "../../static/assets/img/pong.svg";
 	logo.classList.add("logo");
 	div.appendChild(logo);
 }

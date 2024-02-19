@@ -3,12 +3,12 @@ import * as THREE from 'three'
 async function load3DTextures(folderName) {
     const textureLoader = new THREE.TextureLoader();
 
-    const tileBaseColor = textureLoader.load('../../static/views/assets/models/' + folderName + '/basecolor.jpg')
-    const tileNormal = textureLoader.load('../../static/views/assets/models/' + folderName + '/normal.jpg');
-    const tileHeight = textureLoader.load('../../static/views/assets/models/' + folderName + '/height.png');
-    const tileMetallic = textureLoader.load('../../static/views/assets/models/' + folderName + '/metallic.jpg');
-    const tileAmbientOcclusion = textureLoader.load('../../static/views/assets/models/' + folderName + '/ambientOcclusion.jpg');
-    const tileRoughness = textureLoader.load('../../static/views/assets/models/' + folderName + '/roughness.jpg');
+    const tileBaseColor = textureLoader.load('../../static/assets/models/' + folderName + '/basecolor.jpg')
+    const tileNormal = textureLoader.load('../../static/assets/models/' + folderName + '/normal.jpg');
+    const tileHeight = textureLoader.load('../../static/assets/models/' + folderName + '/height.png');
+    const tileMetallic = textureLoader.load('../../static/assets/models/' + folderName + '/metallic.jpg');
+    const tileAmbientOcclusion = textureLoader.load('../../static/assets/models/' + folderName + '/ambientOcclusion.jpg');
+    const tileRoughness = textureLoader.load('../../static/assets/models/' + folderName + '/roughness.jpg');
     
     return ({
         'baseColor': tileBaseColor,

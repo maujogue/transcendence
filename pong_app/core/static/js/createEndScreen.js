@@ -7,6 +7,7 @@ function setEndingDivStyle(div)
     div.style.textAlign = 'center';
     div.style.padding = '10% 0';
     div.style.fontSize = '5vw';
+    div.style.top = '0';
 }
 
 function createEndScreen(winnerName) {

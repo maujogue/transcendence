@@ -3,18 +3,21 @@
   <head>
 		{% load static %}
 	  <link rel="stylesheet" href="{% static 'main.css' %}">
+	  {% block styles %}
+	  {% endblock %}
 	  {% block title %}
       <title>Local Library</title>
     {% endblock %}
   </head>
   <body>
-    {% block sidebar %}
-		<p>hey! I'm the sidebar</p>
-      <!-- insert default navigation text for every page -->
+    {% block navbar %}
     {% endblock %}
     {% block content %}
-		<p>hi! I'm the default text</p>
-      <!-- default content text (typically empty) -->
     {% endblock %}
+	{% block script %}
+	{% endblock %}
+	<div id="main-page"></div>
+	{% block game %}
+	{% endblock %}
   </body>
 </html>

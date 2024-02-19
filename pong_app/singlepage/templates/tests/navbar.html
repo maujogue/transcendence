@@ -1,0 +1,29 @@
+{% extends "tests/base.html" %}
+{% load static %}
+
+{% block navbar %}
+
+<nav id="main-nav" class="nav">
+	<a href="/homepage" class="data-link">Dashboard</a>
+	<a href="/pong" class="data-link">Pong</a>
+	<a href="/upload" class="data-link">Upload</a>
+</nav>
+	<!-- <div id="game">
+					<canvas id="canvas"></canvas>
+	</div>
+<script type="importmap">
+	{
+		"imports": {
+		"three": "https://unpkg.com/three@0.159.0/build/three.module.js",
+		"three/addons/": "https://unpkg.com/three@0.159.0/examples/jsm/"
+		}
+	}
+</script> -->
+<!-- <script type="module" src="{% static 'routing.js' %}"></script>
+<script src="https://kit.fontawesome.com/f7996aafde.js" crossorigin="anonymous"></script>
+<script type="module">
+
+	import { displayMainMenu} from '../static/views/js/main.js'
+	displayMainMenu()
+</script> -->
+{% endblock %}

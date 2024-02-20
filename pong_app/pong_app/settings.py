@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 
+AUTH_USER_MODEL = 'users.CustomUser'
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -43,6 +45,8 @@ INSTALLED_APPS = [
 	'core',
     'multiplayer',
 	'bootstrap5',
+	'corsheaders',
+	'users',
 ]
 
 ASGI_APPLICATION = 'pong_app.asgi.application'
@@ -65,6 +69,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	"corsheaders.middleware.CorsMiddleware"
 ]
 
 ROOT_URLCONF = 'pong_app.urls'
@@ -148,3 +153,30 @@ CSRF_TRUSTED_ORIGINS = ["http://localhost:1337"]
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGINS = [
+    "http://127.0.0.1:5500",  # Add this origin
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
+    "http://localhost:5500",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://127.0.0.1:8000",
+    "http://127.0.0.1:5500",
+    "http://127.0.0.1:5501",
+    "http://127.0.0.1:3000",
+]
+
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+]
+
+CORS_ORIGIN_WHITELIST = [
+    "http://127.0.0.1:8000",
+    "http://127.0.0.1:5500",
+    "http://127.0.0.1:3000",
+]

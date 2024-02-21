@@ -21,7 +21,6 @@ let keysPressed = {};
 const field = await createField();
 const gameDiv = document.getElementById('game');
 
-console.log("test");
 displayMainMenu();
 
 async function goToLocalSelectMenu() {

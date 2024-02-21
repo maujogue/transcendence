@@ -25,8 +25,11 @@ class PongConsumer(AsyncWebsocketConsumer):
     
     async def create_player(self):
         name = 'player1' if self.room.connected_user == 1 else 'player2'
+        oppName = 'player2' if name == 'player1' else 'player1'
         posX = -9.50 if name == 'player1' else 9.50
+        oppPosX = 9.50 if name == 'player1' else -9.50
         self.player = Player(name, color='rgb(255, 255, 255)', room_id=self.room.code, posX=posX)
+        self.opp = Player(oppName, color='rgb(255, 255, 255)', room_id=self.room.code, posX=oppPosX)
     
     async def sendColor(self, text_data_json):
         color = text_data_json["color"]
@@ -126,11 +129,15 @@ class PongConsumer(AsyncWebsocketConsumer):
             'posY': self.player.posY
         })
 
-    async def sendScore(self, data):
+    async def sendScore(self):
+        print(self.player.name, ": ", self.player.score)
+        self.opp.score += 1
+
         await self.channel_layer.group_send (
-            self.room_group_name, { 'type': 'pong.score', 'score': self.player.score, 'name': self.player.name}
+            self.room_group_name, { 'type': 'pong.score', 'score': self.opp.score, 'name': self.opp.name}
         )
-        if (self.player.score == 5):
+        if (self.player.score == 2 or self.opp.score == 2):
+            print('endGame')
             await self.room.stopGame()
             await self.channel_layer.group_send(
                 self.room_group_name, { 'type': 'pong.status', 'message': 'endGame', 'name': self.player.name}
@@ -149,7 +156,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
     
     async def gameLoop(self):
-        print('gameLoop')
         if self.player.move != 0:
             self.player.posY += self.player.move
         if self.ball.checkCollisionBorder():
@@ -158,15 +164,17 @@ class PongConsumer(AsyncWebsocketConsumer):
         elif self.ball.checkCollisionPaddle(self.player):
             self.ball.collisionPaddle(self.player)
             await self.sendBallData()
-        # if self.ball.checkIfScored(player):
-        #     self.sendScore()
+        if self.ball.checkIfScored(self.player):
+            await self.sendScore()
+            self.ball.reset()
+            await self.sendBallData()
+            return
         self.ball.translate()
 
     async def receive(self, text_data):
         self.room = await Room.objects.aget(code=self.room_name)
         text_data_json = json.loads(text_data)
         
-        print('text_data_json:', text_data_json)
         if text_data_json.get("ready") != None:
             await self.room.setPlayerReady(text_data_json.get("ready"), self.player)
         if text_data_json.get("color") != None and self.room.game_started == False:
@@ -215,8 +223,11 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({ "type": "ball_data", "posX": posX, "posY": posY, "dirX": dirX, "dirY": dirY}))
 
     async def pong_score(self, event):
-        score = event["score"]
         name = event["name"]
+        score = event["score"]
 
-        print('score:', score)
+        print("send score")
+        self.player.resetPaddlePos()
+        if self.player.name == name:
+            self.player.score = score
         await self.send(text_data=json.dumps({ "type": "score", "score": score, "name": name}))

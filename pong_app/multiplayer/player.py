@@ -10,4 +10,7 @@ class Player:
         self.room_id = room_id
         self.posX = posX
 
+    def resetPaddlePos(self):
+        self.posY = 0
+
     

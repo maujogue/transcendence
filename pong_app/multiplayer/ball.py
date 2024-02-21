@@ -43,4 +43,17 @@ class Ball:
         self.dirX = self.dirX * 1.02
         center = player.posY
         self.dirY = 0.08 * (self.posY - center)
+    
+    def checkIfScored(self, player):
+        if player.name == "player1" and self.posX <= -12:
+            return True
+        if player.name == "player2" and self.posX >= 12:
+            return True
+        return False
+    
+    def reset(self):
+        self.posX = 0
+        self.posY = 0
+        self.dirX = 0.055
+        self.dirY = 0
 

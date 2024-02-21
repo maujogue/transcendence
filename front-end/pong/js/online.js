@@ -109,7 +109,7 @@ async function connectToLobby(field) {
         if (data['type'] == 'player_pos')
             playersMove.set(data['name'], data['move']);
         if (data['type'] == 'score') {
-            console.log('score');
+            console.log('score', data['score'], data['name']);
             actualizeScoreOnline(data, env);
             player.paddle.mesh.position.y = 0;
             opp.paddle.mesh.position.y = 0;

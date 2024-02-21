@@ -1,7 +1,4 @@
 from django.db import models
-from channels.layers import get_channel_layer
-from asgiref.sync import sync_to_async
-
 
 class Room(models.Model):
     code = models.CharField(max_length=255, unique=True)

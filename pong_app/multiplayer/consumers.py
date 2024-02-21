@@ -149,23 +149,24 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
     
     async def gameLoop(self):
+        print('gameLoop')
+        if self.player.move != 0:
+            self.player.posY += self.player.move
         if self.ball.checkCollisionBorder():
             self.ball.collisionBorder()
             await self.sendBallData()
-        if self.ball.checkCollisionPaddle(self.player):
+        elif self.ball.checkCollisionPaddle(self.player):
             self.ball.collisionPaddle(self.player)
             await self.sendBallData()
         # if self.ball.checkIfScored(player):
         #     self.sendScore()
         self.ball.translate()
-        if self.player.move != 0:
-            self.player.posY += self.player.move
 
-    
     async def receive(self, text_data):
         self.room = await Room.objects.aget(code=self.room_name)
         text_data_json = json.loads(text_data)
         
+        print('text_data_json:', text_data_json)
         if text_data_json.get("ready") != None:
             await self.room.setPlayerReady(text_data_json.get("ready"), self.player)
         if text_data_json.get("color") != None and self.room.game_started == False:
@@ -176,8 +177,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         if (self.room.game_started == True):
             if text_data_json.get("type") == "player_pos":
                 await self.movePlayer(text_data_json)
-            # if text_data_json.get("type") == "score":
-            #     await self.sendScore(text_data_json)
             if (text_data_json.get("type") == "frame"):
                 await self.gameLoop()
                     

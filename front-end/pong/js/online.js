@@ -224,6 +224,9 @@ async function onlineGameLoop(webSocket) {
         movePlayers();
         translateBall(env.ball, webSocket, player, env);
         // sendIfScored(env.ball, player, webSocket, env);
+        webSocket.send(JSON.stringify({
+            'type': 'frame',
+        }));
         env.renderer.render(env.scene, env.camera);
     }
     requestAnimationFrame(() => onlineGameLoop(webSocket));

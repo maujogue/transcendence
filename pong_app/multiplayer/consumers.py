@@ -130,7 +130,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         })
 
     async def sendScore(self):
-        print(self.player.name, ": ", self.player.score)
         self.opp.score += 1
 
         await self.channel_layer.group_send (
@@ -144,7 +143,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             )
     
     async def sendBallData(self):
-        print('sendBallData')
         await self.channel_layer.group_send(
             self.room_group_name, { 
                 'type': 'pong.ball_data', 
@@ -226,7 +224,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         name = event["name"]
         score = event["score"]
 
-        print("send score")
         self.player.resetPaddlePos()
         if self.player.name == name:
             self.player.score = score

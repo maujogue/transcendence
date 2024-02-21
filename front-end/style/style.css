@@ -1,41 +1,7 @@
 @font-face {
-	font-family: 'simple_tfbregular';
-    src: url('simple_tfb-webfont.woff2') format('woff2'),
-         url('simple_tfb-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-	font-family: 'blippobold';
-    src: url('../../assets/fonts/blippo_bold-webfont.woff') format('woff2'),
-         url('../../assets/fonts/blippo_bold-webfont.woff2') format('woff');
-    font-weight: normal;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'boyregular';
-    src: url('../../assets/fonts/superlegendboy-4w8y-webfont.woff2') format('woff2'),
-         url('../../assets/fonts/superlegendboy-4w8y-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
     font-family: 'baumansregular';
-    src: url('../../assets/fonts/baumans-regular-webfont.woff2') format('woff2'),
-         url('../../assets/fonts/baumans-regular-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-
-}
-
-@font-face {
-    font-family: 'cursed_timer';
-    src: url('../../assets/fonts/cursedtimerulil-aznm-webfont.woff2') format('woff2'),
-         url('../../assets/fonts/cursedtimerulil-aznm-webfont.woff') format('woff');
+    src: url('../pong/assets/fonts/baumans-regular-webfont.woff2') format('woff2'),
+         url('../pong/assets/fonts/baumans-regular-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 
@@ -118,9 +84,7 @@ h1 {
 
 
 .swatch {
-	//position: relative;
 	display: flex;
-	//bottom: 0;
 	z-index: 100;
 }
 

@@ -1,0 +1,136 @@
+@font-face {
+    font-family: 'baumansregular';
+    src: url('../pong/assets/fonts/baumans-regular-webfont.woff2') format('woff2'),
+         url('../pong/assets/fonts/baumans-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+body {
+	margin: 0;
+	font-family: 'baumansregular', sans-serif;
+}
+
+h1 {
+	text-align: center;
+}
+
+#game {
+	width: 960px;
+	height: 540px;
+	align-items: center;
+	justify-content: center;
+	margin: 0 auto;
+	border: 5px solid black;
+}
+
+#menu {
+	position: absolute;
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+	color: white;
+	background-color: black;
+	z-index: 100;
+}
+
+#selectMenu {
+	position: absolute;
+	text-align: center;
+	color: white;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding: 0;
+}
+
+#selectText {
+	text-align: center;
+	color: white;
+	display: block;
+	padding: 0;
+}
+
+#panel {
+	position: relative;
+	display: flex;
+	bottom: 0;
+}
+
+#start {
+	left: 0;
+	bottom: 50%;
+	margin: 5%;
+	font-size: 2em;
+}
+
+/* #canvas {
+	width: 100%;
+	height: 100%;
+} */
+
+#player1 {
+	border: 5px solid green;
+}
+
+#score {
+	padding: 10px;
+	font-size: 2em;
+	font-family: 'cursed_timer', sans-serif;
+	margin-top: 0;
+	color: white;
+}
+
+
+.swatch {
+	display: flex;
+	z-index: 100;
+}
+
+.btn {
+	border: none;
+	color: white;
+	font-family: 'baumansregular', sans-serif;
+	font-size: 1em;
+	background-color: rgba(0, 0, 0, 0);
+	margin: 0.5em 7em;
+	padding: 15px;
+}
+
+.btn:hover {
+	background-color: whitesmoke;
+	color: black;
+	border-radius: 0.5em;
+}
+
+.cursorP1, .cursorP2 {
+	color: black;
+	position: relative;
+	font-size: 1em;
+	z-index: 100;
+	padding: 0;
+	margin: 5%;
+
+	//margin-left: 10px;
+}
+
+.logo {
+	width: 100%;
+}
+
+.fullScreenIcon {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	margin: 2.5%;
+	font-size: 1em;
+	z-index: 100;
+}
+
+.fullScreenIcon:hover {
+	font-size:1.2em;
+	margin: 2%;
+}
+
+

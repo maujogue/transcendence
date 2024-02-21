@@ -31,8 +31,8 @@ services:
       timeout: 5s
       retries: 5
 
-  nginx:
-    build: ./nginx
+  nginx_proxy:
+    build: ./nginx_proxy
     volumes:
       - static_volume:/home/pong_app/web/staticfiles
       - media_volume:/home/pong_app/web/mediafiles
@@ -40,6 +40,15 @@ services:
       - 1337:80
     depends_on:
       - web
+  
+  nginx_frontend:
+    build: ./front-end
+    volumes:
+      - ./front-end:/usr/share/nginx/html
+      
+    ports:
+      - 80:80
+    restart: always
 
 volumes:
   postgres_data:

@@ -42,7 +42,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-	'core',
     'multiplayer',
 	'bootstrap5',
 	'corsheaders',
@@ -77,7 +76,8 @@ ROOT_URLCONF = 'pong_app.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+		'DIRS': [],
+        # 'DIRS': [os.path.join(BASE_DIR, 'front-end', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -143,6 +143,10 @@ USE_I18N = True
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+# STATICFILES_DIRS = [
+#     BASE_DIR / "front-end/static",  # Path to your "frontend" folder
+# ]
+
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "mediafiles"

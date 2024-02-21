@@ -33,6 +33,14 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  
+  nginx_frontend:
+    build: ./front-end
+    volumes:
+      - ./front-end:/usr/share/nginx/html
+    ports:
+      - 80:80
+    restart: always
 
 volumes:
   db-data:

@@ -1,7 +1,7 @@
 @font-face {
     font-family: 'baumansregular';
-    src: url('../pong/assets/fonts/baumans-regular-webfont.woff2') format('woff2'),
-         url('../pong/assets/fonts/baumans-regular-webfont.woff') format('woff');
+    src: url('../assets/fonts/baumans-regular-webfont.woff2') format('woff2'),
+         url('../assets/fonts/baumans-regular-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 
@@ -112,7 +112,6 @@ h1 {
 	padding: 0;
 	margin: 5%;
 
-	//margin-left: 10px;
 }
 
 .logo {

@@ -3,7 +3,7 @@ version: '3.8'
 services:
   django-backend:
     build:
-        context: ./py_backend
+        context: ../py_backend/docker
         dockerfile: Dockerfile.prod
     volumes:
       - static_volume:/home/py_backend/web/staticfiles
@@ -32,7 +32,7 @@ services:
       retries: 5
 
   nginx-proxy:
-    build: ./nginx_proxy
+    build: ../nginx_proxy/config
     volumes:
       - static_volume:/home/py_backend/web/staticfiles
       - media_volume:/home/py_backend/web/mediafiles
@@ -42,9 +42,9 @@ services:
       - django-backend
   
   nginx-frontend:
-    build: ./frontend
+    build: ../frontend/config
     volumes:
-      - ./frontend:/usr/share/nginx/html
+      - ../frontend:/usr/share/nginx/html
     ports:
       - 80:80
     restart: always

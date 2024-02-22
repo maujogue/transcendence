@@ -34,13 +34,26 @@ class Ball:
             isOnPaddle = True
         if player.name == "player1" and self.posX <= player.posX and self.posX >= player.posX - 0.5:
             isOnPaddle = True
-        if (isOnPaddle and self.posY >= player.posY - 2 and self.posY <= player.posY + 2):
+        if (isOnPaddle and self.posY >= player.posY - 1 and self.posY <= player.posY + 1):
             return True
         return False
     
     def collisionPaddle(self, player):
-        self.dirX += 0.02
         self.dirX *= -1
+        self.dirX = self.dirX * 1.02
         center = player.posY
         self.dirY = 0.08 * (self.posY - center)
+    
+    def checkIfScored(self, player):
+        if player.name == "player1" and self.posX <= -12:
+            return True
+        if player.name == "player2" and self.posX >= 12:
+            return True
+        return False
+    
+    def reset(self):
+        self.posX = 0
+        self.posY = 0
+        self.dirX = 0.055
+        self.dirY = 0
 

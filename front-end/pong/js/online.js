@@ -109,7 +109,7 @@ async function connectToLobby(field) {
         if (data['type'] == 'player_pos')
             playersMove.set(data['name'], data['move']);
         if (data['type'] == 'score') {
-            console.log('score');
+            console.log('score', data['score'], data['name']);
             actualizeScoreOnline(data, env);
             player.paddle.mesh.position.y = 0;
             opp.paddle.mesh.position.y = 0;
@@ -224,6 +224,9 @@ async function onlineGameLoop(webSocket) {
         movePlayers();
         translateBall(env.ball, webSocket, player, env);
         // sendIfScored(env.ball, player, webSocket, env);
+        webSocket.send(JSON.stringify({
+            'type': 'frame',
+        }));
         env.renderer.render(env.scene, env.camera);
     }
     requestAnimationFrame(() => onlineGameLoop(webSocket));

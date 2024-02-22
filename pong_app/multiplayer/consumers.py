@@ -153,19 +153,30 @@ class PongConsumer(AsyncWebsocketConsumer):
             }
         )
     
-    async def gameLoop(self):
-        if self.player.move != 0:
-            self.player.posY += self.player.move
+    async def isScored(self):
+        await self.sendScore()
+        self.ball.reset()
+        await self.sendBallData()
+        return
+
+    async def checkAllCollisions(self):
         if self.ball.checkCollisionBorder():
             self.ball.collisionBorder()
             await self.sendBallData()
         elif self.ball.checkCollisionPaddle(self.player):
             self.ball.collisionPaddle(self.player)
             await self.sendBallData()
-        if self.ball.checkIfScored(self.player):
-            await self.sendScore()
-            self.ball.reset()
+        elif self.ball.checkCollisionPaddle(self.opp):
+            self.ball.collisionPaddle(self.opp)
             await self.sendBallData()
+
+    async def gameLoop(self):
+        if self.player.move != 0:
+            self.player.posY += self.player.move
+        
+        await self.checkAllCollisions()
+        if self.ball.checkIfScored(self.player) or self.ball.checkIfScored(self.opp):
+            await self.isScored()
             return
         self.ball.translate()
 
@@ -186,8 +197,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             if (text_data_json.get("type") == "frame"):
                 await self.gameLoop()
                     
-                    
-    
     async def pong_status(self, event):
         message = event["message"]
         name = event["name"]
@@ -205,6 +214,10 @@ class PongConsumer(AsyncWebsocketConsumer):
         move = event["move"]
         name = event["name"]
         posY = event["posY"]
+
+        if self.opp.name == name:
+            self.opp.move = move
+            self.opp.posY = posY
         await self.send(text_data=json.dumps({ "type": "player_pos", "move": move, "name": name, "posY": posY}))
 
     async def pong_ball_data(self, event):

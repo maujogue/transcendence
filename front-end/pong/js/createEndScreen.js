@@ -2,12 +2,12 @@ import { createDivMenu } from "./menu.js"
 
 function setEndingDivStyle(div)
 {
-    div.style.position = 'absolute';
-    div.style.color = 'white';
-    div.style.textAlign = 'center';
-    div.style.padding = '10% 0';
-    div.style.fontSize = '5vw';
-    div.style.top = '0';
+    // div.style.position = 'absolute';
+    // div.style.color = 'white';
+    // div.style.textAlign = 'center';
+    // div.style.padding = '10% 0';
+    // div.style.fontSize = '1em';
+    // div.style.top = '0';
 }
 
 function createEndScreen(winnerName) {

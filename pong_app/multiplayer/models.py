@@ -13,6 +13,7 @@ class Room(models.Model):
         else:
             self.player_ready -= 1
             player.is_ready = False
+        print(self.player_ready)
         await self.asave(update_fields=['player_ready'])
     
     async def disconnectUser(self, player):
@@ -23,8 +24,9 @@ class Room(models.Model):
         await self.asave(update_fields=['connected_user', 'player_ready'])
 
     async def stopGame(self):
+        self.player_ready = 0
         self.game_started = False
-        await self.asave(update_fields=['game_started'])
+        await self.asave()
 
     async def startGame(self):
         self.game_started = True

@@ -84,8 +84,11 @@ async function connectToLobby(field) {
                 webSocket.close();
             }
             if (data['message'] == 'endGame') {
+                console.log('endGame');
+                if (!document.getElementById("endscreen"))
+                    createEndScreen(data['name']);
+                isReady = false;
                 start = false;
-                createEndScreen(data['name']);
             }
         }
         if (data['type'] == 'ball_data') {
@@ -104,9 +107,12 @@ async function connectToLobby(field) {
                 opp = res;
             });
         }
-        if (data['message'] == 'start')
+        if (data['message'] == 'start') {
+            console.log('start');
             gameIsInit = true;
+        }
         if (data['type'] == 'player_pos')
+            env.scene.getObjectByName(data['name']).position.y = data['posY'];
             playersMove.set(data['name'], data['move']);
         if (data['type'] == 'score') {
             console.log('score', data['score'], data['name']);
@@ -193,6 +199,7 @@ async function setGameIsStart() {
         env = await initGame(player, opp);
         console.log(env.ball.mesh.position.x);
         gameIsInit = false;
+        console.log('setGameIsStart');
         start = true;
         env.ball.direction.x = ball.dirX;
         env.ball.direction.y = ball.dirY;
@@ -222,8 +229,7 @@ async function onlineGameLoop(webSocket) {
     if (start) {
         sendMove(webSocket);
         movePlayers();
-        translateBall(env.ball, webSocket, player, env);
-        // sendIfScored(env.ball, player, webSocket, env);
+        translateBall(env.ball);
         webSocket.send(JSON.stringify({
             'type': 'frame',
         }));

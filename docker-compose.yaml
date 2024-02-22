@@ -1,14 +1,16 @@
 version: '3.8'
 
 services:
-  web:
+  django-backend:
     build:
         context: ./pong_app
         dockerfile: Dockerfile.dev
     volumes:
        - ./pong_app:/code
+    expose:
+      - 8000
     ports:
-       - "8000:8000"
+      - "8000:8000"
     env_file:
       - ./.env.dev
     depends_on:
@@ -35,9 +37,9 @@ services:
       retries: 5
   
   nginx_frontend:
-    build: ./front-end
+    build: ./frontend
     volumes:
-      - ./front-end:/usr/share/nginx/html
+      - ./frontend:/usr/share/nginx/html
     ports:
       - 80:80
     restart: always

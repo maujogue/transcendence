@@ -77,7 +77,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
 		'DIRS': [],
-        # 'DIRS': [os.path.join(BASE_DIR, 'front-end', 'templates')],
+        # 'DIRS': [os.path.join(BASE_DIR, 'frontend', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -144,14 +144,13 @@ USE_I18N = True
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 # STATICFILES_DIRS = [
-#     BASE_DIR / "front-end/static",  # Path to your "frontend" folder
+#     BASE_DIR / "frontend/static",  # Path to your "frontend" folder
 # ]
 
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "mediafiles"
 
-CSRF_TRUSTED_ORIGINS = ["http://localhost:1337"]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

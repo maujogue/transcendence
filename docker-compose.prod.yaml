@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  web:
+  django-backend:
     build:
         context: ./pong_app
         dockerfile: Dockerfile.prod
@@ -31,21 +31,20 @@ services:
       timeout: 5s
       retries: 5
 
-  nginx_proxy:
+  nginx-proxy:
     build: ./nginx_proxy
     volumes:
       - static_volume:/home/pong_app/web/staticfiles
       - media_volume:/home/pong_app/web/mediafiles
     ports:
-      - 1337:80
+      - 8000:8080
     depends_on:
-      - web
+      - django-backend
   
-  nginx_frontend:
-    build: ./front-end
+  nginx-frontend:
+    build: ./frontend
     volumes:
-      - ./front-end:/usr/share/nginx/html
-      
+      - ./frontend:/usr/share/nginx/html
     ports:
       - 80:80
     restart: always

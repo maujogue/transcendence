@@ -15,8 +15,4 @@ export default class extends AbstractView {
 
 		`;
 	}
-
-	async getJs() {
-		return "console.log('Settings');";
-	}
 }

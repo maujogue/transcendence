@@ -3,11 +3,11 @@ version: '3.8'
 services:
   django-backend:
     build:
-        context: ./pong_app
+        context: ./py_backend
         dockerfile: Dockerfile.prod
     volumes:
-      - static_volume:/home/pong_app/web/staticfiles
-      - media_volume:/home/pong_app/web/mediafiles
+      - static_volume:/home/py_backend/web/staticfiles
+      - media_volume:/home/py_backend/web/mediafiles
     expose:
       - 8000
     env_file:
@@ -34,8 +34,8 @@ services:
   nginx-proxy:
     build: ./nginx_proxy
     volumes:
-      - static_volume:/home/pong_app/web/staticfiles
-      - media_volume:/home/pong_app/web/mediafiles
+      - static_volume:/home/py_backend/web/staticfiles
+      - media_volume:/home/py_backend/web/mediafiles
     ports:
       - 8000:8080
     depends_on:

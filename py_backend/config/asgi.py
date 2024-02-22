@@ -1,5 +1,5 @@
 """
-ASGI config for pong_app project.
+ASGI config for py_backend project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -14,7 +14,7 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 import multiplayer.routing
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pong.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'py_backend.settings')
 
 application = ProtocolTypeRouter({
     'http':get_asgi_application(),

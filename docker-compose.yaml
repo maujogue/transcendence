@@ -3,10 +3,10 @@ version: '3.8'
 services:
   django-backend:
     build:
-        context: ./pong_app
+        context: ./py_backend
         dockerfile: Dockerfile.dev
     volumes:
-       - ./pong_app:/code
+       - ./py_backend:/code
     expose:
       - 8000
     ports:

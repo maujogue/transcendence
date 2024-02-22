@@ -43,6 +43,14 @@ prod_re: prod_down prod_up
 
 dev_re: dev_down dev_up
 
+prod_fre:	fclean
+		$(DOCKER_COMPOSE_PROD) build --no-cache
+		$(DOCKER_COMPOSE_PROD) up -d
+
+dev_fre:	fclean
+		$(DOCKER_COMPOSE_DEV) build --no-cache
+		$(DOCKER_COMPOSE_DEV) up -d
+
 clean:	prod_clean dev_clean
 
 fclean:	removecontainers	prod_fclean dev_fclean

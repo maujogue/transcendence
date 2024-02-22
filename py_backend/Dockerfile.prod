@@ -6,7 +6,7 @@
 FROM python:3.10-slim-buster as builder
 
 # set work directory
-WORKDIR /usr/src/pong_app
+WORKDIR /usr/src/py_backend
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -18,7 +18,7 @@ RUN apt-get update && \
 
 # install python dependencies
 COPY ./requirements.txt .
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/pong_app/wheels -r requirements.txt
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/py_backend/wheels -r requirements.txt
 
 
 #########
@@ -29,14 +29,14 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/pong_app/wheels -r r
 FROM python:3.10-slim-buster
 
 # create directory for the app user
-RUN mkdir -p /home/pong_app
+RUN mkdir -p /home/py_backend
 
 # create the app user
-RUN addgroup --system pong_app && adduser --system --group pong_app
+RUN addgroup --system py_backend && adduser --system --group py_backend
 
 # create the appropriate directories
-ENV HOME=/home/pong_app
-ENV APP_HOME=/home/pong_app/web
+ENV HOME=/home/py_backend
+ENV APP_HOME=/home/py_backend/web
 RUN mkdir $APP_HOME
 RUN mkdir $APP_HOME/staticfiles
 RUN mkdir $APP_HOME/mediafiles
@@ -44,8 +44,8 @@ WORKDIR $APP_HOME
 
 # install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends netcat
-COPY --from=builder /usr/src/pong_app/wheels /wheels
-COPY --from=builder /usr/src/pong_app/requirements.txt .
+COPY --from=builder /usr/src/py_backend/wheels /wheels
+COPY --from=builder /usr/src/py_backend/requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache /wheels/*
 RUN pip install django-bootstrap-v5
@@ -54,10 +54,10 @@ RUN pip install django-bootstrap-v5
 COPY . $APP_HOME
 
 # chown all the files to the app user
-RUN chown -R pong_app:pong_app $APP_HOME
+RUN chown -R py_backend:py_backend $APP_HOME
 
 # change to the app user
-USER pong_app
+USER py_backend
 
 COPY ./entrypoint.prod.sh .
 CMD ["sh","entrypoint.prod.sh"]

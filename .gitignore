@@ -1,6 +1,6 @@
-pong_app/staticfiles
-pong_app/mediafiles/
-pong_app/staticfiles/
+py_backend/staticfiles
+py_backend/mediafiles/
+py_backend/staticfiles/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

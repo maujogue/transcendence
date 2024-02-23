@@ -71,6 +71,8 @@ async function connectToLobby(field) {
     
     webSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
+
+        console.log(data);
         if (data['type'] == 'player_data') {
             name = data['name'];
             displayCharacter(player, env, data['color'], name).then((res) => {
@@ -131,6 +133,12 @@ async function connectToLobby(field) {
         }
     }
 
+
+    webSocket.onerror = (error) => {
+        // Handle errors here
+        console.error('WebSocket Error: ', error);
+    };
+
     webSocket.onclose = function(e) {
         console.log('Connection closed');
     }
@@ -142,9 +150,10 @@ async function sendColor(webSocket) {
     displayCharacter(player, env, color, name).then((res) => {
         player = res;
     });
-    webSocket.send(JSON.stringify({
+    await webSocket.send(JSON.stringify({
         'color': color
     }));
+    console.log('sendColor');
 }
 
 
@@ -231,10 +240,12 @@ async function onlineGameLoop(webSocket) {
     if (document.getElementById("menu")) {
         ClearAllEnv(env);
         webSocket.close();
+        keyPress = false;
     }
     if (!start && keysPressed['Enter'])
         sendIsReady(webSocket);
     if (!start && keyPress) {
+        console.log('handleMenuKeyPress');
         handleMenuKeyPress(keysPressed, player, null, env);
         await sendColor(webSocket);
         keyPress = false;

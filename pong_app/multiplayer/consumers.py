@@ -23,12 +23,17 @@ class PongConsumer(AsyncWebsocketConsumer):
             await self.room.asave()
     
     async def create_player(self):
-        name = 'player1' if self.room.connected_user == 1 else 'player2'
+        name = 'player1' if self.room.player1Present == False else 'player2'
+        if name == 'player1':
+            self.room.player1Present = True
+        else:
+            self.room.player2Present = True
         oppName = 'player2' if name == 'player1' else 'player1'
         posX = -9.50 if name == 'player1' else 9.50
         oppPosX = 9.50 if name == 'player1' else -9.50
         self.player = Player(name, color='rgb(255, 255, 255)', room_id=self.room.code, posX=posX)
         self.opp = Player(oppName, color='rgb(255, 255, 255)', room_id=self.room.code, posX=oppPosX)
+        await self.room.asave()
     
     async def sendColor(self, text_data_json):
         color = text_data_json["color"]
@@ -53,8 +58,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         if self.room.connected_user >= 2:
             return await self.close()
         self.ball = Ball()
-        self.room.connected_user += 1
         await self.create_player()
+        self.room.connected_user += 1
         await self.room.asave(update_fields=['connected_user'])
         self.room_group_name = 'room_%s' % self.room_name
         await self.channel_layer.group_add(
@@ -66,6 +71,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.is_connected = True
         await self.accept()
         await self.send_player_data()
+        print('player name:', self.player.name)
         await self.channel_layer.group_send(
             self.room_group_name, { 'type': 'pong.status', 'message': 'connected', 'name': self.player.name}
         )
@@ -76,9 +82,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             return
         
         print(self.player.name, "is disconnected")
-        if self.player.is_ready == True:
-            self.room.player_ready -= 1
-            await self.room.asave(update_fields=['player_ready'])
+        print('player_ready:', self.room.player_ready)
         await self.room.disconnectUser(self.player)
         await self.channel_layer.group_send(
             self.room_group_name, { 'type': 'pong.status', 'message': 'disconnected', 'name': self.player.name}
@@ -92,6 +96,9 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.room_group_name,
             self.channel_name
         )
+        if self.room.connected_user == 0:
+            await self.room.adelete()
+            await self.channel_layer.close()
     
     
     async def startGame(self):
@@ -194,14 +201,13 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.opp.is_ready = False
 
     async def receive(self, text_data):
+        print('receive')
         self.room = await Room.objects.aget(code=self.room_name)
         text_data_json = json.loads(text_data)
         
-        print('text_data_json:', text_data_json)
+        print('text_data:', text_data_json)
         if text_data_json.get("ready") != None:
             await self.room.setPlayerReady(text_data_json.get("ready"), self.player)
-        if text_data_json.get("disconnect") != None:
-            await self.disconnect(0)
         if text_data_json.get("color") != None and self.room.game_started == False:
             self.player.color = text_data_json.get("color")
             await self.sendColor(text_data_json)

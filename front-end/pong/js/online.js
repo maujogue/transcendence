@@ -7,7 +7,6 @@ import { getColorChoose } from "./getColorChoose.js";
 import { displayMainMenu } from "./menu.js";
 import { translateBall, actualizeScoreOnline } from "./onlineCollision.js";
 import { createEndScreen } from "./createEndScreen.js";
-import { returnToMenu } from "./createEndScreen.js";
 import * as THREE from 'three';
 
 let env;
@@ -26,6 +25,7 @@ let ball = {
     dirX: 0.055,
     dirY: 0,
 }
+let exit = false;
 
 const playersMove = new Map();
 
@@ -58,13 +58,15 @@ async function connectToLobby(field) {
 
     webSocket.onopen = function() { 
         console.log('Connection established');
+        exit = false;
         goToOnlineSelectMenu(field);
         onlineGameLoop(webSocket);
     }
     
     document.addEventListener('click', function (event) {
         if (event.target.id == 'restart') {
-            document.getElementById("endscreen").remove();
+            if (document.getElementById("endscreen"))
+                document.getElementById("endscreen").remove();
             sendIsReady(webSocket);
         }
     });
@@ -81,8 +83,9 @@ async function connectToLobby(field) {
         }
 
         if (data['type'] && data['type'] == 'status') {
-            if (data['message'] == 'connected')
+            if (data['message'] == 'connected') {
                 sendColor(webSocket);
+            }
             if (data['message'] == 'disconnected') {
                 console.log('disconnected');
                 env.scene.remove(env.scene.getObjectByName(data['name']));
@@ -133,14 +136,9 @@ async function connectToLobby(field) {
         }
     }
 
-
-    webSocket.onerror = (error) => {
-        // Handle errors here
-        console.error('WebSocket Error: ', error);
-    };
-
     webSocket.onclose = function(e) {
         console.log('Connection closed');
+        exit = true;
     }
     
 }
@@ -237,6 +235,7 @@ async function setGameIsStart() {
 
 
 async function onlineGameLoop(webSocket) {
+    console.log('onlineGameLoop');
     if (document.getElementById("menu")) {
         ClearAllEnv(env);
         webSocket.close();
@@ -260,7 +259,8 @@ async function onlineGameLoop(webSocket) {
         webSocket.send(JSON.stringify({ 'type': 'frame' }));
     }
     env.renderer.render(env.scene, env.camera);
-    requestAnimationFrame(() => onlineGameLoop(webSocket));
+    if (!exit)
+        requestAnimationFrame(() => onlineGameLoop(webSocket));
 }
 
 export { connectToLobby }

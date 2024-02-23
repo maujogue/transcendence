@@ -4,11 +4,11 @@ import { displayMainMenu, createSelectMenu, displayLobby } from './menu.js';
 import { handleKeyPress, handleMenuKeyPress } from './handleKeyPress.js';
 import { displayCharacter } from './displayCharacter.js';
 import { initGame } from "./initGame.js";
-import { createEndScreen } from "./createEndScreen.js"
+import { createEndScreen, returnToMenu } from "./createEndScreen.js"
 import { actualizeScore } from "./score.js";
 import { createField } from "./createField.js";
 import { connectToLobby } from "./online.js";
-import { clearAll } from "./createEnvironment.js";
+import { ClearAllEnv } from "./createEnvironment.js";
 
 
 let start = false;
@@ -18,6 +18,7 @@ let player1;
 let player2;
 let keyPress = false;
 let keysPressed = {};
+let isOnline = false;
 const field = await createField();
 const gameDiv = document.getElementById('game');
 
@@ -61,23 +62,21 @@ gameDiv.addEventListener('click', function () {
 });
 
 document.body.addEventListener("click", function(event) {
-	if (event.target.id == 'restart') {
+	if (event.target.id == 'restart' && !isOnline) {
 		document.getElementById("endscreen").remove();
 		actualizeScore(player1, player2, environment, environment.font);
 		start = true;
 	}
 	if (event.target.id == 'backMenu') {
-		document.getElementById("endscreen").remove();
-		document.getElementById("score").remove();
-		document.getElementById("area").remove();
-		clearAll(environment);
-		displayMainMenu();
+		ClearAllEnv(environment);
+		returnToMenu();
 	}
 	if (event.target.id == 'localGame') {
 		localGameLoop();
 		goToLocalSelectMenu();
 	}
 	if (event.target.id == 'onlineGame') {
+		isOnline = true;
 		connectToLobby(field);
 	}
 	if (event.target.id == 'fullScreen') {
@@ -109,7 +108,7 @@ async function localGameLoop() {
 		handleMenuKeyPress(keysPressed, player1, player2, environment);
 	if (keysPressed[" "] && document.getElementById("selectMenu") && player1 && player2 && !start) {
 		start = true;
-		clearAll(environment);
+		ClearAllEnv(environment);
 		divMenu.remove();
 		environment = await initGame(player1, player2);
 	}

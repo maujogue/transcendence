@@ -53,9 +53,11 @@ function createEnvironment(id) {
 	  };
 }
 
-function clearAll(environment) {
+function ClearAllEnv(environment) {
+	if (!environment)
+		return ;
 	environment.scene.remove();
 	environment.renderer.dispose();
 }
 
-export { createEnvironment, createMap, getSize, clearAll};
+export { createEnvironment, createMap, getSize, ClearAllEnv};

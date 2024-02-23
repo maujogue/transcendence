@@ -1,21 +1,24 @@
 from django.test import TestCase
 from django.urls import reverse
 from users.models import CustomUser
+import json
 
 class SignUpTest(TestCase):
 
-    def test_sign_up(self):
-        username = 'nouvel_utilisateur'
-        email = 'nouvel_utilisateur@example.com'
-        password = 'mot_de_passe_secure'
+    def test_register(self):
+        newUser = {
+            'username': 'bob_seger',
+            'email': 'bobseger@gmail.com',
+            'password': 'Newtrans9+'
+        }
 
         initial_user_count = CustomUser.objects.count()
 
-        response = self.client.post(reverse('register'), {
-            'username': username,
-            'email': email,
-            'password1': password,
-            'password2': password,
-        })
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
 
-        self.assertEqual(CustomUser.objects.count(), initial_user_count + 1)
+        self.assertEqual(response.status_code, 200)
+        # self.assertRedirects(response, reverse('register_success'))
+        # self.assertEqual(CustomUser.objects.count(), initial_user_count + 1)

@@ -61,12 +61,6 @@ def login(request):
     return JsonResponse({"error": "error"}, status=400)
 
 
-@require_http_methods(["GET"])
-@ensure_csrf_cookie
-def get_csrf_token(request):
-    token = get_token(request)
-    return JsonResponse({"csrfToken": token}, status=200)
-
 @require_http_methods(["POST"])
 def tournament(request):
     try:
@@ -74,5 +68,11 @@ def tournament(request):
     except json.JSONDecodeError:
         return JsonResponse(data={'errors': "Invalid JSON format"}, status=406)
     
-    print(data)
     return JsonResponse({"status": "success"}, status=200)
+
+
+@require_http_methods(["GET"])
+@ensure_csrf_cookie
+def get_csrf_token(request):
+    token = get_token(request)
+    return JsonResponse({"csrfToken": token}, status=200)

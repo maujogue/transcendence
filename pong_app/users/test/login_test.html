@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <script>
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            if (username === "" || password === "") {
+                alert("Veuillez remplir tous les champs.");
+                return;
+            }
+
+			const userData = {
+				username: username,
+				password: password,
+			};
+
+			fetch("http://127.0.0.1:8000/users/get_csrf_token/", {
+                    method: "GET",
+                    credentials: "include",
+                })
+			.then((response) => response.json())
+			.then((data) => {
+				const csrfToken = data.csrfToken;
+				console.log(csrfToken);
+				fetch("http://127.0.0.1:8000/users/login/", {
+					method: "POST",
+					headers: {
+						"X-CSRFToken": csrfToken,
+						"Content-Type": "application/json",
+					},
+					credentials: "include",
+					body: JSON.stringify(userData), // Sending userData directly
+				})
+				.then((response) => response.json())
+				.then((data) => {
+					console.log(data);
+				})
+				.catch((error) => {
+					console.error("login failed", error);
+					// Handle registration failure
+				});
+			})
+			.catch((error) => {
+				console.error("get csrf token fail", error);
+			});
+        }
+    </script>
+</head>
+<body>
+    <h2>Connexion</h2>
+    <form>
+        <div>
+            <label for="username">Nom d'utilisateur:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div>
+            <label for="password">Mot de passe:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="button" onclick="login()">Se connecter</button>
+    </form>
+</body>
+</html>

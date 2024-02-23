@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Création de tournoi</title>
+    <style>
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Création de tournoi</h1>
+    <form id="tournamentForm">
+        <label for="tournamentName">Nom du tournoi:</label>
+        <input type="text" id="tournamentName" name="tournamentName" required><br>
+
+        <label for="numParticipants">Nombre de participants:</label>
+        <input type="number" id="numParticipants" name="numParticipants" min="2" required><br>
+
+        <button type="submit">Créer le tournoi</button>
+    </form>
+
+    <div id="confirmation" style="display: none;">
+        <h2>Confirmation</h2>
+        <p>Le tournoi <span id="confirmName"></span> avec <span id="confirmParticipants"></span> participants a été créé.</p>
+    </div>
+
+	<script>
+		function createTournament() {
+			const tournamentName = document.getElementById('tournamentName').value;
+			const numParticipants = document.getElementById('numParticipants').value;
+	
+			const tournamentData = {
+				name: tournamentName,
+				participants: numParticipants
+			};
+	
+			// Effectuer une requête pour obtenir le jeton CSRF
+			fetch("http://127.0.0.1:8000/users/get_csrf_token/", {
+				method: "GET",
+				credentials: "include",
+			})
+			.then(response => response.json())
+			.then(data => {
+				const csrfToken = data.csrfToken;
+	
+				// Effectuer une requête POST avec les données du tournoi et le jeton CSRF
+				fetch("http://127.0.0.1:8000/users/tournament/", {
+					method: "POST",
+					headers: {
+						"X-CSRFToken": csrfToken,
+						"Content-Type": "application/json",
+					},
+					credentials: "include",
+					body: JSON.stringify(tournamentData)
+				})
+				.then(response => response.json())
+				.then(data => {
+					console.log("Tournoi créé :", data);
+					// Gérer la réponse du serveur (optionnel)
+				})
+				.catch(error => {
+					console.error("Échec de la création du tournoi :", error);
+					// Gérer les erreurs (optionnel)
+				});
+			})
+			.catch(error => {
+				console.error("Échec de récupération du jeton CSRF :", error);
+				// Gérer les erreurs (optionnel)
+			});
+		}
+	</script>
+	
+</body>
+</html>

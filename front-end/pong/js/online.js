@@ -248,6 +248,7 @@ async function onlineGameLoop(webSocket) {
         console.log('handleMenuKeyPress');
         handleMenuKeyPress(keysPressed, player, null, env);
         await sendColor(webSocket);
+        console.log('after sendColor');
         keyPress = false;
     }
     if (gameIsInit)

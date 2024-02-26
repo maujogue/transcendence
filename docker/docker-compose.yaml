@@ -36,12 +36,13 @@ services:
       timeout: 5s
       retries: 5
   
-  nginx_frontend:
-    build: ../frontend/config
+  nginx-frontend:
+    # build: ../frontend/config
+    image: nginx
     volumes:
       - ../frontend:/usr/share/nginx/html
     ports:
-      - 80:80
+      - 8081:80
     restart: always
 
 volumes:

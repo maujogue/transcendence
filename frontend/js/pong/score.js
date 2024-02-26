@@ -7,7 +7,7 @@ import { createTexturedMaterial, load3DTextures } from './loadTextures.js';
 async function loadFont() {
 	return new Promise((resolve, reject) => {
 	  const loader = new FontLoader();
-	  loader.load('./pong/assets/fonts/Digital-7_Regular.json', (font) => {
+	  loader.load('/assets/fonts/Digital-7_Regular.json', (font) => {
 		resolve(font);
 	  });
 	});

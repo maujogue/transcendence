@@ -5,6 +5,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
     path('', include('multiplayer.urls')),
-	path('', include("users.urls")),  # <--  ADD THIS LINE
+	path('auth/', include("users.urls")),  # <--  ADD THIS LINE
 ]
 

@@ -19,12 +19,6 @@ let isReady = false;
 let start = false;
 let keyUp = false;
 let name;
-let ball = {
-    positionX: 0,
-    positionY: 0,
-    dirX: 0.055,
-    dirY: 0,
-}
 let exit = false;
 let webSocket;
 
@@ -113,8 +107,6 @@ async function connectToLobby(field) {
                 env.ball.mesh.position.y = data['posY'];
                 env.ball.mesh.position.x = data['posX'];
             }
-            ball.dirX = data['dirX'];
-            ball.dirY = data['dirY'];
         }
         if (data['color_data']) {
             displayCharacter(opp, env, data['color_data'], data['name']).then((res) => {
@@ -226,9 +218,6 @@ async function setGameIsStart() {
         env = await initGame(player, opp);
         gameIsInit = false;
         start = true;
-        env.ball.direction.x = ball.dirX;
-        env.ball.direction.y = ball.dirY;
-        env.renderer.render(env.scene, env.camera);
     }
 }
 

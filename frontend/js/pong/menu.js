@@ -176,9 +176,6 @@ function displayLobby() {
 	<p>Lobby Name</p><br/> \
 	<input id="lobby-name-input" type="text" size="100"><br/> \
     <input id="submit" type="button" value="Enter">'
-
-
-
 }
 
 function displayMainMenu() {

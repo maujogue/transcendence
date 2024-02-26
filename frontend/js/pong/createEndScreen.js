@@ -1,13 +1,15 @@
 import { createDivMenu } from "./menu.js"
+import { ClearAllEnv } from "./createEnvironment.js"
+import { displayMainMenu } from "./menu.js"
 
 function setEndingDivStyle(div)
 {
-    div.style.position = 'absolute';
-    div.style.color = 'white';
-    div.style.textAlign = 'center';
-    div.style.padding = '10% 0';
-    div.style.fontSize = '5vw';
-    div.style.top = '0';
+    // div.style.position = 'absolute';
+    // div.style.color = 'white';
+    // div.style.textAlign = 'center';
+    // div.style.padding = '10% 0';
+    // div.style.fontSize = '1em';
+    // div.style.top = '0';
 }
 
 function createEndScreen(winnerName) {
@@ -31,4 +33,11 @@ function createEndScreen(winnerName) {
     div.append(backToTheMenuBtn);
 }
 
-export {createEndScreen}
+function returnToMenu() {
+    document.getElementById("endscreen").remove();
+    // document.getElementById("score").remove();
+    // document.getElementById("area").remove();
+    displayMainMenu();
+}
+
+export {createEndScreen, returnToMenu }

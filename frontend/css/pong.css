@@ -35,7 +35,7 @@ h1 {
 	z-index: 100;
 }
 
-#selectMenu {
+#selectMenu, #endscreen {
 	position: absolute;
 	text-align: center;
 	color: white;

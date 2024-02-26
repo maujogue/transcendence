@@ -9,9 +9,9 @@ class SignUpTest(TestCase):
         CustomUser.objects.create(
             username="lboulatr",
             email="lboulatr@gmail.com",
-            password="Damiendubocal98")
+            password="Damiendubocal75")
     
-    def test_register(self):
+    def test_register_new_user_in_database(self):
         newUser = {
             'username': 'bob_seger',
             'email': 'bobseger@gmail.com',
@@ -74,7 +74,7 @@ class SignUpTest(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_register_different_password(self):
+    def test_register_different_password1(self):
         newUser = {
             'username': 'ochoa',
             'email': 'ochoaloco@gmail.com',
@@ -88,3 +88,34 @@ class SignUpTest(TestCase):
             content_type='application/json')
 
         self.assertEqual(response.status_code, 400)
+
+    def test_register_different_password2(self):
+        newUser = {
+            'username': 'ochoa',
+            'email': 'ochoaloco@gmail.com',
+            'password1': 'Km4C47_x£6v,+',
+            'password2': 'Km4C47_x£6v,'
+        }
+
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
+
+        self.assertEqual(response.status_code, 400)
+    
+    def test_register_not_json(self):
+        newUser = {
+            'username': 'ochoa',
+            'email': 'ochoaloco@gmail.com',
+            'password1': 'Km4C47_x£6v,+',
+            'password2': 'Km4C47_x£6v,'
+        }
+
+        response = self.client.post(
+            reverse('register'), 
+            data=newUser)
+
+        self.assertEqual(response.status_code, 406)
+
+

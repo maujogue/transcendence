@@ -51,7 +51,7 @@ RUN pip install --no-cache /wheels/*
 RUN pip install django-bootstrap-v5
 
 # copy project
-COPY . $APP_HOME
+COPY .. $APP_HOME
 
 # chown all the files to the app user
 RUN chown -R py_backend:py_backend $APP_HOME
@@ -59,5 +59,5 @@ RUN chown -R py_backend:py_backend $APP_HOME
 # change to the app user
 USER py_backend
 
-COPY ./entrypoint.prod.sh .
-CMD ["sh","entrypoint.prod.sh"]
+COPY ./entrypoint.prod.sh $APP_HOME/entrypoint.prod.sh
+CMD ["sh","docker/entrypoint.prod.sh"]

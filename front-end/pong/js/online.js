@@ -4,9 +4,8 @@ import { handleMenuKeyPress} from "./handleKeyPress.js";
 import { ClearAllEnv } from "./createEnvironment.js";
 import { initGame } from "./initGame.js";
 import { getColorChoose } from "./getColorChoose.js";
-import { displayMainMenu } from "./menu.js";
-import { translateBall, actualizeScoreOnline } from "./onlineCollision.js";
-import { createEndScreen } from "./createEndScreen.js";
+import { translateBall} from "./onlineCollision.js";
+import { handlerScore, setBallData, handlerStatusMessage } from "./handlerMessage.js";
 import * as THREE from 'three';
 
 let env;
@@ -14,18 +13,15 @@ let player;
 let opp;
 let keysPressed = {};
 let keyPress = false;
-let gameIsInit = false;
-let isReady = false;
-let start = false;
+let status = {
+    'ready': false,
+    'start': false,
+    'isReady': false,
+    'exit': false,
+}
 let keyUp = false;
 let name;
-let ball = {
-    positionX: 0,
-    positionY: 0,
-    dirX: 0.055,
-    dirY: 0,
-}
-let exit = false;
+let webSocket;
 
 const playersMove = new Map();
 
@@ -38,12 +34,20 @@ document.addEventListener('keypress', function(event) {
 document.addEventListener("keyup", function(event) {
     delete keysPressed[event.key];
     keyPress = false;
-    if (start && (event.key == 'w' || event.key == 's')) {
+    if (status.start && (event.key == 'w' || event.key == 's')) {
         keyUp = true;
     }
     event.stopPropagation();
 });
 
+function clickHandler(event) {
+    if (event.target.id == 'restart') {
+        console.log('restart');
+        if (document.getElementById("endscreen"))
+            document.getElementById("endscreen").remove();
+        sendIsReady(webSocket);
+    }
+}
 
 async function goToOnlineSelectMenu(field) {
     document.getElementById("menu").remove();
@@ -53,9 +57,8 @@ async function goToOnlineSelectMenu(field) {
 }
 
 async function connectToLobby(field) {
-    const webSocket = new WebSocket('ws://localhost:8000/ws/lobby/1/');
+    webSocket = new WebSocket('ws://localhost:8000/ws/lobby/1/');
     
-
     webSocket.onopen = function() { 
         console.log('Connection established');
         exit = false;
@@ -63,110 +66,66 @@ async function connectToLobby(field) {
         onlineGameLoop(webSocket);
     }
     
-    document.addEventListener('click', function (event) {
-        if (event.target.id == 'restart') {
-            if (document.getElementById("endscreen"))
-                document.getElementById("endscreen").remove();
-            sendIsReady(webSocket);
-        }
-    });
+    document.addEventListener('click', clickHandler);
     
     webSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
 
-        console.log(data);
         if (data['type'] == 'player_data') {
             name = data['name'];
             displayCharacter(player, env, data['color'], name).then((res) => {
                 player = res;
             });
         }
-
-        if (data['type'] && data['type'] == 'status') {
-            if (data['message'] == 'connected') {
-                sendColor(webSocket);
-            }
-            if (data['message'] == 'disconnected') {
-                console.log('disconnected');
-                env.scene.remove(env.scene.getObjectByName(data['name']));
-                env.renderer.render(env.scene, env.camera);
-            }
-            if (data['message'] == 'stopGame') {
-                start = false;
-                ClearAllEnv(env);
-                displayMainMenu();
-                webSocket.close();
-            }
-            if (data['message'] == 'endGame') {
-                console.log('endGame');
-                if (!document.getElementById("endscreen"))
-                createEndScreen(data['name']);
-            isReady = false;
-                start = false;
-            }
-        }
-        if (data['type'] == 'ball_data') {
-            console.log('ball_data');
-            if (env.ball) {
-                env.ball.direction.x = data['dirX'];
-                env.ball.direction.y = data['dirY'];
-                env.ball.mesh.position.y = data['posY'];
-                env.ball.mesh.position.x = data['posX'];
-            }
-            ball.dirX = data['dirX'];
-            ball.dirY = data['dirY'];
-        }
+        if (data['type'] && data['type'] == 'status')
+            handlerStatusMessage(data, webSocket, env, status);
+        if (data['type'] == 'ball_data')
+            setBallData(data, env);
         if (data['color_data']) {
             displayCharacter(opp, env, data['color_data'], data['name']).then((res) => {
                 opp = res;
             });
         }
-        if (data['message'] == 'start') {
-            console.log('start');
-            gameIsInit = true;
-        }
+        if (data['message'] == 'start')
+            status.gameIsInit = true;
         if (data['type'] == 'player_pos')
             env.scene.getObjectByName(data['name']).position.y = data['posY'];
             playersMove.set(data['name'], data['move']);
-        if (data['type'] == 'score') {
-            console.log('score', data['score'], data['name']);
-            actualizeScoreOnline(data, env);
-            player.paddle.mesh.position.y = 0;
-            opp.paddle.mesh.position.y = 0;
-        }
+        if (data['type'] == 'score')
+            handlerScore(data, env, player, opp);
     }
 
     webSocket.onclose = function(e) {
         console.log('Connection closed');
-        exit = true;
+        status.exit = true;
     }
     
 }
 
 async function sendColor(webSocket) {
     const color = getColorChoose('cursorP1');
+    if (!color)
+        return ;
     displayCharacter(player, env, color, name).then((res) => {
         player = res;
     });
     await webSocket.send(JSON.stringify({
         'color': color
     }));
-    console.log('sendColor');
 }
 
-
 function setIsReady() {
-    let status;
+    let ready;
 
-    if (isReady) {
-        isReady = false;
-        status = 'false';
+    if (status.isReady) {
+        status.isReady = false;
+        ready = 'false';
     } else {
-        isReady = true;
-        status = 'true';
+        status.isReady = true;
+        ready = 'true';
     }
     keysPressed['Enter'] = false;
-    return (status);
+    return (ready);
 }
 
 function sendMove(webSocket) { 
@@ -210,7 +169,8 @@ function movePlayers() {
 }
 
 function sendIsReady(webSocket) {
-    const status = setIsReady();  
+    const status = setIsReady();
+    console.log('sendIsReady', status);
     keysPressed['Enter'] = false;
     keyPress = false;
     webSocket.send(JSON.stringify({
@@ -218,48 +178,39 @@ function sendIsReady(webSocket) {
     }));
 }
 
-
 async function setGameIsStart() {
     if (player && opp) {
         ClearAllEnv(env);
         env = await initGame(player, opp);
-        console.log(env.ball.mesh.position.x);
-        gameIsInit = false;
-        console.log('setGameIsStart');
-        start = true;
-        env.ball.direction.x = ball.dirX;
-        env.ball.direction.y = ball.dirY;
-        env.renderer.render(env.scene, env.camera);
+        status.gameIsInit = false;
+        status.start = true;
     }
 }
 
-
 async function onlineGameLoop(webSocket) {
-    console.log('onlineGameLoop');
     if (document.getElementById("menu")) {
         ClearAllEnv(env);
         webSocket.close();
         keyPress = false;
+        document.removeEventListener('click', clickHandler);
     }
-    if (!start && keysPressed['Enter'])
+    if (!status.start && keysPressed['Enter'])
         sendIsReady(webSocket);
-    if (!start && keyPress) {
-        console.log('handleMenuKeyPress');
+    if (!status.start && keyPress) {
         handleMenuKeyPress(keysPressed, player, null, env);
         await sendColor(webSocket);
-        console.log('after sendColor');
         keyPress = false;
     }
-    if (gameIsInit)
+    if (status.gameIsInit)
         await setGameIsStart();
-    if (start) {
+    if (status.start) {
         sendMove(webSocket);
         movePlayers();
         translateBall(env.ball);
         webSocket.send(JSON.stringify({ 'type': 'frame' }));
     }
     env.renderer.render(env.scene, env.camera);
-    if (!exit)
+    if (!status.exit)
         requestAnimationFrame(() => onlineGameLoop(webSocket));
 }
 

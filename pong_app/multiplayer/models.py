@@ -21,7 +21,7 @@ class Room(models.Model):
     async def disconnectUser(self, player):
         if self.connected_user != 0:
             self.connected_user -= 1
-        if player.is_ready == True:
+        if player.is_ready == True and self.player_ready != 0:
             self.player_ready -= 1
         if self.connected_user == 0:
             self.player_ready = 0

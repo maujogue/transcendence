@@ -3,7 +3,7 @@ from django.urls import reverse
 from users.models import CustomUser
 import json
 
-class SignUpTest(TestCase):
+class RegisterTests(TestCase):
 
     def setUp(self):
         CustomUser.objects.create(
@@ -11,7 +11,7 @@ class SignUpTest(TestCase):
             email="lboulatr@gmail.com",
             password="Damiendubocal75")
     
-    def test_register_new_user_in_database(self):
+    def test_new_user_in_database(self):
         newUser = {
             'username': 'bob_seger',
             'email': 'bobseger@gmail.com',
@@ -29,7 +29,7 @@ class SignUpTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(CustomUser.objects.count(), initial_user_count + 1)
 
-    def test_register_email_is_already_used(self):
+    def test_email_is_already_used(self):
         newUser = {
             'username': 'bob_seger',
             'email': 'lboulatr@gmail.com',
@@ -44,7 +44,7 @@ class SignUpTest(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_register_username_is_already_used(self):
+    def test_username_is_already_used(self):
         newUser = {
             'username': 'lboulatr',
             'email': 'routine@gmail.com',
@@ -59,7 +59,7 @@ class SignUpTest(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_register_weak_password(self):
+    def test_weak_password(self):
         newUser = {
             'username': 'ochoa',
             'email': 'ochoaloco@gmail.com',
@@ -74,7 +74,7 @@ class SignUpTest(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_register_different_password1(self):
+    def test_different_password1(self):
         newUser = {
             'username': 'ochoa',
             'email': 'ochoaloco@gmail.com',
@@ -89,7 +89,7 @@ class SignUpTest(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_register_different_password2(self):
+    def test_different_password2(self):
         newUser = {
             'username': 'ochoa',
             'email': 'ochoaloco@gmail.com',
@@ -104,7 +104,7 @@ class SignUpTest(TestCase):
 
         self.assertEqual(response.status_code, 400)
     
-    def test_register_not_json(self):
+    def test_not_json(self):
         newUser = {
             'username': 'ochoa',
             'email': 'ochoaloco@gmail.com',
@@ -118,4 +118,59 @@ class SignUpTest(TestCase):
 
         self.assertEqual(response.status_code, 406)
 
+    def test_missing_username(self):
+        newUser = {
+            'email': 'ochoaloco@gmail.com',
+            'password1': 'Km4C47_x£6v,+',
+            'password2': 'Km4C47_x£6v,'
+        }
+
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_missing_email(self):
+        newUser = {
+            'username': 'ochoa',
+            'password1': 'Km4C47_x£6v,+',
+            'password2': 'Km4C47_x£6v,'
+        }
+
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_missing_password1(self):
+        newUser = {
+            'username': 'ochoa',
+            'email': 'ochoaloco@gmail.com',
+            'password2': 'Km4C47_x£6v,'
+        }
+
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_missing_password2(self):
+        newUser = {
+            'username': 'ochoa',
+            'email': 'ochoaloco@gmail.com',
+            'password1': 'Km4C47_x£6v,'
+        }
+
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
+
+        self.assertEqual(response.status_code, 400)
 

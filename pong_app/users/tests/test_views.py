@@ -11,6 +11,9 @@ class RegisterTests(TestCase):
             email="lboulatr@gmail.com",
             password="Damiendubocal75")
     
+    # def test_basic_user(self):
+    #     self.assertEqual(self.model.name, 'lboulatr')  
+
     def test_new_user_in_database(self):
         newUser = {
             'username': 'bob_seger',

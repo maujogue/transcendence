@@ -174,7 +174,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def setGameOver(self):
         await self.room.stopGame()
-        self.player.resetPaddlePos()
         await self.channel_layer.group_send(
             self.room_group_name, { 'type': 'pong.status', 'message': 'endGame', 'name': self.player.name}
         )

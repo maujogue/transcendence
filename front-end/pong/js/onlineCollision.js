@@ -47,7 +47,7 @@ function sendIfScored(ball, player, webSocket, env) {
     }));
 }
 
-function translateBall(ball, webSocket, player, env) {
+function translateBall(ball) {
     ball.mesh.translateX(ball.direction.x);
     ball.mesh.translateY(ball.direction.y);
 }

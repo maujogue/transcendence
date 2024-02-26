@@ -1,11 +1,11 @@
 import { displayCharacter } from "./displayCharacter.js";
 import { createSelectMenu } from "./menu.js";
-import { handleMenuKeyPress, handleKeyPress } from "./handleKeyPress.js";
-import { clearAll } from "./createEnvironment.js";
+import { handleMenuKeyPress} from "./handleKeyPress.js";
+import { ClearAllEnv } from "./createEnvironment.js";
 import { initGame } from "./initGame.js";
 import { getColorChoose } from "./getColorChoose.js";
 import { displayMainMenu } from "./menu.js";
-import { translateBall, sendIfScored, actualizeScoreOnline } from "./onlineCollision.js";
+import { translateBall, actualizeScoreOnline } from "./onlineCollision.js";
 import { createEndScreen } from "./createEndScreen.js";
 import * as THREE from 'three';
 
@@ -25,6 +25,7 @@ let ball = {
     dirX: 0.055,
     dirY: 0,
 }
+let exit = false;
 
 const playersMove = new Map();
 
@@ -35,7 +36,7 @@ document.addEventListener('keypress', function(event) {
 })
 
 document.addEventListener("keyup", function(event) {
-	delete keysPressed[event.key];
+    delete keysPressed[event.key];
     keyPress = false;
     if (start && (event.key == 'w' || event.key == 's')) {
         keyUp = true;
@@ -51,27 +52,40 @@ async function goToOnlineSelectMenu(field) {
     env.renderer.render(env.scene, env.camera);
 }
 
-
 async function connectToLobby(field) {
     const webSocket = new WebSocket('ws://localhost:8000/ws/lobby/1/');
     
+
     webSocket.onopen = function() { 
         console.log('Connection established');
+        exit = false;
         goToOnlineSelectMenu(field);
         onlineGameLoop(webSocket);
     }
     
+    document.addEventListener('click', function (event) {
+        if (event.target.id == 'restart') {
+            if (document.getElementById("endscreen"))
+                document.getElementById("endscreen").remove();
+            sendIsReady(webSocket);
+        }
+    });
+    
     webSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
+
+        console.log(data);
         if (data['type'] == 'player_data') {
             name = data['name'];
             displayCharacter(player, env, data['color'], name).then((res) => {
                 player = res;
             });
         }
+
         if (data['type'] && data['type'] == 'status') {
-            if (data['message'] == 'connected')
+            if (data['message'] == 'connected') {
                 sendColor(webSocket);
+            }
             if (data['message'] == 'disconnected') {
                 console.log('disconnected');
                 env.scene.remove(env.scene.getObjectByName(data['name']));
@@ -79,13 +93,16 @@ async function connectToLobby(field) {
             }
             if (data['message'] == 'stopGame') {
                 start = false;
-                clearAll(env);
+                ClearAllEnv(env);
                 displayMainMenu();
                 webSocket.close();
             }
             if (data['message'] == 'endGame') {
-                start = false;
+                console.log('endGame');
+                if (!document.getElementById("endscreen"))
                 createEndScreen(data['name']);
+            isReady = false;
+                start = false;
             }
         }
         if (data['type'] == 'ball_data') {
@@ -104,9 +121,12 @@ async function connectToLobby(field) {
                 opp = res;
             });
         }
-        if (data['message'] == 'start')
+        if (data['message'] == 'start') {
+            console.log('start');
             gameIsInit = true;
+        }
         if (data['type'] == 'player_pos')
+            env.scene.getObjectByName(data['name']).position.y = data['posY'];
             playersMove.set(data['name'], data['move']);
         if (data['type'] == 'score') {
             console.log('score', data['score'], data['name']);
@@ -118,6 +138,7 @@ async function connectToLobby(field) {
 
     webSocket.onclose = function(e) {
         console.log('Connection closed');
+        exit = true;
     }
     
 }
@@ -127,9 +148,10 @@ async function sendColor(webSocket) {
     displayCharacter(player, env, color, name).then((res) => {
         player = res;
     });
-    webSocket.send(JSON.stringify({
+    await webSocket.send(JSON.stringify({
         'color': color
     }));
+    console.log('sendColor');
 }
 
 
@@ -187,12 +209,23 @@ function movePlayers() {
     });
 }
 
+function sendIsReady(webSocket) {
+    const status = setIsReady();  
+    keysPressed['Enter'] = false;
+    keyPress = false;
+    webSocket.send(JSON.stringify({
+        'ready': status
+    }));
+}
+
+
 async function setGameIsStart() {
     if (player && opp) {
-        clearAll(env);
+        ClearAllEnv(env);
         env = await initGame(player, opp);
         console.log(env.ball.mesh.position.x);
         gameIsInit = false;
+        console.log('setGameIsStart');
         start = true;
         env.ball.direction.x = ball.dirX;
         env.ball.direction.y = ball.dirY;
@@ -202,19 +235,19 @@ async function setGameIsStart() {
 
 
 async function onlineGameLoop(webSocket) {
-    if (!start && keysPressed['Enter']) {
-        console.log('ready');
-        const status = setIsReady();  
-        keysPressed['Enter'] = false;
+    console.log('onlineGameLoop');
+    if (document.getElementById("menu")) {
+        ClearAllEnv(env);
+        webSocket.close();
         keyPress = false;
-        webSocket.send(JSON.stringify({
-            'ready': status
-        }));
     }
+    if (!start && keysPressed['Enter'])
+        sendIsReady(webSocket);
     if (!start && keyPress) {
+        console.log('handleMenuKeyPress');
         handleMenuKeyPress(keysPressed, player, null, env);
         await sendColor(webSocket);
-        env.renderer.render(env.scene, env.camera);
+        console.log('after sendColor');
         keyPress = false;
     }
     if (gameIsInit)
@@ -222,14 +255,12 @@ async function onlineGameLoop(webSocket) {
     if (start) {
         sendMove(webSocket);
         movePlayers();
-        translateBall(env.ball, webSocket, player, env);
-        // sendIfScored(env.ball, player, webSocket, env);
-        webSocket.send(JSON.stringify({
-            'type': 'frame',
-        }));
-        env.renderer.render(env.scene, env.camera);
+        translateBall(env.ball);
+        webSocket.send(JSON.stringify({ 'type': 'frame' }));
     }
-    requestAnimationFrame(() => onlineGameLoop(webSocket));
+    env.renderer.render(env.scene, env.camera);
+    if (!exit)
+        requestAnimationFrame(() => onlineGameLoop(webSocket));
 }
 
 export { connectToLobby }

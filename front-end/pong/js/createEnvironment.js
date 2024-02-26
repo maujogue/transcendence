@@ -53,9 +53,25 @@ function createEnvironment(id) {
 	  };
 }
 
-function clearAll(environment) {
-	environment.scene.remove();
-	environment.renderer.dispose();
+function ClearAllEnv(environment) {
+    if (!environment)
+        return;
+
+    while (environment.scene.children.length > 0) {
+        const obj = environment.scene.children[0];
+        environment.scene.remove(obj);
+
+        if (obj instanceof THREE.Object3D) {
+            obj.traverse((child) => {
+                if (child instanceof THREE.Mesh) {
+                    const material = child.material;
+                    if (material.map)
+                        material.map.dispose();
+                }
+            });
+        }
+    }
+    environment.renderer.dispose();
 }
 
-export { createEnvironment, createMap, getSize, clearAll};
+export { createEnvironment, createMap, getSize, ClearAllEnv};

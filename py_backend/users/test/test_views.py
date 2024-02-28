@@ -3,6 +3,7 @@ from django.urls import reverse
 from users.models import CustomUser
 import json
 
+
 class RegisterTests(TestCase):
 
     def setUp(self):
@@ -35,7 +36,7 @@ class RegisterTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(CustomUser.objects.count(), initial_user_count + 1)
 
-    def test_new_username_too_short(self):
+    def test_new_user_username_too_short(self):
         newUser = {
             'username': 'bo',
             'email': 'bobseger@gmail.com',
@@ -50,7 +51,22 @@ class RegisterTests(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_new_password_too_short(self):
+    def test_new_user_username_has_forbidden_characters(self):
+        newUser = {
+            'username': 'bob+seger',
+            'email': 'bobseger@gmail.com',
+            'password1': 'Newtrans9+',
+            'password2': 'Newtrans9+'
+        }
+
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_new_user_password_too_short(self):
         newUser = {
             'username': 'bobby_seger',
             'email': 'bobseger@gmail.com',
@@ -270,7 +286,7 @@ class RegisterTests(TestCase):
 
         self.assertEqual(response.status_code, 400)
     
-    def test_invalid_email＿2(self):
+    def test_invalid_email_2(self):
         newUser = {
             'username': 'ochoa',
             'email': 'ochoaloco@gmailcom',

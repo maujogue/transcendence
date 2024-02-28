@@ -3,7 +3,6 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 
-
 class CustomUser(AbstractUser):
 
 	class Meta:
@@ -23,11 +22,16 @@ class CustomUser(AbstractUser):
 		return f'{self.username}'
 
 	def clean(self):
+		forbidden_char = "+/*.,!#%^&"
 		super().clean()
 		if self.username and len(self.username) < 3:
 			raise ValidationError({'username': 'Username is too short'})
+		if self.username:
+			for char in forbidden_char:
+				if char in self.username:
+					raise ValidationError({'username': 'Contains forbidden characters'})
 		if self.password and len(self.password) < 5:
-			raise ValidationError({'username': 'Password is too short'})
+			raise ValidationError({'password': 'Password is too short'})
 
 class Tournament(models.Model):
 	

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 	'bootstrap5',
 	'corsheaders',
 	'users',
+	'django_extensions',
 ]
 
 ASGI_APPLICATION = 'py_backend.asgi.application'

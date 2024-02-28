@@ -1,0 +1,63 @@
+###########
+# BUILDER #
+###########
+
+# pull official base image
+FROM python:3.10-slim-buster as builder
+
+# set work directory
+WORKDIR /usr/src/py_backend
+
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gcc
+
+# install python dependencies
+COPY ./requirements.txt .
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/py_backend/wheels -r requirements.txt
+
+
+#########
+# FINAL #
+#########
+
+# pull official base image
+FROM python:3.10-slim-buster
+
+# create directory for the app user
+RUN mkdir -p /home/py_backend
+
+# create the app user
+RUN addgroup --system py_backend && adduser --system --group py_backend
+
+# create the appropriate directories
+ENV HOME=/home/py_backend
+ENV APP_HOME=/home/py_backend/web
+RUN mkdir $APP_HOME
+RUN mkdir $APP_HOME/staticfiles
+RUN mkdir $APP_HOME/mediafiles
+WORKDIR $APP_HOME
+
+# install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends netcat
+COPY --from=builder /usr/src/py_backend/wheels /wheels
+COPY --from=builder /usr/src/py_backend/requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install --no-cache /wheels/*
+RUN pip install django-bootstrap-v5
+
+# copy project
+COPY .. $APP_HOME
+
+# chown all the files to the app user
+RUN chown -R py_backend:py_backend $APP_HOME
+
+# change to the app user
+USER py_backend
+
+COPY ./entrypoint.prod.sh $APP_HOME/entrypoint.prod.sh
+CMD ["sh","docker/entrypoint.prod.sh"]

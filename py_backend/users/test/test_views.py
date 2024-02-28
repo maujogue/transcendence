@@ -11,8 +11,11 @@ class RegisterTests(TestCase):
             email="lboulatr@gmail.com",
             password="Damiendubocal75")
     
-    # def test_basic_user(self):
-    #     self.assertEqual(self.model.name, 'lboulatr')  
+    def test_basic_user(self):
+        user = CustomUser.objects.get(username="lboulatr")
+        user = CustomUser.objects.get(email="lboulatr@gmail.com")
+        self.assertEqual(user.username, 'lboulatr')
+        self.assertEqual(user.email, 'lboulatr@gmail.com')
 
     def test_new_user_in_database(self):
         newUser = {
@@ -106,20 +109,6 @@ class RegisterTests(TestCase):
             content_type='application/json')
 
         self.assertEqual(response.status_code, 400)
-    
-    def test_not_json(self):
-        newUser = {
-            'username': 'ochoa',
-            'email': 'ochoaloco@gmail.com',
-            'password1': 'Km4C47_x£6v,+',
-            'password2': 'Km4C47_x£6v,'
-        }
-
-        response = self.client.post(
-            reverse('register'), 
-            data=newUser)
-
-        self.assertEqual(response.status_code, 406)
 
     def test_missing_username(self):
         newUser = {
@@ -176,4 +165,106 @@ class RegisterTests(TestCase):
             content_type='application/json')
 
         self.assertEqual(response.status_code, 400)
+    
+    def test_not_json_register(self):
+        newUser = {
+            'username': 'ochoa',
+            'email': 'ochoaloco@gmail.com',
+            'password1': 'Km4C47_x£6v,+',
+            'password2': 'Km4C47_x£6v,'
+        }
 
+        response = self.client.post(
+            reverse('register'), 
+            data=newUser)
+
+        self.assertEqual(response.status_code, 406)
+
+class LoginTests(TestCase):
+
+    def setUp(self):
+        CustomUser.objects.create_user(
+            username="lboulatr",
+            email="lboulatr@gmail.com",
+            password="Damiendubocal75")
+
+    def test_basic_user(self):
+        user = CustomUser.objects.get(username="lboulatr")
+        user = CustomUser.objects.get(email="lboulatr@gmail.com")
+        self.assertEqual(user.username, 'lboulatr')
+        self.assertEqual(user.email, 'lboulatr@gmail.com')
+
+    def test_basic_login(self):
+        user = {
+            'username': 'lboulatr',
+            'password': 'Damiendubocal75'
+        }
+
+        response = self.client.post(
+            reverse('login'), 
+            data=json.dumps(user), 
+            content_type='application/json')
+        
+        self.assertEqual(response.status_code, 200)
+
+    def test_not_json_login(self):
+        user = {
+            'username': 'lboulatr',
+            'password': 'Damiendubocal75'
+        }
+
+        response = self.client.post(
+            reverse('login'), 
+            data=user)
+
+        self.assertEqual(response.status_code, 406)
+        
+    def test_wrong_login(self):
+        user = {
+            'username': 'lboulatx',
+            'password': 'Damiendubocal75'
+        }
+
+        response = self.client.post(
+            reverse('login'), 
+            data=json.dumps(user), 
+            content_type='application/json')
+        
+        self.assertEqual(response.status_code, 400)
+
+    def test_wrong_password(self):
+        user = {
+            'username': 'lboulatr',
+            'password': 'Damiendubocal75*'
+        }
+
+        response = self.client.post(
+            reverse('login'), 
+            data=json.dumps(user), 
+            content_type='application/json')
+        
+        self.assertEqual(response.status_code, 400)
+
+    def test_missing_username(self):
+        user = {
+            'password': 'Damiendubocal75'
+        }
+
+        response = self.client.post(
+            reverse('login'), 
+            data=json.dumps(user), 
+            content_type='application/json')
+        
+        self.assertEqual(response.status_code, 400)
+
+    def test_missing_password(self):
+        user = {
+            'username': 'lboulatr'
+        }
+
+        response = self.client.post(
+            reverse('login'), 
+            data=json.dumps(user), 
+            content_type='application/json')
+        
+        self.assertEqual(response.status_code, 400)

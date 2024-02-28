@@ -66,12 +66,42 @@ class RegisterTests(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
+    def test_username_is_already_used(self):
+        newUser = {
+            'username': 'lboulatr',
+            'email': 'routine@gmail.com',
+            'password1': 'Newtrans9+',
+            'password2': 'Newtrans9+'
+        }
+
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
+
+        self.assertEqual(response.status_code, 400)
+
     def test_new_user_password_too_short(self):
         newUser = {
             'username': 'bobby_seger',
             'email': 'bobseger@gmail.com',
             'password1': 'Newtr',
             'password2': 'Newtr'
+        }
+
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_username_too_long(self):
+        newUser = {
+            'username': 'ochoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+            'email': 'ochoaloco@gmail.com',
+            'password1': 'Km4C47_x£6v,',
+            'password2': 'Km4C47_x£6v,'
         }
 
         response = self.client.post(
@@ -126,21 +156,6 @@ class RegisterTests(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_username_is_already_used(self):
-        newUser = {
-            'username': 'lboulatr',
-            'email': 'routine@gmail.com',
-            'password1': 'Newtrans9+',
-            'password2': 'Newtrans9+'
-        }
-
-        response = self.client.post(
-            reverse('register'), 
-            data=json.dumps(newUser), 
-            content_type='application/json')
-
-        self.assertEqual(response.status_code, 400)
-
     def test_weak_password(self):
         newUser = {
             'username': 'ochoa',
@@ -156,7 +171,7 @@ class RegisterTests(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_different_password1(self):
+    def test_different_password_1(self):
         newUser = {
             'username': 'ochoa',
             'email': 'ochoaloco@gmail.com',
@@ -171,7 +186,7 @@ class RegisterTests(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_different_password2(self):
+    def test_different_password_2(self):
         newUser = {
             'username': 'ochoa',
             'email': 'ochoaloco@gmail.com',
@@ -214,7 +229,7 @@ class RegisterTests(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_missing_password1(self):
+    def test_missing_password_1(self):
         newUser = {
             'username': 'ochoa',
             'email': 'ochoaloco@gmail.com',
@@ -228,7 +243,7 @@ class RegisterTests(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
-    def test_missing_password2(self):
+    def test_missing_password_2(self):
         newUser = {
             'username': 'ochoa',
             'email': 'ochoaloco@gmail.com',
@@ -256,13 +271,8 @@ class RegisterTests(TestCase):
 
         self.assertEqual(response.status_code, 406)
 
-    def test_username_too_long(self):
-        newUser = {
-            'username': 'ochoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-            'email': 'ochoaloco@gmail.com',
-            'password1': 'Km4C47_x£6v,',
-            'password2': 'Km4C47_x£6v,'
-        }
+    def test_missing_datas(self):
+        newUser = {}
 
         response = self.client.post(
             reverse('register'), 

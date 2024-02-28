@@ -1,5 +1,7 @@
 py_backend/staticfiles
 py_backend/mediafiles/
+py_backend/docker/cert.crt
+py_backend/docker/cert.key
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

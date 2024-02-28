@@ -268,3 +268,13 @@ class LoginTests(TestCase):
             content_type='application/json')
         
         self.assertEqual(response.status_code, 400)
+
+    def test_missing_datas(self):
+        user = {}
+
+        response = self.client.post(
+            reverse('login'), 
+            data=json.dumps(user), 
+            content_type='application/json')
+        
+        self.assertEqual(response.status_code, 400)

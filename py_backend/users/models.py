@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
+
 
 class CustomUser(AbstractUser):
 
@@ -19,6 +21,13 @@ class CustomUser(AbstractUser):
 
 	def __str__(self):
 		return f'{self.username}'
+
+	def clean(self):
+		super().clean()
+		if self.username and len(self.username) < 3:
+			raise ValidationError({'username': 'Username is too short'})
+		if self.password and len(self.password) < 5:
+			raise ValidationError({'username': 'Password is too short'})
 
 class Tournament(models.Model):
 	

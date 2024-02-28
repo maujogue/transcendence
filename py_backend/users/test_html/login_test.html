@@ -19,7 +19,7 @@
 				password: password,
 			};
 
-			fetch("http://127.0.0.1:8000/auth/get_csrf_token/", {
+			fetch("http://127.0.0.1:8000/get_csrf_token/", {
                     method: "GET",
                     credentials: "include",
                 })
@@ -27,7 +27,7 @@
 			.then((data) => {
 				const csrfToken = data.csrfToken;
 				console.log(csrfToken);
-				fetch("http://127.0.0.1:8000/auth/login/", {
+				fetch("http://127.0.0.1:8000/login/", {
 					method: "POST",
 					headers: {
 						"X-CSRFToken": csrfToken,

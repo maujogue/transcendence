@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 	'multiplayer',
 	'bootstrap5',
 	'users',
+	'django_extensions',
 ]
 
 ASGI_APPLICATION = 'py_backend.asgi.application'

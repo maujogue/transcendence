@@ -70,8 +70,8 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'bobby_seger',
             'email': 'bobseger@gmail.com',
-            'password1': 'Newt',
-            'password2': 'Newt'
+            'password1': 'Newtr',
+            'password2': 'Newtr'
         }
 
         response = self.client.post(

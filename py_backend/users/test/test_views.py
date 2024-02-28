@@ -339,6 +339,7 @@ class LoginTests(TestCase):
             content_type='application/json')
         
         self.assertEqual(response.status_code, 200)
+        self.assertTrue('_auth_user_id' in self.client.session)
 
     def test_not_json_login(self):
         user = {
@@ -411,3 +412,25 @@ class LoginTests(TestCase):
             content_type='application/json')
         
         self.assertEqual(response.status_code, 400)
+
+    def test_login_invalid_credentials(self):
+        user = {
+            'username': 'lboulatr',
+            'password': 'Damiendubocal75+'
+        }
+
+        response = self.client.post(
+            reverse('login'), 
+            data=json.dumps(user), 
+            content_type='application/json')
+        
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse('_auth_user_id' in self.client.session)
+
+class LogoutTests(TestCase):
+
+    def setUp(self):
+        CustomUser.objects.create_user(
+            username="lboulatr",
+            email="lboulatr@gmail.com",
+            password="Damiendubocal75")

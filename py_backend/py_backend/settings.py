@@ -35,8 +35,8 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
-	'daphne',
 	'corsheaders',
+	'daphne',
 	'django.contrib.admin',
 	'django.contrib.auth',
 	'django.contrib.contenttypes',
@@ -132,6 +132,13 @@ AUTH_PASSWORD_VALIDATORS = [
 		'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
 	},
 ]
+
+PASSWORD_MIN_LENGTH = 8
+PASSWORD_MIN_DIGITS = 1
+PASSWORD_MIN_UPPERCASE = 1
+PASSWORD_MIN_LOWERCASE = 1
+PASSWORD_MIN_SPECIAL_CHARACTERS = 1
+PASSWORD_CHANGE_DAYS = 90  # par exemple, 90 jours
 
 
 # Internationalization

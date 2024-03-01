@@ -1,5 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
+from django.http import JsonResponse
+from django.test import Client
 from users.models import CustomUser
 import json
 
@@ -427,6 +429,8 @@ class LoginTests(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertFalse('_auth_user_id' in self.client.session)
 
+# =========================================================================================
+
 class LogoutTests(TestCase):
 
     def setUp(self):
@@ -434,3 +438,31 @@ class LogoutTests(TestCase):
             username="lboulatr",
             email="lboulatr@gmail.com",
             password="Damiendubocal75")
+        
+    def test_logout_success(self):
+        response = self.client.post(
+            reverse('logout_view'), 
+            content_type='application/json')
+        
+        self.assertEqual(response.status_code, 200)
+
+# =========================================================================================
+
+class CSRFTokenTest(TestCase):
+    def setUp(self):
+        self.csrf_client = Client(enforce_csrf_checks=True)
+
+    def test_get_csrf_token(self):
+        response = self.client.get(reverse('get_csrf_token'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('csrfToken', response.json())
+        self.assertIn('csrftoken', response.cookies)
+    
+    def test_post_response(self):
+        response = self.client.post(reverse('get_csrf_token'))
+        self.assertEqual(response.status_code, 405)
+
+    def test_get_request_for_post_function(self):
+        response = self.client.get(reverse('register'))
+        self.assertEqual(response.status_code, 405)

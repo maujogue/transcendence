@@ -4,9 +4,21 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 
 MIN_LEN_USERNAME = 3
-MIN_LEN_PASSWORD = 6
-FORBIDDEN_CHARS = "+/*.,!#%^&"
+MIN_LEN_PASSWORD = 9
+SPECIAL_CHARS = "+/*.,!#%^&"
 
+def contains_number(string):
+	for char in string:
+		if char.isdigit():
+			return True
+	return False
+
+def contains_special_char(string):
+	for char in SPECIAL_CHARS:
+		if char in string:
+			return True
+	return False
+	
 class CustomUser(AbstractUser):
 	class Meta:
 		verbose_name = 'Custom User'
@@ -23,17 +35,21 @@ class CustomUser(AbstractUser):
 
 	def __str__(self):
 		return f'{self.username}'
-
+	
 	def clean(self):
 		super().clean()
 		if self.username and len(self.username) < MIN_LEN_USERNAME:
 			raise ValidationError({'username': 'Username is too short'})
 		if self.username:
-			for char in FORBIDDEN_CHARS:
+			for char in SPECIAL_CHARS:
 				if char in self.username:
 					raise ValidationError({'username': 'Username contains forbidden characters'})
-		if self.password and len(self.password) < MIN_LEN_PASSWORD:
-			raise ValidationError({'password': 'Password is too short'})
+		if self.password:
+			if contains_number(self.password) == False:
+				raise ValidationError({'password': 'password does not contains at least one number'})
+			if contains_special_char(self.password) == False:
+				raise ValidationError({'password': 'password does not contains at least one special characters'})
+
 
 class Tournament(models.Model):
 	

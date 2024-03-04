@@ -133,14 +133,6 @@ AUTH_PASSWORD_VALIDATORS = [
 	},
 ]
 
-PASSWORD_MIN_LENGTH = 8
-PASSWORD_MIN_DIGITS = 1
-PASSWORD_MIN_UPPERCASE = 1
-PASSWORD_MIN_LOWERCASE = 1
-PASSWORD_MIN_SPECIAL_CHARACTERS = 1
-PASSWORD_CHANGE_DAYS = 90  # par exemple, 90 jours
-
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 

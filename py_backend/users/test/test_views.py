@@ -24,8 +24,9 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'bob_seger',
             'email': 'bobseger@gmail.com',
-            'password1': 'Newtrans9+',
-            'password2': 'Newtrans9+'
+            'password': 'Newtransse9+',
+            'password1': 'Newtransse9+',
+            'password2': 'Newtransse9+'
         }
 
         initial_user_count = CustomUser.objects.count()

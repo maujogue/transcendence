@@ -43,6 +43,7 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'bo',
             'email': 'bobseger@gmail.com',
+            'password': 'Newtrans9+',
             'password1': 'Newtrans9+',
             'password2': 'Newtrans9+'
         }
@@ -58,6 +59,7 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'bob+seger',
             'email': 'bobseger@gmail.com',
+            'password': 'Newtrans9+',
             'password1': 'Newtrans9+',
             'password2': 'Newtrans9+'
         }
@@ -73,6 +75,7 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'lboulatr',
             'email': 'routine@gmail.com',
+            'password': 'Newtrans9+',
             'password1': 'Newtrans9+',
             'password2': 'Newtrans9+'
         }
@@ -88,6 +91,7 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'bobby_seger',
             'email': 'bobseger@gmail.com',
+            'password': 'Newtr',
             'password1': 'Newtr',
             'password2': 'Newtr'
         }
@@ -99,10 +103,27 @@ class RegisterTests(TestCase):
 
         self.assertEqual(response.status_code, 400)
 
+    def test_new_user_same_username_and_password(self):
+        newUser = {
+            'username': 'oxford',
+            'email': 'bonjour@gmail.com',
+            'password': 'Bobbyseger2',
+            'password1': 'Bobbyseger2+',
+            'password2': 'Bobbyseger2+'
+        }
+
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
+
+        self.assertEqual(response.status_code, 200)
+
     def test_username_too_long(self):
         newUser = {
             'username': 'ochoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
             'email': 'ochoaloco@gmail.com',
+            'password': 'Km4C47_x£6v,',
             'password1': 'Km4C47_x£6v,',
             'password2': 'Km4C47_x£6v,'
         }
@@ -118,6 +139,7 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'bob_seger',
             'email': 'lboulatrgmail.com',
+            'password': 'Newtrans9+',
             'password1': 'Newtrans9+',
             'password2': 'Newtrans9+'
         }
@@ -133,6 +155,7 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'bob_seger',
             'email': 'lboulatr@gmailcom',
+            'password': 'Newtrans9+',
             'password1': 'Newtrans9+',
             'password2': 'Newtrans9+'
         }
@@ -148,6 +171,7 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'bob_seger',
             'email': 'lboulatr@gmail.com',
+            'password': 'Newtrans9+',
             'password1': 'Newtrans9+',
             'password2': 'Newtrans9+'
         }
@@ -163,6 +187,7 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'ochoa',
             'email': 'ochoaloco@gmail.com',
+            'password': '+',
             'password1': '+',
             'password2': '+'
         }
@@ -178,6 +203,7 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'ochoa',
             'email': 'ochoaloco@gmail.com',
+            'password': 'Km4C47_x£6v,',
             'password1': 'Km4C47_x£6v,',
             'password2': 'Km4C47_x£6v,+'
         }
@@ -193,6 +219,7 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'ochoa',
             'email': 'ochoaloco@gmail.com',
+            'password': 'Km4C47_x£6v,+',
             'password1': 'Km4C47_x£6v,+',
             'password2': 'Km4C47_x£6v,'
         }

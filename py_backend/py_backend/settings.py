@@ -144,7 +144,7 @@ AUTH_PASSWORD_VALIDATORS = [
 		'NAME': 'users.validators.ContainsUppercaseValidator',
 	},
 	{
-		'NAME': 'users.validators.ContainsUppercaseValidator',
+		'NAME': 'users.validators.ContainsLowercaseValidator',
 	},
 ]
 

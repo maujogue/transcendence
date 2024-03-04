@@ -9,7 +9,6 @@ export default class extends AbstractView {
 	async getHtml () {
 		return `
 			<link rel="stylesheet" href="/css/pong.css">
-			<h1>PONG</h1>
 			<div id="game">
 				<canvas id="canvas"></canvas>
 			</div>

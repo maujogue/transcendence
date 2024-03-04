@@ -4,8 +4,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 
 MIN_LEN_USERNAME = 3
-MIN_LEN_PASSWORD = 9
-SPECIAL_CHARS = "+/*.,!#%^&"
+SPECIAL_CHARS = "+/*.,!#%^&{}[]=:;\'\"`~"
 
 def contains_number(string):
 	for char in string:
@@ -38,17 +37,16 @@ class CustomUser(AbstractUser):
 	
 	def clean(self):
 		super().clean()
-		if self.username and len(self.username) < MIN_LEN_USERNAME:
-			raise ValidationError({'username': 'Username is too short'})
 		if self.username:
-			for char in SPECIAL_CHARS:
-				if char in self.username:
-					raise ValidationError({'username': 'Username contains forbidden characters'})
+			if len(self.username) < MIN_LEN_USERNAME:
+				raise ValidationError({'username': 'Username is too short'})
+			if contains_special_char(self.username):
+				raise ValidationError({'username': 'Username contains forbidden characters'})
 		if self.password:
-			if contains_number(self.password) == False:
-				raise ValidationError({'password': 'password does not contains at least one number'})
-			if contains_special_char(self.password) == False:
-				raise ValidationError({'password': 'password does not contains at least one special characters'})
+			if not contains_number(self.password):
+				raise ValidationError({'password': 'Password does not contain at least one number'})
+			if not contains_special_char(self.password):
+				raise ValidationError({'password': 'Password does not contain at least one special character'})
 
 
 class Tournament(models.Model):

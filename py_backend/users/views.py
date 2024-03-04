@@ -1,5 +1,4 @@
-from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.core.mail import send_mail
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
@@ -10,12 +9,9 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.middleware.csrf import get_token
 from django.contrib.auth import logout
+from .models import FriendRequest
 from . import forms
 import json
-
-def home(request):
-    return HttpResponse('<h1>Hello Django!</h1>')
-
 
 def check_if_email_is_unique(email):
     try:
@@ -61,10 +57,19 @@ def login(request):
 
     return JsonResponse({"error": "error"}, status=400)
 
+
 @require_http_methods(["POST"])
 def logout_view(request):
     logout(request)
     return JsonResponse({"status": "success"}, status=200)
+
+
+@require_http_methods(["POST"])
+def send_friend_request(request, user_id):
+    to_user = get_object_or_404(CustomUser, pk=user_id)
+    FriendRequest.objects.create(from_user=request.user, to_user=to_user, status='pending')
+    return JsonResponse({'status': 'success'}, status=200)
+
 
 @require_http_methods(["POST"])
 def tournament(request):

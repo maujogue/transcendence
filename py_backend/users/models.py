@@ -4,26 +4,14 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 
 MIN_LEN_USERNAME = 3
-SPECIAL_CHARS = "+/*.,!#%^&{}[]=:;\'\"`~"
+SPECIAL_CHARS = "+/*.,!#%^&\{}[]=:;\'\"`~"
 
-def contains_number(string):
-	for char in string:
-		if char.isdigit():
-			return True
-	return False
-
-def contains_special_char(string):
-	for char in SPECIAL_CHARS:
-		if char in string:
-			return True
-	return False
-	
 class CustomUser(AbstractUser):
 	class Meta:
 		verbose_name = 'Custom User'
 
 	email = models.EmailField(unique=True)
-	title = models.CharField(max_length=100, null=True)
+	title = models.CharField(max_length=50, null=True)
 	banner = models.ImageField(null=True)
 	profil_picture = models.ImageField(null=True)
 	winrate = models.DecimalField(max_digits=4, decimal_places=4, validators=[MinValueValidator(0), MaxValueValidator(1)], null=True)
@@ -42,11 +30,6 @@ class CustomUser(AbstractUser):
 				raise ValidationError({'username': 'Username is too short'})
 			if contains_special_char(self.username):
 				raise ValidationError({'username': 'Username contains forbidden characters'})
-		if self.password:
-			if not contains_number(self.password):
-				raise ValidationError({'password': 'Password does not contain at least one number'})
-			if not contains_special_char(self.password):
-				raise ValidationError({'password': 'Password does not contain at least one special character'})
 
 
 class Tournament(models.Model):
@@ -69,3 +52,9 @@ class Leaderboard(models.Model):
 
 	def __str__(self):
 		return f'Leaderboard'
+
+def contains_special_char(string):
+	for char in SPECIAL_CHARS:
+		if char in string:
+			return True
+	return False

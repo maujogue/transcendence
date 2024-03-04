@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { createPlayer } from "./createPlayer.js";
 
 function changeColor(color, environment, player, name) {
@@ -18,7 +19,47 @@ function changeColor(color, environment, player, name) {
 	return (player);
 }
 
+async function import3DModel(environment) {
+	const loader = new GLTFLoader();
+	const model = {
+		idle : null,
+		mesh : null,
+		mixer : null,
+	}
+	
+	// Load a glTF resource
+	loader.load('assets/models/char.glb',
+	async function ( gltf ) {
+			gltf.animations; // Array<THREE.AnimationClip>
+			gltf.scene; // THREE.Group
+			gltf.scenes; // Array<THREE.Group>
+			gltf.cameras; // Array<THREE.Camera>
+			gltf.asset; // Object
+
+			// await environment.renderer.compileAsync( gltf.scene, environment.camera, environment.scene );
+			const mesh = gltf.scene.children[0];
+			mesh.position.set(0, -0.50, 0).unproject(environment.camera);
+			mesh.scale.set(0.005, 0.005, 0.005);
+			environment.scene.add(mesh);
+			environment.renderer.render(environment.scene, environment.camera);
+			model.idle = gltf.animations[0];
+			model.mesh = mesh;
+			model.mixer = new THREE.AnimationMixer(model.mesh);
+		},
+		function ( xhr ) {
+			console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+		},
+		// called when loading has errors
+		function ( error ) {
+			
+			console.log( 'An error happened', error );
+			
+		}
+		);
+}
+
 async function displayCharacter(player ,environment, color, name) {
+	console.log('displayCharacter');
 	let rotate = 2.5;
 	let posX = -0.6;
 
@@ -39,4 +80,4 @@ async function displayCharacter(player ,environment, color, name) {
 	return (player);
 }
 
-export { displayCharacter };
+export { displayCharacter, import3DModel };

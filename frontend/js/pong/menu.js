@@ -55,7 +55,7 @@ function checkIfPanelIsSelected(swatchId) {
 	return (false);
 }
 
-function moveCursor(keyPressed, player, className, env) {
+async function moveCursor(keyPressed, player, className, env) {
 	let cursor = document.getElementsByClassName(className)[0];
 	if (!cursor)
 		return ;

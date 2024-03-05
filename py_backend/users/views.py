@@ -9,6 +9,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.middleware.csrf import get_token
+from django.contrib.auth import logout
 from . import forms
 import json
 
@@ -60,6 +61,10 @@ def login(request):
 
     return JsonResponse({"error": "error"}, status=400)
 
+@require_http_methods(["POST"])
+def logout_view(request):
+    logout(request)
+    return JsonResponse({"status": "success"}, status=200)
 
 @require_http_methods(["POST"])
 def tournament(request):

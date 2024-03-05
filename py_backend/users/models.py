@@ -4,15 +4,14 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 
 MIN_LEN_USERNAME = 3
-MIN_LEN_PASSWORD = 6
-FORBIDDEN_CHARS = "+/*.,!#%^&"
+SPECIAL_CHARS = "+/*.,!#%^&\{}[]=:;\'\"`~"
 
 class CustomUser(AbstractUser):
 	class Meta:
 		verbose_name = 'Custom User'
 
 	email = models.EmailField(unique=True)
-	title = models.CharField(max_length=100, null=True)
+	title = models.CharField(max_length=50, null=True)
 	banner = models.ImageField(null=True)
 	profil_picture = models.ImageField(null=True)
 	winrate = models.DecimalField(max_digits=4, decimal_places=4, validators=[MinValueValidator(0), MaxValueValidator(1)], null=True)
@@ -23,17 +22,15 @@ class CustomUser(AbstractUser):
 
 	def __str__(self):
 		return f'{self.username}'
-
+	
 	def clean(self):
 		super().clean()
-		if self.username and len(self.username) < MIN_LEN_USERNAME:
-			raise ValidationError({'username': 'Username is too short'})
 		if self.username:
-			for char in FORBIDDEN_CHARS:
-				if char in self.username:
-					raise ValidationError({'username': 'Username contains forbidden characters'})
-		if self.password and len(self.password) < MIN_LEN_PASSWORD:
-			raise ValidationError({'password': 'Password is too short'})
+			if len(self.username) < MIN_LEN_USERNAME:
+				raise ValidationError({'username': 'Username is too short'})
+			if contains_special_char(self.username):
+				raise ValidationError({'username': 'Username contains forbidden characters'})
+
 
 class Tournament(models.Model):
 	
@@ -55,3 +52,9 @@ class Leaderboard(models.Model):
 
 	def __str__(self):
 		return f'Leaderboard'
+
+def contains_special_char(string):
+	for char in SPECIAL_CHARS:
+		if char in string:
+			return True
+	return False

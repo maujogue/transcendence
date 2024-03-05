@@ -9,8 +9,7 @@ class CustomUserCreationForm(UserCreationForm):
 
 	class Meta(UserCreationForm.Meta):
 		model = get_user_model()
-		fields = ('username', 'email',)
-
+		fields = ('username', 'email', 'password')
 
 class LoginForm(forms.Form):
 	username = forms.CharField(max_length=64, label='Username')

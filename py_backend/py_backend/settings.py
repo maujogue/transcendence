@@ -35,8 +35,8 @@ ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 # Application definition
 
 INSTALLED_APPS = [
-	'daphne',
 	'corsheaders',
+	'daphne',
 	'django.contrib.admin',
 	'django.contrib.auth',
 	'django.contrib.contenttypes',
@@ -124,6 +124,9 @@ AUTH_PASSWORD_VALIDATORS = [
 	},
 	{
 		'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+		"OPTIONS": {
+			"min_length": 9,
+		},
 	},
 	{
 		'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -131,8 +134,19 @@ AUTH_PASSWORD_VALIDATORS = [
 	{
 		'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
 	},
+	{
+		'NAME': 'users.validators.ContainsDigitValidator',
+	},
+	{
+		'NAME': 'users.validators.ContainsSpecialCharValidator',
+	},
+	{
+		'NAME': 'users.validators.ContainsUppercaseValidator',
+	},
+	{
+		'NAME': 'users.validators.ContainsLowercaseValidator',
+	},
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/

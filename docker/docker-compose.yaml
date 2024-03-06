@@ -5,8 +5,6 @@ services:
     build:
         context: ../py_backend/docker
         dockerfile: Dockerfile.dev
-    volumes:
-       - ../py_backend:/code
     expose:
       - 8000
     ports:

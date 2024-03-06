@@ -7,25 +7,24 @@
 
 }
 
-body {
-	margin: 0;
-	font-family: 'baumansregular', sans-serif;
-}
+
 
 h1 {
 	text-align: center;
 }
 
-#game {
+ #game {
 	width: 960px;
 	height: 540px;
 	align-items: center;
 	justify-content: center;
 	margin: 0 auto;
-	border: 5px solid black;
+	/* border: 5px solid black; */
+	margin: 0;
+	font-family: 'baumansregular', sans-serif;
 }
-
-#menu {
+#game #menu {
+	border-radius: 15px;
 	position: absolute;
 	display: flex;
 	flex-direction: column;
@@ -35,7 +34,7 @@ h1 {
 	z-index: 100;
 }
 
-#selectMenu, #endscreen {
+#game #selectMenu, #endscreen {
 	position: absolute;
 	text-align: center;
 	color: white;
@@ -45,20 +44,20 @@ h1 {
 	padding: 0;
 }
 
-#selectText {
+#game #selectText {
 	text-align: center;
 	color: white;
 	display: block;
 	padding: 0;
 }
 
-#panel {
+#game #panel {
 	position: relative;
 	display: flex;
 	bottom: 0;
 }
 
-#start {
+#game #start {
 	left: 0;
 	bottom: 50%;
 	margin: 5%;
@@ -70,11 +69,11 @@ h1 {
 	height: 100%;
 } */
 
-#player1 {
+#game #player1 {
 	border: 5px solid green;
 }
 
-#score {
+#game #score {
 	padding: 10px;
 	font-size: 2em;
 	font-family: 'cursed_timer', sans-serif;
@@ -83,12 +82,12 @@ h1 {
 }
 
 
-.swatch {
+#game .swatch {
 	display: flex;
 	z-index: 100;
 }
 
-.btn {
+#game .btn {
 	border: none;
 	color: white;
 	font-family: 'baumansregular', sans-serif;
@@ -98,13 +97,13 @@ h1 {
 	padding: 15px;
 }
 
-.btn:hover {
+#game .btn:hover {
 	background-color: whitesmoke;
 	color: black;
 	border-radius: 0.5em;
 }
 
-.cursorP1, .cursorP2 {
+#game .cursorP1, .cursorP2 {
 	color: black;
 	position: relative;
 	font-size: 1em;
@@ -114,11 +113,11 @@ h1 {
 
 }
 
-.logo {
+#game .logo {
 	width: 100%;
 }
 
-.fullScreenIcon {
+#game .fullScreenIcon {
 	position: absolute;
 	bottom: 0;
 	right: 0;
@@ -127,7 +126,7 @@ h1 {
 	z-index: 100;
 }
 
-.fullScreenIcon:hover {
+#game .fullScreenIcon:hover {
 	font-size:1.2em;
 	margin: 2%;
 }

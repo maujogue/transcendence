@@ -1,7 +1,26 @@
-import Dashboard from "./views/Dashboard.js";
+import Homepage from "./views/Homepage.js";
 import Posts from "./views/Posts.js";
 import Settings from "./views/Settings.js";
 import Game from "./views/Game.js";
+
+function showDiv(div) {
+	if (div == "dashboard")
+	{
+		document.getElementById("dashboard").style.display = "block"
+		document.getElementById("game").style.display = "none"
+	}
+	else if (div == "both")
+	{
+		document.getElementById("game").style.display = "block";
+		document.getElementById("dashboard").style.display = "block";
+	}
+	else if (div == "game")
+	{
+		document.getElementById("game").style.display = "block"
+		document.getElementById("dashboard").style.display = "none"
+	}
+}
+
 
 function setInnerHtml(elm, html) {
 	elm.innerHTML = html;
@@ -16,16 +35,20 @@ function setInnerHtml(elm, html) {
 
 const navigateTo = url => {
 	history.pushState(null, null, url);
-	router();
+	router(routes, "#app");
 }
 
-const router = async () => {
-	const routes = [
-		{ path: "/", view: Dashboard },
-		{ path: "/posts", view: Posts },
-		{ path: "/settings", view: Settings},
-		{ path: "/game", view: Game}
-	];
+const routes = [
+	{ path: "/", view: Homepage },
+	{ path: "/posts", view: Posts },
+	{ path: "/settings", view: Settings },
+	{ path: "/both"},
+	{ path: "/game"},
+	{ path: "/dashboard"}
+];
+
+const router = async (routes, divToInsertHtml) => {
+
 
 	const potentialMatches = routes.map(route => {
 		return {
@@ -42,22 +65,35 @@ const router = async () => {
 			isMatch: true
 		};
 	}
-
+	console.log(match.route.path);
+	if (match.route.path == "/dashboard") {
+		showDiv("dashboard")
+		return ;
+	}
+	else if (match.route.path == "/game") {
+		showDiv("game")
+		return ;
+	}
+	else if (match.route.path == "/both") {
+		showDiv("both")
+		return ;
+	}
 	const view = new match.route.view();
-	let app = document.querySelector("#app");
+	let app = document.querySelector(divToInsertHtml);
 	let html = await view.getHtml();
-	// document.querySelector("#app").innerHTML = await view.getHtml();
 	setInnerHtml(app, html);
 };
+
 
 window.addEventListener("popstate", router);
 
 document.addEventListener("DOMContentLoaded", () => {
 	document.body.addEventListener("click", e => {
-		if (e.target.matches("[data-link]")){
+		if (e.getElementById == "imageNav" || e.target.matches("[data-link]")){
 			e.preventDefault();
 			navigateTo(e.target.href);
+			console.log(e.target.href);
 		}
 	});
-	router();
+	router(routes, "#app");
 });

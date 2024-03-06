@@ -61,15 +61,6 @@ def logout_view(request):
     logout(request)
     return JsonResponse({"status": "success"}, status=200)
 
-# @require_http_methods(["POST"])
-# def tournament(request):
-#     try:
-#         data = json.loads(request.body.decode("utf-8"))
-#     except json.JSONDecodeError:
-#         return JsonResponse(data={'errors': "Invalid JSON format"}, status=406)
-    
-#     return JsonResponse({"status": "success"}, status=200)
-
 
 @require_http_methods(["GET"])
 @ensure_csrf_cookie

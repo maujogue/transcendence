@@ -14,8 +14,8 @@ urlpatterns = [
 	# path("pong", views.pong, name="pong"),
     
     path('', include('multiplayer.urls')),
-	path('', include("users.urls")),  # <--  ADD THIS LINE
-
+	path('', include('users.urls')),
+    path('', include('friends.urls')),
 ]
 
 if bool(settings.DEBUG):

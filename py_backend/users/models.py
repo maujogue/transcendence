@@ -34,13 +34,6 @@ class CustomUser(AbstractUser):
 				raise ValidationError({'username': 'Username contains forbidden characters'})
 
 
-class FriendRequest(models.Model):
-    from_user = models.ForeignKey(CustomUser, related_name='sent_requests', on_delete=models.CASCADE)
-    to_user = models.ForeignKey(CustomUser, related_name='received_requests', on_delete=models.CASCADE)
-    status = models.CharField(max_length=10, choices=[('pending','Pending'), ('accepted', 'Accepted'), ('rejeted', 'Rejected')])
-    timestamp = models.DateTimeField(auto_now_add=True)
-
-
 class Tournament(models.Model):
 	
 	name = models.fields.CharField(max_length=100)

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 	'multiplayer',
 	'bootstrap5',
 	'users',
+	'friends',
 	# 'django_extensions',
 ]
 

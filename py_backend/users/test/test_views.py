@@ -504,3 +504,20 @@ class CSRFTokenTest(TestCase):
 
 # =========================================================================================
 
+class FriendRequest(TestCase):
+    def setUp(self):
+        CustomUser.objects.create(
+            username="osterga",
+            email="osterga@gmail.com",
+            password="Damiendubocal75")
+        CustomUser.objects.create(
+            username="lboulatr",
+            email="lboulatr@gmail.com",
+            password="Damiendubocal75")
+    
+    def test_two_users_in_database(self):
+        user_count = CustomUser.objects.count()
+        self.assertEqual(user_count, 2)
+    
+    # def test_send_friend_request(self):
+

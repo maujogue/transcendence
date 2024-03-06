@@ -5,21 +5,16 @@ from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
 from users.models import CustomUser
 from users.forms import CustomUserCreationForm, LoginForm
-from .models import FriendRequest
+from friends.models import FriendRequest
 
 
 @require_http_methods(["POST"])
 def send_friend_request(request, user_id):
-	try:
-		to_user = get_object_or_404(CustomUser, pk=user_id)
-	except:
-		return JsonResponse(data={'errors': "Invalid JSON format"}, status=400)
-	FriendRequest.objects.create(from_user=request.user, to_user=to_user, status='pending')
-	return JsonResponse({'status': 'success'}, status=200)
-
-@require_http_methods(["POST"])
-def add_friend(self, friend):
-    if not friend in self.friends.all():
-        self.friends.add(friend)
-        self.save()
-        return JsonResponse({'status': 'success'}, status=200)
+	from_user = request.user
+	to_user = CustomUser.objects.get(id=user_id)
+	created = FriendRequest.objects.get_or_create(
+		from_user = from_user,
+		to_user = to_user)
+	if created:
+		return JsonResponse({'status': 'success'}, status=200)
+	return JsonResponse({'status': 'error'}, status=400)

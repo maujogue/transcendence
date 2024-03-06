@@ -6,6 +6,7 @@ import { initGame } from "./initGame.js";
 import { getColorChoose } from "./getColorChoose.js";
 import { translateBall} from "./onlineCollision.js";
 import { handlerScore, setBallData, handlerStatusMessage } from "./handlerMessage.js";
+import { sendColor } from "./sendMessage.js";
 import * as THREE from 'three';
 
 let env;
@@ -57,11 +58,11 @@ async function goToOnlineSelectMenu(field) {
 }
 
 async function connectToLobby(field) {
-    webSocket = new WebSocket('ws://localhost:8000/ws/lobby/1/');
+    webSocket = new WebSocket('wss://127.0.0.1:8000/ws/lobby/1/');
     
     webSocket.onopen = function() { 
         console.log('Connection established');
-        exit = false;
+        status.exit = false;
         goToOnlineSelectMenu(field);
         onlineGameLoop(webSocket);
     }
@@ -78,7 +79,7 @@ async function connectToLobby(field) {
             });
         }
         if (data['type'] && data['type'] == 'status')
-            handlerStatusMessage(data, webSocket, env, status);
+            handlerStatusMessage(data, webSocket, env, status, player);
         if (data['type'] == 'ball_data')
             setBallData(data, env);
         if (data['color_data']) {
@@ -96,22 +97,14 @@ async function connectToLobby(field) {
     }
 
     webSocket.onclose = function(e) {
-        console.log('Connection closed');
+        console.log('Connection closed', e.code, e.reason);
         status.exit = true;
     }
-    
-}
 
-async function sendColor(webSocket) {
-    const color = getColorChoose('cursorP1');
-    if (!color)
-        return ;
-    displayCharacter(player, env, color, name).then((res) => {
-        player = res;
-    });
-    await webSocket.send(JSON.stringify({
-        'color': color
-    }));
+    webSocket.onerror = function(e) {
+        console.log('Error', e.code, e.reason);
+    }
+    
 }
 
 function setIsReady() {
@@ -199,6 +192,9 @@ async function onlineGameLoop(webSocket) {
     if (!status.start && keyPress) {
         handleMenuKeyPress(keysPressed, player, null, env);
         await sendColor(webSocket);
+        displayCharacter(player, env, getColorChoose('cursorP1'), name).then((res) => {
+            player = res;
+        })
         keyPress = false;
     }
     if (status.gameIsInit)

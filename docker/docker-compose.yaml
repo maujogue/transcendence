@@ -7,6 +7,7 @@ services:
         dockerfile: Dockerfile.dev
     volumes:
        - ../py_backend:/code
+       - certificates:/etc/nginx/ssl
     expose:
       - 8000
     ports:
@@ -42,10 +43,14 @@ services:
       dockerfile: Dockerfile
     working_dir: /usr/app/
     volumes:
-      - ../frontend:/usr/share/nginx/html
+      - ../frontend:/usr/app/
+      - certificates:/etc/nginx/ssl
+    depends_on:
+      - django-backend
     ports:
       - 8001:80
     restart: always
 
 volumes:
   db-data:
+  certificates:

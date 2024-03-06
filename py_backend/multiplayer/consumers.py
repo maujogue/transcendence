@@ -47,6 +47,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
 
     async def connect(self):
+        print('connect')
         self.room_name = self.scope['url_route']['kwargs']['lobby']
         self.is_connected = False
         self.is_ready = False

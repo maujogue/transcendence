@@ -13,7 +13,6 @@ import { loadModel } from "./loadModels.js";
 import { Character } from "./Class/Character.js";
 import { charactersNames } from "./varGlobal.js";
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 let start = false;
 let divMenu = document.getElementById("menu");

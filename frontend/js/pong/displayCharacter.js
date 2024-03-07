@@ -1,8 +1,5 @@
 import * as THREE from 'three';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { createPlayer } from "./createPlayer.js";
-import { characters } from './main.js';
-import { Character } from './Class/Character.js';
 
 function changeColor(color, environment, player, name) {
 	let object = environment.scene.getObjectByName(name);
@@ -34,9 +31,7 @@ async function displayCharacter(player ,environment, color, name) {
 	if (environment.scene.getObjectByName(name))
 		return (changeColor(color, environment, player, name));
 	player = await createPlayer(posX, 0.15, 0.9, color, environment, name);
-	console.log(player.character);
-	if (name == 'player2')
-		player.character.setCharacterInLobby(environment, posX);
+	player.character.setCharacterInLobby(environment, posX);
 	player.paddle.mesh.material.color.set(new THREE.Color(color));
 	player.paddle.mesh.rotation.set(0, rotate, 0);
 	player.paddle.mesh.scale.set(2, 2, 2);

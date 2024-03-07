@@ -1,8 +1,8 @@
 FROM nginx:1.25
 
-# COPY .. /usr/share/nginx/html
+COPY .. /usr/share/nginx/html
 
-# RUN	chmod 777 /usr/share/nginx/html
+RUN	chmod 777 /usr/share/nginx/html
 
 RUN		mkdir -p /etc/nginx/ssl
 

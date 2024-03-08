@@ -1,12 +1,14 @@
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { Character } from "./Class/Character.js";
+import { charactersNames } from "./varGlobal.js";
+import { characters } from './main.js';
 
-export async function loadModel(fileName) {
+async function loadModel(fileName) {
     return new Promise((resolve, reject) => {
         const loader = new GLTFLoader();
 
         loader.load('assets/models/characters/' + fileName + '.glb',
             (gltf) => {
-                // Assuming that you want to return the entire gltf object
                 resolve(gltf);
             },
             (xhr) => {
@@ -17,5 +19,16 @@ export async function loadModel(fileName) {
                 reject(error);
             }
         );
+    });
+}
+
+export async function loadAllModel() {
+    charactersNames.forEach(async (characterName) => {
+        try {
+            const gltf = await loadModel(characterName);
+            characters.set(characterName, new Character(characterName, gltf.scene, gltf.animations));
+        } catch (error) {
+			console.error('Error loading model:', error);
+        }
     });
 }

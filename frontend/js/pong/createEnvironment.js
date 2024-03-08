@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import { createField, createBorder } from './createField.js';
 import { winWidth, winHeight } from './varGlobal.js';
 import { isFullScreen } from './resize.js';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 function getSize() {
 	var width = winWidth;

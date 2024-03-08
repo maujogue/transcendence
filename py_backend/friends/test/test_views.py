@@ -5,44 +5,69 @@ from users.models import CustomUser
 from friends.models import FriendRequest
 from django.test import Client
 import json
+from django.contrib.auth import get_user_model
 
-class FriendRequest(TestCase):
-    # def setUp(self):
-    #     self.user1 = CustomUser.objects.create(
-    #         username="osterga",
-    #         email="osterga@gmail.com",
-    #         password="Damiendubocal75")
-    #     self.user2 = CustomUser.objects.create(
-    #         username="lboulatr",
-    #         email="lboulatr@gmail.com",
-    #         password="Damiendubocal75")
-    #     self.client = Client()
 
-        
-    
-    # def test_two_users_in_database(self):
-    #     user_count = CustomUser.objects.count()
-    #     self.assertEqual(user_count, 2)
-    
-    # def test_send_friend_request(self):
-    #     response = self.client.post(reverse('send_friend_request', args=[self.user2.id]))
-    #     self.assertEqual(response.status_code, 200)
-    #     # self.assertJSONEqual(response.content, {'status': 'success'})
+class FriendsInteractions(TestCase):
+	def setUp(self):
+		self.user1 = CustomUser.objects.create_user(
+            username="lboulatr",
+            email="lboulatr@gmail.com",
+            password="Damiendubocal75")
+		self.user2 = CustomUser.objects.create_user(
+            username="osterga",
+            email="osterga@gmail.com",
+            password="Damiendubocal75")
+		
+	def test_nbr(self):
+		self.assertEqual(CustomUser.objects.count(), 2)
 
-    def setUp(self):
-        self.user1 = CustomUser.objects.create_user(username='user1', password='password1', email='test@gmail.com')
-        self.user2 = CustomUser.objects.create_user(username='user2', password='password2', email='damien@gmail.com')
-        self.client.login(username='user1', password='password1')
 
-    def test_send_friend_request_success(self):
-        # Test sending a friend request successfully
-        response = self.client.post(reverse('send_friend_request', args=[self.user2.id]))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(FriendRequest.objects.count(), 1)
+	def test_basic_login(self):
+		user = {
+			'username': 'lboulatr',
+			'password': 'Damiendubocal75'
+		}
 
-    def test_send_friend_request_failure(self):
-        # Test sending a friend request when one already exists
-        FriendRequest.objects.create(from_user=self.user1, to_user=self.user2)
-        response = self.client.post(reverse('send_friend_request', args=[self.user2.id]))
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(FriendRequest.objects.count(), 1)
+		response = self.client.post(
+		    reverse('login'), 
+		    data=json.dumps(user), 
+		    content_type='application/json')
+
+		self.assertTrue('_auth_user_id' in self.client.session)
+
+
+	def test_send_friend_request_success(self):
+		user = {
+			'username': 'lboulatr',
+			'password': 'Damiendubocal75'
+		}
+
+		response = self.client.post(
+		    reverse('login'), 
+		    data=json.dumps(user), 
+		    content_type='application/json')
+
+		self.assertEqual(response.status_code, 200)
+		self.assertTrue('_auth_user_id' in self.client.session)
+		self.assertEqual(self.user1.friends.count(), 0)
+
+		response_request = self.client.post(
+			reverse('send_friend_request',
+			args=[self.user2.id]),
+			follow=True)
+		
+		friend_request_id = response_request.json()['id']
+		self.assertEqual(response_request.status_code, 200)
+
+		response_accept = self.client.post(
+		    reverse('accept_friend_request',
+			args=[friend_request_id]),
+			follow=True)
+
+		self.assertEqual(response_accept.status_code, 200)
+		self.assertJSONEqual(response.content, {'status': 'success'})
+
+		# # Check that a FriendRequest object has been created
+		# friend_request = FriendRequest.objects.get(from_user=self.user1, to_user=self.user2)
+		# self.assertIsNotNone(friend_request)

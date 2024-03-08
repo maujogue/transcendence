@@ -44,10 +44,11 @@ async function displayCharacter(player ,environment, color, name) {
 }
 
 function updateMixers(player1, player2) {
+	const delta = clock.getDelta();
 
 	if (player1.character.mixer && player2.character.mixer) {
-		player1.character.mixer.update(clock.getDelta());
-		player2.character.mixer.update(clock.getDelta());
+		player1.character.mixer.update(delta);
+		player2.character.mixer.update(delta);
 	}
 	}
 

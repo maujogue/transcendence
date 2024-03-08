@@ -7,7 +7,6 @@ export class Character {
 		this.mesh = scene.children[0];
 		this.scene = scene;
 		this.animations = animations;
-		this.mixer = new THREE.AnimationMixer(this.scene);
 		this.isDisplayed = false;
 	}
 
@@ -23,6 +22,10 @@ export class Character {
 		}
 		environment.scene.add(this.mesh);
 
+		this.mixer = new THREE.AnimationMixer(this.mesh);
+
+		console.log(this.name);
+		console.log(this.animations);
 		const animation = this.animations[0];
 		const action = this.mixer.clipAction(animation);
 		action.play();

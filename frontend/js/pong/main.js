@@ -9,9 +9,7 @@ import { actualizeScore } from "./score.js";
 import { createField } from "./createField.js";
 import { connectToLobby } from "./online.js";
 import { ClearAllEnv, getSize } from "./createEnvironment.js";
-import { loadModel, loadScene } from "./loadModels.js";
-import { Character } from "./Class/Character.js";
-import { charactersNames } from "./varGlobal.js";
+import { loadAllModel } from "./loadModels.js"
 import * as THREE from 'three';
 
 let start = false;
@@ -28,17 +26,6 @@ const field = await createField();
 export const lobby = await loadScene('lobby');
 export const clock = new THREE.Clock();
 export const characters = new Map();
-
-async function loadAllModel() {
-    charactersNames.forEach(async (characterName) => {
-        try {
-            const gltf = await loadModel(characterName);
-            characters.set(characterName, new Character(characterName, gltf.scene, gltf.animations));
-        } catch (error) {
-			console.error('Error loading model:', error);
-        }
-    });
-}
 
 loadAllModel();
 displayMainMenu();

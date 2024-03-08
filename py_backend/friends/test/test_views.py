@@ -57,6 +57,25 @@ class FriendsInteractions(TestCase):
 		user_friendslist = self.user1.friends.all()
 		self.assertIn(self.user2, user_friendslist)
 
+	def test_send_request_success(self):
+
+		response_request = self.client.post(
+			reverse('send_request',
+			args=[self.user3.id]),
+			follow=True)
+		self.assertEqual(response_request.status_code, 200)
+
+
+	def test_send_request_bad_id(self):
+		id = 0
+
+		response_request = self.client.post(
+			reverse('send_request',
+			args=[id]),
+			follow=True)
+		
+		self.assertEqual(response_request.status_code, 404)
+		
 
 	def test_friend_request_success(self):
 		self.assertEqual(self.user1.friends.count(), 1)
@@ -99,6 +118,7 @@ class FriendsInteractions(TestCase):
 		response_data = response_accept.json()
 		self.assertEqual(response_data.get('status'), 'Users are already friends')
 
+
 	def test_remove_friend(self):
 		self.assertEqual(self.user1.friends.count(), 1)
 		self.assertEqual(self.user2.friends.count(), 1)
@@ -119,6 +139,7 @@ class FriendsInteractions(TestCase):
 		self.assertEqual(response_remove.status_code, 200)
 		self.assertEqual(self.user1.friends.count(), 0)
 		self.assertEqual(self.user2.friends.count(), 0)
+
 
 	def test_remove_friend_but_users_not_friends(self):
 		self.assertEqual(self.user1.friends.count(), 1)
@@ -142,4 +163,58 @@ class FriendsInteractions(TestCase):
 		self.assertEqual(response_data.get('status'), 'Users are not friends')
 		self.assertEqual(self.user1.friends.count(), 1)
 		self.assertEqual(self.user3.friends.count(), 0)
+	
+	def test_multiple_friends_requests(self):
+		self.user4 = CustomUser.objects.create_user(
+			username="ochoa",
+			email="ocha@gmail.com",
+			password="Damiendubocal75")
+		self.user5 = CustomUser.objects.create_user(
+			username="banger-tweet",
+			email="banger-tweet@gmail.com",
+			password="Damiendubocal75")
+
+		self.assertEqual(self.user1.friends.count(), 1)
+
+		response_request_4 = self.client.post(
+			reverse('send_request',
+			args=[self.user4.id]),
+			follow=True)
+	
+		response_request_5 = self.client.post(
+			reverse('send_request',
+			args=[self.user5.id]),
+			follow=True)
+		
+		friend_request_id_4 = response_request_4.json()['id']
+		response_accept_4 = self.client.post(
+		    reverse('accept_friend',
+			args=[friend_request_id_4]),
+			follow=True)
+		
+		friend_request_id_5 = response_request_5.json()['id']
+		response_accept_5 = self.client.post(
+		    reverse('accept_friend',
+			args=[friend_request_id_5]),
+			follow=True)
+
+		self.assertEqual(response_accept_4.status_code, 200)
+		self.assertEqual(response_accept_5.status_code, 200)
+		self.assertEqual(self.user1.friends.count(), 3)
+
+		response = self.client.post(
+		    reverse('friendslist'),
+		    content_type='application/json')
+		data = response.json()
+		friendslist = data['friends']
+		print(self.user1.id)
+		print(friendslist)
+
+	# def test_get_friendslist(self):
+	# 	response = self.client.post(
+	# 	    reverse('friendslist'),
+	# 	    content_type='application/json')
+	# 	data = response.json()
+	# 	friendslist = data['friends']
+	# 	print(friendslist)
 

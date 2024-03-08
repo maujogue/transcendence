@@ -13,7 +13,10 @@ from django.contrib.auth.decorators import login_required
 @require_http_methods(["POST"])
 def send_request(request, user_id):
     from_user = request.user
-    to_user = CustomUser.objects.get(id=user_id)
+    try:
+        to_user = CustomUser.objects.get(id=user_id)
+    except CustomUser.DoesNotExist:
+        return JsonResponse({'status': 'Custom User not found'}, status=404)
     interaction_request, created = FriendRequest.objects.get_or_create(
         from_user=from_user,
         to_user=to_user)
@@ -26,10 +29,12 @@ def send_request(request, user_id):
 @login_required
 @require_http_methods(["POST"])
 def accept_friend(request, request_id):
-    friend_request = FriendRequest.objects.get(id=request_id)
-    already_friends = friend_request.to_user.friends.filter(id=friend_request.from_user.id).exists() or friend_request.from_user.friends.filter(id=friend_request.to_user.id).exists()
+    try:
+        friend_request = FriendRequest.objects.get(id=request_id)
+    except FriendRequest.DoesNotExist:
+        return JsonResponse({'status': 'Friend request not found'}, status=404)
     
-    if not already_friends:
+    if not friend_request.isFriend():
         if friend_request.to_user != request.user:
             friend_request.to_user.friends.add(friend_request.from_user)
             friend_request.from_user.friends.add(friend_request.to_user)
@@ -40,15 +45,26 @@ def accept_friend(request, request_id):
     else:
         return JsonResponse({'status': 'Users are already friends'}, status=400)
 
+
 @login_required
 @require_http_methods(["POST"])
 def remove_friend(request, request_id):
-    remove_request = FriendRequest.objects.get(id=request_id)
-    are_friends = remove_request.to_user.friends.filter(id=remove_request.from_user.id).exists() or remove_request.from_user.friends.filter(id=remove_request.to_user.id).exists()
+    try:
+        remove_request = FriendRequest.objects.get(id=request_id)
+    except FriendRequest.DoesNotExist:
+        return JsonResponse({'status': 'Remove request not found'}, status=404)
 
-    if are_friends:
+    if remove_request.isFriend():
         remove_request.from_user.friends.remove(remove_request.to_user)
         remove_request.to_user.friends.remove(remove_request.from_user)
         return JsonResponse({'status': 'success'}, status=200)
     else:
         return JsonResponse({'status': 'Users are not friends'}, status=400)
+
+
+@login_required
+@require_http_methods(["POST"])
+def friendslist(request):
+    friendslist = request.user.friends.all()
+    friends_list_data = [{'id': friend.id, 'username': friend.username} for friend in friendslist]
+    return JsonResponse({'status': 'success', 'friends': friends_list_data}, status=200)

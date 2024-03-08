@@ -29,14 +29,14 @@ SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = ['*']
 # ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
 INSTALLED_APPS = [
-	'corsheaders',
 	'daphne',
+	'corsheaders',
 	'django.contrib.admin',
 	'django.contrib.auth',
 	'django.contrib.contenttypes',
@@ -46,7 +46,6 @@ INSTALLED_APPS = [
 	'multiplayer',
 	'bootstrap5',
 	'users',
-	'django_extensions',
 ]
 
 ASGI_APPLICATION = 'py_backend.asgi.application'
@@ -200,6 +199,7 @@ CSRF_TRUSTED_ORIGINS = [
 ALLOWED_HOSTS = [
 	"localhost",
 	"127.0.0.1",
+	"0.0.0.0"
 ]
 
 CORS_ORIGIN_WHITELIST = [

@@ -7,7 +7,7 @@ function createPointLight(left, top, color, mesh, environment) {
 	var light = new THREE.PointLight(color, 20, 0, 1.2);
 	
 	light.castShadow = true;
-	light.position.set(left, top, 0.89 ).unproject(environment.camera);
+	light.position.set(left, top, 0 ).unproject(environment.camera);
 	light.target = mesh;
 	environment.scene.add(light);
 	return (light);
@@ -31,9 +31,10 @@ async function createPlayer(left, top, depth, color, environment, name) {
 	paddle.mesh.name = name;
 	return (
 		new Player(
-		name,
-		paddle,
-		createPointLight(left, top, color, depth, environment)
+			name,
+			paddle,
+			createPointLight(left, top, color, depth, environment),
+			environment.characters.get('chupacabra').clone()
 	));
 }
 

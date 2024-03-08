@@ -55,7 +55,7 @@ function checkIfPanelIsSelected(swatchId) {
 	return (false);
 }
 
-function moveCursor(keyPressed, player, className, env) {
+async function moveCursor(keyPressed, player, className, env) {
 	let cursor = document.getElementsByClassName(className)[0];
 	if (!cursor)
 		return ;
@@ -134,7 +134,7 @@ function createPanelDiv() {
 	document.getElementById("selectMenu").appendChild(swatch);
 }
 
-function createSelectMenu(field) {
+function createSelectMenu(field, characters) {
 	getSize();
 	const env = createEnvironment("canvas");
 	let leftPos = 0;
@@ -156,7 +156,8 @@ function createSelectMenu(field) {
 		"renderer": env.renderer,
 		"scene": env.scene,
 		"camera": env.camera,
-		"start": false
+		"start": false,
+		"characters": characters
 	};
 }
 

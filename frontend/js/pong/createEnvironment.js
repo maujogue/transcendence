@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { createField, createBorder } from './createField.js';
 import { winWidth, winHeight } from './varGlobal.js';
 import { isFullScreen } from './resize.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 function getSize() {
 	var width = winWidth;
@@ -42,9 +43,13 @@ function createEnvironment(id) {
 	const scene = new THREE.Scene();
 	scene.background = new THREE.Color( 0x000000 );
 	const camera = new THREE.PerspectiveCamera( 45, divSize.width / divSize.height, 1, 100);
+
 	const renderer = new THREE.WebGLRenderer({ canvas: div, antialias: true });
 	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setSize(divSize.width, divSize.height);
+
+	const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+	scene.add(ambientLight);
 
 	return {
 		"scene": scene,

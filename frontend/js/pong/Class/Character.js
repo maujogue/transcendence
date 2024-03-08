@@ -7,14 +7,12 @@ export class Character {
 		this.mesh = scene.children[0];
 		this.scene = scene;
 		this.animations = animations;
-		this.mixer = new THREE.AnimationMixer(scene);
+		this.mixer = new THREE.AnimationMixer(this.scene);
 		this.isDisplayed = false;
 	}
 
 	setCharacterInLobby(environment, posX) {
-		const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-
-		this.mesh.scale.set(0.1, 0.1, 0.1);
+		this.mesh.scale.set(0.07, 0.07, 0.07);
 		if (posX < 0) {
 			this.mesh.position.set(posX - 0.1, -0.6, 0.95).unproject(environment.camera);
 			this.mesh.rotateZ(Math.PI / -4);
@@ -24,17 +22,15 @@ export class Character {
 			this.mesh.rotateZ(Math.PI / 4);
 		}
 		environment.scene.add(this.mesh);
-		environment.scene.add(ambientLight);
 
-	// 	this.animations.forEach((clip) => {
-    //        const action = this.mixer.clipAction(clip);
-    //        action.play();
-    //    });
+		const animation = this.animations[0];
+		const action = this.mixer.clipAction(animation);
+		action.play();
 	}
 
 	clone() {
 		// Create a new instance of Character
-		const clonedCharacter = new Character(this.name, this.scene.clone(), this.animations);
+		const clonedCharacter = new Character(this.name, this.scene.clone(), this.animations.slice());
 	
 		// Copy properties individually
 		clonedCharacter.mesh = SkeletonUtils.clone(this.mesh);

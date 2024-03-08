@@ -4,7 +4,7 @@ export async function loadModel(fileName) {
     return new Promise((resolve, reject) => {
         const loader = new GLTFLoader();
 
-        loader.load('assets/models/' + fileName + '.glb',
+        loader.load('assets/models/characters/' + fileName + '.glb',
             (gltf) => {
                 // Assuming that you want to return the entire gltf object
                 resolve(gltf);
@@ -18,11 +18,4 @@ export async function loadModel(fileName) {
             }
         );
     });
-		// function ( xhr ) {
-		// 	console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-		// },
-		// called when loading has errors
-		// function ( error ) {
-		// 	console.log( 'An error happened', error );
-		// }
 }

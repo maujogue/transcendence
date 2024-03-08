@@ -2,7 +2,7 @@ import { resize, isFullScreen } from "./resize.js";
 import { checkCollision } from "./collision.js";
 import { displayMainMenu, createSelectMenu, displayLobby } from './menu.js';
 import { handleKeyPress, handleMenuKeyPress } from './handleKeyPress.js';
-import { displayCharacter } from './displayCharacter.js';
+import { displayCharacter, updateMixers } from './displayCharacter.js';
 import { initGame } from "./initGame.js";
 import { createEndScreen, returnToMenu } from "./createEndScreen.js"
 import { actualizeScore } from "./score.js";
@@ -24,8 +24,8 @@ let keysPressed = {};
 let isOnline = false;
 const field = await createField();
 const gameDiv = document.getElementById('game');
-const clock = new THREE.Clock();
 const idle = undefined;
+export const clock = new THREE.Clock();
 export const characters = new Map();
 
 async function loadAllModel() {
@@ -122,7 +122,6 @@ function setIfGameIsEnd() {
 }
 
 async function localGameLoop() {
-	const delta = clock.getDelta();
 	if (keyPress && !start)
 		await handleMenuKeyPress(keysPressed, player1, player2, environment);
 	if (keysPressed[" "] && document.getElementById("selectMenu") && player1 && player2 && !start) {
@@ -137,7 +136,8 @@ async function localGameLoop() {
 		checkCollision(environment.ball, player1, player2, environment);
 		setIfGameIsEnd();
 	}
-	//mixer?.update(delta);
+	if (player1 && player2)
+		updateMixers(player1, player2);
 	environment?.renderer.render( environment.scene, environment.camera );
 	requestAnimationFrame( localGameLoop );
 }

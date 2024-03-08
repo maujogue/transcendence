@@ -8,6 +8,10 @@ class Player {
 		this.ready = false;
 		this.character = character;
 	}
+
+	setCharacter(environment, characterName) {
+		this.character = environment.characters.get(characterName).clone();
+	}
 }
 
 export { Player };

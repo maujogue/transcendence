@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { createPlayer } from "./createPlayer.js";
+import { clock } from './main.js';
 
 function changeColor(color, environment, player, name) {
 	let object = environment.scene.getObjectByName(name);
@@ -18,8 +19,6 @@ function changeColor(color, environment, player, name) {
 	return (player);
 }
 
-// Load a glTF resource
-
 async function displayCharacter(player ,environment, color, name) {
 	let rotate = 2.5;
 	let posX = -0.6;
@@ -31,6 +30,8 @@ async function displayCharacter(player ,environment, color, name) {
 	if (environment.scene.getObjectByName(name))
 		return (changeColor(color, environment, player, name));
 	player = await createPlayer(posX, 0.15, 0.9, color, environment, name);
+	if (name == 'player2')
+		player.setCharacter(environment, 'elvis');
 	player.character.setCharacterInLobby(environment, posX);
 	player.paddle.mesh.material.color.set(new THREE.Color(color));
 	player.paddle.mesh.rotation.set(0, rotate, 0);
@@ -42,4 +43,12 @@ async function displayCharacter(player ,environment, color, name) {
 	return (player);
 }
 
-export { displayCharacter };
+function updateMixers(player1, player2) {
+
+	if (player1.character.mixer && player2.character.mixer) {
+		player1.character.mixer.update(clock.getDelta());
+		player2.character.mixer.update(clock.getDelta());
+	}
+	}
+
+export { displayCharacter, updateMixers };

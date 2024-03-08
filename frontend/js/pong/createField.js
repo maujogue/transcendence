@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { createTexturedMaterial } from './loadTextures.js';
+import { lobby } from './main.js';
 
 async function createBorder(position, camera) {
     const geometry = new THREE.BoxGeometry( 100, 2, 1 );
@@ -12,6 +13,15 @@ async function createBorder(position, camera) {
         "mesh": cube,
         "box": box
     };
+}
+
+export async function createLobbyScene() {
+    const model = lobby.scene;
+    const mesh = model.children[0];
+
+    mesh.scale.set(0.1, 0.1, 0.1);
+    mesh.position.set(0, 0, -30);
+    return(mesh);
 }
 
 async function createField() {

@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 import { createEnvironment, createMap } from "./createEnvironment.js";
 import { displayCharacter } from './displayCharacter.js';
-import { createField } from './createField.js';
+import { createField, createLobbyScene } from './createField.js';
 import { winWidth, winHeight } from './varGlobal.js';
 import { isFullScreen } from './resize.js';
+import { lobby } from './main.js';
 
 const colors = ['ffffff', 'ff0000', '0000ff', '00ff00', 'ffff00', 'ff00ff', '00ffff', 'ff8800'];
 let width = winWidth;
@@ -150,7 +151,7 @@ function createSelectMenu(field, characters) {
 	});
 	createCursor("swatch0", "cursorP1", "P1");
 	createCursor("swatch1", "cursorP2", "P2");
-	env.scene.add(field);
+	env.scene.add(createLobbyScene());
 	env.renderer.render(env.scene, env.camera);
 	return {
 		"renderer": env.renderer,

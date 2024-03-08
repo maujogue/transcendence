@@ -24,8 +24,6 @@ export class Character {
 
 		this.mixer = new THREE.AnimationMixer(this.mesh);
 
-		console.log(this.name);
-		console.log(this.animations);
 		const animation = this.animations[0];
 		const action = this.mixer.clipAction(animation);
 		action.play();

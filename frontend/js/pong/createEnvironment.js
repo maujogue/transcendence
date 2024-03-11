@@ -47,9 +47,6 @@ function createEnvironment(id) {
 	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setSize(divSize.width, divSize.height);
 
-	const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-	scene.add(ambientLight);
-
 	return {
 		"scene": scene,
 		"renderer": renderer,

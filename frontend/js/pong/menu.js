@@ -151,7 +151,7 @@ function createSelectMenu(field, characters) {
 	});
 	createCursor("swatch0", "cursorP1", "P1");
 	createCursor("swatch1", "cursorP2", "P2");
-	env.scene.add(createLobbyScene());
+	env.scene.add(createLobbyScene(env));
 	env.renderer.render(env.scene, env.camera);
 	return {
 		"renderer": env.renderer,

@@ -10,6 +10,7 @@ import { createField } from "./createField.js";
 import { connectToLobby } from "./online.js";
 import { ClearAllEnv, getSize } from "./createEnvironment.js";
 import { loadAllModel } from "./loadModels.js"
+import { loadScene } from "./loadModels.js";
 import * as THREE from 'three';
 
 let start = false;

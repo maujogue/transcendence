@@ -3,11 +3,10 @@ import { Player } from "./Class/Player.js";
 import { Paddle } from './Class/Paddle.js';
 import { createTexturedMaterial } from './loadTextures.js';
 
-function createPointLight(left, top, color, mesh, environment) {
-	var light = new THREE.PointLight(color, 20, 0, 1.2);
+function createSpotLight(left, top, color, mesh, environment) {
+	var light = new THREE.PointLight(color, 50);
 	
-	light.castShadow = true;
-	light.position.set(left, top, 0 ).unproject(environment.camera);
+	light.position.set(left, top, .6).unproject(environment.camera);
 	light.target = mesh;
 	environment.scene.add(light);
 	return (light);
@@ -33,7 +32,7 @@ async function createPlayer(left, top, depth, color, environment, name) {
 		new Player(
 			name,
 			paddle,
-			createPointLight(left, top, color, depth, environment),
+			createSpotLight(left, top, color, depth, environment),
 			environment.characters.get('chupacabra').clone()
 	));
 }

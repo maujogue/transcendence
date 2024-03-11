@@ -11,13 +11,13 @@ export class Character {
 	}
 
 	setCharacterInLobby(environment, posX) {
-		this.mesh.scale.set(0.07, 0.07, 0.07);
+		this.mesh.scale.set(0.005, 0.005, 0.005);
 		if (posX < 0) {
-			this.mesh.position.set(posX - 0.1, -0.6, 0.95).unproject(environment.camera);
+			this.mesh.position.set(posX - 0.1, -0.6, 0.12).unproject(environment.camera);
 			this.mesh.rotateZ(Math.PI / -4);
 		}
 		else {
-			this.mesh.position.set(posX + 0.1, -0.6, 0.95).unproject(environment.camera);
+			this.mesh.position.set(posX + 0.1, -0.6, 0.12).unproject(environment.camera);
 			this.mesh.rotateZ(Math.PI / 4);
 		}
 		environment.scene.add(this.mesh);

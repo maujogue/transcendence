@@ -15,12 +15,14 @@ async function createBorder(position, camera) {
     };
 }
 
-export async function createLobbyScene() {
+export function createLobbyScene(environment) {
     const model = lobby.scene;
     const mesh = model.children[0];
 
     mesh.scale.set(0.1, 0.1, 0.1);
-    mesh.position.set(0, 0, -30);
+    mesh.rotateZ(Math.PI / 2);
+    mesh.position.set(0, -0.5, 0.1).unproject(environment.camera);
+
     return(mesh);
 }
 

@@ -4,10 +4,10 @@ import { clock } from './main.js';
 
 function changeColor(color, environment, player, name) {
 	let object = environment.scene.getObjectByName(name);
-	let x = -0.8;
+	let x = 0.8;
 
 	if (name == 'player2')
-		x = 0.8;
+		x = -0.8;
 	environment.scene.remove(object);
 	environment.scene.remove(player.light);
 	object.material.color.set(new THREE.Color(color));
@@ -36,10 +36,14 @@ async function displayCharacter(player ,environment, color, name) {
 	player.paddle.mesh.material.color.set(new THREE.Color(color));
 	player.paddle.mesh.rotation.set(0, rotate, 0);
 	player.paddle.mesh.scale.set(2, 2, 2);
-	player.light.color = new THREE.Color(color);
 	environment.scene.add(player.paddle.mesh);
 	environment.scene.add(player.light);
 	environment.renderer.render(environment.scene, environment.camera);
+	// const light = new THREE.PointLight(0xffffff, 10);
+	// light.position.set(0, -0.5, 0.1);
+	// const light2 = new THREE.PointLight(0xffffff, 10);
+	// light.position.set(-1, -0.5, 0.1);
+	// environment.scene.add( light );
 	return (player);
 }
 

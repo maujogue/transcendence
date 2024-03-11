@@ -64,7 +64,8 @@ def remove_friend(request, request_id):
 
 @login_required
 @require_http_methods(["POST"])
-def friendslist(request):
+def friendslist(request, request_id):
+    # print(request.user.username)
     friendslist = request.user.friends.all()
     friends_list_data = [{'username': friend.username} for friend in friendslist]
     return JsonResponse({'status': 'success', 'friends': friends_list_data}, status=200)

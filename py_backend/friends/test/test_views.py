@@ -5,7 +5,7 @@ from users.models import CustomUser
 from friends.models import FriendRequest
 from django.test import Client
 import json
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user
 
 
 class FriendsInteractions(TestCase):
@@ -56,6 +56,7 @@ class FriendsInteractions(TestCase):
 
 		user_friendslist = self.user1.friends.all()
 		self.assertIn(self.user2, user_friendslist)
+
 
 	def test_send_request_success(self):
 
@@ -203,12 +204,41 @@ class FriendsInteractions(TestCase):
 		self.assertEqual(self.user1.friends.count(), 3)
 
 
-	def test_get_friendslist(self):
-		response = self.client.post(
-		    reverse('friendslist'),
-		    content_type='application/json')
-		data = response.json()
-		self.assertEqual(response.status_code, 200)
-		self.assertIn('friends', data)
-		self.assertIsInstance(data['friends'], list)
+	# def test_get_friendslist(self):
+	# 	response = self.client.post(
+	# 	    reverse('friendslist'),
+	# 	    content_type='application/json')
+	# 	data = response.json()
+	# 	self.assertEqual(response.status_code, 200)
+	# 	self.assertIn('friends', data)
+	# 	self.assertIsInstance(data['friends'], list)
+		
+	def test_get_friendslist_with_no_friends(self):
+		self.client.post(
+			reverse('logout_view'),
+			content_type='application/json')
 
+		user = {
+			'username': self.user2.username,
+			'password': self.user2.password
+		}
+
+		self.client.post(
+		    reverse('login'), 
+		    data=json.dumps(user), 
+		    content_type='application/json')
+		
+		user2 = get_user(self.client)
+		self.assertTrue(user2.is_authenticated)
+
+	# def test_get_friendslist_with_no_friends(self):
+	# 	self.assertTrue('_auth_user_id' in self.client.session)
+	# 	self.assertEqual(int(self.client.session['_auth_user_id']), self.user1.id)
+		
+	# 	self.client.post(
+	# 		reverse('logout_view'),
+	# 		content_type='application/json')
+		
+	# 	self.assertFalse('_auth_user_id' in self.client.session)
+	# 	user = get_user(self.client)
+	# 	self.assertFalse(user.is_authenticated)

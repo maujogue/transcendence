@@ -202,19 +202,13 @@ class FriendsInteractions(TestCase):
 		self.assertEqual(response_accept_5.status_code, 200)
 		self.assertEqual(self.user1.friends.count(), 3)
 
+
+	def test_get_friendslist(self):
 		response = self.client.post(
 		    reverse('friendslist'),
 		    content_type='application/json')
 		data = response.json()
-		friendslist = data['friends']
-		print(self.user1.id)
-		print(friendslist)
-
-	# def test_get_friendslist(self):
-	# 	response = self.client.post(
-	# 	    reverse('friendslist'),
-	# 	    content_type='application/json')
-	# 	data = response.json()
-	# 	friendslist = data['friends']
-	# 	print(friendslist)
+		self.assertEqual(response.status_code, 200)
+		self.assertIn('friends', data)
+		self.assertIsInstance(data['friends'], list)
 

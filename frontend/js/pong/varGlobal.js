@@ -1,4 +1,10 @@
 export const winWidth = 960;
 export const winHeight = 540;
 export const charactersNames = ['chupacabra', 'elvis', 'granny', 'peasant'];
-export const colors = ['ffffff', 'ff0000', '0000ff', '00ff00', 'ffff00', 'ff00ff', '00ffff', 'ff8800'];
+const colors = new Map();
+colors.set('chupacabra', "rgb(76, 0, 99)");
+colors.set('elvis', "rgb(209, 201, 212)");
+colors.set('granny', "rgb(0, 128, 255)");
+colors.set('peasant', "rgb(173, 62, 2)");
+
+export { colors }

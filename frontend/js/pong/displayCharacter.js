@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { createPlayer } from "./createPlayer.js";
 import { clock } from './main.js';
-import { colors } from './varGlobal.js';
+import { colors, lobbyCharPos, lobbyPaddlePos } from './varGlobal.js';
 
 async function removeObject(name, environment) {
 	let object = environment.scene.getObjectByName(name);
@@ -30,16 +30,16 @@ function changeColor(color, environment, player, name) {
 
 async function changeCharacter(player, environment, character, name) {
 	await removeObject(name, environment);
-	const x = setPosXByPlayerName(name, -0.8);
+	const x = setPosXByPlayerName(name, lobbyCharPos);
 	player.setCharacter(environment, character);
-	player.character.setCharacterInLobby(name, environment, x);
+	player.character.setCharacterInLobby(name, environment);
 	changeColor(colors.get(character), environment, player, name);
 	return (player);
 }
 
 async function displayCharacter(player ,environment, character, name) {
 	let rotate = setPosXByPlayerName(name, 2.5);
-	let posX = setPosXByPlayerName(name, -0.6);
+	let posX = setPosXByPlayerName(name, lobbyPaddlePos);
 
 	if (environment.scene.getObjectByName(name))
 		return (changeCharacter(player, environment, character, name));

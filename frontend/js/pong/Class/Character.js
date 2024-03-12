@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import * as SkeletonUtils from 'three/addons/utils/SkeletonUtils.js';
+import { lobbyCharPos } from '../varGlobal.js';
 
 export class Character {
 	constructor(name, scene, animations) {
@@ -10,14 +11,14 @@ export class Character {
 		this.isDisplayed = false;
 	}
 
-	setCharacterInLobby(playerName, environment, posX) {
+	setCharacterInLobby(playerName, environment) {
 		this.mesh.scale.set(0.07, 0.07, 0.07);
-		if (posX < 0) {
-			this.mesh.position.set(posX - 0.1, -0.6, 0.95).unproject(environment.camera);
+		if (playerName == "player1") {
+			this.mesh.position.set(lobbyCharPos - 0.1, -0.6, 0.95).unproject(environment.camera);
 			this.mesh.rotateZ(Math.PI / -4);
 		}
 		else {
-			this.mesh.position.set(posX + 0.1, -0.6, 0.95).unproject(environment.camera);
+			this.mesh.position.set((lobbyCharPos * -1) + 0.1, -0.6, 0.95).unproject(environment.camera);
 			this.mesh.rotateZ(Math.PI / 4);
 		}
 		this.mesh.name = playerName;

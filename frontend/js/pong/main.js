@@ -33,8 +33,8 @@ async function goToLocalSelectMenu() {
 	divMenu = document.getElementById("menu");
 	divMenu.remove();
 	environment = createSelectMenu(field, characters);
-	player1 = await displayCharacter(player1, environment, "rgb(255, 0, 0)", "player1");
-	player2 = await displayCharacter(player2, environment, "rgb(0, 0, 255)", "player2");
+	player1 = await displayCharacter(player1, environment, "chupacabra", "player1");
+	player2 = await displayCharacter(player2, environment, "elvis", "player2");
 }
 
 document.addEventListener("keydown", function(event) {
@@ -109,8 +109,10 @@ function setIfGameIsEnd() {
 }
 
 async function localGameLoop() {
-	if (keyPress && !start)
+	if (keyPress && !start) {
 		await handleMenuKeyPress(keysPressed, player1, player2, environment);
+		keyPress = false;
+	}
 	if (keysPressed[" "] && document.getElementById("selectMenu") && player1 && player2 && !start) {
 		start = true;
 		ClearAllEnv(environment);

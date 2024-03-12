@@ -57,7 +57,7 @@ function createCursor(swatch, cursorName, textCursor) {
 function checkIfPanelIsSelected(swatchId) {
 	if (!document.getElementById(swatchId))
 		return ;
-	let childNodes = document.getElementById(swatchId).childNodes[0];
+	let childNodes = document.getElementById(swatchId).childNodes[1];
 
 	if (childNodes)
 		return (true);
@@ -92,8 +92,7 @@ async function moveCursor(keyPressed, player, className, env) {
 
 	let swatch = document.getElementsByClassName("swatch")[parentNumber];
 	swatch.appendChild(cursor);
-	let color = cursor.parentNode.style.backgroundColor;
-	displayCharacter(player, env, color, player.name);
+	player = displayCharacter(player, env, charactersNames[parentNumber], player.name);
 }
 
 function createDivText() {

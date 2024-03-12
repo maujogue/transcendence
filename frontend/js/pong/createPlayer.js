@@ -26,15 +26,15 @@ async function createPaddle(left, top, depth, color, environment) {
 	return (new Paddle(mesh));
 }
 
-async function createPlayer(left, top, depth, color, environment, name) {
-	const paddle = await createPaddle(left, top, depth, color, environment);
-	paddle.mesh.name = name;
+async function createPlayer(left, top, depth, character, environment, name) {
+	const paddle = await createPaddle(left, top, depth, 'rgb(255,255,255)', environment);
+	paddle.mesh.name = "paddle_" + name;
 	return (
 		new Player(
 			name,
 			paddle,
-			createPointLight(left, top, color, depth, environment),
-			environment.characters.get('chupacabra').clone()
+			createPointLight(left, top, 'rgb(255,255,255)', depth, environment),
+			environment.characters.get(character).clone()
 	));
 }
 

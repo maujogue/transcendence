@@ -6,8 +6,9 @@ import { initGame } from "./initGame.js";
 import { getColorChoose } from "./getColorChoose.js";
 import { translateBall} from "./onlineCollision.js";
 import { handlerScore, setBallData, handlerStatusMessage } from "./handlerMessage.js";
-import { sendColor } from "./sendMessage.js";
+import { sendCharacter, sendColor } from "./sendMessage.js";
 import { characters } from "./main.js";
+import { updateMixers } from "./displayCharacter.js";
 import * as THREE from 'three';
 
 let env;
@@ -75,7 +76,8 @@ async function connectToLobby(field) {
 
         if (data['type'] == 'player_data') {
             name = data['name'];
-            displayCharacter(player, env, data['color'], name).then((res) => {
+            console.log('player_data', data);
+            displayCharacter(player, env, data['character'], name).then((res) => {
                 player = res;
             });
         }
@@ -83,16 +85,18 @@ async function connectToLobby(field) {
             handlerStatusMessage(data, webSocket, env, status, player);
         if (data['type'] == 'ball_data')
             setBallData(data, env);
-        if (data['color_data']) {
-            displayCharacter(opp, env, data['color_data'], data['name']).then((res) => {
+        if (data['character_data']) {
+            displayCharacter(opp, env, data['character_data'], data['name']).then((res) => {
                 opp = res;
             });
         }
         if (data['message'] == 'start')
             status.gameIsInit = true;
-        if (data['type'] == 'player_pos')
-            env.scene.getObjectByName(data['name']).position.y = data['posY'];
-            playersMove.set(data['name'], data['move']);
+        if (data['type'] == 'player_pos') {
+            console.log('player_pos', data);
+            env.scene.getObjectByName("paddle_" + data['name']).position.y = data['posY'];
+            playersMove.set("paddle_" + data['name'], data['move']);
+        }
         if (data['type'] == 'score')
             handlerScore(data, env, player, opp);
     }
@@ -153,12 +157,10 @@ function movePlayers() {
         if (!paddle)
             return ;
         const playerBox = new THREE.Box3().setFromObject(paddle);
-        if (value > 0 && !env.border.up.box.intersectsBox(playerBox)) {
+        if (value > 0 && !env.border.up.box.intersectsBox(playerBox))
             paddle.translateY(value);
-        }
-        else if (value < 0 && !env.border.down.box.intersectsBox(playerBox)) {
+        if (value < 0 && !env.border.down.box.intersectsBox(playerBox))
             paddle.translateY(value);
-        }
     });
 }
 
@@ -192,10 +194,7 @@ async function onlineGameLoop(webSocket) {
         sendIsReady(webSocket);
     if (!status.start && keyPress) {
         handleMenuKeyPress(keysPressed, player, null, env);
-        await sendColor(webSocket);
-        displayCharacter(player, env, getColorChoose('cursorP1'), name).then((res) => {
-            player = res;
-        })
+        await sendCharacter(webSocket);
         keyPress = false;
     }
     if (status.gameIsInit)
@@ -207,6 +206,7 @@ async function onlineGameLoop(webSocket) {
         webSocket.send(JSON.stringify({ 'type': 'frame' }));
     }
     env.renderer.render(env.scene, env.camera);
+    updateMixers(player, opp);
     if (!status.exit)
         requestAnimationFrame(() => onlineGameLoop(webSocket));
 }

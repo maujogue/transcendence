@@ -12,7 +12,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'type': 'player_data',
             'name': self.player.name,
-            'color': self.player.color
+            'character': self.player.character
         }))
 
     async def create_room(self):
@@ -31,16 +31,16 @@ class PongConsumer(AsyncWebsocketConsumer):
         oppName = 'player2' if name == 'player1' else 'player1'
         posX = -9.50 if name == 'player1' else 9.50
         oppPosX = 9.50 if name == 'player1' else -9.50
-        self.player = Player(name, color='rgb(255, 255, 255)', room_id=self.room.code, posX=posX)
-        self.opp = Player(oppName, color='rgb(255, 255, 255)', room_id=self.room.code, posX=oppPosX)
+        self.player = Player(name, character='chupacabra', room_id=self.room.code, posX=posX)
+        self.opp = Player(oppName, character='chupacabra', room_id=self.room.code, posX=oppPosX)
         await self.room.asave()
     
-    async def sendColor(self, text_data_json):
-        color = text_data_json["color"]
+    async def sendCharacter(self, text_data_json):
+        character = text_data_json["character"]
         await self.channel_layer.group_send(
             self.room_group_name, {
                 'type': 'pong.data', 
-                'color': color, 
+                'character': character, 
                 'sender': self.channel_name, 
                 'name': self.player.name
                 }
@@ -76,6 +76,33 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_send(
             self.room_group_name, { 'type': 'pong.status', 'message': 'connected', 'name': self.player.name}
         )
+        await self.channel_layer.group_send(
+            self.room_group_name, {
+                'type': 'pong.data', 
+                'character': self.player.character, 
+                'sender': self.channel_name, 
+                'name': self.player.name
+                }
+        )
+
+    async def receive(self, text_data):
+        print('receive')
+        self.room = await Room.objects.aget(code=self.room_name)
+        text_data_json = json.loads(text_data)
+        
+        print('text_data:', text_data_json)
+        if text_data_json.get("ready") != None:
+            await self.room.setPlayerReady(text_data_json.get("ready"), self.player)
+        if text_data_json.get("character") != None and self.room.game_started == False:
+            self.player.character = text_data_json.get("character")
+            await self.sendCharacter(text_data_json)
+        if (self.room.player_ready == 2 and self.room.game_started == False):
+            await self.startGame()
+        if (self.room.game_started == True):
+            if text_data_json.get("type") == "player_pos":
+                await self.movePlayer(text_data_json)
+            if (text_data_json.get("type") == "frame" and self.room.game_started == True):
+                await self.gameLoop()
 
     async def disconnect(self, close_code):
         self.room = await Room.objects.aget(code=self.room_name)
@@ -128,15 +155,15 @@ class PongConsumer(AsyncWebsocketConsumer):
             return
         if move != 0:
             move = 0.095 if move == 1 else -0.095
-        if data.get("posY") != None:
-            self.player.posY = data.get("posY")
         self.player.move = move
+        if self.player.checkCollisionBorder() == True:
+            self.player.move = 0
         await self.channel_layer.group_send(
         self.room_group_name, { 
             'type': 'pong.player_pos',
             'name': self.player.name, 
             'move': move,
-            'posY': self.player.posY + move
+            'posY': self.player.posY
         })
 
     async def sendScore(self):
@@ -181,8 +208,17 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def gameLoop(self):
-        if self.player.move != 0:
-            self.player.posY += self.player.move
+        if self.player.checkCollisionBorder() == True:
+            self.player.move = 0
+            await self.channel_layer.group_send(
+            self.room_group_name, { 
+                'type': 'pong.player_pos',
+                'name': self.player.name, 
+                'move': self.player.move,
+                'posY': self.player.posY
+            })
+
+        self.player.posY += self.player.move
         
         await self.checkAllCollisions()
         if self.ball.checkIfScored(self.player) or self.ball.checkIfScored(self.opp):
@@ -200,24 +236,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.player.is_ready = False
         self.opp.is_ready = False
 
-    async def receive(self, text_data):
-        print('receive')
-        self.room = await Room.objects.aget(code=self.room_name)
-        text_data_json = json.loads(text_data)
-        
-        print('text_data:', text_data_json)
-        if text_data_json.get("ready") != None:
-            await self.room.setPlayerReady(text_data_json.get("ready"), self.player)
-        if text_data_json.get("color") != None and self.room.game_started == False:
-            self.player.color = text_data_json.get("color")
-            await self.sendColor(text_data_json)
-        if (self.room.player_ready == 2 and self.room.game_started == False):
-            await self.startGame()
-        if (self.room.game_started == True):
-            if text_data_json.get("type") == "player_pos":
-                await self.movePlayer(text_data_json)
-            if (text_data_json.get("type") == "frame" and self.room.game_started == True):
-                await self.gameLoop()
                     
     async def pong_status(self, event):
         message = event["message"]
@@ -228,11 +246,11 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({"type": "status", "message": message, "name": name}))
 
     async def pong_data(self, event): 
-        color = event["color"]
+        character = event["character"]
         name = event["name"]
 
         if self.channel_name != event["sender"]:
-            await self.send(text_data=json.dumps({ "color_data": color, "name": name}))
+            await self.send(text_data=json.dumps({ "character_data": character, "name": name}))
 
     async def pong_player_pos(self, event):
         move = event["move"]

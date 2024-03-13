@@ -4,10 +4,13 @@ import { Paddle } from './Class/Paddle.js';
 import { createTexturedMaterial } from './loadTextures.js';
 
 function createSpotLight(left, top, color, mesh, environment) {
-	var light = new THREE.PointLight(color, 50);
+	var light = new THREE.SpotLight(color, 500);
 	
-	light.position.set(left, top, .6).unproject(environment.camera);
-	light.target = mesh;
+	console.log(left);
+	if (left < 0)
+		light.position.set(left - .2, .85, .9).unproject(environment.camera);
+	else
+		light.position.set(left + .2, .85, .9).unproject(environment.camera);
 	environment.scene.add(light);
 	return (light);
 }

@@ -29,7 +29,7 @@ async function displayCharacter(player ,environment, color, name) {
 	}
 	if (environment.scene.getObjectByName(name))
 		return (changeColor(color, environment, player, name));
-	player = await createPlayer(posX, 0.15, 0.9, color, environment, name);
+	player = await createPlayer(posX, 0, 0.9, color, environment, name);
 	if (name == 'player2')
 		player.setCharacter(environment, 'elvis');
 	player.character.setCharacterInLobby(environment, posX);

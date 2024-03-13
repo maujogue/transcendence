@@ -15,6 +15,26 @@ async function createBorder(position, camera) {
     };
 }
 
+export function createLobbyLights(environment) {
+    const light = new THREE.PointLight(0xffffff, 10);
+    light.position.set(0.8, .9, .85).unproject(environment.camera);
+    const light2 = new THREE.PointLight(0xffffff, 10);
+    light2.position.set(-0.8, .9, .85).unproject(environment.camera);
+    const light3 = new THREE.PointLight(0xffffff, 10);
+    light3.position.set(0, .9, .85).unproject(environment.camera);
+    environment.scene.add( light );
+    environment.scene.add( light2 );
+    environment.scene.add( light3 );
+    const light4 = new THREE.PointLight(0xffffff, 5);
+    light4.position.set(0, 0, 0);
+    const dirLight2 = new THREE.DirectionalLight(0xffffff, .5);
+    dirLight2.target.position.set(0, 0, 0.5);
+    environment.scene.add(dirLight2.target);
+    environment.scene.add(light4);    
+    environment.scene.add(dirLight2);    
+    // return ([light, light2]);
+}
+
 export function createLobbyScene(environment) {
     const model = lobby.scene;
     const mesh = model.children[0];

@@ -12,6 +12,7 @@ COPY requirements.txt code/requirements.txt
 RUN pip install --upgrade pip
 RUN pip install -r code/requirements.txt
 RUN pip install django-bootstrap-v5
+RUN pip install django_extensions
 
 EXPOSE 8000
 

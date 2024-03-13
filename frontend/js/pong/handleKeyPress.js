@@ -3,21 +3,21 @@ import { displayCharacter } from "./displayCharacter.js";
 import { moveCursor } from "./menu.js";
 import * as THREE from 'three';
 
-function handleMenuKeyPress(keysPressed, player1, player2, env) {
+async function handleMenuKeyPress(keysPressed, player1, player2, env) {
 	if (keysPressed["d"]) {
-		moveCursor("d", player1, "cursorP1", env);
+		await moveCursor("d", player1, "cursorP1", env);
 		keysPressed["d"] = false;
 	}
 	else if (keysPressed["a"]) {
-		moveCursor("q", player1, "cursorP1", env);
+		await moveCursor("q", player1, "cursorP1", env);
 		keysPressed["a"] = false;
 	}
 	if (keysPressed["ArrowRight"]) {
-		moveCursor("ArrowRight", player2, "cursorP2", env);
+		await moveCursor("ArrowRight", player2, "cursorP2", env);
 		keysPressed["ArrowRight"] = false;
 	}
 	else if (keysPressed["ArrowLeft"]) {
-		moveCursor("ArrowLeft", player2, "cursorP2", env);
+		await moveCursor("ArrowLeft", player2, "cursorP2", env);
 		keysPressed["ArrowLeft"] = false;
 	}
 }

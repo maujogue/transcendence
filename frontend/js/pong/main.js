@@ -2,14 +2,15 @@ import { resize, isFullScreen } from "./resize.js";
 import { checkCollision } from "./collision.js";
 import { displayMainMenu, createSelectMenu, displayLobby } from './menu.js';
 import { handleKeyPress, handleMenuKeyPress } from './handleKeyPress.js';
-import { displayCharacter } from './displayCharacter.js';
+import { displayCharacter, updateMixers } from './displayCharacter.js';
 import { initGame } from "./initGame.js";
 import { createEndScreen, returnToMenu } from "./createEndScreen.js"
 import { actualizeScore } from "./score.js";
 import { createField } from "./createField.js";
 import { connectToLobby } from "./online.js";
-import { ClearAllEnv } from "./createEnvironment.js";
-
+import { ClearAllEnv, getSize } from "./createEnvironment.js";
+import { loadAllModel } from "./loadModels.js"
+import * as THREE from 'three';
 
 let start = false;
 let divMenu = document.getElementById("menu");
@@ -21,13 +22,17 @@ let keysPressed = {};
 let isOnline = false;
 const field = await createField();
 const gameDiv = document.getElementById('game');
+const idle = undefined;
+export const clock = new THREE.Clock();
+export const characters = new Map();
 
+loadAllModel();
 displayMainMenu();
 
 async function goToLocalSelectMenu() {
 	divMenu = document.getElementById("menu");
 	divMenu.remove();
-	environment = createSelectMenu(field);
+	environment = createSelectMenu(field, characters);
 	player1 = await displayCharacter(player1, environment, "rgb(255, 0, 0)", "player1");
 	player2 = await displayCharacter(player2, environment, "rgb(0, 0, 255)", "player2");
 }
@@ -105,7 +110,7 @@ function setIfGameIsEnd() {
 
 async function localGameLoop() {
 	if (keyPress && !start)
-		handleMenuKeyPress(keysPressed, player1, player2, environment);
+		await handleMenuKeyPress(keysPressed, player1, player2, environment);
 	if (keysPressed[" "] && document.getElementById("selectMenu") && player1 && player2 && !start) {
 		start = true;
 		ClearAllEnv(environment);
@@ -116,9 +121,11 @@ async function localGameLoop() {
 		if (keyPress)
 			handleKeyPress(keysPressed, player1, player2, environment);
 		checkCollision(environment.ball, player1, player2, environment);
-		environment.renderer.render( environment.scene, environment.camera );
 		setIfGameIsEnd();
 	}
+	if (player1 && player2)
+		updateMixers(player1, player2);
+	environment?.renderer.render( environment.scene, environment.camera );
 	requestAnimationFrame( localGameLoop );
 }
 

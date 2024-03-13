@@ -3,7 +3,7 @@ import { createEnvironment, createMap } from './createEnvironment.js';
 import { loadFont, actualizeScore } from './score.js';
 
 function setPositionPaddle(PlayerName, posX, environment) {
-	let paddle = environment.scene.getObjectByName(PlayerName);
+	let paddle = environment.scene.getObjectByName("paddle_" + PlayerName);
 	paddle.position.set(posX, 0, 0.9).unproject(environment.camera);
 	paddle.rotation.set(0, 0, 0);
 	paddle.scale.set(1, 1, 1);

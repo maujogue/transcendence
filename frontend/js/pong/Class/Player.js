@@ -10,6 +10,8 @@ class Player {
 	}
 
 	setCharacter(environment, characterName) {
+		if (this.character)
+			this.character.mesh.remove();
 		this.character = environment.characters.get(characterName).clone();
 	}
 }

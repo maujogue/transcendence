@@ -24,7 +24,7 @@ let isOnline = false;
 const gameDiv = document.getElementById('game');
 const idle = undefined;
 const field = await createField();
-export const lobby = await loadScene('lobby');
+export const lobby = await loadScene('lobbyTest');
 export const clock = new THREE.Clock();
 export const characters = new Map();
 

@@ -39,11 +39,6 @@ async function displayCharacter(player ,environment, color, name) {
 	environment.scene.add(player.paddle.mesh);
 	environment.scene.add(player.light);
 	environment.renderer.render(environment.scene, environment.camera);
-	// const light = new THREE.PointLight(0xffffff, 10);
-	// light.position.set(0, -0.5, 0.1);
-	// const light2 = new THREE.PointLight(0xffffff, 10);
-	// light.position.set(-1, -0.5, 0.1);
-	// environment.scene.add( light );
 	return (player);
 }
 

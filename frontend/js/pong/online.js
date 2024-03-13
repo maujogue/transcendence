@@ -7,6 +7,7 @@ import { getColorChoose } from "./getColorChoose.js";
 import { translateBall} from "./onlineCollision.js";
 import { handlerScore, setBallData, handlerStatusMessage } from "./handlerMessage.js";
 import { sendColor } from "./sendMessage.js";
+import { characters } from "./main.js";
 import * as THREE from 'three';
 
 let env;
@@ -52,7 +53,7 @@ function clickHandler(event) {
 
 async function goToOnlineSelectMenu(field) {
     document.getElementById("menu").remove();
-    env = createSelectMenu(field);
+    env = createSelectMenu(field, characters);
     document.getElementById("cursorP2").remove();
     env.renderer.render(env.scene, env.camera);
 }

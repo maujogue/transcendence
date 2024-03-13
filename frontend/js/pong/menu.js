@@ -1,11 +1,10 @@
-import * as THREE from 'three';
-import { createEnvironment, createMap } from "./createEnvironment.js";
+import { createEnvironment } from "./createEnvironment.js";
 import { displayCharacter } from './displayCharacter.js';
-import { createField } from './createField.js';
 import { winWidth, winHeight } from './varGlobal.js';
 import { isFullScreen } from './resize.js';
+import { colors, charactersNames } from './varGlobal.js';
+import { Character } from "./Class/Character.js";
 
-const colors = ['ffffff', 'ff0000', '0000ff', '00ff00', 'ffff00', 'ff00ff', '00ffff', 'ff8800'];
 let width = winWidth;
 let height = winHeight;
 
@@ -19,7 +18,18 @@ function getSize() {
 	}
 }
 
-function createSwatchPanel(leftPos, nb, color) {
+function createIcon(parent, character) {
+	const img = document.createElement("img");
+	img.id = "icon_" + character;
+	img.className = "charactersIcon"
+	img.setAttribute("src", "assets\\img\\character_icon\\" + character + ".png");
+	img.setAttribute("alt", character);
+	img.setAttribute("width", (width / charactersNames.length) + "px");
+	img.setAttribute("height", "100%");
+	parent.appendChild(img);
+}
+
+function createSwatchPanel(leftPos, nb, character) {
 	const newDiv = document.createElement("div");
 	newDiv.classList.add("swatch");
 	newDiv.id = "swatch" + nb;
@@ -28,11 +38,10 @@ function createSwatchPanel(leftPos, nb, color) {
 	newDiv.style.display = "block";
 	newDiv.style.left = leftPos + "px";
 	newDiv.style.bottom = "0px";
-	newDiv.style.width = (width / colors.length) + "px";
+	newDiv.style.width = (width / charactersNames.length) + "px";
 	newDiv.style.height = "100%";
-	newDiv.style.background = "#" + color;
-	// newDiv.style.border = "5px solid brown";
 	document.getElementById("panel").appendChild(newDiv);
+	createIcon(newDiv, character);
 }
 
 function createCursor(swatch, cursorName, textCursor) {
@@ -48,7 +57,7 @@ function createCursor(swatch, cursorName, textCursor) {
 function checkIfPanelIsSelected(swatchId) {
 	if (!document.getElementById(swatchId))
 		return ;
-	let childNodes = document.getElementById(swatchId).childNodes[0];
+	let childNodes = document.getElementById(swatchId).childNodes[1];
 
 	if (childNodes)
 		return (true);
@@ -66,7 +75,7 @@ async function moveCursor(keyPressed, player, className, env) {
 		parentNumber++;
 		if (checkIfPanelIsSelected("swatch" + parentNumber))
 			parentNumber++;
-		if (parentNumber >= colors.length)
+		if (parentNumber >= charactersNames.length)
 		parentNumber = 0;
 		if (checkIfPanelIsSelected("swatch" + parentNumber))
 			parentNumber++;
@@ -76,15 +85,14 @@ async function moveCursor(keyPressed, player, className, env) {
 		if (checkIfPanelIsSelected("swatch" + parentNumber))
 			parentNumber--;
 		if (parentNumber <= -1)
-		parentNumber = colors.length - 1;
+		parentNumber = charactersNames.length - 1;
 		if (checkIfPanelIsSelected("swatch" + parentNumber))
 			parentNumber--;
 	}
 
 	let swatch = document.getElementsByClassName("swatch")[parentNumber];
 	swatch.appendChild(cursor);
-	let color = cursor.parentNode.style.backgroundColor;
-	displayCharacter(player, env, color, player.name);
+	player = displayCharacter(player, env, charactersNames[parentNumber], player.name);
 }
 
 function createDivText() {
@@ -143,9 +151,9 @@ function createSelectMenu(field, characters) {
 	createDivMenu("selectMenu");
 	createDivText();
 	createPanelDiv();
-	colors.forEach(color => {
-		createSwatchPanel(leftPos, i, color);
-		leftPos += (width - 11) / colors.length;
+	charactersNames.forEach(character => {
+		createSwatchPanel(leftPos, i, character);
+		leftPos += (width - 11) / charactersNames.length;
 		i++;
 	});
 	createCursor("swatch0", "cursorP1", "P1");

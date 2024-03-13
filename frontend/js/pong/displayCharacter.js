@@ -43,7 +43,7 @@ async function displayCharacter(player ,environment, character, name) {
 
 	if (environment.scene.getObjectByName(name))
 		return (changeCharacter(player, environment, character, name));
-	player = await createPlayer(posX, 0.15, 0.9, character, environment, name);
+	player = await createPlayer(posX, 0, 0.7, character, environment, name);
 	player.character.setCharacterInLobby(name, environment, posX);
 	player.paddle.mesh.rotation.set(0, rotate, 0);
 	player.paddle.mesh.scale.set(2, 2, 2);

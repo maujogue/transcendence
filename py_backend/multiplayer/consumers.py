@@ -211,7 +211,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def gameLoop(self):
         if self.player.checkCollisionBorder() == True:
-            print('collision')
             self.player.move = 0
             await self.channel_layer.group_send(
             self.room_group_name, { 

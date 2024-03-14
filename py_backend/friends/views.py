@@ -1,10 +1,6 @@
-from django.shortcuts import get_object_or_404, render, redirect
-from django.views.decorators.csrf import ensure_csrf_cookie
-from django.middleware.csrf import get_token
 from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
 from users.models import CustomUser
-from users.forms import CustomUserCreationForm, LoginForm
 from friends.models import FriendRequest
 from django.contrib.auth.decorators import login_required
 
@@ -64,7 +60,7 @@ def remove_friend(request, request_id):
 
 @login_required
 @require_http_methods(["POST"])
-def friendslist(request):
+def get_friendslist(request):
     try:
         friendslist = request.user.friends.all()
         friends_count = len(friendslist)

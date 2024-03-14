@@ -82,6 +82,9 @@ h1 {
 	color: white;
 }
 
+.charactersIcon {
+	object-fit: contain;
+}
 
 .swatch {
 	display: flex;
@@ -105,13 +108,13 @@ h1 {
 }
 
 .cursorP1, .cursorP2 {
-	color: black;
+	color: white;
 	position: relative;
 	font-size: 1em;
 	z-index: 100;
 	padding: 0;
 	margin: 5%;
-
+	bottom: 100%;
 }
 
 .logo {

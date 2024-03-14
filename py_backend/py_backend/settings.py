@@ -29,25 +29,26 @@ SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = ['*']
 # ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
 INSTALLED_APPS = [
-	'corsheaders',
 	'daphne',
+	'corsheaders',
 	'django.contrib.admin',
 	'django.contrib.auth',
 	'django.contrib.contenttypes',
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
-	'multiplayer',
+	'django_extensions',
+    'channels',
 	'bootstrap5',
+	'multiplayer',
 	'users',
 	'friends',
-	# 'django_extensions',
 ]
 
 ASGI_APPLICATION = 'py_backend.asgi.application'
@@ -182,29 +183,33 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOWED_ORIGINS = True
+CORS_ALLOWED_ORIGINS = True # A Retirer
 
 CORS_ALLOWED_ORIGINS = [
-	"http://127.0.0.1:5500",  # Add this origin
-	"http://127.0.0.1:8000",
-	"http://localhost:8000",
-	"http://localhost:5500",
+	"https://127.0.0.1:5500",
+	"https://127.0.0.1:8000",
+	"https://localhost:8000",
+    "https://127.0.0.1:8001",
+	"https://localhost:5500",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-	"http://127.0.0.1:8000",
-	"http://127.0.0.1:5500",
-	"http://127.0.0.1:5501",
-	"http://127.0.0.1:3000",
+	"https://127.0.0.1:8000",
+	"https://127.0.0.1:5500",
+	"https://127.0.0.1:5501",
+    "https://127.0.0.1:8001",
+	"https://127.0.0.1:3000",
 ]
 
 ALLOWED_HOSTS = [
 	"localhost",
 	"127.0.0.1",
+    "0.0.0.0"
 ]
 
 CORS_ORIGIN_WHITELIST = [
-	"http://127.0.0.1:8000",
-	"http://127.0.0.1:5500",
-	"http://127.0.0.1:3000",
+	"https://127.0.0.1:8000",
+	"https://127.0.0.1:5500",
+    "https://127.0.0.1:8001",
+	"https://127.0.0.1:3000",
 ]

@@ -3,6 +3,7 @@ import { displayMainMenu } from './menu.js';
 import { ClearAllEnv } from './createEnvironment.js';
 import { createEndScreen } from './createEndScreen.js';
 import { sendColor } from './sendMessage.js';
+import { playersMove } from './online.js';
 
 export function setBallData(data, env) {
     if (!env.ball)
@@ -31,6 +32,7 @@ function handlerEndGame(data, status) {
         createEndScreen(data['name']);
     status.isReady = false;
     status.start = false;
+    playersMove.clear();
 }
 
 function handlerPlayerDisconnect(data, env) {

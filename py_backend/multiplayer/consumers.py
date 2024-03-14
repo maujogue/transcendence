@@ -155,6 +155,8 @@ class PongConsumer(AsyncWebsocketConsumer):
             return
         if move != 0:
             move = 0.095 if move == 1 else -0.095
+        if self.player.move == move:
+            return
         self.player.move = move
         if self.player.checkCollisionBorder() == True:
             self.player.move = 0

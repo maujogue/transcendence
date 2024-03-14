@@ -26,7 +26,7 @@ let keyUp = false;
 let name;
 let webSocket;
 
-const playersMove = new Map();
+export const playersMove = new Map();
 
 document.addEventListener('keypress', function(event) {
     keysPressed[event.key] = true;
@@ -76,7 +76,6 @@ async function connectToLobby(field) {
 
         if (data['type'] == 'player_data') {
             name = data['name'];
-            console.log('player_data', data);
             displayCharacter(player, env, data['character'], name).then((res) => {
                 player = res;
             });
@@ -93,7 +92,6 @@ async function connectToLobby(field) {
         if (data['message'] == 'start')
             status.gameIsInit = true;
         if (data['type'] == 'player_pos') {
-            console.log('player_pos', data);
             env.scene.getObjectByName("paddle_" + data['name']).position.y = data['posY'];
             playersMove.set("paddle_" + data['name'], data['move']);
         }
@@ -134,8 +132,7 @@ function sendMove(webSocket) {
             return ;
         webSocket.send(JSON.stringify({
             'type': 'player_pos',
-            'move': move,
-            'posY': player.paddle.mesh.position.y
+            'move': move
         }));
         keyPress = false;
         keysPressed["w"] = false;
@@ -144,8 +141,7 @@ function sendMove(webSocket) {
     if (keyUp) {
         webSocket.send(JSON.stringify({
             'type': 'player_pos',
-            'move': 0,
-            'posY': player.paddle.mesh.position.y
+            'move': 0
         }));
         keyUp = false;
     }

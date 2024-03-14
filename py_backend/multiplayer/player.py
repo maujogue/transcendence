@@ -14,9 +14,9 @@ class Player:
         self.posY = 0
 
     def checkCollisionBorder(self): 
-        if self.move > 0 and self.posY + 0.5 >= 6.25:
+        if self.move > 0 and self.posY + 1 >= 6.25:
             return True
-        elif self.move < 0 and self.posY - 0.5 <= -6.25:
+        elif self.move < 0 and self.posY - 1 <= -6.25:
             return True
         else:
             return False

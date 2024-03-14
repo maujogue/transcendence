@@ -1,9 +1,8 @@
 import { createEnvironment } from "./createEnvironment.js";
 import { displayCharacter } from './displayCharacter.js';
-import { winWidth, winHeight } from './varGlobal.js';
+import { createLobbyLights, createLobbyScene } from './createField.js';
 import { isFullScreen } from './resize.js';
-import { colors, charactersNames } from './varGlobal.js';
-import { Character } from "./Class/Character.js";
+import { winWidth, winHeight, charactersNames } from './varGlobal.js';
 
 let width = winWidth;
 let height = winHeight;
@@ -158,7 +157,8 @@ function createSelectMenu(field, characters) {
 	});
 	createCursor("swatch0", "cursorP1", "P1");
 	createCursor("swatch1", "cursorP2", "P2");
-	env.scene.add(field);
+	env.scene.add(createLobbyScene(env));
+	createLobbyLights(env);
 	env.renderer.render(env.scene, env.camera);
 	return {
 		"renderer": env.renderer,

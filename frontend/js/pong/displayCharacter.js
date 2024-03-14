@@ -21,9 +21,8 @@ function changeColor(color, environment, player, name) {
 	const object = environment.scene.getObjectByName("paddle_" + name);
 	object.material.color.set(new THREE.Color(color));
 	player.paddle.mesh = object;
-	player.light.color = new THREE.Color(color);
+	player.light.color.set(new THREE.Color(color));
 	environment.scene.add(object);
-	environment.scene.add(player.light);
 	environment.renderer.render(environment.scene, environment.camera);
 	return (player);
 }
@@ -36,7 +35,6 @@ async function changeCharacter(player, environment, character, name) {
 	player.setCharacter(environment, character);
 	player.character.setCharacterInLobby(name, environment);
 	changeColor(colors.get(character), environment, player, name);
-	console.log(environment.scene);
 	return (player);
 }
 
@@ -46,12 +44,11 @@ async function displayCharacter(player ,environment, character, name) {
 
 	if (environment.scene.getObjectByName(name))
 		return (changeCharacter(player, environment, character, name));
-	player = await createPlayer(posX, 0.15, 0.9, character, environment, name);
+	player = await createPlayer(posX, 0, 0.7, character, environment, name);
 	player.character.setCharacterInLobby(name, environment, posX);
 	player.paddle.mesh.rotation.set(0, rotate, 0);
-	player.paddle.mesh.scale.set(2, 2, 2);
+	player.paddle.mesh.scale.set(1, 1, 1);
 	environment.scene.add(player.paddle.mesh);
-	environment.scene.add(player.light);
 	return (player);
 }
 

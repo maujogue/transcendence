@@ -10,6 +10,7 @@ import { createField } from "./createField.js";
 import { connectToLobby } from "./online.js";
 import { ClearAllEnv, getSize } from "./createEnvironment.js";
 import { loadAllModel } from "./loadModels.js"
+import { loadScene } from "./loadModels.js";
 import * as THREE from 'three';
 
 let start = false;
@@ -20,9 +21,10 @@ let player2;
 let keyPress = false;
 let keysPressed = {};
 let isOnline = false;
-const field = await createField();
 const gameDiv = document.getElementById('game');
 const idle = undefined;
+const field = await createField();
+export const lobby = await loadScene('lobbyTest');
 export const clock = new THREE.Clock();
 export const characters = new Map();
 

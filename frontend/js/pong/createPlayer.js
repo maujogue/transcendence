@@ -3,22 +3,21 @@ import { Player } from "./Class/Player.js";
 import { Paddle } from './Class/Paddle.js';
 import { colors } from './varGlobal.js';
 
-function createPointLight(left, top, color, mesh, environment) {
-	console.log("light:", color);
-	var light = new THREE.PointLight(color, 20, 0, 1.2);
+function createSpotLight(left, color, mesh, environment) {
+	var light = new THREE.PointLight(color, 50);
 	
-	light.castShadow = true;
-	light.position.set(left, top, 0 ).unproject(environment.camera);
-	light.target = mesh;
+	if (left < 0)
+		light.position.set(left - .4, .5, .5).unproject(environment.camera);
+	else
+		light.position.set(left + .4, .5, .5).unproject(environment.camera);
 	environment.scene.add(light);
 	return (light);
 }
 
 
 async function createPaddle(left, top, depth, color, environment) {
-	console.log(color);
 	const paddleGeometry = new THREE.BoxGeometry(0.2, 2, 1);
-	const material = new THREE.MeshPhongMaterial({ color: color });
+	const material = new THREE.MeshToonMaterial({ color: color });
 	const mesh = new THREE.Mesh( paddleGeometry, material);
 	
 	mesh.position.set(left, top, depth).unproject(environment.camera);
@@ -39,7 +38,7 @@ async function createPlayer(left, top, depth, character, environment, name) {
 		new Player(
 			name,
 			paddle,
-			createPointLight(left, top, color, depth, environment),
+			createSpotLight(left, color, depth, environment),
 			environment.characters.get(character).clone()
 	));
 }

@@ -12,13 +12,13 @@ export class Character {
 	}
 
 	setCharacterInLobby(playerName, environment) {
-		this.mesh.scale.set(0.07, 0.07, 0.07);
+		this.mesh.scale.set(0.005, 0.005, 0.005);
 		if (playerName == "player1") {
-			this.mesh.position.set(lobbyCharPos - 0.1, -0.6, 0.95).unproject(environment.camera);
+			this.mesh.position.set(lobbyCharPos - 0.1, -.5, .0).unproject(environment.camera);
 			this.mesh.rotateZ(Math.PI / -4);
 		}
 		else {
-			this.mesh.position.set((lobbyCharPos * -1) + 0.1, -0.6, 0.95).unproject(environment.camera);
+			this.mesh.position.set((lobbyCharPos * -1) + 0.1, -.5, .0).unproject(environment.camera);
 			this.mesh.rotateZ(Math.PI / 4);
 		}
 		this.mesh.name = playerName;

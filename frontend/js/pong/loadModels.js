@@ -28,6 +28,26 @@ async function loadModel(fileName) {
     });
 }
 
+export async function loadScene(fileName) {
+    return new Promise((resolve, reject) => {
+        const loader = new GLTFLoader();
+
+        loader.load('assets/models/scenes/' + fileName + '.glb',
+            (gltf) => {
+                console.log("Loaded scene")
+                resolve(gltf);
+            },
+            (xhr) => {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+            (error) => {
+                console.error('An error happened', error);
+                reject(error);
+            }
+        );
+    });
+}
+
 export async function loadAllModel() {
     charactersNames.forEach(async (characterName) => {
         try {

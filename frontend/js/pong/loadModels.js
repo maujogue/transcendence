@@ -34,6 +34,7 @@ export async function loadScene(fileName) {
 
         loader.load('assets/models/scenes/' + fileName + '.glb',
             (gltf) => {
+                console.log("Loaded scene")
                 resolve(gltf);
             },
             (xhr) => {

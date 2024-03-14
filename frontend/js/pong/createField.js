@@ -16,9 +16,9 @@ async function createBorder(position, camera) {
 }
 
 export function createLobbyLights(environment) {
-    const light = new THREE.PointLight(0xffffff, 5);
+    const light = new THREE.PointLight(0x2ae312, 5);
     light.position.set(1.5, .9, .85).unproject(environment.camera);
-    const light2 = new THREE.PointLight(0xffffff, 5);
+    const light2 = new THREE.PointLight(0x2ae312, 5);
     light2.position.set(-1.5, .9, .85).unproject(environment.camera);
     //const light3 = new THREE.PointLight(0xffffff, 1);
     //light3.position.set(0, .9, .2).unproject(environment.camera);
@@ -27,7 +27,7 @@ export function createLobbyLights(environment) {
     //environment.scene.add( light3 );
     const light4 = new THREE.PointLight(0xffffff, 2);
     light4.position.set(0, 0, 0);
-    const dirLight = new THREE.DirectionalLight(0xffffff, .5);
+    const dirLight = new THREE.DirectionalLight(0x2ae312, .2);
     dirLight.position.set(0, 0.6, 1.1);
     dirLight.target.position.set(0, 0.5, 0.8);
     environment.scene.add(dirLight.target);

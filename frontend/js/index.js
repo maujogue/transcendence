@@ -1,108 +1,73 @@
-import Homepage from "./views/Homepage.js";
-import Posts from "./views/Posts.js";
-import Settings from "./views/Settings.js";
-import Game from "./views/Game.js";
-
-function showDiv(div) {
-	if (div == "dashboard")
-	{
-		document.getElementById("dashboard").style.display = "block"
-		document.getElementById("game").style.display = "none"
+class Page {
+	constructor (name, urlPath, filePath) {
+		this.name = name;
+		this.urlPath = urlPath;
+        this.filePath = filePath
+		document.title = name;
 	}
-	else if (div == "both")
-	{
-		document.getElementById("game").style.display = "block";
-		document.getElementById("dashboard").style.display = "block";
-	}
-	else if (div == "game")
-	{
-		document.getElementById("game").style.display = "block"
-		document.getElementById("dashboard").style.display = "none"
-	}
+    async fetchHtml() {
+        return await fetch(this.filePath).then(x => x.text());
+    }
 }
 
+const routes = [
+	new Page("LandingPage", "/", "js/views/LandingPage.html"),
+	new Page("Game", "/game", "js/views/Game.html"),
+];
+
+const mainPageDiv = "#page";
 
 function setInnerHtml(elm, html) {
 	elm.innerHTML = html;
 	Array.from(elm.querySelectorAll("script")).forEach(oldScript => {
-	  const newScript = document.createElement("script");
-	  Array.from(oldScript.attributes)
+		const newScript = document.createElement("script");
+		Array.from(oldScript.attributes)
 		.forEach(attr => newScript.setAttribute(attr.name, attr.value));
-	  newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-	  oldScript.parentNode.replaceChild(newScript, oldScript);
+		newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+		oldScript.parentNode.replaceChild(newScript, oldScript);
 	});
   }
 
-const navigateTo = url => {
-	history.pushState(null, null, url);
-	router(routes, "#app");
+function navigateTo (url) {
+
+    if (url === location.pathname) {
+        history.replaceState(null, null, url);
+    } else {
+        history.pushState(null, null, url);
+    }
+    router(routes, mainPageDiv);
 }
 
-const routes = [
-	{ path: "/", view: Homepage },
-	{ path: "/posts", view: Posts },
-	{ path: "/settings", view: Settings },
-	{ path: "/both"},
-	{ path: "/game"},
-	{ path: "/dashboard"}
-];
 
 const router = async (routes, divToInsertHtml) => {
-
-
 	const potentialMatches = routes.map(route => {
 		return {
 			route: route,
-			isMatch: location.pathname === route.path
+			isMatch: location.pathname === route.urlPath
 		};
 	});
-
 	let match = potentialMatches.find(potentialMatch => potentialMatch.isMatch);
-	
 	if (!match){
 		match = {
 			route: routes[0],
 			isMatch: true
 		};
 	}
-	console.log(match.route.path);
-	if (match.route.path == "/dashboard") {
-		showDiv("dashboard")
-		return ;
-	}
-	else if (match.route.path == "/game") {
-		showDiv("game")
-		return ;
-	}
-	else if (match.route.path == "/both") {
-		showDiv("both")
-		return ;
-	}
-	const view = new match.route.view();
+	const page = match.route;
 	let app = document.querySelector(divToInsertHtml);
-	let html = await view.getHtml();
+	const html = await page.fetchHtml();
 	setInnerHtml(app, html);
 };
 
 
-window.addEventListener("popstate", router);
+window.addEventListener("popstate", event => router(routes, mainPageDiv));
 
 document.addEventListener("DOMContentLoaded", () => {
 	document.body.addEventListener("click", e => {
-		if (e.getElementById == "imageNav" || e.target.matches("[data-link]")){
+		if (e.getElementById == "imageNav" || e.target.matches("[navlink]")){
 			e.preventDefault();
-			navigateTo(e.target.href);
-			console.log(e.target.href);
+			navigateTo(e.target.getAttribute('href'));
 		}
 	});
-	router(routes, "#app");
+	router(routes, mainPageDiv);
 });
-
-(() => {
-	'use strict'
-	const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-	tooltipTriggerList.forEach(tooltipTriggerEl => {
-	  new bootstrap.Tooltip(tooltipTriggerEl)
-	})
-  })()
-  

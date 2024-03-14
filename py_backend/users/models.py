@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
+from PIL import Image
 # from .models import FriendRequest
 
 MIN_LEN_USERNAME = 3
@@ -14,7 +15,7 @@ class CustomUser(AbstractUser):
 	email = models.EmailField(unique=True)
 	title = models.CharField(max_length=50, null=True)
 	banner = models.ImageField(null=True)
-	profil_picture = models.ImageField(null=True)
+	avatar = models.ImageField(default='avatar.jpg', upload_to='profile_avatars')
 	winrate = models.DecimalField(max_digits=4, decimal_places=4, validators=[MinValueValidator(0), MaxValueValidator(1)], null=True)
 	rank = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(50)], null=True)
 	n_games_played = models.IntegerField(null=True)
@@ -32,6 +33,14 @@ class CustomUser(AbstractUser):
 				raise ValidationError({'username': 'Username is too short'})
 			if contains_special_char(self.username):
 				raise ValidationError({'username': 'Username contains forbidden characters'})
+	
+	def save(self, *args, **kwargs):
+		super().save(*args, **kwargs)
+		img = Image.open(self.avatar.path)
+		if img.height > 300 or img.width > 300:
+			output_size = (300, 300)
+			img.thumbnail(output_size)
+			img.save(self.avatar.path)
 
 
 class Tournament(models.Model):

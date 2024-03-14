@@ -48,6 +48,7 @@ INSTALLED_APPS = [
 	'bootstrap5',
 	'multiplayer',
 	'users',
+	'friends',
 ]
 
 ASGI_APPLICATION = 'py_backend.asgi.application'

@@ -1,8 +1,8 @@
 from django.test import TestCase
 from django.urls import reverse
-# from django.http import JsonResponse
-from django.test import Client
+from django.http import JsonResponse
 from users.models import CustomUser
+from django.test import Client
 import json
 
 
@@ -501,3 +501,5 @@ class CSRFTokenTest(TestCase):
     def test_get_request_for_post_function(self):
         response = self.client.get(reverse('register'))
         self.assertEqual(response.status_code, 405)
+
+# =========================================================================================

@@ -1,9 +1,9 @@
 
 class Player {
-	constructor(name, paddle, light, character) {
+	constructor(name, paddle, [light, light2], character) {
 		this.name = name;
 		this.paddle = paddle;
-		this.light = light;
+		this.light = [light, light2];
 		this.score = 0;
 		this.ready = false;
 		this.character = character;

@@ -28,8 +28,8 @@ async function initGame(player1, player2) {
 
 	environment.scene.add(player1.paddle.mesh);
 	environment.scene.add(player2.paddle.mesh);
-	environment.scene.add(player1.light);
-	environment.scene.add(player2.light);
+	//environment.scene.add(player1.light);
+	//environment.scene.add(player2.light);
 	setPositionPaddle("player1", -0.8, environment);
 	setPositionPaddle("player2", 0.8, environment);
 	removeSelectMenu();

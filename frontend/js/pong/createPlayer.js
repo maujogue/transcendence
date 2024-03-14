@@ -3,23 +3,25 @@ import { Player } from "./Class/Player.js";
 import { Paddle } from './Class/Paddle.js';
 import { colors } from './varGlobal.js';
 
-function createSpotLight(left, top, color, mesh, environment) {
-	var light = new THREE.SpotLight(color, 500);
+function createSpotLight(left, color, mesh, environment) {
+	var light = new THREE.SpotLight(color, 200, 0, Math.PI / 4, 0.1);
+	var light2 = new THREE.PointLight(color, 10);
 	
 	console.log(left);
+	light.position.set(left, .5, 1).unproject(environment.camera);
 	if (left < 0)
-		light.position.set(left - .2, .85, .9).unproject(environment.camera);
+		light2.position.set(left - .5, .5, .2).unproject(environment.camera);
 	else
-		light.position.set(left + .2, .85, .9).unproject(environment.camera);
-	environment.scene.add(light);
-	return (light);
+		light2.position.set(left + .5, .5, .2).unproject(environment.camera);
+	//environment.scene.add(light);
+	environment.scene.add(light2);
+	return ([light, light2]);
 }
 
 
 async function createPaddle(left, top, depth, color, environment) {
-	console.log(color);
 	const paddleGeometry = new THREE.BoxGeometry(0.2, 2, 1);
-	const material = new THREE.MeshPhongMaterial({ color: color });
+	const material = new THREE.MeshToonMaterial({ color: color });
 	const mesh = new THREE.Mesh( paddleGeometry, material);
 	
 	mesh.position.set(left, top, depth).unproject(environment.camera);
@@ -40,7 +42,7 @@ async function createPlayer(left, top, depth, character, environment, name) {
 		new Player(
 			name,
 			paddle,
-			createSpotLight(left, top, color, depth, environment),
+			createSpotLight(left, color, depth, environment),
 			environment.characters.get(character).clone()
 	));
 }

@@ -21,9 +21,7 @@ function changeColor(color, environment, player, name) {
 	const object = environment.scene.getObjectByName("paddle_" + name);
 	object.material.color.set(new THREE.Color(color));
 	player.paddle.mesh = object;
-	console.log(player.light[0]);
-	player.light[0].color.set(new THREE.Color(color));
-	player.light[1].color.set(new THREE.Color(color));
+	player.light.color.set(new THREE.Color(color));
 	environment.scene.add(object);
 	environment.renderer.render(environment.scene, environment.camera);
 	return (player);

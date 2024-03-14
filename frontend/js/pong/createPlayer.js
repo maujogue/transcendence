@@ -4,18 +4,14 @@ import { Paddle } from './Class/Paddle.js';
 import { colors } from './varGlobal.js';
 
 function createSpotLight(left, color, mesh, environment) {
-	var light = new THREE.SpotLight(color, 200, 0, Math.PI / 4, 0.1);
-	var light2 = new THREE.PointLight(color, 50);
+	var light = new THREE.PointLight(color, 50);
 	
-	console.log(left);
-	light.position.set(left, .5, 1).unproject(environment.camera);
 	if (left < 0)
-		light2.position.set(left - .4, .5, .5).unproject(environment.camera);
+		light.position.set(left - .4, .5, .5).unproject(environment.camera);
 	else
-		light2.position.set(left + .4, .5, .5).unproject(environment.camera);
-	//environment.scene.add(light);
-	environment.scene.add(light2);
-	return ([light, light2]);
+		light.position.set(left + .4, .5, .5).unproject(environment.camera);
+	environment.scene.add(light);
+	return (light);
 }
 
 

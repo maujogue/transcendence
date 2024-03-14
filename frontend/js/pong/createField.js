@@ -20,11 +20,8 @@ export function createLobbyLights(environment) {
     light.position.set(1.5, .9, .85).unproject(environment.camera);
     const light2 = new THREE.PointLight(0x2ae312, 5);
     light2.position.set(-1.5, .9, .85).unproject(environment.camera);
-    //const light3 = new THREE.PointLight(0xffffff, 1);
-    //light3.position.set(0, .9, .2).unproject(environment.camera);
     environment.scene.add( light );
     environment.scene.add( light2 );
-    //environment.scene.add( light3 );
     const light4 = new THREE.PointLight(0xffffff, 2);
     light4.position.set(0, 0, 0);
     const dirLight = new THREE.DirectionalLight(0x2ae312, .2);
@@ -32,8 +29,7 @@ export function createLobbyLights(environment) {
     dirLight.target.position.set(0, 0.5, 0.8);
     environment.scene.add(dirLight.target);
     environment.scene.add(light4);    
-    environment.scene.add(dirLight);    
-    // return ([light, light2]);
+    environment.scene.add(dirLight);  
 }
 
 export function createLobbyScene(environment) {

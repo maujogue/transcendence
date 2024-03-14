@@ -1,7 +1,8 @@
 from django.db import models
+import uuid 
 
-class Room(models.Model):
-    code = models.CharField(max_length=255, unique=True)
+class Lobby(models.Model):
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     connected_user = models.IntegerField(default=0)
     player_ready = models.IntegerField(default=0)
     game_started = models.BooleanField(default=False)

@@ -60,7 +60,7 @@ async function goToOnlineSelectMenu(field) {
 }
 
 async function connectToLobby(field) {
-    webSocket = new WebSocket('ws://0.0.0.0:8080/ws/lobby/1/');
+    webSocket = new WebSocket('ws://0.0.0.0:8080/ws/lobby/');
     
     webSocket.onopen = function() { 
         console.log('Connection established');

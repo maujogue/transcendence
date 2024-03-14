@@ -34,10 +34,8 @@ dev_clean:
 		$(DOCKER_COMPOSE_DEV) down --volumes --rmi all
 
 prod_fclean: prod_clean
-		rm -rf $(VOLUMES)
 
 dev_fclean: dev_clean
-		rm -rf $(VOLUMES)
 
 prod_re: prod_down prod_up
 

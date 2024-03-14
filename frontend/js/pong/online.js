@@ -134,8 +134,7 @@ function sendMove(webSocket) {
             return ;
         webSocket.send(JSON.stringify({
             'type': 'player_pos',
-            'move': move,
-            'posY': player.paddle.mesh.position.y
+            'move': move
         }));
         keyPress = false;
         keysPressed["w"] = false;
@@ -144,8 +143,7 @@ function sendMove(webSocket) {
     if (keyUp) {
         webSocket.send(JSON.stringify({
             'type': 'player_pos',
-            'move': 0,
-            'posY': player.paddle.mesh.position.y
+            'move': 0
         }));
         keyUp = false;
     }

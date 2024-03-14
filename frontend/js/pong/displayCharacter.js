@@ -29,11 +29,14 @@ function changeColor(color, environment, player, name) {
 }
 
 async function changeCharacter(player, environment, character, name) {
+	if (!character)
+		return ;
 	await removeObject(name, environment);
 	const x = setPosXByPlayerName(name, lobbyCharPos);
 	player.setCharacter(environment, character);
 	player.character.setCharacterInLobby(name, environment);
 	changeColor(colors.get(character), environment, player, name);
+	console.log(environment.scene);
 	return (player);
 }
 
@@ -55,8 +58,8 @@ async function displayCharacter(player ,environment, character, name) {
 function updateMixers(player1, player2) {
 	const delta = clock.getDelta();
 
-	player1.character.mixer?.update(delta);
-	player2.character.mixer?.update(delta);
+	player1?.character.mixer?.update(delta);
+	player2?.character.mixer?.update(delta);
 }
 
 export { displayCharacter, updateMixers };

@@ -6,6 +6,9 @@ import { initGame } from "./initGame.js";
 import { getColorChoose } from "./getColorChoose.js";
 import { translateBall} from "./onlineCollision.js";
 import { handlerScore, setBallData, handlerStatusMessage } from "./handlerMessage.js";
+import { sendCharacter, sendColor } from "./sendMessage.js";
+import { characters } from "./main.js";
+import { updateMixers } from "./displayCharacter.js";
 import * as THREE from 'three';
 
 let env;
@@ -51,17 +54,17 @@ function clickHandler(event) {
 
 async function goToOnlineSelectMenu(field) {
     document.getElementById("menu").remove();
-    env = createSelectMenu(field);
+    env = createSelectMenu(field, characters);
     document.getElementById("cursorP2").remove();
     env.renderer.render(env.scene, env.camera);
 }
 
 async function connectToLobby(field) {
-    webSocket = new WebSocket('ws://localhost:8000/ws/lobby/1/');
+    webSocket = new WebSocket('ws://0.0.0.0:8080/ws/lobby/1/');
     
     webSocket.onopen = function() { 
         console.log('Connection established');
-        exit = false;
+        status.exit = false;
         goToOnlineSelectMenu(field);
         onlineGameLoop(webSocket);
     }
@@ -73,45 +76,40 @@ async function connectToLobby(field) {
 
         if (data['type'] == 'player_data') {
             name = data['name'];
-            displayCharacter(player, env, data['color'], name).then((res) => {
+            console.log('player_data', data);
+            displayCharacter(player, env, data['character'], name).then((res) => {
                 player = res;
             });
         }
         if (data['type'] && data['type'] == 'status')
-            handlerStatusMessage(data, webSocket, env, status);
+            handlerStatusMessage(data, webSocket, env, status, player);
         if (data['type'] == 'ball_data')
             setBallData(data, env);
-        if (data['color_data']) {
-            displayCharacter(opp, env, data['color_data'], data['name']).then((res) => {
+        if (data['character_data']) {
+            displayCharacter(opp, env, data['character_data'], data['name']).then((res) => {
                 opp = res;
             });
         }
         if (data['message'] == 'start')
             status.gameIsInit = true;
-        if (data['type'] == 'player_pos')
-            env.scene.getObjectByName(data['name']).position.y = data['posY'];
-            playersMove.set(data['name'], data['move']);
+        if (data['type'] == 'player_pos') {
+            console.log('player_pos', data);
+            env.scene.getObjectByName("paddle_" + data['name']).position.y = data['posY'];
+            playersMove.set("paddle_" + data['name'], data['move']);
+        }
         if (data['type'] == 'score')
             handlerScore(data, env, player, opp);
     }
 
     webSocket.onclose = function(e) {
-        console.log('Connection closed');
+        console.log('Connection closed', e.code, e.reason);
         status.exit = true;
     }
-    
-}
 
-async function sendColor(webSocket) {
-    const color = getColorChoose('cursorP1');
-    if (!color)
-        return ;
-    displayCharacter(player, env, color, name).then((res) => {
-        player = res;
-    });
-    await webSocket.send(JSON.stringify({
-        'color': color
-    }));
+    webSocket.onerror = function(e) {
+        console.log('Error', e.code, e.reason);
+    }
+    
 }
 
 function setIsReady() {
@@ -159,12 +157,10 @@ function movePlayers() {
         if (!paddle)
             return ;
         const playerBox = new THREE.Box3().setFromObject(paddle);
-        if (value > 0 && !env.border.up.box.intersectsBox(playerBox)) {
+        if (value > 0 && !env.border.up.box.intersectsBox(playerBox))
             paddle.translateY(value);
-        }
-        else if (value < 0 && !env.border.down.box.intersectsBox(playerBox)) {
+        if (value < 0 && !env.border.down.box.intersectsBox(playerBox))
             paddle.translateY(value);
-        }
     });
 }
 
@@ -198,7 +194,7 @@ async function onlineGameLoop(webSocket) {
         sendIsReady(webSocket);
     if (!status.start && keyPress) {
         handleMenuKeyPress(keysPressed, player, null, env);
-        await sendColor(webSocket);
+        await sendCharacter(webSocket);
         keyPress = false;
     }
     if (status.gameIsInit)
@@ -210,6 +206,7 @@ async function onlineGameLoop(webSocket) {
         webSocket.send(JSON.stringify({ 'type': 'frame' }));
     }
     env.renderer.render(env.scene, env.camera);
+    updateMixers(player, opp);
     if (!status.exit)
         requestAnimationFrame(() => onlineGameLoop(webSocket));
 }

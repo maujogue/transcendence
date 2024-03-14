@@ -30,7 +30,7 @@ async function createPaddle(left, top, depth, color, environment) {
 }
 
 async function createPlayer(left, top, depth, character, environment, name) {
-	const color = colors.get(character);
+	let color = colors.get(character);
 	if (!color)
 		color = "rgb(255, 255, 255)";
 

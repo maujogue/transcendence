@@ -101,9 +101,9 @@ function createDivText() {
 	divText.style.zIndex = '100';
 	divText.style.margin = '5%';
 	divText.style.color = 'white';
-    const textChooseColor = document.createTextNode("Choose your color");
+    const textChooseColor = document.createTextNode("Choose your character");
 	const breakLine = document.createElement("br");
-	const textStart = document.createTextNode("Press 'Espace' for start");
+	const textStart = document.createTextNode("Press 'Space' for start");
 	textChooseColor.id = "textChooseColor";
 	
     divText.appendChild(textChooseColor);

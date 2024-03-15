@@ -3,12 +3,12 @@ import { createSelectMenu } from "./menu.js";
 import { handleMenuKeyPress} from "./handleKeyPress.js";
 import { ClearAllEnv } from "./createEnvironment.js";
 import { initGame } from "./initGame.js";
-import { getColorChoose } from "./getColorChoose.js";
 import { translateBall} from "./onlineCollision.js";
 import { handlerScore, setBallData, handlerStatusMessage } from "./handlerMessage.js";
-import { sendCharacter, sendColor } from "./sendMessage.js";
+import { sendCharacter} from "./sendMessage.js";
 import { characters } from "./main.js";
 import { updateMixers } from "./displayCharacter.js";
+import { colors, lobbyCharPos, lobbyPaddlePos } from "./varGlobal.js";
 import * as THREE from 'three';
 
 let env;
@@ -59,6 +59,7 @@ async function goToOnlineSelectMenu(field) {
     env.renderer.render(env.scene, env.camera);
 }
 
+
 async function connectToLobby(field) {
     webSocket = new WebSocket('ws://0.0.0.0:8080/ws/lobby/1/');
     
@@ -78,6 +79,9 @@ async function connectToLobby(field) {
             name = data['name'];
             displayCharacter(player, env, data['character'], name).then((res) => {
                 player = res;
+                res.character.mesh.position.x = -0.8;
+                const paddle = env.scene.getObjectByName("paddle_" + name);
+                paddle.position.x = 2.5;
             });
         }
         if (data['type'] && data['type'] == 'status')

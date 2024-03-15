@@ -103,7 +103,7 @@ function createDivText() {
 	divText.style.color = 'white';
     const textChooseColor = document.createTextNode("Choose your color");
 	const breakLine = document.createElement("br");
-	const textStart = document.createTextNode("Press 'Espace' for start");
+	const textStart = document.createTextNode("Press 'Space' to start");
 	textChooseColor.id = "textChooseColor";
 	
     divText.appendChild(textChooseColor);

@@ -11,8 +11,8 @@ class Page {
 }
 
 const routes = [
-	new Page("LandingPage", "/", "js/views/LandingPage.html"),
-	new Page("Game", "/game", "js/views/Game.html"),
+	new Page("LandingPage", "/", "html/LandingPage.html"),
+	new Page("Game", "/game", "html/Game.html"),
 ];
 
 const mainPageDiv = "#page";

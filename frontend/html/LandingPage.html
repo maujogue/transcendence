@@ -9,15 +9,12 @@
 
         <div class="collapse navbar-collapse" id="navmenu">
             <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a href="#" class="nav-link">Settings</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">Game</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">Profile</a>
-                </li>
+                <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#login">
+					Log In
+                </button>
+				<button class="btn btn-primary ms-s-2" data-bs-toggle="modal" data-bs-target="#signup">
+					Sign up
+                </button>
             </ul>
         </div>
     </div>
@@ -34,8 +31,6 @@
                     Why not give it a lifting ? <br>
                     Meet Pongy, the modern, online, 3d version of the original game 
                 </p>
-                <button class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#enroll">Login
-                </button>
             </div>
             <img class="img-fluid d-none d-sm-block" src="assets/img/Pong_The_Next_Level_cover.jpg" alt="pong">
         </div>
@@ -268,7 +263,7 @@
     </div>
 </footer>
 <!-- modal -->
-<div class="modal fade" id="enroll" tabindex="-1">
+<div class="modal fade" id="login" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -278,18 +273,69 @@
             <div class="modal-body">
                 <form>
                     <div class="mb-3">
-                        <label for="email" class="col-form-label">Email</label>
-                        <input type="text" class="form-control" id="email">
+                        <label for="email" class="col-form-label" >Email</label>
+                        <input type="text" class="form-control" id="email" placeholder="name@example.com">
                     </div>
                     <div class="mb-3">
                         <label for="password" class="col-form-label">Password</label>
                         <input type="text" class="form-control" id="password">
                     </div>
                 </form>
+				
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <a href="/game" class="btn btn-primary" navlink>Login</a>
+            <div class="modal-footer d-sm-flex">
+				<div class="d-flex align-items-center me-auto">
+					<p class="m-0 me-1">New here ?</p>
+					<a class="text-blue" data-bs-target="#signup" data-bs-toggle="modal"> Sign up</a>
+				</div>
+				<div>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<a href="/game" class="btn btn-primary" navlink>Login</a>
+				</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="signup" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Sign Up</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="username" class="col-form-label">Username</label>
+                        <input type="text" class="form-control" id="username" placeholder="Sweet Onion">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="col-form-label">Email</label>
+                        <input type="text" class="form-control" id="email" placeholder="name@example.com">
+                    </div>
+					<div class="mb-3">
+                        <label for="password" class="col-form-label">Password</label>
+                        <input type="text" class="form-control" id="password">
+						<div id="passwordHelpBlock" class="form-text">
+							Your password must be 8-20 characters long, contain letters, numbers and special characters.
+						</div>
+                    </div>
+					<div class="mb-3">
+                        <label for="rpassword" class="col-form-label">Repeat Password</label>
+                        <input type="text" class="form-control" id="rpassword">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer d-sm-flex">
+				<div class="d-flex align-items-center me-auto">
+					<p class="m-0 me-1">Have an account ?</p>
+					<a class="text-blue" data-bs-target="#login" data-bs-toggle="modal">Log In</a>
+				</div>
+				<div>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<a href="/game" class="btn btn-primary" navlink>Login</a>
+				</div>
             </div>
         </div>
     </div>

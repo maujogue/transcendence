@@ -17,11 +17,9 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def join_lobby(self):
         async for lobby in Lobby.objects.filter(connected_user=1):
-            print('lobby found')
             return lobby
         lobby = Lobby()
         await lobby.asave()
-        print('lobby created')
         return lobby
     
     async def create_player(self):
@@ -129,7 +127,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         if self.lobby.connected_user == 0:
-            print('lobby deleted')
             await self.lobby.adelete()
             await self.channel_layer.close()
     

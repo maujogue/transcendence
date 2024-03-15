@@ -34,7 +34,7 @@ export function createLobbyLights(environment) {
 
 export function createLobbyScene(environment) {
     const model = lobby.scene;
-    const mesh = model.children[0];
+    const mesh = model.children[0].clone();
 
     mesh.scale.set(0.1, 0.1, 0.1);
     mesh.rotateZ(Math.PI / 2);

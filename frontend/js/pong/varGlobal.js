@@ -8,5 +8,3 @@ colors.set('granny', "rgb(0, 128, 255)");
 colors.set('peasant', "rgb(173, 62, 2)");
 export const lobbyCharPos = -0.5;
 export const lobbyPaddlePos = -0.3;
-
-export { colors }

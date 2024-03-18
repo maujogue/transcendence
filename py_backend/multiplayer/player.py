@@ -4,10 +4,10 @@ class Player:
     score = 0
     move = 0
 
-    def __init__(self, name, character, room_id, posX):
+    def __init__(self, name, character, lobby_id, posX):
         self.name = name
         self.character = character
-        self.room_id = room_id
+        self.lobby_id = lobby_id
         self.posX = posX
 
     def resetPaddlePos(self):

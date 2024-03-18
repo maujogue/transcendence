@@ -14,17 +14,15 @@ class CustomUser(AbstractUser):
 
 	email = models.EmailField(unique=True)
 	title = models.CharField(max_length=50, null=True)
+	avatar = models.ImageField(default='avatar.jpg', upload_to='profile_pictures')
+	bio = models.CharField(max_length=500, null=True)
 	banner = models.ImageField(null=True)
-	avatar = models.ImageField(default='avatar.jpg', upload_to='profile_avatars')
 	winrate = models.DecimalField(max_digits=4, decimal_places=4, validators=[MinValueValidator(0), MaxValueValidator(1)], null=True)
 	rank = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(50)], null=True)
 	n_games_played = models.IntegerField(null=True)
 	friends = models.ManyToManyField("self", blank=True)
 	# groups = models.ManyToManyField('auth.Group', related_name='custom_user_set')
 	# user_permissions = models.ManyToManyField('auth.Permission', related_name='custom_user_set')
-
-	def __str__(self):
-		return f'{self.username}'
 	
 	def clean(self):
 		super().clean()

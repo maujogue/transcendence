@@ -1,13 +1,13 @@
 from django.core.mail import send_mail
 from django.contrib.auth import authenticate, login as auth_login
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from users.models import CustomUser
-from users.forms import CustomUserCreationForm, LoginForm
+from users.forms import CustomUserCreationForm, UpdateProfilePictureForm
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.middleware.csrf import get_token
 from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 from . import forms
 import json
 
@@ -60,6 +60,20 @@ def login(request):
 def logout_view(request):
     logout(request)
     return JsonResponse({"status": "success"}, status=200)
+
+
+@login_required
+@require_http_methods(["POST"])
+def update_profile(request):
+    profile_picture_form = UpdateProfilePictureForm(request)
+
+    if profile_picture_form.is_valid():
+        new_picture = profile_picture_form.save()
+        new_picture.user = request.user
+        if 'picture' in request.FILES:
+                new_picture.picture = request.FILES['picture']
+        new_picture.save()
+        return JsonResponse({'status': 'success'}, status=200)
 
 
 @require_http_methods(["GET"])

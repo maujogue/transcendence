@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from django.http import JsonResponse
+from django.core.files.uploadedfile import SimpleUploadedFile
 from users.models import CustomUser
 from django.test import Client
 import json
@@ -503,3 +503,21 @@ class CSRFTokenTest(TestCase):
         self.assertEqual(response.status_code, 405)
 
 # =========================================================================================
+        
+class ProfileUpdate(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        CustomUser.objects.create_user(
+            username="lboulatr",
+            email="lboulatr@gmail.com",
+            password="UserPassword9+")
+        
+        self.client.login(username='lboulatr', password='UserPassword9+')
+
+    def test_change_profil_picture_success(self):
+        response = self.client.post(
+            reverse('update_profile'), 
+            content_type='application/json')
+        
+        self.assertEqual(response.status_code, 200)

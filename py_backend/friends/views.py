@@ -30,6 +30,8 @@ def accept_friend(request, request_id):
     except FriendRequest.DoesNotExist:
         return JsonResponse({'status': 'Friend request not found'}, status=404)
     
+    if request.user.username != friend_request.from_user.username:
+        return JsonResponse({'status': 'error'}, status=400)
     if not friend_request.isFriend():
         if friend_request.to_user != request.user:
             friend_request.to_user.friends.add(friend_request.from_user)
@@ -50,6 +52,8 @@ def remove_friend(request, request_id):
     except FriendRequest.DoesNotExist:
         return JsonResponse({'status': 'Remove request not found'}, status=404)
 
+    if request.user.username != remove_request.from_user.username:
+        return JsonResponse({'status': 'error'}, status=400)
     if remove_request.isFriend():
         remove_request.from_user.friends.remove(remove_request.to_user)
         remove_request.to_user.friends.remove(remove_request.from_user)

@@ -33,19 +33,6 @@ class CustomUser(AbstractUser):
 			if contains_special_char(self.username):
 				raise ValidationError({'username': 'Username contains forbidden characters'})
 
-
-class Tournament(models.Model):
-	
-	name = models.fields.CharField(max_length=100)
-	# host = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL)
-	winner = models.fields.CharField(max_length=100, unique=True, null=True)
-
-	n_players = models.IntegerField(validators=[MinValueValidator(2), MaxValueValidator(32)])
-	date = models.DateTimeField()
-
-	def __str__(self):
-		return f'{self.name}'
-
 class Leaderboard(models.Model):
 
 	total_games_played = models.IntegerField()

@@ -37,7 +37,7 @@ function createSwatchPanel(leftPos, nb, character) {
 	newDiv.style.display = "block";
 	newDiv.style.left = leftPos + "px";
 	newDiv.style.bottom = "0px";
-	newDiv.style.width = (width / charactersNames.length) + "px";
+	newDiv.style.width = (width / (charactersNames.length + 2)) + "px";
 	newDiv.style.height = "100%";
 	document.getElementById("panel").appendChild(newDiv);
 	createIcon(newDiv, character);
@@ -141,6 +141,17 @@ function createPanelDiv() {
 	document.getElementById("selectMenu").appendChild(swatch);
 }
 
+function createDivInputImg(playerName) {
+	const ux = document.getElementById("panel");
+	const inputAnimate = document.createElement("div");
+	const sprite = document.createElement("div");
+	inputAnimate.className = "inputAnimate";
+	inputAnimate.classList.add("input" + playerName);
+	sprite.className = "sprite";
+	ux.appendChild(inputAnimate);
+	inputAnimate.appendChild(sprite);
+}
+
 function createSelectMenu(field, characters) {
 	getSize();
 	const env = createEnvironment("canvas");
@@ -150,6 +161,7 @@ function createSelectMenu(field, characters) {
 	createDivMenu("selectMenu");
 	createDivText();
 	createPanelDiv();
+	createDivInputImg("P1");
 	charactersNames.forEach(character => {
 		createSwatchPanel(leftPos, i, character);
 		leftPos += (width - 11) / charactersNames.length;
@@ -157,6 +169,7 @@ function createSelectMenu(field, characters) {
 	});
 	createCursor("swatch0", "cursorP1", "P1");
 	createCursor("swatch1", "cursorP2", "P2");
+	createDivInputImg("P2");
 	env.scene.add(createLobbyScene(env));
 	createLobbyLights(env);
 	env.renderer.render(env.scene, env.camera);

@@ -46,10 +46,13 @@ h1 {
 }
 
 #selectText {
+	display: flex;
+	height: 10%;
 	text-align: center;
 	color: white;
-	display: block;
 	padding: 0;
+	align-items: center;
+	justify-content: center;
 }
 
 #panel {
@@ -89,6 +92,14 @@ h1 {
 	justify-content: space-between;
 }
 
+#spaceSheet {
+	background-image: url('../assets/img/sprite/SPACE.png');
+	height: 16px;
+	width: 67px;
+	margin: 0 2%;
+	animation: space 3s steps(2) infinite;
+}
+
 .inputAnimate {
 	height: 125%;
 	position: relative;
@@ -97,10 +108,16 @@ h1 {
 	font-size: 20px;
 }
 
-@keyframes sprite {
+@keyframes moveKey {
 	to { 
 		background-position: -380px 0; 
 		translate: -25%;
+	}
+}
+
+@keyframes space {
+	to {
+		background-position: -134px 0; 
 	}
 }
 
@@ -110,7 +127,7 @@ h1 {
 	margin: 5%;
 	width: 126px;
 	height: 100%;
-	animation: sprite 2.5s steps(3) infinite;
+	animation: moveKey 10s steps(3) infinite;
 }
 
 .charactersIcon {

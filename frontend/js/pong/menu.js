@@ -101,14 +101,12 @@ function createDivText() {
 	divText.style.zIndex = '100';
 	divText.style.margin = '5%';
 	divText.style.color = 'white';
-    const textChooseColor = document.createTextNode("Choose your character");
-	const breakLine = document.createElement("br");
-	const textStart = document.createTextNode("Press 'Space' for start");
-	textChooseColor.id = "textChooseColor";
+	const textPress = document.createTextNode("Start with");
 	
-    divText.appendChild(textChooseColor);
-	divText.appendChild(breakLine);
-	divText.appendChild(textStart);
+	divText.appendChild(textPress);
+	const spaceSheet = document.createElement("div");
+	spaceSheet.id = "spaceSheet";
+	divText.appendChild(spaceSheet);
 	document.getElementById("selectMenu").appendChild(divText);
 }
 

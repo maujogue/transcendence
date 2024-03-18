@@ -125,7 +125,7 @@ function setIsReady() {
         status.isReady = true;
         ready = 'true';
     }
-    keysPressed['Enter'] = false;
+    keysPressed[' '] = false;
     return (ready);
 }
 
@@ -166,9 +166,10 @@ function movePlayers() {
 }
 
 function sendIsReady(webSocket) {
+    console.log('sendIsReady');
     const status = setIsReady();
     console.log('sendIsReady', status);
-    keysPressed['Space'] = false;
+    keysPressed[' '] = false;
     keyPress = false;
     webSocket.send(JSON.stringify({
         'ready': status
@@ -191,7 +192,7 @@ async function onlineGameLoop(webSocket) {
         keyPress = false;
         document.removeEventListener('click', clickHandler);
     }
-    if (!status.start && keysPressed['Enter'])
+    if (!status.start && keysPressed[' '])
         sendIsReady(webSocket);
     if (!status.start && keyPress) {
         handleMenuKeyPress(keysPressed, player, null, env);

@@ -127,7 +127,7 @@ h1 {
 	margin: 5%;
 	width: 126px;
 	height: 100%;
-	animation: moveKey 10s steps(3) infinite;
+	animation: moveKey 10s steps(3  ) infinite;
 }
 
 .charactersIcon {

@@ -148,6 +148,7 @@ function createDivInputImg(playerName) {
 	inputAnimate.className = "inputAnimate";
 	inputAnimate.classList.add("input" + playerName);
 	sprite.className = "sprite";
+	sprite.style.backgroundImage = "url('assets/img/sprite/" + playerName + "sheet.png')";
 	ux.appendChild(inputAnimate);
 	inputAnimate.appendChild(sprite);
 }

@@ -110,7 +110,6 @@ h1 {
 	margin: 5%;
 	width: 126px;
 	height: 100%;
-	background: url("../assets/img/sprite/arrowSheet.png") no-repeat;
 	animation: sprite 2.5s steps(3) infinite;
 }
 

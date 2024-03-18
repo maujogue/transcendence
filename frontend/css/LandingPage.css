@@ -11,11 +11,6 @@ body::before {
 }
 
 .portraits {
-
 	max-height: 210px;
 	min-height: 210px;
-}
-
-.hero {
-	/* height:40vh; */
 }

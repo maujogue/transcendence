@@ -58,6 +58,7 @@ h1 {
 #panel {
 	position: relative;
 	display: flex;
+	justify-content: space-between;
 	top: -5%;
 }
 
@@ -101,9 +102,9 @@ h1 {
 }
 
 .inputAnimate {
-	height: 125%;
+	height: 120%;
 	position: relative;
-	bottom: 25%;
+	bottom: 35%;
 	margin: 2% 5%;
 	font-size: 20px;
 }
@@ -124,7 +125,7 @@ h1 {
 .sprite {
 	display: relative;
 	left: 5%;
-	margin: 5%;
+	margin: 5% 15%;
 	width: 126px;
 	height: 100%;
 	animation: moveKey 10s steps(3  ) infinite;
@@ -132,8 +133,9 @@ h1 {
 
 .charactersIcon {
 	object-fit: contain;
-	width: 100%;
-	height: 65px;
+	width: 65px;
+	height: 70px;
+	border: 2px black solid;
 }
 
 .swatch {

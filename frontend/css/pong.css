@@ -59,7 +59,7 @@ h1 {
 	position: relative;
 	display: flex;
 	justify-content: space-between;
-	top: -5%;
+ 	bottom: -5%;
 }
 
 #start {
@@ -104,7 +104,7 @@ h1 {
 .inputAnimate {
 	height: 120%;
 	position: relative;
-	bottom: 35%;
+	bottom: 0%;
 	margin: 2% 5%;
 	font-size: 20px;
 }
@@ -128,14 +128,16 @@ h1 {
 	margin: 5% 15%;
 	width: 126px;
 	height: 100%;
-	animation: moveKey 10s steps(3  ) infinite;
+	animation: moveKey 2s steps(3  ) infinite;
+	background-repeat: no-repeat;
+	background-size: auto;
 }
 
 .charactersIcon {
 	object-fit: contain;
-	width: 65px;
-	height: 70px;
-	border: 2px black solid;
+	width: 50%;
+	height: 100%;
+	/* border: 2px black solid; */
 }
 
 .swatch {

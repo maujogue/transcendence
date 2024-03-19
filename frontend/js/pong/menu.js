@@ -134,7 +134,7 @@ function createPanelDiv() {
 	
 	swatch.id = "panel";
 	swatch.style.position = "relative";
-	swatch.style.height = "10%";
+	swatch.style.height = "25%";
 	swatch.style.color = "blue";
 	document.getElementById("selectMenu").appendChild(swatch);
 }

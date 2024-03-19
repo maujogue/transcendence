@@ -6,13 +6,13 @@ from django.core.exceptions import ValidationError
 class Tournament(models.Model):
 	
 	name = models.fields.CharField(max_length=100)
-	# host = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL)
+	#need to fill the host
 	password = models.fields.CharField(max_length=100)
 	n_players = models.IntegerField(validators=[MinValueValidator(2), MaxValueValidator(32)])
 
 	def __str__(self):
 		return f'{self.name}'
-	
+
 """
 -name of the tournament
 -number players max

@@ -106,6 +106,10 @@ function createDivText() {
 	divText.appendChild(textPress);
 	const spaceSheet = document.createElement("div");
 	spaceSheet.id = "spaceSheet";
+	if (isFullScreen())
+		spaceSheet.style.backgroundImage = "url('assets/img/sprite/spaceFullScreen.png')";
+	else
+		spaceSheet.style.backgroundImage = "url('assets/img/sprite/space.png')";
 	divText.appendChild(spaceSheet);
 	document.getElementById("selectMenu").appendChild(divText);
 }
@@ -146,7 +150,11 @@ function createDivInputImg(playerName) {
 	inputAnimate.className = "inputAnimate";
 	inputAnimate.classList.add("input" + playerName);
 	sprite.className = "sprite";
-	sprite.style.backgroundImage = "url('assets/img/sprite/" + playerName + "sheet.png')";
+	sprite.id = "sprite" + playerName;
+	if (isFullScreen())
+		sprite.style.backgroundImage = "url('assets/img/sprite/" + playerName + "SheetFullScreen.png')";
+	else
+		sprite.style.backgroundImage = "url('assets/img/sprite/" + playerName + "Sheet.png')";
 	ux.appendChild(inputAnimate);
 	inputAnimate.appendChild(sprite);
 }

@@ -106,20 +106,6 @@ h1 {
 	position: relative;
 	bottom: 0%;
 	margin: 2% 5%;
-	font-size: 20px;
-}
-
-@keyframes moveKey {
-	to { 
-		background-position: -380px 0; 
-		translate: -25%;
-	}
-}
-
-@keyframes space {
-	to {
-		background-position: -134px 0; 
-	}
 }
 
 .sprite {
@@ -189,4 +175,56 @@ h1 {
 	margin: 2%;
 }
 
+@keyframes moveKey {
+	to { 
+		background-position: -380px 0; 
+		translate: -25%;
+	}
+}
+
+@keyframes space {
+	to {
+		background-position: -134px 0; 
+	}
+}
+
+@keyframes moveKeyFullScreen {
+	to { 
+		background-position: -760px 0; 
+		translate: -25%;
+	}
+}
+
+@keyframes spaceFullScreen {
+	to {
+		background-position: -268px 0; 
+	}
+	
+}
+@media all and (display-mode: fullscreen) {
+	.inputAnimate {
+		height: 120%;
+		position: relative;
+		bottom: 0%;
+		margin: 2% 5%;
+		/* width: 253px; */
+	}
+	
+	.sprite {
+		display: relative;
+		width: 253px;
+		left: 5%;
+		margin: 5% 15%;
+		animation: moveKeyFullScreen 2s steps(3  ) infinite;
+		background-image: url('../assets/img/sprite/P2SheetFullScreen.png');
+		background-repeat: no-repeat;
+		background-size: auto;
+	}
+
+	#spaceSheet {
+		width: 134px;
+		height: 32px;
+		animation: spaceFullScreen 3s steps(2) infinite;
+	}
+  }
 

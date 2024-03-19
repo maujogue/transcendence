@@ -74,7 +74,7 @@ document.body.addEventListener("click", function(event) {
 		actualizeScore(player1, player2, environment, environment.font);
 		start = true;
 	}
-	if (event.target.id == 'backMenu') {
+	if (event.target.id == 'backMenu' || event.target.id == 'backIcon') {
 		ClearAllEnv(environment);
 		returnToMenu();
 	}

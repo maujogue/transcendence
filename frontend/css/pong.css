@@ -101,6 +101,20 @@ h1 {
 	animation: space 3s steps(2) infinite;
 }
 
+#backIcon {
+	position: absolute;
+	top: 0;
+	left: 0;
+	margin: 2.5%;
+	font-size: 1em;
+	z-index: 100;
+}
+
+#backIcon:hover {
+	font-size:1.2em;
+	margin: 2%;
+}
+
 .inputAnimate {
 	height: 120%;
 	position: relative;

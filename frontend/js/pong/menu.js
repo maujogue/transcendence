@@ -166,6 +166,7 @@ function createSelectMenu(field, characters) {
 	let i = 0;
 
 	createDivMenu("selectMenu");
+	document.getElementById("selectMenu").innerHTML = '<i class="fa-solid fa-arrow-left" id="backIcon"></i>';
 	createDivText();
 	createPanelDiv();
 	createDivInputImg("P1");

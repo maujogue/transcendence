@@ -114,7 +114,7 @@ h1 {
 	margin: 5% 15%;
 	width: 126px;
 	height: 100%;
-	animation: moveKey 2s steps(3  ) infinite;
+	animation: moveKey 6s steps(3  ) infinite;
 	background-repeat: no-repeat;
 	background-size: auto;
 }
@@ -215,7 +215,7 @@ h1 {
 		width: 253px;
 		left: 5%;
 		margin: 5% 15%;
-		animation: moveKeyFullScreen 2s steps(3  ) infinite;
+		animation: moveKeyFullScreen 6s steps(3  ) infinite;
 		background-image: url('../assets/img/sprite/P2SheetFullScreen.png');
 		background-repeat: no-repeat;
 		background-size: auto;

@@ -9,6 +9,7 @@ import { sendCharacter} from "./sendMessage.js";
 import { characters } from "./main.js";
 import { updateMixers } from "./displayCharacter.js";
 import { colors, lobbyCharPos, lobbyPaddlePos } from "./varGlobal.js";
+import { resize } from "./resize.js";
 import * as THREE from 'three';
 
 let env;
@@ -25,6 +26,10 @@ let status = {
 let keyUp = false;
 let name;
 let webSocket;
+
+document.addEventListener('fullscreenchange', function() {
+	resize(env);
+});
 
 export const playersMove = new Map();
 
@@ -56,7 +61,7 @@ async function goToOnlineSelectMenu(field) {
     document.getElementById("menu").remove();
     env = createSelectMenu(field, characters);
     document.getElementById("cursorP2").remove();
-    document.getElementsByClassName("inputP2")[0].remove();
+    document.getElementsByClassName("inputP2")[0].style.visibility = "hidden";
     env.renderer.render(env.scene, env.camera);
 }
 

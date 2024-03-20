@@ -30,7 +30,12 @@ SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
 DEBUG = bool(os.environ.get("DEBUG", default=0))
 
 ALLOWED_HOSTS = ['*']
-# ALLOWED_HOSTS = ["*"]
+
+# Define for backend
+
+MIN_LEN_USERNAME = 3
+MAX_LEN_USERNAME = 25
+MAX_LEN_EMAIL = 50
 
 # Application definition
 

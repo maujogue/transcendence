@@ -2,17 +2,18 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
+from py_backend import settings
 from PIL import Image
-# from .models import FriendRequest
 
-MIN_LEN_USERNAME = 3
+
 SPECIAL_CHARS = "+/*.,!#%^&\{}[]=:;\'\"`~"
 
 class CustomUser(AbstractUser):
 	class Meta:
 		verbose_name = 'Custom User'
 
-	email = models.EmailField(unique=True)
+	username = models.CharField(max_length=settings.MAX_LEN_USERNAME, unique=True)
+	email = models.EmailField(max_length=settings.MAX_LEN_EMAIL, unique=True)
 	title = models.CharField(max_length=50, null=True)
 	avatar = models.ImageField(default='avatar.jpg', upload_to='profile_pictures')
 	bio = models.CharField(max_length=500, null=True)
@@ -27,7 +28,7 @@ class CustomUser(AbstractUser):
 	def clean(self):
 		super().clean()
 		if self.username:
-			if len(self.username) < MIN_LEN_USERNAME:
+			if len(self.username) < settings.MIN_LEN_USERNAME:
 				raise ValidationError({'username': 'Username is too short'})
 			if contains_special_char(self.username):
 				raise ValidationError({'username': 'Username contains forbidden characters'})

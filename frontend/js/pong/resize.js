@@ -30,11 +30,11 @@ function resize(environment) {
 	environment.camera.updateProjectionMatrix();
 	environment.renderer.setSize(width, height);
 	environment.renderer.render(environment.scene, environment.camera);
-	if (document.getElementById("spaceSheet")) {
+	if (document.getElementById("spriteStart")) {
 		if (isFullScreen()) {
-			document.getElementById("spaceSheet").style.backgroundImage = "url('assets/img/sprite/spaceFullScreen.png')";
+			document.getElementById("spriteStart").style.backgroundImage = "url('assets/img/sprite/StartSheet.png')";
 		} else {
-			document.getElementById("spaceSheet").style.backgroundImage = "url('assets/img/sprite/space.png')";
+			document.getElementById("spriteStart").style.backgroundImage = "url('assets/img/sprite/StartSheetSmall.png')";
 		}
 	}
 	if (document.getElementsByClassName("sprite")[0]) {
@@ -43,8 +43,8 @@ function resize(environment) {
 			document.getElementsById("spriteP1").style.backgroundImage = "url('assets/img/sprite/P1SheetFullScreen.png')";
 			document.getElementById("spriteP2").style.backgroundImage = "url('assets/img/sprite/P2SheetFullScreen.png')";
 		} else {
-			document.getElementById("spriteP1").style.backgroundImage = "url('assets/img/sprite/P1Sheet.png')";
-			document.getElementById("spriteP2").style.backgroundImage = "url('assets/img/sprite/P2Sheet.png')";
+			document.getElementById("spriteP1").style.backgroundImage = "url('assets/img/sprite/P1SheetSmall.png')";
+			document.getElementById("spriteP2").style.backgroundImage = "url('assets/img/sprite/P2SheetSmall.png')";
 		}
 	}
 }

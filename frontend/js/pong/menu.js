@@ -23,8 +23,9 @@ function createIcon(parent, character) {
 	img.className = "charactersIcon"
 	img.setAttribute("src", "assets\\img\\character_icon\\" + character + ".png");
 	img.setAttribute("alt", character);
-	img.setAttribute("width", (width / charactersNames.length) + "px");
-	img.setAttribute("height", "100%");
+	img.style.width = "100%";
+	img.style.height = "100%";
+	// img.style.border = "1px solid black";
 	parent.appendChild(img);
 }
 
@@ -35,10 +36,11 @@ function createSwatchPanel(leftPos, nb, character) {
 
 	newDiv.style.zIndex = "100";
 	newDiv.style.display = "block";
-	newDiv.style.left = leftPos + "px";
-	newDiv.style.bottom = "0px";
-	newDiv.style.width = (width / (charactersNames.length + 2)) + "px";
-	newDiv.style.height = "100%";
+	// newDiv.style.left = leftPos + "px";
+	// newDiv.style.bottom = "0px";
+	// newDiv.style.width = ((width / 2) / charactersNames.length) + "px";
+	// newDiv.style.border = "1px solid black";
+	newDiv.style.height = "50%";
 	document.getElementById("panel").appendChild(newDiv);
 	createIcon(newDiv, character);
 }
@@ -152,7 +154,7 @@ function createDivInputImg(playerName) {
 	sprite.className = "sprite";
 	sprite.id = "sprite" + playerName;
 	if (isFullScreen())
-		sprite.style.backgroundImage = "url('assets/img/sprite/" + playerName + "SheetFullScreen.png')";
+		sprite.style.backgroundImage = "url('assets/img/sprite/" + playerName + "Sheet.png')";
 	else
 		sprite.style.backgroundImage = "url('assets/img/sprite/" + playerName + "SheetSmall.png')";
 	const divText = document.createElement("div");
@@ -178,7 +180,7 @@ function createSelectMenu(field, characters) {
 	createPanelDiv();
 	createDivInputImg("P1");
 	createDivInputImg("P2");
-	createDivInputImg("start");
+	createDivInputImg("Start");
 	charactersNames.forEach(character => {
 		createSwatchPanel(leftPos, i, character);
 		leftPos += (width - 11) / charactersNames.length;

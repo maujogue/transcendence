@@ -58,7 +58,7 @@ h1 {
 #panel {
 	position: relative;
 	display: flex;
-	justify-content: space-between;
+	justify-content: center;
  	bottom: -5%;
 }
 
@@ -91,14 +91,6 @@ h1 {
 	top: 80%;
 	display: flex;
 	justify-content: space-between;
-}
-
-#spaceSheet {
-	background-image: url('../assets/img/sprite/SPACE.png');
-	height: 16px;
-	width: 67px;
-	margin: 0 2%;
-	animation: space 3s steps(2) infinite;
 }
 
 #backIcon {
@@ -141,7 +133,7 @@ h1 {
 	border-radius: 0.5em;
 }
 
-#spritestart {
+#spriteStart {
 	animation: space 3s steps(2) infinite;
 	width: 67px;
 	height: 100%;
@@ -181,15 +173,19 @@ h1 {
 }
 
 .charactersIcon {
-	object-fit: contain;
+	object-fit: fill;
 	width: 50%;
 	height: 100%;
+	transform: skew(-5deg);
+	border: 3px inset rgb(223, 225, 224);
 	/* border: 2px black solid; */
 }
 
 .swatch {
 	display: flex;
 	z-index: 100;
+	margin: 0 0.5%;
+	/* transform: skew(-5deg); */
 }
 
 .btn {
@@ -210,12 +206,12 @@ h1 {
 
 .cursorP1, .cursorP2 {
 	color: white;
-	position: relative;
-	font-size: 1em;
+	position: absolute;
+	font-size: 0.8em;
 	z-index: 100;
-	padding: 0;
-	margin: 5%;
-	bottom: 100%;
+	/* padding: 0; */
+	/* margin: 5%; */
+	bottom: 10%;
 }
 
 .logo {
@@ -251,7 +247,7 @@ h1 {
 
 @keyframes moveKeyFullScreen {
 	to { 
-		background-position: -760px 0; 
+		background-position: -380px 0; 
 		translate: -25%;
 	}
 }
@@ -273,19 +269,19 @@ h1 {
 	
 	.sprite {
 		display: relative;
-		width: 253px;
-		left: 5%;
-		margin: 5% 15%;
+		width: 126px;
+		height: 64px;
+		/* left: 5%;
+		margin: 5% 15%; */
 		animation: moveKeyFullScreen 6s steps(3  ) infinite;
-		background-image: url('../assets/img/sprite/P2SheetFullScreen.png');
 		background-repeat: no-repeat;
 		background-size: auto;
 	}
-
-	#spaceSheet {
+	
+	#spriteStart {
+		animation: spaceFullScreen 3s steps(2) infinite;
 		width: 134px;
 		height: 32px;
-		animation: spaceFullScreen 3s steps(2) infinite;
 	}
   }
 

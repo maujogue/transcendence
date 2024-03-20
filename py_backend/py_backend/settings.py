@@ -44,8 +44,7 @@ INSTALLED_APPS = [
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'django_extensions',
-    'channels',
-	'bootstrap5',
+    'channels'
 	'multiplayer',
 	'users',
 	'friends',

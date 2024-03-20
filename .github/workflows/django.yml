@@ -33,11 +33,20 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install Dependencies
+      env:
+        SQL_DATABASE: ${{ secrets.SQL_DATABASE }}
+        SQL_USER: ${{ secrets.SQL_USER }}
+        SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
       run: |
         cd py_backend
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        python3 manage.py migrate
     - name: Run Tests
+      env:
+        SQL_DATABASE: ${{ secrets.SQL_DATABASE }}
+        SQL_USER: ${{ secrets.SQL_USER }}
+        SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
       run: |
         cd py_backend
         python manage.py test

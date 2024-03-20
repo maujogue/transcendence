@@ -65,7 +65,7 @@ async function goToOnlineSelectMenu(field) {
     document.getElementById("menu").remove();
     env = createSelectMenu(field, characters);
     document.getElementById("cursorP2").remove();
-    document.getElementsByClassName("inputP2")[0].style.visibility = "hidden";
+    document.getElementsByClassName("inputP2")[0].remove();
     env.renderer.render(env.scene, env.camera);
 }
 

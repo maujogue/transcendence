@@ -92,6 +92,13 @@ document.body.addEventListener("click", function(event) {
 		else
 			document.exitFullscreen();
 	}
+	if (event.target.id == 'toggleButton') {
+		const div = document.getElementById('toggleDiv');
+		if (div.classList.contains('hidden'))
+			div.classList.remove('hidden');
+		else
+			div.classList.add('hidden');
+	}
 });
 
 document.addEventListener('fullscreenchange', function() {

@@ -144,7 +144,7 @@ function createPanelDiv() {
 }
 
 function createDivInputImg(playerName) {
-	const ux = document.getElementById("panel");
+	const infoDiv = document.getElementById("toggleDiv");
 	const inputAnimate = document.createElement("div");
 	const sprite = document.createElement("div");
 	inputAnimate.className = "inputAnimate";
@@ -154,8 +154,12 @@ function createDivInputImg(playerName) {
 	if (isFullScreen())
 		sprite.style.backgroundImage = "url('assets/img/sprite/" + playerName + "SheetFullScreen.png')";
 	else
-		sprite.style.backgroundImage = "url('assets/img/sprite/" + playerName + "Sheet.png')";
-	ux.appendChild(inputAnimate);
+		sprite.style.backgroundImage = "url('assets/img/sprite/" + playerName + "SheetSmall.png')";
+	const divText = document.createElement("div");
+	divText.textContent = playerName + ": ";
+	divText.className = "infoText";
+	inputAnimate.appendChild(divText);
+	infoDiv.appendChild(inputAnimate);
 	inputAnimate.appendChild(sprite);
 }
 
@@ -166,10 +170,15 @@ function createSelectMenu(field, characters) {
 	let i = 0;
 
 	createDivMenu("selectMenu");
-	document.getElementById("selectMenu").innerHTML = '<i class="fa-solid fa-arrow-left" id="backIcon"></i>';
-	createDivText();
+	document.getElementById("selectMenu").innerHTML = '\
+		<i class="fa-solid fa-arrow-left" id="backIcon"></i> \
+		<i class="fa-solid fa-question" id="toggleButton"></i> \
+		<div id="toggleDiv" class="hidden"></div>';
+	// createDivText();
 	createPanelDiv();
 	createDivInputImg("P1");
+	createDivInputImg("P2");
+	createDivInputImg("start");
 	charactersNames.forEach(character => {
 		createSwatchPanel(leftPos, i, character);
 		leftPos += (width - 11) / charactersNames.length;
@@ -177,7 +186,6 @@ function createSelectMenu(field, characters) {
 	});
 	createCursor("swatch0", "cursorP1", "P1");
 	createCursor("swatch1", "cursorP2", "P2");
-	createDivInputImg("P2");
 	env.scene.add(createLobbyScene(env));
 	createLobbyLights(env);
 	env.renderer.render(env.scene, env.camera);

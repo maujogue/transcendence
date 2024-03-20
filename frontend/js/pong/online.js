@@ -55,6 +55,10 @@ function clickHandler(event) {
             document.getElementById("endscreen").remove();
         sendIsReady(webSocket);
     }
+    if (event.target.id == 'backMenu') {
+        if (webSocket)
+            webSocket.close();
+    }
 }
 
 async function goToOnlineSelectMenu(field) {

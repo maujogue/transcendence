@@ -5,9 +5,6 @@ from django.core.exceptions import ValidationError
 from py_backend import settings
 from PIL import Image
 
-
-SPECIAL_CHARS = "+/*.,!#%^&\{}[]=:;\'\"`~"
-
 class CustomUser(AbstractUser):
 	class Meta:
 		verbose_name = 'Custom User'
@@ -25,14 +22,6 @@ class CustomUser(AbstractUser):
 	# groups = models.ManyToManyField('auth.Group', related_name='custom_user_set')
 	# user_permissions = models.ManyToManyField('auth.Permission', related_name='custom_user_set')
 	
-	def clean(self):
-		super().clean()
-		if self.username:
-			if len(self.username) < settings.MIN_LEN_USERNAME:
-				raise ValidationError({'username': 'Username is too short'})
-			if contains_special_char(self.username):
-				raise ValidationError({'username': 'Username contains forbidden characters'})
-	
 	def save(self, *args, **kwargs):
 		super().save(*args, **kwargs)
 		img = Image.open(self.avatar.path)
@@ -40,31 +29,3 @@ class CustomUser(AbstractUser):
 			output_size = (300, 300)
 			img.thumbnail(output_size)
 			img.save(self.avatar.path)
-
-
-class Tournament(models.Model):
-	
-	name = models.fields.CharField(max_length=100)
-	# host = models.ForeignKey(CustomUser, null=True, on_delete=models.SET_NULL)
-	winner = models.fields.CharField(max_length=100, unique=True, null=True)
-
-	n_players = models.IntegerField(validators=[MinValueValidator(2), MaxValueValidator(32)])
-	date = models.DateTimeField()
-
-	def __str__(self):
-		return f'{self.name}'
-
-class Leaderboard(models.Model):
-
-	total_games_played = models.IntegerField()
-	total_tournaments_played = models.IntegerField()
-	total_current_tournaments = models.IntegerField()
-
-	def __str__(self):
-		return f'Leaderboard'
-
-def contains_special_char(string):
-	for char in SPECIAL_CHARS:
-		if char in string:
-			return True
-	return False

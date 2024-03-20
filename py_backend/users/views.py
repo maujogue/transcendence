@@ -65,7 +65,7 @@ def logout_view(request):
 @login_required
 @require_http_methods(["POST"])
 def update_profile(request):
-    profile_picture_form = UpdateProfilePictureForm(request)
+    profile_picture_form = UpdateProfilePictureForm(request.POST, request.FILES, instance=request.user.profile)
 
     if profile_picture_form.is_valid():
         new_picture = profile_picture_form.save()
@@ -74,6 +74,8 @@ def update_profile(request):
                 new_picture.picture = request.FILES['picture']
         new_picture.save()
         return JsonResponse({'status': 'success'}, status=200)
+    else:
+        return JsonResponse({'status': 'error'}, status=400)
 
 
 @require_http_methods(["GET"])

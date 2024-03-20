@@ -15,6 +15,7 @@ class LoginForm(forms.Form):
 	password = forms.CharField(max_length=100, widget=forms.PasswordInput, label='Password')
 
 class UpdateProfilePictureForm(forms.ModelForm):
+	avatar = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control-file'}))
 	class Meta:
 		model = CustomUser
-		fields = ('avatar',)
+		fields = ['avatar']

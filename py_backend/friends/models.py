@@ -1,7 +1,7 @@
 from django.db import models
 from users.models import CustomUser
 
-class FriendRequest(models.Model):
+class InteractionRequest(models.Model):
 
     PENDING = 'pending'
     ACCEPTED = 'accepted'

@@ -1,7 +1,7 @@
 from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
 from users.models import CustomUser
-from friends.models import FriendRequest
+from friends.models import InteractionRequest
 from django.contrib.auth.decorators import login_required
 
 
@@ -13,7 +13,7 @@ def send_request(request, user_id):
         to_user = CustomUser.objects.get(id=user_id)
     except CustomUser.DoesNotExist:
         return JsonResponse({'status': 'Custom User not found'}, status=404)
-    interaction_request, created = FriendRequest.objects.get_or_create(
+    interaction_request, created = InteractionRequest.objects.get_or_create(
         from_user=from_user,
         to_user=to_user)
     if created:
@@ -26,10 +26,12 @@ def send_request(request, user_id):
 @require_http_methods(["POST"])
 def accept_friend(request, request_id):
     try:
-        friend_request = FriendRequest.objects.get(id=request_id)
-    except FriendRequest.DoesNotExist:
+        friend_request = InteractionRequest.objects.get(id=request_id)
+    except InteractionRequest.DoesNotExist:
         return JsonResponse({'status': 'Friend request not found'}, status=404)
     
+    if request.user.username != friend_request.from_user.username:
+        return JsonResponse({'status': 'error'}, status=400)
     if not friend_request.isFriend():
         if friend_request.to_user != request.user:
             friend_request.to_user.friends.add(friend_request.from_user)
@@ -46,10 +48,12 @@ def accept_friend(request, request_id):
 @require_http_methods(["POST"])
 def remove_friend(request, request_id):
     try:
-        remove_request = FriendRequest.objects.get(id=request_id)
-    except FriendRequest.DoesNotExist:
+        remove_request = InteractionRequest.objects.get(id=request_id)
+    except InteractionRequest.DoesNotExist:
         return JsonResponse({'status': 'Remove request not found'}, status=404)
 
+    if request.user.username != remove_request.from_user.username:
+        return JsonResponse({'status': 'error'}, status=400)
     if remove_request.isFriend():
         remove_request.from_user.friends.remove(remove_request.to_user)
         remove_request.to_user.friends.remove(remove_request.from_user)

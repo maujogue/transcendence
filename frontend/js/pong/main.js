@@ -21,8 +21,8 @@ let player2;
 let keyPress = false;
 let keysPressed = {};
 let isOnline = false;
+let localLoop = true;
 const gameDiv = document.getElementById('game');
-const idle = undefined;
 const field = await createField();
 export const lobby = await loadScene('lobbyTest');
 export const clock = new THREE.Clock();
@@ -75,10 +75,12 @@ document.body.addEventListener("click", function(event) {
 		start = true;
 	}
 	if (event.target.id == 'backMenu' || event.target.id == 'backIcon') {
+		localLoop = false;
 		ClearAllEnv(environment);
 		returnToMenu();
 	}
 	if (event.target.id == 'localGame') {
+		localLoop = true;
 		localGameLoop();
 		goToLocalSelectMenu();
 	}
@@ -117,7 +119,7 @@ function setIfGameIsEnd() {
 	player2.score = 0;
 }
 
-async function localGameLoop() {;
+async function localGameLoop() {
 	if (keyPress && !start) {
 		await handleMenuKeyPress(keysPressed, player1, player2, environment);
 		keyPress = false;
@@ -137,7 +139,8 @@ async function localGameLoop() {;
 	if (player1 && player2)
 		updateMixers(player1, player2);
 	environment?.renderer.render( environment.scene, environment.camera );
-	requestAnimationFrame( localGameLoop );
+	if (localLoop)
+		requestAnimationFrame( localGameLoop );
 }
 
 export { displayMainMenu }

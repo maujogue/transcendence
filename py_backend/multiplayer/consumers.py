@@ -53,7 +53,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         # await sync_to_async(self.deleteAll)()
         print('connect')
         self.is_connected = False
-        self.is_ready = True
+        self.is_ready = False
         
         self.lobby = await self.join_lobby()
         print('lobby ID:', self.lobby.uuid, 'connected_user:', self.lobby.connected_user)
@@ -87,8 +87,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         
         print('text_data:', text_data_json)
-        # if text_data_json.get("ready") != None:
-        #     await self.lobby.setPlayerReady(text_data_json.get("ready"), self.player)
+        if text_data_json.get("ready") != None:
+            await self.lobby.setPlayerReady(text_data_json.get("ready"), self.player)
         if text_data_json.get("character") != None:
             self.player.character = text_data_json.get("character")
             await self.channel_layer.group_send(

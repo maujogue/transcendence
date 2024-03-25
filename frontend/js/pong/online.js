@@ -115,7 +115,7 @@ async function connectToLobby() {
         }
         if (data['message'] == 'start') {
             status.gameIsInit = true;
-            document.getElementById("waitingScreen").remove();
+            document.getElementById("waitingScreen")?.remove();w
         }
         if (data['type'] == 'player_pos') {
             env.scene.getObjectByName("paddle_" + data['name']).position.y = data['posY'];
@@ -198,9 +198,6 @@ async function sendIsReady(webSocket) {
     webSocket.send(JSON.stringify({
         'ready': status
     }));
-    ClearAllEnv(env);
-    document.getElementById("selectMenu").remove();
-    createWaitingScreen();
 }
 
 async function setGameIsStart() {

@@ -53,7 +53,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         # await sync_to_async(self.deleteAll)()
         print('connect')
         self.is_connected = False
-        self.is_ready = False
+        self.is_ready = True
         
         self.lobby = await self.join_lobby()
         print('lobby ID:', self.lobby.uuid, 'connected_user:', self.lobby.connected_user)
@@ -63,7 +63,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.ball = Ball()
         await self.create_player()
         self.lobby.connected_user += 1
-        await self.lobby.asave(update_fields=['connected_user'])
+        self.lobby.player_ready += 1
+        await self.lobby.asave(update_fields=['connected_user', 'player_ready'])
         self.lobby_group_name = 'lobby_%s' % self.lobby.uuid
         await self.channel_layer.group_add(
             self.lobby_group_name,
@@ -74,30 +75,30 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.is_connected = True
         await self.accept()
         await self.send_player_data()
-        print('player name:', self.player.name)
-        await self.channel_layer.group_send(
-            self.lobby_group_name, { 'type': 'pong.status', 'message': 'connected', 'name': self.player.name}
-        )
-        await self.channel_layer.group_send(
-            self.lobby_group_name, {
-                'type': 'pong.data', 
-                'character': self.player.character, 
-                'sender': self.channel_name, 
-                'name': self.player.name
-                }
-        )
+        if self.lobby.connected_user == 2:
+            await self.channel_layer.group_send(
+                self.lobby_group_name, { 'type': 'pong.ask_character', 'name': self.player.name}
+            )
 
     async def receive(self, text_data):
-        print('receive')
+        # print('receive')
+        # print('lobby:', self.lobby.player_ready)
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
         text_data_json = json.loads(text_data)
         
         print('text_data:', text_data_json)
-        if text_data_json.get("ready") != None:
-            await self.lobby.setPlayerReady(text_data_json.get("ready"), self.player)
-        if text_data_json.get("character") != None and self.lobby.game_started == False:
+        # if text_data_json.get("ready") != None:
+        #     await self.lobby.setPlayerReady(text_data_json.get("ready"), self.player)
+        if text_data_json.get("character") != None:
             self.player.character = text_data_json.get("character")
-            await self.sendCharacter(text_data_json)
+            await self.channel_layer.group_send(
+                self.lobby_group_name, {
+                    'type': 'pong.character_data',
+                    'character': self.player.character,
+                    'sender': self.channel_name,
+                    'name': self.player.name
+                }
+            )
         if (self.lobby.player_ready == 2 and self.lobby.game_started == False):
             await self.startGame()
         if (self.lobby.game_started == True):
@@ -249,12 +250,15 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.resetGame()
         await self.send(text_data=json.dumps({"type": "status", "message": message, "name": name}))
 
-    async def pong_data(self, event): 
-        character = event["character"]
-        name = event["name"]
+    async def pong_character_data(self, event): 
+        # print('pong_character_data')
+        # print('channel_name:', self.channel_name)
+        # print('sender:', event["sender"])
 
-        if self.channel_name != event["sender"]:
-            await self.send(text_data=json.dumps({ "character_data": character, "name": name}))
+        if (self.player.name == event["name"]):
+            self.opp.character = event["character"]
+        if (self.player.name != event["name"]):
+            await self.send(text_data=json.dumps({ "type": "character_data", "character": event["character"], "name": event["name"]}))
 
     async def pong_player_pos(self, event):
         move = event["move"]
@@ -287,3 +291,9 @@ class PongConsumer(AsyncWebsocketConsumer):
         if self.player.name == name:
             self.player.score = score
         await self.send(text_data=json.dumps({ "type": "score", "score": score, "name": name}))
+
+    async def pong_ask_character(self, event):
+        print('pong_ask_character')
+        name = event["name"]
+
+        await self.send(text_data=json.dumps({ "type": "ask_character", "name": name}))

@@ -7,7 +7,7 @@ import { initGame } from "./initGame.js";
 import { createEndScreen, returnToMenu } from "./createEndScreen.js"
 import { actualizeScore } from "./score.js";
 import { createField } from "./createField.js";
-import { connectToLobby } from "./online.js";
+import { connectToLobby, onlineGameLoop, goToOnlineSelectMenu, createOnlineSelectMenu} from "./online.js";
 import { ClearAllEnv, getSize } from "./createEnvironment.js";
 import { loadAllModel } from "./loadModels.js"
 import { loadScene } from "./loadModels.js";
@@ -84,7 +84,7 @@ document.body.addEventListener("click", function(event) {
 	}
 	if (event.target.id == 'onlineGame') {
 		isOnline = true;
-		connectToLobby(field);
+		createOnlineSelectMenu(field);
 	}
 	if (event.target.id == 'fullScreen') {
 		if (!isFullScreen())
@@ -100,7 +100,7 @@ document.body.addEventListener("click", function(event) {
 			div.classList.add('hidden');
 	}
 });
-
+ 
 document.addEventListener('fullscreenchange', function() {
 	resize(environment);
 });
@@ -117,7 +117,7 @@ function setIfGameIsEnd() {
 	player2.score = 0;
 }
 
-async function localGameLoop() {
+async function localGameLoop() {;
 	if (keyPress && !start) {
 		await handleMenuKeyPress(keysPressed, player1, player2, environment);
 		keyPress = false;

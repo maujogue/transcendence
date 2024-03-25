@@ -41,8 +41,6 @@ function handlerPlayerDisconnect(data, env) {
 }
 
 export function handlerStatusMessage(data, webSocket, env, status, player) {
-    if (data['message'] == 'connected')
-        sendColor(webSocket);
     if (data['message'] == 'disconnected')
         handlerPlayerDisconnect(data, env);
     if (data['message'] == 'stopGame')

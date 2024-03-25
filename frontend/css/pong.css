@@ -26,24 +26,15 @@ h1 {
 }
 
 #menu {
-	position: absolute;
 	display: flex;
 	flex-direction: column;
 	text-align: center;
 	color: white;
 	background-color: black;
+	justify-content: stretch;
 	z-index: 100;
 }
 
-#selectMenu, #endscreen{
-	position: absolute;
-	text-align: center;
-	color: white;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	padding: 0;
-}
 
 #selectText {
 	display: flex;
@@ -59,7 +50,7 @@ h1 {
 	position: relative;
 	display: flex;
 	justify-content: center;
- 	bottom: -5%;
+	bottom: -5%;
 }
 
 #start {
@@ -143,6 +134,16 @@ h1 {
 /* #spriteP2 {
 	left: -1%
 } */
+
+.menu {
+	position: absolute;
+	text-align: center;
+	color: white;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding: 0;
+}
 
 .hidden  {
     display: none !important; 

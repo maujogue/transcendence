@@ -29,6 +29,14 @@ function createIcon(parent, character) {
 	parent.appendChild(img);
 }
 
+function createWaitingScreen() {
+	createDivMenu("waitingScreen");
+	const waitingScreen = document.getElementById("waitingScreen");
+	waitingScreen.innerHTML = '\
+		<div id="waitingText">Waiting for other player</div>';
+	
+}
+
 function createSwatchPanel(leftPos, nb, character) {
 	const newDiv = document.createElement("div");
 	newDiv.classList.add("swatch");
@@ -232,4 +240,4 @@ function displayMainMenu() {
 	divMenu.appendChild(fullScreenIcon);
 }
 
-export { displayMainMenu, createSelectMenu, moveCursor, createDivMenu, displayLobby};
+export { displayMainMenu, createSelectMenu, moveCursor, createDivMenu, displayLobby, createWaitingScreen};

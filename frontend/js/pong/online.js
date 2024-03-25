@@ -24,7 +24,6 @@ let status = {
     'exit': false,
 }
 let keyUp = false;
-let name;
 let webSocket;
 
 document.addEventListener('fullscreenchange', function() {

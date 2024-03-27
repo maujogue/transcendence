@@ -1,5 +1,5 @@
 import { displayCharacter } from "./displayCharacter.js";
-import { createSelectMenu, createWaitingScreen } from "./menu.js";
+import { createSelectMenu, createWaitingScreen, createInterfaceSelectMenu} from "./menu.js";
 import { handleMenuKeyPress} from "./handleKeyPress.js";
 import { ClearAllEnv } from "./createEnvironment.js";
 import { initGame } from "./initGame.js";
@@ -8,7 +8,6 @@ import { handlerScore, setBallData, handlerStatusMessage } from "./handlerMessag
 import { sendCharacter} from "./sendMessage.js";
 import { characters } from "./main.js";
 import { updateMixers } from "./displayCharacter.js";
-import { colors, lobbyCharPos, lobbyPaddlePos } from "./varGlobal.js";
 import { resize } from "./resize.js";
 import * as THREE from 'three';
 
@@ -58,6 +57,17 @@ function clickHandler(event) {
         if (webSocket)
             webSocket.close();
     }
+    if (event.target.id == 'closeMatchmaking') {
+        if (webSocket)
+            webSocket.close();
+        document.getElementById("waitingScreen")?.remove();
+        createInterfaceSelectMenu();
+        document.getElementById("cursorP2").remove();
+        document.getElementsByClassName("inputP2")[0].remove();
+        const paddle = env.scene.getObjectByName("paddle_" + player.name);
+        player.name = "player";
+        paddle.name = "paddle_player";
+    }
 }
 
 async function goToOnlineSelectMenu(field) {
@@ -72,7 +82,6 @@ async function goToOnlineSelectMenu(field) {
 async function createOnlineSelectMenu(field) {
     status.exit = false;
     goToOnlineSelectMenu(field);
-    console.log(env);
     displayCharacter(player, env, "chupacabra", "player").then((res) => {
         player = res;
         console.log(player);
@@ -114,6 +123,7 @@ async function connectToLobby() {
             }
         }
         if (data['message'] == 'start') {
+            console.log("start message");
             status.gameIsInit = true;
             document.getElementById("waitingScreen")?.remove();
         }
@@ -132,11 +142,19 @@ async function connectToLobby() {
 
     webSocket.onclose = function(e) {
         console.log('Connection closed', e.code, e.reason);
-        status.exit = true;
+        webSocket = null;
+        status.isReady = false;
+        // status.exit = true;
     }
 
     webSocket.onerror = function(e) {
-        console.log('Error', e.code, e.reason);
+        const selectMenu = document.getElementById("selectMenu");
+        const div = document.createElement("div");
+        div.id = "error";
+        div.innerHTML = "Error while connecting to the server";
+        selectMenu.appendChild(div);
+        webSocket = null;
+        status.isReady = false;
     }
 }
 
@@ -214,11 +232,13 @@ async function onlineGameLoop(webSocket) {
         ClearAllEnv(env);
         webSocket?.close();
         keyPress = false;
+        status.exit = true;
         document.removeEventListener('click', clickHandler);
     }
-    if (!status.start && keysPressed[' '] && !webSocket) {
-        connectToLobby();
+    if (!status.isReady && !status.start && keysPressed[' '] && !webSocket) {
+        status.isReady = true;
         keysPressed[' '] = false;
+        connectToLobby();
     }
     if (!status.start && keyPress) {
         handleMenuKeyPress(keysPressed, player, null, env);
@@ -227,6 +247,7 @@ async function onlineGameLoop(webSocket) {
     if (status.gameIsInit)
         await setGameIsStart();
     if (status.start && webSocket) {
+        console.log('game start');
         sendMove(webSocket);
         movePlayers();
         translateBall(env.ball);

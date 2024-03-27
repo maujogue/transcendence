@@ -39,7 +39,6 @@ function resize(environment) {
 	}
 	if (document.getElementsByClassName("sprite")[0]) {
 		if (isFullScreen()) {
-			console.log("full");
 			document.getElementsById("spriteP1").style.backgroundImage = "url('assets/img/sprite/P1SheetFullScreen.png')";
 			document.getElementById("spriteP2").style.backgroundImage = "url('assets/img/sprite/P2SheetFullScreen.png')";
 		} else {

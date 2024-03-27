@@ -133,6 +133,8 @@ class PongConsumer(AsyncWebsocketConsumer):
     
     
     async def startGame(self):
+        print('startGame')
+        print('dirX:', self.ball.dirX, 'dirY:', self.ball.dirY)
         await self.channel_layer.group_send(
         self.lobby_group_name, { 
             'type': 'pong.status', 

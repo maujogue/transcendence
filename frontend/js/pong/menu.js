@@ -33,6 +33,7 @@ function createWaitingScreen() {
 	createDivMenu("waitingScreen");
 	const waitingScreen = document.getElementById("waitingScreen");
 	waitingScreen.innerHTML = '\
+		<i class="fa-solid fa-xmark close-matchmaking" id="closeMatchmaking"></i> \
 		<div id="waitingText">Waiting for other player</div>';
 	
 }
@@ -173,18 +174,16 @@ function createDivInputImg(playerName) {
 	inputAnimate.appendChild(sprite);
 }
 
-function createSelectMenu(field, characters) {
+function createInterfaceSelectMenu() {
 	getSize();
-	const env = createEnvironment("canvas");
 	let leftPos = 0;
 	let i = 0;
-
+	
 	createDivMenu("selectMenu");
 	document.getElementById("selectMenu").innerHTML = '\
 		<i class="fa-solid fa-arrow-left" id="backIcon"></i> \
 		<i class="fa-solid fa-question" id="toggleButton"></i> \
 		<div id="toggleDiv" class="hidden"></div>';
-	// createDivText();
 	createPanelDiv();
 	createDivInputImg("P1");
 	createDivInputImg("P2");
@@ -196,8 +195,13 @@ function createSelectMenu(field, characters) {
 	});
 	createCursor("swatch0", "cursorP1", "P1");
 	createCursor("swatch1", "cursorP2", "P2");
+}
+
+function createSelectMenu(field, characters) {
+	const env = createEnvironment("canvas");
 	env.scene.add(createLobbyScene(env));
 	createLobbyLights(env);
+	createInterfaceSelectMenu();
 	env.renderer.render(env.scene, env.camera);
 	return {
 		"renderer": env.renderer,
@@ -240,4 +244,4 @@ function displayMainMenu() {
 	divMenu.appendChild(fullScreenIcon);
 }
 
-export { displayMainMenu, createSelectMenu, moveCursor, createDivMenu, displayLobby, createWaitingScreen};
+export { displayMainMenu, createSelectMenu, moveCursor, createDivMenu, displayLobby, createWaitingScreen, createInterfaceSelectMenu};

@@ -124,7 +124,7 @@ async function localGameLoop() {
 	if (start) {
 		if (keyPress)
 			handleKeyPress(keysPressed, player1, player2, environment);
-		checkCollision(environment.ball, player1, player2, environment);
+		//checkCollision(environment.ball, player1, player2, environment);
 		setIfGameIsEnd();
 	}
 	if (player1 && player2)

@@ -518,20 +518,17 @@ class CSRFTokenTest(TestCase):
 
 # =========================================================================================
         
-# class ProfileUpdate(TestCase):
-#     def setUp(self):
-#         self.client = Client()
+class ProfileUpdate(TestCase):
+    def setUp(self):
+        self.client = Client()
 
-#         CustomUser.objects.create_user(
-#             username="lboulatr",
-#             email="lboulatr@gmail.com",
-#             password="UserPassword9+")
+        self.user1 = CustomUser.objects.create_user(
+            username="osterga",
+            email="osterga@gmail.com",
+            password="UserPassword9+",
+            bio="Bonjours a tous, c'est Osterga")
         
-#         self.client.login(username='lboulatr', password='UserPassword9+')
+        self.client.login(username='osterga', password='UserPassword9+')
 
-#     def test_change_profil_picture_success(self):
-#         response = self.client.post(
-#             reverse('update_profile'), 
-#             content_type='application/json')
-        
-#         self.assertEqual(response.status_code, 200)
+    def test_check_bio(self):
+        print(self.user1.bio)

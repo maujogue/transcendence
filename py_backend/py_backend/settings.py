@@ -30,22 +30,25 @@ SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
 DEBUG = bool(os.environ.get("DEBUG", default=0))
 
 ALLOWED_HOSTS = ['*']
-# ALLOWED_HOSTS = ["*"]
+
+# Define for backend
+
+MIN_LEN_USERNAME = 3
+MAX_LEN_USERNAME = 25
+MAX_LEN_EMAIL = 50
 
 # Application definition
 
 INSTALLED_APPS = [
-	'daphne',
 	'corsheaders',
+	'daphne',
 	'django.contrib.admin',
 	'django.contrib.auth',
 	'django.contrib.contenttypes',
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
-	'django_extensions',
-    'channels',
-	'bootstrap5',
+	# 'django_extensions',
 	'multiplayer',
 	'users',
 	'friends',
@@ -65,7 +68,6 @@ CHANNEL_LAYERS = {
 }
 
 MIDDLEWARE = [
-	'corsheaders.middleware.CorsMiddleware',
 	'django.middleware.security.SecurityMiddleware',
 	'django.contrib.sessions.middleware.SessionMiddleware',
 	'django.middleware.common.CommonMiddleware',
@@ -73,6 +75,7 @@ MIDDLEWARE = [
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'py_backend.urls'
@@ -174,7 +177,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "mediafiles"
+MEDIA_ROOT = BASE_DIR / "media"
 
 
 # Default primary key field type
@@ -191,6 +194,7 @@ CORS_ALLOWED_ORIGINS = [
 	"https://127.0.0.1:8000",
 	"https://localhost:8000",
     "https://127.0.0.1:8001",
+	"https://localhost:8001",
 	"https://localhost:5500",
 ]
 

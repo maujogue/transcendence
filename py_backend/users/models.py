@@ -13,7 +13,7 @@ class CustomUser(AbstractUser):
 	email = models.EmailField(max_length=settings.MAX_LEN_EMAIL, unique=True)
 	title = models.CharField(max_length=50, null=True)
 	avatar = models.ImageField(default='avatar.jpg', upload_to='profile_pictures')
-	bio = models.CharField(max_length=500, null=True)
+	bio = models.TextField(max_length=settings.MAX_LEN_TEXT, default="")
 	banner = models.ImageField(null=True)
 	winrate = models.DecimalField(max_digits=4, decimal_places=4, validators=[MinValueValidator(0), MaxValueValidator(1)], null=True)
 	rank = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(50)], null=True)
@@ -29,3 +29,10 @@ class CustomUser(AbstractUser):
 			output_size = (300, 300)
 			img.thumbnail(output_size)
 			img.save(self.avatar.path)
+
+
+class Profile(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+
+    avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
+    bio = models.TextField(max_length=settings.MAX_LEN_TEXT)

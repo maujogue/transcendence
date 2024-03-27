@@ -12,7 +12,7 @@ from django.middleware.csrf import get_token
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 
-from users.forms import CustomUserCreationForm, UpdateProfilePictureForm
+from users.forms import CustomUserCreationForm, UpdateProfileForm
 from users.utils import validation_register
 
 from . import forms
@@ -65,7 +65,7 @@ def logout_view(request):
 @login_required
 @require_http_methods(["POST"])
 def update_profile(request):
-    profile_picture_form = UpdateProfilePictureForm(request.POST, request.FILES, instance=request.user.profile)
+    profile_picture_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
 
     if profile_picture_form.is_valid():
         new_picture = profile_picture_form.save()

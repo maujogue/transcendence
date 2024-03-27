@@ -22,7 +22,7 @@ async function createMap(env) {
 	const map = await loadScene('maps/map1/map1');
 	const model = map.scene;
     //const mesh = model.children[0];
-	const light = new THREE.AmbientLight(0xffffff, 5);
+	const light = new THREE.AmbientLight(0xffffff, 3);
 
 	model.scale.set(.4, .4, .4);
     model.rotateX(Math.PI / 3);

@@ -1,9 +1,17 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
-from users.models import CustomUser
 from django.test import Client
+from django.core.files.base import ContentFile
+
+from PIL import Image
+from io import BytesIO
 import json
+
+from users.models import CustomUser
+from users.models import Profile
+
+
 
 
 class RegisterTests(TestCase):
@@ -522,13 +530,97 @@ class ProfileUpdate(TestCase):
     def setUp(self):
         self.client = Client()
 
-        self.user1 = CustomUser.objects.create_user(
+        self.user = CustomUser.objects.create_user(
             username="osterga",
             email="osterga@gmail.com",
             password="UserPassword9+",
             bio="Bonjours a tous, c'est Osterga")
+
+        self.user2 = CustomUser.objects.create_user(
+            username="ochoa",
+            email="ochoa@gmail.com",
+            password="UserPassword9+",
+            bio="Bonjours a tous, c'est Ochoa")
+
+        self.profile = Profile.objects.create(user=self.user)
         
         self.client.login(username='osterga', password='UserPassword9+')
 
-    def test_check_bio(self):
-        print(self.user1.bio)
+    def test_user_is_not_login(self):
+        self.client.logout()
+        update_datas = {
+            'bio': 'Lorem ipsum dolor sit amet'
+        }
+
+        response = self.client.post(
+            reverse('update_profile'), 
+            data=json.dumps(update_datas), 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 302)
+
+
+    def test_update_datas_bio(self):
+        update_datas = {
+            'bio': 'Lorem ipsum dolor sit amet'
+        }
+
+        response = self.client.post(
+            reverse('update_profile'), 
+            data=json.dumps(update_datas), 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(self.user.bio, 'Lorem ipsum dolor sit amet')
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_empty_bio(self):
+        update_datas = {
+            'bio': ''
+        }
+
+        response = self.client.post(
+            reverse('update_profile'), 
+            data=json.dumps(update_datas), 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(self.user.bio, '')
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_change_username(self):
+        update_datas = {
+            'username': 'damien'
+        }
+
+        response = self.client.post(
+            reverse('update_profile'), 
+            data=json.dumps(update_datas), 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(self.user.username, 'damien')
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_change_username_is_already_used(self):
+        update_datas = {
+            'username': 'ochoa'
+        }
+
+        response = self.client.post(
+            reverse('update_profile'), 
+            data=json.dumps(update_datas), 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        response_data = response.json()
+
+        self.assertEqual(response_data.get('error'), 'Username is already used.')
+        self.assertEqual(response.status_code, 400)

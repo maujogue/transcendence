@@ -23,6 +23,14 @@ def username_is_valid(username):
 	if CustomUser.objects.filter(username=username).exists():
 		return False, f'Username already exists.'
 	return True, None
+
+def username_is_unique(username):
+	if not username or username == '':
+		return False, f'Username cannot be empty.'
+	response = CustomUser.objects.filter(username=username).exists()
+	if response:
+		return False, f'Username is already used.'
+	return True, None
 	
 def validation_register(data):
 	validation_errors = []
@@ -38,4 +46,5 @@ def validation_register(data):
 	if not valid_email:
 		validation_errors.append(response_email)
 	return validation_errors
+
 	

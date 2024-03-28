@@ -18,15 +18,21 @@ def create_tournament(request):
 	try:
 		data = json.loads(request.body.decode("utf-8"))
 	except json.JSONDecodeError:
-		return JsonResponse(data = {'errors': "Invalid JSON format"}, status = 406)
-		
+		return JsonResponse(data = {'errors': "Invalid JSON format"},
+			status=406)
+
 	name = data.get('name')
 	max_players = data.get('max_players')
 	is_private = data.get('is_private')
 	password = data.get('password')
 
+	if is_private and not password:
+		return JsonResponse({"errors": "A private tournament must have a password."},
+			status=400)
+
 	if not name or not isinstance(max_players, int) or max_players not in range(2, 33):
-		return JsonResponse({"errors": "Invalid tournament data"}, status = 400)
+		return JsonResponse({"errors": "Invalid tournament data"},
+			status=400)
 
 	try:
 		tournament = Tournament.objects.create(
@@ -37,8 +43,10 @@ def create_tournament(request):
 			host=request.user
 		)
 	except IntegrityError:
-		return JsonResponse({"errors": "Tournament could not be created"}, status = 400)
-	return JsonResponse({"message": "Tournament created successfully", "id": tournament.id}, status=201)
+		return JsonResponse({"errors": "Tournament could not be created"},
+			status = 400)
+	return JsonResponse({"message": "Tournament created successfully", "id": tournament.id},
+		status = 201)
 		
 	# return JsonResponse({'status': 'success'}, status=200)
 	# return JsonResponse({"error": "Invalid request"}, status=400)

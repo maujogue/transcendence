@@ -131,12 +131,23 @@ class TournamentModeTest(TestCase):
 		response = self.create_test_tournament(name, max_players, is_private, password)
 		self.assertEqual(response.status_code, 400)
 
-	def test_(self):
-		name = "Hi there"
-		max_players = "5"
+	def test_response_content_no_password(self):
+		name = "Hi theree"
+		max_players = 8
 		is_private = True
-		password = "password"
+		password = ""
 		
 		self.client.login(username='testuser1', password='Password1+')
 		response = self.create_test_tournament(name, max_players, is_private, password)
-		self.assertEqual(response.status_code, 400)
+		response_data = json.loads(response.content)
+		self.assertIn('errors', response_data)
+		self.assertEqual("A private tournament must have a password.", response_data['errors'])
+
+	def test_no_login(self):
+		name = "Hi there"
+		max_players = 8
+		is_private = True
+		password = "password"
+		
+		response = self.create_test_tournament(name, max_players, is_private, password)
+		self.assertEqual(response.status_code, 302)

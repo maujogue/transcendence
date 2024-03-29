@@ -151,3 +151,6 @@ class TournamentModeTest(TestCase):
 		
 		response = self.create_test_tournament(name, max_players, is_private, password)
 		self.assertEqual(response.status_code, 302)
+
+# tests join a tournament
+		

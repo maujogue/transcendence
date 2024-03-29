@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.http import JsonResponse
 
 from django.contrib.auth.decorators import login_required
@@ -11,14 +10,13 @@ from .models import Tournament
 
 import json
 
-
 @login_required
 @require_http_methods(["POST"])
 def create_tournament(request):
 	try:
 		data = json.loads(request.body.decode("utf-8"))
 	except json.JSONDecodeError:
-		return JsonResponse(data = {'errors': "Invalid JSON format"},
+		return JsonResponse(data = {"errors": "Invalid JSON format"},
 			status=406)
 
 	name = data.get('name')
@@ -31,7 +29,7 @@ def create_tournament(request):
 			status=400)
 
 	if not name or not isinstance(max_players, int) or max_players not in range(2, 33):
-		return JsonResponse({"errors": "Invalid tournament data"},
+		return JsonResponse({"errors": "Invalid tournament data."},
 			status=400)
 
 	try:
@@ -43,10 +41,41 @@ def create_tournament(request):
 			host=request.user
 		)
 	except IntegrityError:
-		return JsonResponse({"errors": "Tournament could not be created"},
-			status = 400)
-	return JsonResponse({"message": "Tournament created successfully", "id": tournament.id},
-		status = 201)
+		return JsonResponse({"errors": "Tournament could not be created."},
+			status=400)
+
+	return JsonResponse({"message": "Tournament created successfully.", "id": tournament.id},
+		status=201)
 		
-	# return JsonResponse({'status': 'success'}, status=200)
-	# return JsonResponse({"error": "Invalid request"}, status=400)
+@login_required
+@require_http_methods(["POST"])
+def join_tournament(request, tournament_id):
+	try:
+		data = json.loads(request.body.decode("utf-8"))
+	except json.JSONDecodeError:
+		return JsonResponse(data = {"errors": "Invalid JSON format"},
+			status=406)
+
+	try:
+		tournament = Tournament.objects.get(pk=tournament_id)
+	except Tournament.DoesNotExist:
+		return JsonResponse({"errors": "Tournament not found."},
+				  status=404)
+
+	if tournament.participants.filter(pk=request.user.pk).exists():
+		return JsonResponse({"errors": "User has already joined the tournament."},
+				   status=400)
+
+	if tournament.is_private:
+		password = data.get("password", None)
+		if password != tournament.password:
+			return JsonResponse({"errors": "Invalid password."},
+					status=403)
+
+	if tournament.participants.count() >= tournament.max_players:
+		return JsonResponse({"errors": "The tournament is already full."},
+				   status=400)
+
+	tournament.participants.add(request.user)
+	return JsonResponse({"message": "Tournament joined successfully.", "id": tournament.id},
+					 status=200)

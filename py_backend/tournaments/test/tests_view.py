@@ -15,9 +15,9 @@ class TournamentModeTest(TestCase):
 		self.user_host = CustomUser.objects.create_user(username='testuser1',
 										 email='testuser1@gmail.com',
 										 password='Password1+')
-		# self.user2 = CustomUser.objects.create_user(username='testuser2',
-		# 								 email='testuser2@gmail.com',
-		# 								 password='Password2+')
+		self.user2 = CustomUser.objects.create_user(username='testuser2',
+										 email='testuser2@gmail.com',
+										 password='Password2+')
 		# self.user3 = CustomUser.objects.create_user(username='testuser3',
 		# 								 email='testuser3@gmail.com',
 		# 								 password='Password3+')
@@ -40,6 +40,11 @@ class TournamentModeTest(TestCase):
 			data=json.dumps(data),
 			content_type='application/json')
 		return response
+
+	def find_tournament_id(self, tournament):
+		if tournament.status_code == 201:
+			tournament_data = json.loads(tournament.content)
+		return tournament_data.get('id')
 
 # tests create a tournament
 
@@ -154,3 +159,25 @@ class TournamentModeTest(TestCase):
 
 # tests join a tournament
 		
+# join public with host working fine
+	def test_join_with_host(self):
+		self.client.login(username='testuser1', password='Password1+')
+
+		name = "Hi there"
+		max_players = 8
+		is_private = False
+		password = ""
+		
+		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		id = self.find_tournament_id(tournament)
+		print(f"id = {id}")
+		response = self.client.post(reverse("join_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)
+
+# join public with other account working fine
+
+# join without authentification
+# join private with wrong password
+# join private with right password
+# join a tournament already full
+# join a tournament already joined

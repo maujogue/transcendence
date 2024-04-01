@@ -46,7 +46,7 @@ class TournamentModeTest(TestCase):
 			tournament_data = json.loads(tournament.content)
 		return tournament_data.get('id')
 
-# tests create a tournament
+### tests create a tournament ###
 
 	def test_create_right_tournament_private(self):
 		name = "test1"
@@ -157,7 +157,7 @@ class TournamentModeTest(TestCase):
 		response = self.create_test_tournament(name, max_players, is_private, password)
 		self.assertEqual(response.status_code, 302)
 
-# tests join a tournament
+### tests join a tournament ###
 		
 # join public with host working fine
 	def test_join_with_host(self):
@@ -370,3 +370,130 @@ class TournamentModeTest(TestCase):
 		id = 999
 		response = self.client.post(reverse("join_tournament", args=[id]))
 		self.assertEqual(response.status_code, 404)
+
+### tests quit tournament ###
+		
+	# quit after joining
+	def test_quit_after_joining(self):
+		self.client.login(username='testuser1', password='Password1+')
+
+		name = "Hi there"
+		max_players = 8
+		is_private = False
+		password = ""
+		
+		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		id = self.find_tournament_id(tournament)
+		response = self.client.post(reverse("join_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)
+
+		response = self.client.post(reverse("quit_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)
+
+		tournament = Tournament.objects.get(pk=id)
+		self.assertFalse(tournament.participants.filter(username='testuser1').exists())
+
+# user not in the tournament
+	def test_quit_was_not_in_it(self):
+		self.client.login(username='testuser1', password='Password1+')
+
+		name = "Hi there"
+		max_players = 8
+		is_private = False
+		password = ""
+		
+		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		id = self.find_tournament_id(tournament)
+
+		response = self.client.post(reverse("quit_tournament", args=[id]))
+		self.assertEqual(response.status_code, 400)
+
+# tournament does not exist
+	def test_quit_tournament_does_not_exist(self):
+		self.client.login(username='testuser1', password='Password1+')
+
+		name = "Hi there"
+		max_players = 8
+		is_private = False
+		password = ""
+
+		id = 999
+
+		response = self.client.post(reverse("quit_tournament", args=[id]))
+		self.assertEqual(response.status_code, 404)
+
+# user quit multiple times
+	def test_quit_and_join_multiple_time(self):
+		self.client.login(username='testuser1', password='Password1+')
+
+		name = "Hi there"
+		max_players = 8
+		is_private = False
+		password = ""
+		
+		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		id = self.find_tournament_id(tournament)
+		response = self.client.post(reverse("join_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)
+
+		response = self.client.post(reverse("quit_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)
+
+		response = self.client.post(reverse("join_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)
+
+		response = self.client.post(reverse("quit_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)
+
+		tournament = Tournament.objects.get(pk=id)
+		self.assertFalse(tournament.participants.filter(username='testuser1').exists())
+
+# non logged user quit
+	def test_quit_non_logged_quit(self):
+		self.client.login(username='testuser1', password='Password1+')
+
+		name = "Hi there"
+		max_players = 8
+		is_private = False
+		password = ""
+		
+		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		id = self.find_tournament_id(tournament)
+		response = self.client.post(reverse("join_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)
+
+		self.client.logout()
+
+		response = self.client.post(reverse("quit_tournament", args=[id]))
+		self.assertEqual(response.status_code, 302)
+
+# a user try to join a full tournament, another quit, he try to join again
+	def test_quit_after_tournament_full_then_join(self):
+
+		name = "Hi there"
+		max_players = 2
+		is_private = False
+		password = ""
+		
+		self.client.login(username='testuser1', password='Password1+')
+		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		id = self.find_tournament_id(tournament)
+		response = self.client.post(reverse("join_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)
+
+
+		self.client.login(username='testuser2', password='Password2+')
+		response = self.client.post(reverse("join_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)
+
+		self.client.login(username='testuser3', password='Password3+')
+		response = self.client.post(reverse("join_tournament", args=[id]))
+		self.assertEqual(response.status_code, 400)
+
+		self.client.login(username='testuser2', password='Password2+')
+		response = self.client.post(reverse("quit_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)
+
+		self.client.login(username='testuser3', password='Password3+')
+		response = self.client.post(reverse("join_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)

@@ -78,3 +78,20 @@ def join_tournament(request, tournament_id):
 	tournament.participants.add(request.user)
 	return JsonResponse({"message": "Tournament joined successfully.", "id": tournament.id},
 					status=200)
+
+@login_required
+@require_http_methods(["POST"])
+def quit_tournament(request, tournament_id):
+	try:
+		tournament = Tournament.objects.get(pk=tournament_id)
+	except Tournament.DoesNotExist:
+		return JsonResponse({"errors": "Tournament not found."},
+					status=404)
+
+	if not tournament.participants.filter(pk=request.user.pk).exists():
+		return JsonResponse({"errors": "User in not a participant of the tournament.", "id": tournament.id},
+					  status=400)
+
+	tournament.participants.remove(request.user)
+	return JsonResponse({"message": "Successfully quit the tournament.", "id": tournament.id},
+					status=200)

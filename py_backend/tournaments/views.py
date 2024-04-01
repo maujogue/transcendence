@@ -51,22 +51,21 @@ def create_tournament(request):
 @require_http_methods(["POST"])
 def join_tournament(request, tournament_id):
 	try:
-		data = json.loads(request.body.decode("utf-8"))
-	except json.JSONDecodeError:
-		return JsonResponse(data = {"errors": "Invalid JSON format"},
-			status=406)
-
-	try:
 		tournament = Tournament.objects.get(pk=tournament_id)
 	except Tournament.DoesNotExist:
 		return JsonResponse({"errors": "Tournament not found."},
-				  status=404)
+					status=404)
 
 	if tournament.participants.filter(pk=request.user.pk).exists():
 		return JsonResponse({"errors": "User has already joined the tournament."},
-				   status=400)
+					status=400)
 
 	if tournament.is_private:
+		try:
+			data = json.loads(request.body.decode("utf-8"))
+		except json.JSONDecodeError:
+			return JsonResponse(data = {"errors": "Invalid JSON format"},
+					status=406)
 		password = data.get("password", None)
 		if password != tournament.password:
 			return JsonResponse({"errors": "Invalid password."},
@@ -74,8 +73,8 @@ def join_tournament(request, tournament_id):
 
 	if tournament.participants.count() >= tournament.max_players:
 		return JsonResponse({"errors": "The tournament is already full."},
-				   status=400)
+					status=400)
 
 	tournament.participants.add(request.user)
 	return JsonResponse({"message": "Tournament joined successfully.", "id": tournament.id},
-					 status=200)
+					status=200)

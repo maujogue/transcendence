@@ -38,12 +38,16 @@ function resize(environment) {
 		}
 	}
 	if (document.getElementsByClassName("sprite")[0]) {
+		const spriteP1 = document.getElementById("spriteP1");
+		const spriteP2 = document.getElementById("spriteP2");
 		if (isFullScreen()) {
-			document.getElementsById("spriteP1").style.backgroundImage = "url('assets/img/sprite/P1SheetFullScreen.png')";
-			document.getElementById("spriteP2").style.backgroundImage = "url('assets/img/sprite/P2SheetFullScreen.png')";
+			spriteP1.style.backgroundImage = "url('assets/img/sprite/P1SheetFullScreen.png')";
+			if (spriteP2)
+				spriteP2.style.backgroundImage = "url('assets/img/sprite/P2SheetFullScreen.png')";
 		} else {
-			document.getElementById("spriteP1").style.backgroundImage = "url('assets/img/sprite/P1SheetSmall.png')";
-			document.getElementById("spriteP2").style.backgroundImage = "url('assets/img/sprite/P2SheetSmall.png')";
+			spriteP1.style.backgroundImage = "url('assets/img/sprite/P1SheetSmall.png')";
+			if (spriteP2)
+				spriteP2.style.backgroundImage = "url('assets/img/sprite/P2SheetSmall.png')";
 		}
 	}
 }

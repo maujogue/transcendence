@@ -1,7 +1,7 @@
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { Character } from "./Class/Character.js";
 import { charactersNames } from "./varGlobal.js";
-import { characters } from './main.js';
+import { characters, displayMainMenu } from './main.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
 
@@ -48,13 +48,20 @@ export async function loadScene(fileName) {
     });
 }
 
-export async function loadAllModel() {
-    charactersNames.forEach(async (characterName) => {
-        try {
-            const gltf = await loadModel(characterName);
-            characters.set(characterName, new Character(characterName, gltf.scene, gltf.animations));
-        } catch (error) {
-			console.error('Error loading model:', error);
-        }
-    });
+export async function loadAllModel(loadIsOver) {
+    try {
+        const loadingPromises = charactersNames.map(async (characterName) => {
+            try {
+                const gltf = await loadModel(characterName);
+                characters.set(characterName, new Character(characterName, gltf.scene, gltf.animations));
+            } catch (error) {
+                console.error('Error loading model:', error);
+            }
+        });
+
+        await Promise.all(loadingPromises);
+            displayMainMenu();
+    } catch (error) {
+        console.error('Error loading models:', error);
+    }
 }

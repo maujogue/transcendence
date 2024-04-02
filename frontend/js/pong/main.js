@@ -29,7 +29,6 @@ export const clock = new THREE.Clock();
 export const characters = new Map();
 
 loadAllModel();
-displayMainMenu();
 
 async function goToLocalSelectMenu() {
 	divMenu = document.getElementById("menu");

@@ -28,12 +28,13 @@ class TournamentModeTest(TestCase):
 										 email='testuser5@gmail.com',
 										 password='Password5+')
 
-	def create_test_tournament(self, name, max_players, is_private, password):
+	def create_test_tournament(self, name, max_players, is_private, password, score_to_win):
 		data = {
 			'name': name,
 			'max_players': max_players,
 			'is_private': is_private,
 			'password': password,
+			'score_to_win': score_to_win
 		}
 		response = self.client.post(
 			reverse('create_tournament'),
@@ -53,9 +54,10 @@ class TournamentModeTest(TestCase):
 		max_players = 5
 		is_private = True
 		password = "password"
+		score_to_win = 5
 		
 		self.client.login(username='testuser1', password='Password1+')
-		response = self.create_test_tournament(name, max_players, is_private, password)
+		response = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		self.assertEqual(response.status_code, 201)
 		
 		try:
@@ -72,9 +74,10 @@ class TournamentModeTest(TestCase):
 		max_players = 5
 		is_private = False
 		password = ""
+		score_to_win = 5
 		
 		self.client.login(username='testuser1', password='Password1+')
-		response = self.create_test_tournament(name, max_players, is_private, password)
+		response = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		self.assertEqual(response.status_code, 201)
 		
 		try:
@@ -91,9 +94,10 @@ class TournamentModeTest(TestCase):
 		max_players = 33
 		is_private = False
 		password = ""
+		score_to_win = 5
 		
 		self.client.login(username='testuser1', password='Password1+')
-		response = self.create_test_tournament(name, max_players, is_private, password)
+		response = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		self.assertEqual(response.status_code, 400)
 
 	def test_player_min(self):
@@ -101,9 +105,32 @@ class TournamentModeTest(TestCase):
 		max_players = 1
 		is_private = False
 		password = ""
+		score_to_win = 5
 		
 		self.client.login(username='testuser1', password='Password1+')
-		response = self.create_test_tournament(name, max_players, is_private, password)
+		response = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
+		self.assertEqual(response.status_code, 400)
+
+	def test_score_max(self):
+		name = "test3"
+		max_players = 32
+		is_private = False
+		password = ""
+		score_to_win = 21
+		
+		self.client.login(username='testuser1', password='Password1+')
+		response = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
+		self.assertEqual(response.status_code, 400)
+
+	def test_score_min(self):
+		name = "test4"
+		max_players = 1
+		is_private = False
+		password = ""
+		score_to_win = 1
+		
+		self.client.login(username='testuser1', password='Password1+')
+		response = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		self.assertEqual(response.status_code, 400)
 
 	def test_private_no_password(self):
@@ -111,9 +138,10 @@ class TournamentModeTest(TestCase):
 		max_players = 8
 		is_private = True
 		password = ""
+		score_to_win = 5
 		
 		self.client.login(username='testuser1', password='Password1+')
-		response = self.create_test_tournament(name, max_players, is_private, password)
+		response = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		self.assertEqual(response.status_code, 400)
 
 	def test_no_name(self):
@@ -121,9 +149,10 @@ class TournamentModeTest(TestCase):
 		max_players = 8
 		is_private = True
 		password = "password"
+		score_to_win = 5
 		
 		self.client.login(username='testuser1', password='Password1+')
-		response = self.create_test_tournament(name, max_players, is_private, password)
+		response = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		self.assertEqual(response.status_code, 400)
 
 	def test_invalid_data_format(self):
@@ -131,9 +160,10 @@ class TournamentModeTest(TestCase):
 		max_players = "5"
 		is_private = True
 		password = "password"
+		score_to_win = 5
 		
 		self.client.login(username='testuser1', password='Password1+')
-		response = self.create_test_tournament(name, max_players, is_private, password)
+		response = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		self.assertEqual(response.status_code, 400)
 
 	def test_response_content_no_password(self):
@@ -141,9 +171,10 @@ class TournamentModeTest(TestCase):
 		max_players = 8
 		is_private = True
 		password = ""
+		score_to_win = 5
 		
 		self.client.login(username='testuser1', password='Password1+')
-		response = self.create_test_tournament(name, max_players, is_private, password)
+		response = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		response_data = json.loads(response.content)
 		self.assertIn('errors', response_data)
 		self.assertEqual("A private tournament must have a password.", response_data['errors'])
@@ -153,8 +184,9 @@ class TournamentModeTest(TestCase):
 		max_players = 8
 		is_private = True
 		password = "password"
+		score_to_win = 5
 		
-		response = self.create_test_tournament(name, max_players, is_private, password)
+		response = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		self.assertEqual(response.status_code, 302)
 
 # create tournament with same name
@@ -163,18 +195,19 @@ class TournamentModeTest(TestCase):
 		max_players = 5
 		is_private = False
 		password = ""
+		score_to_win = 5
 		
 		self.client.login(username='testuser1', password='Password1+')
-		response = self.create_test_tournament(name, max_players, is_private, password)
+		response = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		self.assertEqual(response.status_code, 201)
 		try:
 			tournament = Tournament.objects.get(name=name)
 		except Tournament.DoesNotExist:
 			self.fail("Tournament was not created")
-		response = self.create_test_tournament("other name", max_players, is_private, password)
+		response = self.create_test_tournament("other name", max_players, is_private, password, score_to_win)
 		self.assertEqual(response.status_code, 201)
 
-		response = self.create_test_tournament(name, max_players, is_private, password)
+		response = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		self.assertEqual(response.status_code, 400)
 
 ### tests join a tournament ###
@@ -187,8 +220,9 @@ class TournamentModeTest(TestCase):
 		max_players = 8
 		is_private = False
 		password = ""
+		score_to_win = 5
 		
-		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		tournament = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		id = self.find_tournament_id(tournament)
 		response = self.client.post(reverse("join_tournament", args=[id]))
 		self.assertEqual(response.status_code, 200)
@@ -201,8 +235,9 @@ class TournamentModeTest(TestCase):
 		max_players = 8
 		is_private = False
 		password = ""
+		score_to_win = 5
 		
-		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		tournament = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		id = self.find_tournament_id(tournament)
 
 		self.client.login(username='testuser2', password='Password2+')
@@ -217,9 +252,10 @@ class TournamentModeTest(TestCase):
 		max_players = 3
 		is_private = False
 		password = ""
+		score_to_win = 5
 
 		self.client.login(username='testuser1', password='Password1+')
-		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		tournament = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		id = self.find_tournament_id(tournament)
 		response = self.client.post(reverse("join_tournament", args=[id]))
 		self.assertEqual(response.status_code, 200)
@@ -242,9 +278,10 @@ class TournamentModeTest(TestCase):
 		max_players = 4
 		is_private = False
 		password = ""
+		score_to_win = 5
 
 		self.client.login(username='testuser1', password='Password1+')
-		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		tournament = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		id = self.find_tournament_id(tournament)
 		response = self.client.post(reverse("join_tournament", args=[id]))
 		self.assertEqual(response.status_code, 200)
@@ -274,9 +311,10 @@ class TournamentModeTest(TestCase):
 		max_players = 4
 		is_private = False
 		password = ""
+		score_to_win = 5
 
 		self.client.login(username='testuser1', password='Password1+')
-		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		tournament = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		id = self.find_tournament_id(tournament)
 		response = self.client.post(reverse("join_tournament", args=[id]))
 		self.assertEqual(response.status_code, 200)
@@ -298,9 +336,10 @@ class TournamentModeTest(TestCase):
 		max_players = 4
 		is_private = False
 		password = ""
+		score_to_win = 5
 
 		self.client.login(username='testuser1', password='Password1+')
-		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		tournament = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		id = self.find_tournament_id(tournament)
 		self.client.logout()
 		response = self.client.post(reverse("join_tournament", args=[id]))
@@ -313,10 +352,11 @@ class TournamentModeTest(TestCase):
 		max_players = 4
 		is_private = False
 		password = ""
+		score_to_win = 5
 
 		self.client.login(username='testuser1', password='Password1+')
 
-		tournament1 = self.create_test_tournament(name, max_players, is_private, password)
+		tournament1 = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		id1 = self.find_tournament_id(tournament1)
 		response = self.client.post(reverse("join_tournament", args=[id1]))
 		self.assertEqual(response.status_code, 200)
@@ -325,8 +365,9 @@ class TournamentModeTest(TestCase):
 		max_players = 5
 		is_private = False
 		password = ""
+		score_to_win = 5
 
-		tournament2 = self.create_test_tournament(name, max_players, is_private, password)
+		tournament2 = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		id2 = self.find_tournament_id(tournament2)
 		response = self.client.post(reverse("join_tournament", args=[id2]))
 		self.assertEqual(response.status_code, 200)
@@ -335,8 +376,9 @@ class TournamentModeTest(TestCase):
 		max_players = 7
 		is_private = False
 		password = ""
+		score_to_win = 5
 
-		tournament3 = self.create_test_tournament(name, max_players, is_private, password)
+		tournament3 = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		id3 = self.find_tournament_id(tournament3)
 		response = self.client.post(reverse("join_tournament", args=[id3]))
 		self.assertEqual(response.status_code, 200)
@@ -349,8 +391,9 @@ class TournamentModeTest(TestCase):
 		max_players = 8
 		is_private = True
 		password = "Salade1+"
+		score_to_win = 5
 		
-		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		tournament = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		id = self.find_tournament_id(tournament)
 		response = self.client.post(reverse("join_tournament", args=[id]), {'password': 'Salade1+'}, content_type='application/json')
 		self.assertEqual(response.status_code, 200)
@@ -363,8 +406,9 @@ class TournamentModeTest(TestCase):
 		max_players = 8
 		is_private = True
 		password = "Salade1+"
+		score_to_win = 5
 		
-		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		tournament = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		id = self.find_tournament_id(tournament)
 		response = self.client.post(reverse("join_tournament", args=[id]), {'password': 'Burger1+'}, content_type='application/json')
 		self.assertEqual(response.status_code, 403)
@@ -377,8 +421,9 @@ class TournamentModeTest(TestCase):
 		max_players = 8
 		is_private = True
 		password = "Salade1+"
+		score_to_win = 5
 		
-		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		tournament = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		id = self.find_tournament_id(tournament)
 		response = self.client.post(reverse("join_tournament", args=[id]), {'password': None}, content_type='application/json')
 		self.assertEqual(response.status_code, 403)
@@ -401,8 +446,9 @@ class TournamentModeTest(TestCase):
 		max_players = 8
 		is_private = False
 		password = ""
+		score_to_win = 5
 		
-		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		tournament = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		id = self.find_tournament_id(tournament)
 		response = self.client.post(reverse("join_tournament", args=[id]))
 		self.assertEqual(response.status_code, 200)
@@ -421,8 +467,9 @@ class TournamentModeTest(TestCase):
 		max_players = 8
 		is_private = False
 		password = ""
+		score_to_win = 5
 		
-		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		tournament = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		id = self.find_tournament_id(tournament)
 
 		response = self.client.post(reverse("quit_tournament", args=[id]))
@@ -436,6 +483,7 @@ class TournamentModeTest(TestCase):
 		max_players = 8
 		is_private = False
 		password = ""
+		score_to_win = 5
 
 		id = 999
 
@@ -450,8 +498,9 @@ class TournamentModeTest(TestCase):
 		max_players = 8
 		is_private = False
 		password = ""
+		score_to_win = 5
 		
-		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		tournament = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		id = self.find_tournament_id(tournament)
 		response = self.client.post(reverse("join_tournament", args=[id]))
 		self.assertEqual(response.status_code, 200)
@@ -476,8 +525,9 @@ class TournamentModeTest(TestCase):
 		max_players = 8
 		is_private = False
 		password = ""
+		score_to_win = 5
 		
-		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		tournament = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		id = self.find_tournament_id(tournament)
 		response = self.client.post(reverse("join_tournament", args=[id]))
 		self.assertEqual(response.status_code, 200)
@@ -494,9 +544,10 @@ class TournamentModeTest(TestCase):
 		max_players = 2
 		is_private = False
 		password = ""
+		score_to_win = 5
 		
 		self.client.login(username='testuser1', password='Password1+')
-		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		tournament = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		id = self.find_tournament_id(tournament)
 		response = self.client.post(reverse("join_tournament", args=[id]))
 		self.assertEqual(response.status_code, 200)
@@ -526,9 +577,10 @@ class TournamentModeTest(TestCase):
 		max_players = 2
 		is_private = False
 		password = ""
+		score_to_win = 5
 
 		self.client.login(username='testuser1', password='Password1+')
-		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		tournament = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		id = self.find_tournament_id(tournament)
 		response = self.client.post(reverse("delete_tournament", args=[id]))
 		self.assertEqual(response.status_code, 200)
@@ -542,9 +594,10 @@ class TournamentModeTest(TestCase):
 		max_players = 2
 		is_private = False
 		password = ""
+		score_to_win = 5
 
 		self.client.login(username='testuser1', password='Password1+')
-		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		tournament = self.create_test_tournament(name, max_players, is_private, password, score_to_win)
 		id = self.find_tournament_id(tournament)
 		self.client.login(username='testuser2', password='Password2+')
 		response = self.client.post(reverse("delete_tournament", args=[id]))
@@ -556,6 +609,7 @@ class TournamentModeTest(TestCase):
 		max_players = 2
 		is_private = False
 		password = ""
+		score_to_win = 5
 
 		self.client.login(username='testuser1', password='Password1+')
 		id = 99

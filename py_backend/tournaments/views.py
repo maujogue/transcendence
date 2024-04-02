@@ -23,12 +23,14 @@ def create_tournament(request):
 	max_players = data.get('max_players')
 	is_private = data.get('is_private')
 	password = data.get('password')
+	score_to_win=data.get('score_to_win')
 
 	if is_private and not password:
 		return JsonResponse({"errors": "A private tournament must have a password."},
 					status=400)
 
-	if not name or not isinstance(max_players, int) or max_players not in range(2, 33):
+	if not name or not isinstance(max_players, int) or max_players not in range(2, 33) \
+			or not isinstance(score_to_win, int) or score_to_win not in range(1, 21):
 		return JsonResponse({"errors": "Invalid tournament data."},
 					status=400)
 
@@ -38,7 +40,8 @@ def create_tournament(request):
 			max_players=max_players,
 			is_private=is_private,
 			password=password if is_private else None,
-			host=request.user
+			host=request.user,
+			score_to_win=score_to_win
 		)
 	except IntegrityError as e:
 		if 'unique constraint' in str(e).lower():

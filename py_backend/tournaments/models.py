@@ -13,6 +13,7 @@ class Tournament(models.Model):
 	password = models.fields.CharField(max_length=100, blank=True, null=True)
 	host = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 	participants = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='joined_tournaments', blank=True)
+	score_to_win = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(20)])
 
 	def __str__(self):
 		return f'{self.name}'
@@ -20,6 +21,14 @@ class Tournament(models.Model):
 	def clean(self):
 		super().clean()
 
-#TODO add the number of points to win a match in the tournament model
+class Participant(models.Model):
+	nickname = models.fields.CharField(max_length=100, unique=True)
+	user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='tournament_participation')
+	tournament = models.ForeignKey('Tournament', on_delete=models.CASCADE, related_name='participant_info')
+	is_admin = models.BooleanField(default=False)
+
+	def __str__(self):
+		return f"{self.nickname} in {self.tournament.name}"
+
 #TODO create a model for the player
 #TODO create a model for the brackets

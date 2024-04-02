@@ -181,8 +181,8 @@ function createInterfaceSelectMenu() {
 	
 	createDivMenu("selectMenu");
 	document.getElementById("selectMenu").innerHTML = '\
-		<i class="fa-solid fa-arrow-left" id="backIcon"></i> \
-		<i class="fa-solid fa-question" id="toggleButton"></i> \
+		<i class="fa-solid fa-arrow-left icon" id="backIcon"></i> \
+		<i class="fa-solid fa-question icon" id="toggleButton"></i> \
 		<div id="toggleDiv" class="hidden"></div>';
 	createPanelDiv();
 	createDivInputImg("P1");
@@ -239,7 +239,7 @@ function displayMainMenu() {
 	createButton("Local Game", "localGame", "menu");
 	createButton("Online Game", "onlineGame", "menu");
 	const fullScreenIcon = document.createElement("div");
-	fullScreenIcon.innerHTML = '<i class="fa-solid fa-expand fullScreenIcon" id="fullScreen"></i>';
+	fullScreenIcon.innerHTML = '<i class="fa-solid fa-expand fullScreenIcon icon" id="fullScreen"></i>';
 
 	divMenu.appendChild(fullScreenIcon);
 }

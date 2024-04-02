@@ -93,21 +93,10 @@ h1 {
 	z-index: 100;
 }
 
-#backIcon:hover {
-	font-size:1.2em;
-	margin: 2%;
-}
-
 #toggleButton {
 	align-self: flex-end;
 	margin: 2.5%;
 	z-index: 100;
-}
-
-#toggleButton:hover {
-	font-size:1.2em;
-	margin: 2%;
-	cursor: pointer;
 }
 
 #toggleDiv {
@@ -158,11 +147,6 @@ h1 {
 	margin: 0.5%;
 	/* font-size: 1em; */
 	z-index: 100;
-	transition: all 0.3s ease;
-}
-
-.close-matchmaking:hover {
-	transform: scale(1.2);
 }
 
 .menu {
@@ -256,11 +240,16 @@ h1 {
 	margin: 2.5%;
 	font-size: 1em;
 	z-index: 100;
+	transition: all 0.3s ease;
 }
 
-.fullScreenIcon:hover {
-	font-size:1.2em;
-	margin: 2%;
+.icon {
+	transition: all 0.3s ease;
+}
+
+.icon:hover {
+	transform: scale(1.2);
+	cursor: pointer;
 }
 
 @keyframes moveKey {

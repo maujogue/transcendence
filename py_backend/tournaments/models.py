@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 from users.models import CustomUser
 
 class Tournament(models.Model):
-	name = models.fields.CharField(max_length=100)
+	name = models.fields.CharField(max_length=100, unique=True)
 	max_players = models.IntegerField(validators=[MinValueValidator(2), MaxValueValidator(32)])
 	is_private = models.BooleanField()
 	password = models.fields.CharField(max_length=100, blank=True, null=True)
@@ -20,9 +20,6 @@ class Tournament(models.Model):
 	def clean(self):
 		super().clean()
 
-
-"""
-For tournaments, the easier I think is to make all tournaments visible by anyone, but it's written
-if it's public or private. If it's private, when you try to join, a password is asked. If it's
-public, anyone can join if the maximum number of players isn't reached.
-"""
+#TODO add the number of points to win a match in the tournament model
+#TODO create a model for the player
+#TODO create a model for the brackets

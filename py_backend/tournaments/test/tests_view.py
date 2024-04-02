@@ -157,6 +157,26 @@ class TournamentModeTest(TestCase):
 		response = self.create_test_tournament(name, max_players, is_private, password)
 		self.assertEqual(response.status_code, 302)
 
+# create tournament with same name
+	def test_create_duplicate_name(self):
+		name = "Hi there"
+		max_players = 5
+		is_private = False
+		password = ""
+		
+		self.client.login(username='testuser1', password='Password1+')
+		response = self.create_test_tournament(name, max_players, is_private, password)
+		self.assertEqual(response.status_code, 201)
+		try:
+			tournament = Tournament.objects.get(name=name)
+		except Tournament.DoesNotExist:
+			self.fail("Tournament was not created")
+		response = self.create_test_tournament("other name", max_players, is_private, password)
+		self.assertEqual(response.status_code, 201)
+
+		response = self.create_test_tournament(name, max_players, is_private, password)
+		self.assertEqual(response.status_code, 400)
+
 ### tests join a tournament ###
 		
 # join public with host working fine
@@ -497,3 +517,47 @@ class TournamentModeTest(TestCase):
 		self.client.login(username='testuser3', password='Password3+')
 		response = self.client.post(reverse("join_tournament", args=[id]))
 		self.assertEqual(response.status_code, 200)
+
+### tests delete tournament ###
+
+# delete tournament successfully
+	def test_delete_successfully(self):
+		name = "Hi there"
+		max_players = 2
+		is_private = False
+		password = ""
+
+		self.client.login(username='testuser1', password='Password1+')
+		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		id = self.find_tournament_id(tournament)
+		response = self.client.post(reverse("delete_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)
+		response = self.client.post(reverse("join_tournament", args=[id]))
+		self.assertEqual(response.status_code, 404)
+
+
+# no host try to delete
+	def test_delete_no_host(self):
+		name = "Hi there"
+		max_players = 2
+		is_private = False
+		password = ""
+
+		self.client.login(username='testuser1', password='Password1+')
+		tournament = self.create_test_tournament(name, max_players, is_private, password)
+		id = self.find_tournament_id(tournament)
+		self.client.login(username='testuser2', password='Password2+')
+		response = self.client.post(reverse("delete_tournament", args=[id]))
+		self.assertEqual(response.status_code, 400)
+
+# try to delete a non existing tournament
+	def test_delete_no_host(self):
+		name = "Hi there"
+		max_players = 2
+		is_private = False
+		password = ""
+
+		self.client.login(username='testuser1', password='Password1+')
+		id = 99
+		response = self.client.post(reverse("delete_tournament", args=[id]))
+		self.assertEqual(response.status_code, 404)

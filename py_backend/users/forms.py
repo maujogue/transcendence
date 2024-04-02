@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User, Group
 from users.models import CustomUser
 
 class CustomUserCreationForm(UserCreationForm):
@@ -14,3 +13,9 @@ class CustomUserCreationForm(UserCreationForm):
 class LoginForm(forms.Form):
 	username = forms.CharField(max_length=64, label='Username')
 	password = forms.CharField(max_length=100, widget=forms.PasswordInput, label='Password')
+
+class UpdateProfilePictureForm(forms.ModelForm):
+	avatar = forms.ImageField(widget=forms.FileInput(attrs={'class': 'form-control-file'}))
+	class Meta:
+		model = CustomUser
+		fields = ['avatar']

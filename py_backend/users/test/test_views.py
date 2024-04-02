@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from django.http import JsonResponse
+from django.core.files.uploadedfile import SimpleUploadedFile
 from users.models import CustomUser
 from django.test import Client
 import json
@@ -233,6 +233,7 @@ class RegisterTests(TestCase):
 
     def test_missing_username(self):
         newUser = {
+            'username': '',
             'email': 'ochoaloco@gmail.com',
             'password': 'Km4C47_x£6v,+',
             'password1': 'Km4C47_x£6v,+',
@@ -249,6 +250,7 @@ class RegisterTests(TestCase):
     def test_missing_email(self):
         newUser = {
             'username': 'ochoa',
+            'email': '',
             'password': 'Km4C47_x£6v,+',
             'password1': 'Km4C47_x£6v,+',
             'password2': 'Km4C47_x£6v,'
@@ -266,6 +268,7 @@ class RegisterTests(TestCase):
             'username': 'ochoa',
             'email': 'ochoaloco@gmail.com',
             'password': 'Km4C47_x£6v,',
+            'password': '',
             'password2': 'Km4C47_x£6v,'
         }
 
@@ -281,7 +284,8 @@ class RegisterTests(TestCase):
             'username': 'ochoa',
             'email': 'ochoaloco@gmail.com',
             'password': 'Km4C47_x£6v,',
-            'password1': 'Km4C47_x£6v,'
+            'password1': 'Km4C47_x£6v,',
+            'password2': ''
         }
 
         response = self.client.post(
@@ -418,6 +422,7 @@ class LoginTests(TestCase):
 
     def test_missing_username(self):
         user = {
+            'username': '',
             'password': 'Damiendubocal75'
         }
 
@@ -430,7 +435,8 @@ class LoginTests(TestCase):
 
     def test_missing_password(self):
         user = {
-            'username': 'lboulatr'
+            'username': 'lboulatr',
+            'password': ''
         }
 
         response = self.client.post(
@@ -472,14 +478,22 @@ class LogoutTests(TestCase):
         CustomUser.objects.create_user(
             username="lboulatr",
             email="lboulatr@gmail.com",
-            password="Damiendubocal75")
+            password="UserPassword9+")
         
     def test_logout_success(self):
+        self.client.login(username='lboulatr', password='UserPassword9+')
         response = self.client.post(
             reverse('logout_view'), 
             content_type='application/json')
-        
+
         self.assertEqual(response.status_code, 200)
+
+    def test_logout_but_not_login(self):
+        response = self.client.post(
+            reverse('logout_view'), 
+            content_type='application/json')
+
+        self.assertEqual(response.status_code, 302)
 
 # =========================================================================================
 
@@ -503,3 +517,21 @@ class CSRFTokenTest(TestCase):
         self.assertEqual(response.status_code, 405)
 
 # =========================================================================================
+        
+# class ProfileUpdate(TestCase):
+#     def setUp(self):
+#         self.client = Client()
+
+#         CustomUser.objects.create_user(
+#             username="lboulatr",
+#             email="lboulatr@gmail.com",
+#             password="UserPassword9+")
+        
+#         self.client.login(username='lboulatr', password='UserPassword9+')
+
+#     def test_change_profil_picture_success(self):
+#         response = self.client.post(
+#             reverse('update_profile'), 
+#             content_type='application/json')
+        
+#         self.assertEqual(response.status_code, 200)

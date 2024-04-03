@@ -487,7 +487,7 @@ class TournamentModeTest(TestCase):
 		response = self.client.post(reverse("quit_tournament", args=[id]))
 		self.assertEqual(response.status_code, 302)
 
-# a user try to join a full tournament, another quit, he try to join again
+# a user try to join a full tournament, another quit, he try to join again 
 	def test_quit_after_tournament_full_then_join(self):
 
 		name = "Hi there"

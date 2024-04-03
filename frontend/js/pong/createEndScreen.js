@@ -34,12 +34,8 @@ function createEndScreen(winnerName) {
 }
 
 function returnToMenu() {
-    if (document.getElementById("endscreen"))
-        document.getElementById("endscreen").remove();
-    if (document.getElementById("selectMenu"))
-        document.getElementById("selectMenu").remove();
-    // document.getElementById("score").remove();
-    // document.getElementById("area").remove();
+    const menu = document.getElementsByClassName("menu");
+    menu[0].remove();
     displayMainMenu();
 }
 

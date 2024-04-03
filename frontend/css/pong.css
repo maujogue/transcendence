@@ -136,6 +136,40 @@ h1 {
 	margin: 2%;
 }
 
+/* #onlineMenu {
+	display: flex;
+	flex-direction: row;
+	background-color: black;
+	justify-content: center;
+	align-items: center;
+} */
+
+#tournamentMenu, #onlineMenu {
+	display: flex;
+	flex-direction: row;
+	background-color: black;
+	justify-content: center;
+	align-items: center;
+}
+
+.gamemode {
+	background-color: white;
+	color: black;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 25%;
+	width: 25%;
+	margin: 5%;
+	transition: all 0.3s ease;
+}
+
+.gamemode:hover {
+	transform: scale(1.1);
+	cursor: pointer;
+}
+
 /* #spriteP2 {
 	left: -1%
 } */

@@ -244,4 +244,33 @@ function displayMainMenu() {
 	divMenu.appendChild(fullScreenIcon);
 }
 
-export { displayMainMenu, createSelectMenu, moveCursor, createDivMenu, displayLobby, createWaitingScreen, createInterfaceSelectMenu};
+function createGamemodeDiv(text, parent) {
+	const div = document.createElement("div");
+	const textNode = document.createTextNode(text);
+	div.appendChild(textNode);
+	div.className = "gamemode";
+	div.id = text;
+	parent.appendChild(div);
+}
+
+function createOnlineMenu() {
+	document.getElementById("menu").remove();
+	createDivMenu("onlineMenu");
+	const parent = document.getElementById("onlineMenu");
+	parent.innerHTML = '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>';
+	createGamemodeDiv("1v1", parent);
+	createGamemodeDiv("Tournament", parent);
+}
+
+function createTournamentMenu() {
+	document.getElementById("onlineMenu").remove();
+	createDivMenu("tournamentMenu");
+	const parent = document.getElementById("tournamentMenu");
+	parent.innerHTML = '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>';
+	createGamemodeDiv("Create Tournament", parent);
+	createGamemodeDiv("Join Tournament", parent);
+}
+
+export { displayMainMenu, createSelectMenu, moveCursor, createDivMenu,
+		displayLobby, createWaitingScreen, createInterfaceSelectMenu, 
+		createOnlineMenu, createTournamentMenu};

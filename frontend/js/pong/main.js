@@ -1,13 +1,13 @@
 import { resize, isFullScreen } from "./resize.js";
 import { checkCollision } from "./collision.js";
-import { displayMainMenu, createSelectMenu, displayLobby } from './menu.js';
+import { displayMainMenu, createSelectMenu, createOnlineMenu, createTournamentMenu} from './menu.js';
 import { handleKeyPress, handleMenuKeyPress } from './handleKeyPress.js';
 import { displayCharacter, updateMixers } from './displayCharacter.js';
 import { initGame } from "./initGame.js";
 import { createEndScreen, returnToMenu } from "./createEndScreen.js"
 import { actualizeScore } from "./score.js";
 import { createField } from "./createField.js";
-import { connectToLobby, onlineGameLoop, goToOnlineSelectMenu, createOnlineSelectMenu} from "./online.js";
+import { createOnlineSelectMenu} from "./online.js";
 import { ClearAllEnv, getSize } from "./createEnvironment.js";
 import { loadAllModel } from "./loadModels.js"
 import { loadScene } from "./loadModels.js";
@@ -85,6 +85,12 @@ document.body.addEventListener("click", function(event) {
 	}
 	if (event.target.id == 'onlineGame') {
 		isOnline = true;
+		createOnlineMenu(field);
+	}
+	if (event.target.id == 'Tournament') {
+		createTournamentMenu();
+	}
+	if (event.target.id == '1v1') {
 		createOnlineSelectMenu(field);
 	}
 	if (event.target.id == 'fullScreen') {

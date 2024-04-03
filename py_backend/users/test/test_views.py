@@ -624,3 +624,20 @@ class ProfileUpdate(TestCase):
 
         self.assertEqual(response_data.get('error'), 'Username is already used.')
         self.assertEqual(response.status_code, 400)
+
+    
+    def test_change_username_camelcase(self):
+        update_datas = {
+            'username': 'OchoA'
+        }
+
+        response = self.client.post(
+            reverse('update_profile'), 
+            data=json.dumps(update_datas), 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        response_data = response.json()
+
+        self.assertEqual(response_data.get('error'), 'Username is already used.')
+        self.assertEqual(response.status_code, 400)

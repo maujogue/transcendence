@@ -27,7 +27,8 @@ def username_is_valid(username):
 def username_is_unique(username):
 	if not username or username == '':
 		return False, f'Username cannot be empty.'
-	response = CustomUser.objects.filter(username=username).exists()
+	converted_usernane = username.lower()
+	response = CustomUser.objects.filter(username=converted_usernane).exists()
 	if response:
 		return False, f'Username is already used.'
 	return True, None

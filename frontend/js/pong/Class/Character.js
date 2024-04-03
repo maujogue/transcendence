@@ -13,7 +13,7 @@ export class Character {
 
 	setCharacterInLobby(playerName, environment) {
 		this.mesh.scale.set(0.005, 0.005, 0.005);
-		if (playerName == "player1") {
+		if (playerName == "player1" || playerName == "player") {
 			this.mesh.position.set(lobbyCharPos - 0.1, -.5, .0).unproject(environment.camera);
 			this.mesh.rotateZ(Math.PI / -4);
 		}

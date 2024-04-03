@@ -128,7 +128,6 @@ async function localGameLoop() {
 		ClearAllEnv(environment);
 		divMenu.remove();
 		environment = await initGame(player1, player2);
-		const map = createMap(environment);
 	}
 	if (start) {
 		console.log("start");

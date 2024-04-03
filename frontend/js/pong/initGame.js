@@ -4,22 +4,30 @@ import { loadFont, actualizeScore } from './score.js';
 import { colors } from './varGlobal.js';
 import * as THREE from 'three';
 
-function setPointLight(env, player, pos1, pos2) {
+function setPointLight(env, player, posTop, posBot) {
 	const color = colors.get(player.name);
-	const botLight = new THREE.PointLight(color, 1000);
-	const topLight = new THREE.PointLight(color, 1000);
+	const botLight = new THREE.PointLight(color, 100);
+	const topLight = new THREE.PointLight(color, 100);
+	const helperTop = new THREE.PointLightHelper(topLight, 1);
+	const helperBot = new THREE.PointLightHelper(botLight, 1);
 
-	botLight.position.set(pos1).unproject(env.camera);
-	topLight.position.set(pos2).unproject(env.camera);
+	env.scene.add(helperBot);
+	env.scene.add(helperTop);
+	botLight.position.copy(posBot).unproject(env.camera);
+	topLight.position.copy(posTop).unproject(env.camera);
 	env.scene.add(botLight);
 	env.scene.add(topLight);
-	//env.scene.add(helper);
-	return (light);
+	return {botLight, topLight};
 }
 
 function setPlayersLights(player1, player2, environment) {
 	console.log("Name : ", player1.name);
-	player1.light = setPointLight(environment, player1, (-.9, -.15, .82), (-.9, .15, .82));
+	let posBot = new THREE.Vector3(-.5, -.1, .9);
+	let posTop = new THREE.Vector3(-.75, 1.2, .9);
+	player1.lights = setPointLight(environment, player1, posTop, posBot);
+	posBot = new THREE.Vector3(.75, 0, .82);
+	posTop = new THREE.Vector3(.75, 1.2, .9);
+	player2.lights = setPointLight(environment, player2, posTop, posBot);
 }
 
 function setPositionPaddle(PlayerName, posX, environment) {
@@ -45,13 +53,11 @@ function removeSelectMenu() {
 
 async function initGame(player1, player2) {
 	const environment = createEnvironment("canvas");
+	const map = createMap(environment);
 
-	let dirLight = new THREE.DirectionalLight(0xffffff, 0.1);
-	dirLight.position.set(0, 0, 1);
-	environment.scene.add(dirLight);
 	environment.scene.add(player1.paddle.mesh);
 	environment.scene.add(player2.paddle.mesh);
-	let spotlight = setPlayersLights(environment, player1.character, player2.character);
+	let spotlight = setPlayersLights(player1.character, player2.character, environment);
 	setPositionPaddle("player1", -.57, environment, player1);
 	setPositionPaddle("player2", .57, environment, player2);
 	removeSelectMenu();

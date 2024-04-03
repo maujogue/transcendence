@@ -1,6 +1,6 @@
 import { resize, isFullScreen } from "./resize.js";
 import { checkCollision } from "./collision.js";
-import { displayMainMenu, createSelectMenu, createOnlineMenu, createTournamentMenu} from './menu.js';
+import { displayMainMenu, createSelectMenu, createOnlineMenu, createTournamentMenu, createMenuCreateTournament} from './menu.js';
 import { handleKeyPress, handleMenuKeyPress } from './handleKeyPress.js';
 import { displayCharacter, updateMixers } from './displayCharacter.js';
 import { initGame } from "./initGame.js";
@@ -92,6 +92,9 @@ document.body.addEventListener("click", function(event) {
 	}
 	if (event.target.id == '1v1') {
 		createOnlineSelectMenu(field);
+	}
+	if (event.target.id == 'Create Tournament') {
+		createMenuCreateTournament();
 	}
 	if (event.target.id == 'fullScreen') {
 		if (!isFullScreen())

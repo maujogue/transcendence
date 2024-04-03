@@ -271,6 +271,44 @@ function createTournamentMenu() {
 	createGamemodeDiv("Join Tournament", parent);
 }
 
+function createFormTournament(parent) {
+	parent.innerHTML = '\
+	<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>\
+	<div id="tournamentForm">\
+	<form action="traitement_formulaire.php" method="post">\
+	<div>\
+		<label for="nom">Nom du tournoi :</label>\
+		<input type="text" id="nom" name="nom" required>\
+	</div>\
+	<div>\
+		<label for="nb_joueurs_max">Nombre de joueurs maximum :</label>\
+		<input type="number" id="nb_joueurs_max" name="nb_joueurs_max" min="2" required>\
+	</div>\
+	<div>\
+		<label for="points_par_match">Nombre de points par match :</label>\
+		<input type="number" id="points_par_match" name="points_par_match" min="1" required>\
+	</div>\
+	<div>\
+		<label for="prive">Tournoi privé :</label>\
+		<input type="checkbox" id="prive" name="prive">\
+	</div>\
+	<div id="mot_de_passe_div" style="display: none;">\
+		<label for="mot_de_passe">Mot de passe :</label>\
+		<input type="password" id="mot_de_passe" name="mot_de_passe">\
+	</div>\
+	<div>\
+		<button type="submit">Créer le tournoi</button>\
+	</div></div>\
+	</form>'
+}
+
+function createMenuCreateTournament() {
+	document.getElementById("tournamentMenu").remove();
+	createDivMenu("createTournament");
+	const parent = document.getElementById("createTournament");
+	createFormTournament(parent);
+}
+
 export { displayMainMenu, createSelectMenu, moveCursor, createDivMenu,
 		displayLobby, createWaitingScreen, createInterfaceSelectMenu, 
-		createOnlineMenu, createTournamentMenu};
+		createOnlineMenu, createTournamentMenu, createMenuCreateTournament};

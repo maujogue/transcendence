@@ -144,7 +144,7 @@ h1 {
 	align-items: center;
 } */
 
-#tournamentMenu, #onlineMenu {
+#tournamentMenu, #onlineMenu, #createTournament {
 	display: flex;
 	flex-direction: row;
 	background-color: black;

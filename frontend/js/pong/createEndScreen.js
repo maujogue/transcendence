@@ -34,7 +34,10 @@ function createEndScreen(winnerName) {
 }
 
 function returnToMenu() {
-    document.getElementById("endscreen").remove();
+    if (document.getElementById("endscreen"))
+        document.getElementById("endscreen").remove();
+    if (document.getElementById("selectMenu"))
+        document.getElementById("selectMenu").remove();
     // document.getElementById("score").remove();
     // document.getElementById("area").remove();
     displayMainMenu();

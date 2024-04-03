@@ -46,6 +46,9 @@ function removeSelectMenu() {
 async function initGame(player1, player2) {
 	const environment = createEnvironment("canvas");
 
+	let dirLight = new THREE.DirectionalLight(0xffffff, 0.1);
+	dirLight.position.set(0, 0, 1);
+	environment.scene.add(dirLight);
 	environment.scene.add(player1.paddle.mesh);
 	environment.scene.add(player2.paddle.mesh);
 	let spotlight = setPlayersLights(environment, player1.character, player2.character);

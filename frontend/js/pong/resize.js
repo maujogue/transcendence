@@ -30,6 +30,26 @@ function resize(environment) {
 	environment.camera.updateProjectionMatrix();
 	environment.renderer.setSize(width, height);
 	environment.renderer.render(environment.scene, environment.camera);
+	if (document.getElementById("spriteStart")) {
+		if (isFullScreen()) {
+			document.getElementById("spriteStart").style.backgroundImage = "url('assets/img/sprite/StartSheet.png')";
+		} else {
+			document.getElementById("spriteStart").style.backgroundImage = "url('assets/img/sprite/StartSheetSmall.png')";
+		}
+	}
+	if (document.getElementsByClassName("sprite")[0]) {
+		const spriteP1 = document.getElementById("spriteP1");
+		const spriteP2 = document.getElementById("spriteP2");
+		if (isFullScreen()) {
+			spriteP1.style.backgroundImage = "url('assets/img/sprite/P1SheetFullScreen.png')";
+			if (spriteP2)
+				spriteP2.style.backgroundImage = "url('assets/img/sprite/P2SheetFullScreen.png')";
+		} else {
+			spriteP1.style.backgroundImage = "url('assets/img/sprite/P1SheetSmall.png')";
+			if (spriteP2)
+				spriteP2.style.backgroundImage = "url('assets/img/sprite/P2SheetSmall.png')";
+		}
+	}
 }
 
 export {resize, isFullScreen }

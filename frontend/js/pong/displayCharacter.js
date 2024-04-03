@@ -18,12 +18,15 @@ function setPosXByPlayerName(name, x) {
 }
 
 function changeColor(color, environment, player, name) {
+	const newColor = new THREE.Color(color); 
 	const object = environment.scene.getObjectByName("paddle_" + name);
-	object.material.color.set(new THREE.Color(color));
+	object.material.color.set(newColor);
 	player.paddle.mesh = object;
-	player.light.color.set(new THREE.Color(color));
+	player.light.color.set(newColor);
+	const lightLobby = environment.scene.getObjectByName("lobbyLight");
+	if (lightLobby)
+		lightLobby.color.set(newColor);
 	environment.scene.add(object);
-	environment.renderer.render(environment.scene, environment.camera);
 	return (player);
 }
 

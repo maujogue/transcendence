@@ -16,6 +16,7 @@ urlpatterns = [
     path('', include('multiplayer.urls')),
 	path('', include('users.urls')),
     path('', include('friends.urls')),
+    path('', include('tournaments.urls'))
 ]
 
 if bool(settings.DEBUG):

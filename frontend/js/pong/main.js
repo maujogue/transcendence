@@ -7,7 +7,7 @@ import { initGame } from "./initGame.js";
 import { createEndScreen, returnToMenu } from "./createEndScreen.js"
 import { actualizeScore } from "./score.js";
 import { createField } from "./createField.js";
-import { connectToLobby } from "./online.js";
+import { connectToLobby, onlineGameLoop, goToOnlineSelectMenu, createOnlineSelectMenu} from "./online.js";
 import { ClearAllEnv, getSize } from "./createEnvironment.js";
 import { loadAllModel } from "./loadModels.js"
 import { loadScene } from "./loadModels.js";
@@ -21,15 +21,14 @@ let player2;
 let keyPress = false;
 let keysPressed = {};
 let isOnline = false;
+let localLoop = true;
 const gameDiv = document.getElementById('game');
-const idle = undefined;
 const field = await createField();
 export const lobby = await loadScene('lobbyTest');
 export const clock = new THREE.Clock();
 export const characters = new Map();
 
 loadAllModel();
-displayMainMenu();
 
 async function goToLocalSelectMenu() {
 	divMenu = document.getElementById("menu");
@@ -74,17 +73,19 @@ document.body.addEventListener("click", function(event) {
 		actualizeScore(player1, player2, environment, environment.font);
 		start = true;
 	}
-	if (event.target.id == 'backMenu') {
+	if (event.target.id == 'backMenu' || event.target.id == 'backIcon') {
+		localLoop = false;
 		ClearAllEnv(environment);
 		returnToMenu();
 	}
 	if (event.target.id == 'localGame') {
+		localLoop = true;
 		localGameLoop();
 		goToLocalSelectMenu();
 	}
 	if (event.target.id == 'onlineGame') {
 		isOnline = true;
-		connectToLobby(field);
+		createOnlineSelectMenu(field);
 	}
 	if (event.target.id == 'fullScreen') {
 		if (!isFullScreen())
@@ -92,8 +93,15 @@ document.body.addEventListener("click", function(event) {
 		else
 			document.exitFullscreen();
 	}
+	if (event.target.id == 'toggleButton') {
+		const div = document.getElementById('toggleDiv');
+		if (div.classList.contains('hidden'))
+			div.classList.remove('hidden');
+		else
+			div.classList.add('hidden');
+	}
 });
-
+ 
 document.addEventListener('fullscreenchange', function() {
 	resize(environment);
 });
@@ -123,6 +131,7 @@ async function localGameLoop() {
 		const map = createMap(environment);
 	}
 	if (start) {
+		console.log("start");
 		if (keyPress)
 			handleKeyPress(keysPressed, player1, player2, environment);
 		//checkCollision(environment.ball, player1, player2, environment);
@@ -131,7 +140,8 @@ async function localGameLoop() {
 	if (player1 && player2)
 		updateMixers(player1, player2);
 	environment?.renderer.render( environment.scene, environment.camera );
-	requestAnimationFrame( localGameLoop );
+	if (localLoop)
+		requestAnimationFrame( localGameLoop );
 }
 
 export { displayMainMenu }

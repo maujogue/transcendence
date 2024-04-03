@@ -45,8 +45,6 @@ function removeSelectMenu() {
 
 async function initGame(player1, player2) {
 	const environment = createEnvironment("canvas");
-	const map = await createMap(environment);
-
 
 	environment.scene.add(player1.paddle.mesh);
 	environment.scene.add(player2.paddle.mesh);

@@ -144,12 +144,39 @@ h1 {
 	align-items: center;
 } */
 
-#tournamentMenu, #onlineMenu, #createTournament {
+#tournamentMenu, #onlineMenu, #createTournament, #joinTournamentMenu {
 	display: flex;
 	flex-direction: row;
 	background-color: black;
 	justify-content: center;
 	align-items: center;
+}
+
+#listTournament{
+	background-color: white;
+	justify-content: center;
+	align-items: center;
+	width: 50%;
+	height: 50%;
+}
+
+.list-header {
+	display: flex;
+	font-size: 0.5em;
+	justify-content: space-between;
+	color: black;
+	border-bottom: 1px black solid;
+}
+
+.tournament-info {
+	display: flex;
+	font-size: 0.5em;
+	justify-content: space-between;
+	color: black;
+}
+
+.tournament-info:hover {
+	background-color: lightgray;
 }
 
 .gamemode {

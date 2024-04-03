@@ -274,8 +274,8 @@ function createTournamentMenu() {
 function createFormTournament(parent) {
 	parent.innerHTML = '\
 	<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>\
-	<div id="tournamentForm">\
-	<form action="traitement_formulaire.php" method="post">\
+	<div id="createTournamentForm">\
+	<form id="tournamentForm" method="post">\
 	<div>\
 		<label for="nom">Nom du tournoi :</label>\
 		<input type="text" id="nom" name="nom" required>\
@@ -302,7 +302,44 @@ function createFormTournament(parent) {
 	</form>'
 }
 
-function createMenuCreateTournament() {
+function createTournamentInfo(name, nb) {
+	const parent = document.getElementById("listTournament");
+	const tournament = document.createElement("div");
+	tournament.className = "tournament-info";
+	const div = document.createElement("div");
+	div.textContent = name;
+	const div2 = document.createElement("div");
+	div2.textContent = nb;
+	tournament.appendChild(div);
+	tournament.appendChild(div2);
+	parent.appendChild(tournament);
+}
+
+function createListTournament(parent) {
+	const listTournament = document.createElement("div");
+	const header = document.createElement("div");
+	header.className = "list-header";
+	const div = document.createElement("div");
+	div.textContent = "Tournaments name";
+	const div2 = document.createElement("div");
+	div2.textContent = "Nb";
+	header.appendChild(div);
+	header.appendChild(div2);
+	listTournament.appendChild(header);
+	listTournament.id = "listTournament";
+	parent.appendChild(listTournament);
+	createTournamentInfo("Tournament 1", "2/50");
+}
+
+export function createJoinTournamentMenu() {
+	document.getElementById("tournamentMenu").remove();
+	createDivMenu("joinTournamentMenu");
+	const parent = document.getElementById("joinTournamentMenu");
+	parent.innerHTML = '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>';
+	createListTournament(parent);
+}
+
+export function createMenuCreateTournament() {
 	document.getElementById("tournamentMenu").remove();
 	createDivMenu("createTournament");
 	const parent = document.getElementById("createTournament");
@@ -311,4 +348,4 @@ function createMenuCreateTournament() {
 
 export { displayMainMenu, createSelectMenu, moveCursor, createDivMenu,
 		displayLobby, createWaitingScreen, createInterfaceSelectMenu, 
-		createOnlineMenu, createTournamentMenu, createMenuCreateTournament};
+		createOnlineMenu, createTournamentMenu};

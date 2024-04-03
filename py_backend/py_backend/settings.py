@@ -189,6 +189,8 @@ CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = True # A Retirer
 
+CORS_ALLOW_ALL_ORIGINS = True
+
 CORS_ALLOWED_ORIGINS = [
 	"https://127.0.0.1:5500",
 	"https://127.0.0.1:8000",
@@ -196,6 +198,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://127.0.0.1:8001",
 	"https://localhost:8001",
 	"https://localhost:5500",
+    "http://127.0.0.1:5500"
 ]
 
 CSRF_TRUSTED_ORIGINS = [

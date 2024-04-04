@@ -48,4 +48,10 @@ def validation_register(data):
 		validation_errors.append(response_email)
 	return validation_errors
 
-	
+
+def get_image_format_from_base64(base64_string):
+    try:
+        image_format = base64_string.split(';base64')[0].split('/')[1]
+        return image_format
+    except Exception:
+        return None

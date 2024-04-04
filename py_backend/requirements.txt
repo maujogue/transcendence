@@ -10,4 +10,5 @@ django-cors-headers==4.3.1
 pillow==10.2.0
 wheel
 django_extensions
+requests-toolbelt==0.7.1
 # channels-redis==4.2.0

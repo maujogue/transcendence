@@ -6,13 +6,13 @@ import * as THREE from 'three';
 
 function setPointLight(env, player, posTop, posBot) {
 	const color = colors.get(player.name);
-	const botLight = new THREE.PointLight(color, 100);
-	const topLight = new THREE.PointLight(color, 100);
+	const botLight = new THREE.PointLight(color, 50);
+	const topLight = new THREE.PointLight(color, 50);
 	const helperTop = new THREE.PointLightHelper(topLight, 1);
 	const helperBot = new THREE.PointLightHelper(botLight, 1);
 
-	env.scene.add(helperBot);
-	env.scene.add(helperTop);
+	// env.scene.add(helperBot);
+	// env.scene.add(helperTop);
 	botLight.position.copy(posBot).unproject(env.camera);
 	topLight.position.copy(posTop).unproject(env.camera);
 	env.scene.add(botLight);
@@ -23,10 +23,10 @@ function setPointLight(env, player, posTop, posBot) {
 function setPlayersLights(player1, player2, environment) {
 	console.log("Name : ", player1.name);
 	let posBot = new THREE.Vector3(-.5, -.1, .9);
-	let posTop = new THREE.Vector3(-.75, 1.2, .9);
+	let posTop = new THREE.Vector3(-.42, .5, .92);
 	player1.lights = setPointLight(environment, player1, posTop, posBot);
-	posBot = new THREE.Vector3(.75, 0, .82);
-	posTop = new THREE.Vector3(.75, 1.2, .9);
+	posBot = new THREE.Vector3(.5, -.1, .9);
+	posTop = new THREE.Vector3(.42, .5, .92);
 	player2.lights = setPointLight(environment, player2, posTop, posBot);
 }
 
@@ -58,8 +58,8 @@ async function initGame(player1, player2) {
 	environment.scene.add(player1.paddle.mesh);
 	environment.scene.add(player2.paddle.mesh);
 	let spotlight = setPlayersLights(player1.character, player2.character, environment);
-	setPositionPaddle("player1", -.57, environment, player1);
-	setPositionPaddle("player2", .57, environment, player2);
+	setPositionPaddle("player1", -.65, environment, player1);
+	setPositionPaddle("player2", .65, environment, player2);
 	removeSelectMenu();
 	let ball = createBall(environment);
 	environment.scene.add(ball.mesh);

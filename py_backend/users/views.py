@@ -13,7 +13,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 
 from users.forms import CustomUserCreationForm, UpdateUserForm, UpdateProfileForm
-from users.utils import validation_register, username_is_unique
+from users.utils import validation_register, username_is_unique, get_image_format_from_base64
 
 from . import forms
 import json
@@ -65,14 +65,20 @@ def logout_view(request):
 @login_required
 @require_http_methods(["POST"])
 def update_profile(request):
-    try:
-        data = json.loads(request.body.decode("utf-8"))
-    except json.JSONDecodeError:
-        return JsonResponse(data={'errors': "Invalid JSON format"}, status=406)
-    
-    username = data.get('username')
-    bio = data.get('bio')
-    avatar = data.get('avatar')
+    if request.content_type == 'application/json':
+        try:
+            data = json.loads(request.body.decode("utf-8"))
+        except json.JSONDecodeError:
+            return JsonResponse(data={'errors': "Invalid JSON format"}, status=406)
+        username = data.get('username')
+        bio = data.get('bio')
+        avatar = data.get('avatar')
+    elif request.content_type.startswith('multipart/form-data'):
+        username = request.POST.get('username')
+        bio = request.POST.get('bio')
+        avatar = request.FILES.get('avatar')
+    else:
+        return JsonResponse(data={'errors': "Unsupported content type"}, status=415)
     
     if username:
         is_unique, error_message = username_is_unique(username)
@@ -84,12 +90,24 @@ def update_profile(request):
         request.user.bio = bio
         request.user.save()
     if avatar:
-        print('avatar exists.')
+        request.user.avatar.save(avatar.name, avatar)
+        request.user.save()
     return JsonResponse({"status": "success"}, status=200)
 
 
 @require_http_methods(["GET"])
 @ensure_csrf_cookie
 def get_csrf_token(request):
-    token = get_token(request)
-    return JsonResponse({"csrfToken": token}, status=200)
+    csrf_token = get_token(request)
+    response = JsonResponse({'csrfToken': csrf_token})
+    response["Access-Control-Allow-Origin"] = "*" # Allow all origins
+    response["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    response["Access-Control-Allow-Headers"] = "X-CSRFToken, Content-Type"
+    return response
+
+
+# @require_http_methods(["GET"])
+# @ensure_csrf_cookie
+# def get_csrf_token(request):
+#     token = get_token(request)
+#     return JsonResponse({"csrfToken": token}, status=200)

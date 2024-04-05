@@ -88,7 +88,7 @@
                 };
         
                 // Fetch CSRF token
-                fetch("http://127.0.0.1:5500/get_csrf_token/", {
+                fetch("http://127.0.0.1:8080/get_csrf_token/", {
                     method: "GET",
                     credentials: "include", // Include credentials if needed
                 })
@@ -102,7 +102,7 @@
                     const csrfToken = data.csrfToken;
                     console.log(csrfToken);
                     // Register user with CSRF token
-                    fetch("http://127.0.0.1:5500/register/", {
+                    fetch("http://127.0.0.1:8080/register/", {
                         method: "POST",
                         headers: {
                             "X-CSRFToken": csrfToken,

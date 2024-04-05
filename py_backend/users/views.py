@@ -73,10 +73,6 @@ def update_profile(request):
         username = data.get('username')
         bio = data.get('bio')
         avatar = data.get('avatar')
-    elif request.content_type.startswith('multipart/form-data'):
-        username = request.POST.get('username')
-        bio = request.POST.get('bio')
-        avatar = request.FILES.get('avatar')
     else:
         return JsonResponse(data={'errors': "Unsupported content type"}, status=415)
     
@@ -90,7 +86,7 @@ def update_profile(request):
         request.user.bio = bio
         request.user.save()
     if avatar:
-        request.user.avatar.save(avatar.name, avatar)
+        request.user.avatar = avatar
         request.user.save()
     return JsonResponse({"status": "success"}, status=200)
 
@@ -98,16 +94,5 @@ def update_profile(request):
 @require_http_methods(["GET"])
 @ensure_csrf_cookie
 def get_csrf_token(request):
-    csrf_token = get_token(request)
-    response = JsonResponse({'csrfToken': csrf_token})
-    response["Access-Control-Allow-Origin"] = "*" # Allow all origins
-    response["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
-    response["Access-Control-Allow-Headers"] = "X-CSRFToken, Content-Type"
-    return response
-
-
-# @require_http_methods(["GET"])
-# @ensure_csrf_cookie
-# def get_csrf_token(request):
-#     token = get_token(request)
-#     return JsonResponse({"csrfToken": token}, status=200)
+    token = get_token(request)
+    return JsonResponse({"csrfToken": token}, status=200)

@@ -30,7 +30,6 @@ class CustomUser(AbstractUser):
 			img.thumbnail(output_size)
 			img.save(self.avatar.path)
 
-
 class Profile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
 

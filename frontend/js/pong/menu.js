@@ -23,9 +23,19 @@ function createIcon(parent, character) {
 	img.className = "charactersIcon"
 	img.setAttribute("src", "assets\\img\\character_icon\\" + character + ".png");
 	img.setAttribute("alt", character);
-	img.setAttribute("width", (width / charactersNames.length) + "px");
-	img.setAttribute("height", "100%");
+	img.style.width = "100%";
+	img.style.height = "100%";
+	// img.style.border = "1px solid black";
 	parent.appendChild(img);
+}
+
+function createWaitingScreen() {
+	createDivMenu("waitingScreen");
+	const waitingScreen = document.getElementById("waitingScreen");
+	waitingScreen.innerHTML = '\
+		<i class="fa-solid fa-xmark close-matchmaking" id="closeMatchmaking"></i> \
+		<div id="waitingText">Waiting for other player</div>';
+	
 }
 
 function createSwatchPanel(leftPos, nb, character) {
@@ -35,10 +45,11 @@ function createSwatchPanel(leftPos, nb, character) {
 
 	newDiv.style.zIndex = "100";
 	newDiv.style.display = "block";
-	newDiv.style.left = leftPos + "px";
-	newDiv.style.bottom = "0px";
-	newDiv.style.width = (width / charactersNames.length) + "px";
-	newDiv.style.height = "100%";
+	// newDiv.style.left = leftPos + "px";
+	// newDiv.style.bottom = "0px";
+	// newDiv.style.width = ((width / 2) / charactersNames.length) + "px";
+	// newDiv.style.border = "1px solid black";
+	newDiv.style.height = "50%";
 	document.getElementById("panel").appendChild(newDiv);
 	createIcon(newDiv, character);
 }
@@ -101,14 +112,16 @@ function createDivText() {
 	divText.style.zIndex = '100';
 	divText.style.margin = '5%';
 	divText.style.color = 'white';
-    const textChooseColor = document.createTextNode("Choose your color");
-	const breakLine = document.createElement("br");
-	const textStart = document.createTextNode("Press 'Space' to start");
-	textChooseColor.id = "textChooseColor";
+	const textPress = document.createTextNode("Start with");
 	
-    divText.appendChild(textChooseColor);
-	divText.appendChild(breakLine);
-	divText.appendChild(textStart);
+	divText.appendChild(textPress);
+	const spaceSheet = document.createElement("div");
+	spaceSheet.id = "spaceSheet";
+	if (isFullScreen())
+		spaceSheet.style.backgroundImage = "url('assets/img/sprite/spaceFullScreen.png')";
+	else
+		spaceSheet.style.backgroundImage = "url('assets/img/sprite/space.png')";
+	divText.appendChild(spaceSheet);
 	document.getElementById("selectMenu").appendChild(divText);
 }
 
@@ -136,20 +149,45 @@ function createPanelDiv() {
 	
 	swatch.id = "panel";
 	swatch.style.position = "relative";
-	swatch.style.height = "10%";
+	swatch.style.height = "25%";
 	swatch.style.color = "blue";
 	document.getElementById("selectMenu").appendChild(swatch);
 }
 
-function createSelectMenu(field, characters) {
+function createDivInputImg(playerName) {
+	const infoDiv = document.getElementById("toggleDiv");
+	const inputAnimate = document.createElement("div");
+	const sprite = document.createElement("div");
+	inputAnimate.className = "inputAnimate";
+	inputAnimate.classList.add("input" + playerName);
+	sprite.className = "sprite";
+	sprite.id = "sprite" + playerName;
+	if (isFullScreen())
+		sprite.style.backgroundImage = "url('assets/img/sprite/" + playerName + "Sheet.png')";
+	else
+		sprite.style.backgroundImage = "url('assets/img/sprite/" + playerName + "SheetSmall.png')";
+	const divText = document.createElement("div");
+	divText.textContent = playerName + ": ";
+	divText.className = "infoText";
+	inputAnimate.appendChild(divText);
+	infoDiv.appendChild(inputAnimate);
+	inputAnimate.appendChild(sprite);
+}
+
+function createInterfaceSelectMenu() {
 	getSize();
-	const env = createEnvironment("canvas");
 	let leftPos = 0;
 	let i = 0;
-
+	
 	createDivMenu("selectMenu");
-	createDivText();
+	document.getElementById("selectMenu").innerHTML = '\
+		<i class="fa-solid fa-arrow-left icon" id="backIcon"></i> \
+		<i class="fa-solid fa-question icon" id="toggleButton"></i> \
+		<div id="toggleDiv" class="hidden"></div>';
 	createPanelDiv();
+	createDivInputImg("P1");
+	createDivInputImg("P2");
+	createDivInputImg("Start");
 	charactersNames.forEach(character => {
 		createSwatchPanel(leftPos, i, character);
 		leftPos += (width - 11) / charactersNames.length;
@@ -157,8 +195,13 @@ function createSelectMenu(field, characters) {
 	});
 	createCursor("swatch0", "cursorP1", "P1");
 	createCursor("swatch1", "cursorP2", "P2");
+}
+
+function createSelectMenu(field, characters) {
+	const env = createEnvironment("canvas");
 	env.scene.add(createLobbyScene(env));
 	createLobbyLights(env);
+	createInterfaceSelectMenu();
 	env.renderer.render(env.scene, env.camera);
 	return {
 		"renderer": env.renderer,
@@ -196,9 +239,9 @@ function displayMainMenu() {
 	createButton("Local Game", "localGame", "menu");
 	createButton("Online Game", "onlineGame", "menu");
 	const fullScreenIcon = document.createElement("div");
-	fullScreenIcon.innerHTML = '<i class="fa-solid fa-expand fullScreenIcon" id="fullScreen"></i>';
+	fullScreenIcon.innerHTML = '<i class="fa-solid fa-expand fullScreenIcon icon" id="fullScreen"></i>';
 
 	divMenu.appendChild(fullScreenIcon);
 }
 
-export { displayMainMenu, createSelectMenu, moveCursor, createDivMenu, displayLobby};
+export { displayMainMenu, createSelectMenu, moveCursor, createDivMenu, displayLobby, createWaitingScreen, createInterfaceSelectMenu};

@@ -3,7 +3,7 @@ import { Player } from "./Class/Player.js";
 import { Paddle } from './Class/Paddle.js';
 import { colors } from './varGlobal.js';
 
-function createSpotLight(left, color, mesh, environment) {
+function createSpotLight(left, color, environment) {
 	var light = new THREE.PointLight(color, 50);
 	
 	if (left < 0)
@@ -38,7 +38,7 @@ async function createPlayer(left, top, depth, character, environment, name) {
 		new Player(
 			name,
 			paddle,
-			createSpotLight(left, color, depth, environment),
+			createSpotLight(left, color, environment),
 			environment.characters.get(character).clone()
 	));
 }

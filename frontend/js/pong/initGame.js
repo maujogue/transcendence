@@ -38,7 +38,7 @@ async function initGame(player1, player2) {
 	const environment = createEnvironment("canvas");
 	const map = await createMap(environment);
 
-	let dirLight = new THREE.DirectionalLight(0xffffff, .1);
+	let dirLight = new THREE.DirectionalLight(0xffffff, 0.1);
 	dirLight.position.set(0, 0, 1);
 	environment.scene.add(dirLight);
 	environment.scene.add(player1.paddle.mesh);

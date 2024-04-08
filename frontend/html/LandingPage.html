@@ -291,7 +291,7 @@
 				</div>
 				<div>
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<a href="/game" class="btn btn-primary" data-bs-dismiss="modal" navlink>Login</a>
+					<a href="/dashboard" class="btn btn-primary" data-bs-dismiss="modal" navlink>Login</a>
 				</div>
             </div>
         </div>
@@ -300,13 +300,12 @@
 
 <div class="modal fade" id="signup" tabindex="-1">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <form id="registrationForm" class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Sign Up</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
                     <div class="mb-3">
                         <label for="username" class="col-form-label">Username</label>
                         <input type="text" class="form-control" id="username" placeholder="Sweet Onion">
@@ -323,21 +322,21 @@
 						</div>
                     </div>
 					<div class="mb-3">
-                        <label for="rpassword" class="col-form-label">Repeat Password</label>
-                        <input type="text" class="form-control" id="rpassword">
+                        <label for="passwordagain" class="col-form-label">Repeat Password</label>
+                        <input type="text" class="form-control" id="passwordagain">
                     </div>
-                </form>
+			</div>
+			<div class="modal-footer d-sm-flex">
+					<div class="d-flex align-items-center me-auto">
+						<p class="m-0 me-1">Have an account ?</p>
+						<a class="text-blue" data-bs-target="#login" data-bs-toggle="modal">Log In</a>
+					</div>
+					<div>
+						<button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+						<a class="btn btn-primary" data-bs-dismiss="modal" navlink>Sign up</a>
+					</div>
             </div>
-            <div class="modal-footer d-sm-flex">
-				<div class="d-flex align-items-center me-auto">
-					<p class="m-0 me-1">Have an account ?</p>
-					<a class="text-blue" data-bs-target="#login" data-bs-toggle="modal">Log In</a>
-				</div>
-				<div>
-					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<a href="/game" class="btn btn-primary" data-bs-dismiss="modal" navlink>Sign up</a>
-				</div>
-            </div>
-        </div>
+        </form>
     </div>
 </div>
+<script type="module" src="js/apiCall.js"></script>

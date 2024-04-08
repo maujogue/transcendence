@@ -1,6 +1,6 @@
 import { resize, isFullScreen } from "./resize.js";
 import { checkCollision } from "./collision.js";
-import { displayMainMenu, createSelectMenu, createOnlineMenu, createTournamentMenu, createMenuCreateTournament, createJoinTournamentMenu} from './menu.js';
+import { displayMainMenu, createSelectMenu, createOnlineMenu, createMenuCreateTournament, createJoinTournamentMenu} from './menu.js';
 import { handleKeyPress, handleMenuKeyPress } from './handleKeyPress.js';
 import { displayCharacter, updateMixers } from './displayCharacter.js';
 import { initGame } from "./initGame.js";
@@ -89,13 +89,10 @@ document.body.addEventListener("click", function(event) {
 		isOnline = true;
 		createOnlineMenu(field);
 	}
-	// if (event.target.id == 'Tournament') {
-	// 	showSubmode(event.target);
-	// }
-	if (event.target.id == '1v1') {
+	if (event.target.id == 'quick') {
 		createOnlineSelectMenu(field);
 	}
-	if (event.target.id == 'Create Tournament') {
+	if (event.target.id == 'create') {
 		createMenuCreateTournament();
 		form = document.getElementById("tournamentForm");
 		form.addEventListener('submit', function(event) {
@@ -103,7 +100,7 @@ document.body.addEventListener("click", function(event) {
 			sendTournamentForm(form);
 		});
 	}
-	if (event.target.id == 'Join Tournament') {
+	if (event.target.id == 'join') {
 		createJoinTournamentMenu();
 	}
 	if (event.target.id == 'fullScreen') {

@@ -268,25 +268,17 @@ function createOnlineMenu() {
 	createSubmode('1v1', "Private Game");
 }
 
-function createTournamentMenu() {
-	document.getElementById("onlineMenu").remove();
-	createDivMenu("tournamentMenu");
-	const parent = document.getElementById("tournamentMenu");
-	parent.innerHTML = '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>';
-	createGamemodeDiv("Create Tournament", parent);
-	createGamemodeDiv("Join Tournament", parent);
-}
-
 export function createMenuCreateTournament() {
-	document.getElementById("tournamentMenu").remove();
+	document.getElementById("onlineMenu").remove();
 	createDivMenu("createTournament");
 	const parent = document.getElementById("createTournament");
 	createFormTournament(parent);
 }
 
 export function createSubmode(listName, text) {
+	const firstWord = text.split(' ')[0].toLowerCase();
 	const list = document.querySelector('.submode-list-' + listName);
-	list.innerHTML += '<li class="submode">' + text + '</li>';
+	list.innerHTML += `<li class="submode" id="${firstWord}">${text}</li>`;
 }
 
 function createFormTournament(parent) {
@@ -350,7 +342,7 @@ function createListTournament(parent) {
 }
 
 export function createJoinTournamentMenu() {
-	document.getElementById("tournamentMenu").remove();
+	document.getElementById("onlineMenu").remove();
 	createDivMenu("joinTournamentMenu");
 	const parent = document.getElementById("joinTournamentMenu");
 	parent.innerHTML = '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>';
@@ -361,4 +353,4 @@ export function createJoinTournamentMenu() {
 
 export { displayMainMenu, createSelectMenu, moveCursor, createDivMenu,
 		displayLobby, createWaitingScreen, createInterfaceSelectMenu, 
-		createOnlineMenu, createTournamentMenu};
+		createOnlineMenu};

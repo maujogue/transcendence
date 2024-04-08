@@ -1,3 +1,5 @@
+@import url('satoshi.css');
+
 .preload-transitions {
   
 	-webkit-transition: none !important;
@@ -6,3 +8,11 @@
 	-o-transition: none !important;
 	transition: none !important;
   }
+
+h1, h2, h3 {
+	font-family: 'Satoshi-Bold', Arial, Helvetica, sans-serif;
+}
+
+p {
+	font-family: 'Satoshi-regular', Arial, Helvetica, sans-serif;
+}

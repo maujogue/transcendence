@@ -14,8 +14,8 @@ class Page {
 const routes = [
   new Page("Sidebar", "", "html/Sidebar.html", false),
 
-  new Page("LandingPage", "/", "html/landingPage.html", false),
-  new Page("LandingPage", "/LandingPage", "html/landingPage.html", false),
+  new Page("LandingPage", "/", "html/LandingPage.html", false),
+  new Page("LandingPage", "/LandingPage", "html/LandingPage.html", false),
 
   new Page("Game", "/game", "html/Game.html", true),
   new Page("Dashboard", "/dashboard", "html/Dashboard.html", true),

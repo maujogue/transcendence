@@ -6,6 +6,7 @@ from django.http import JsonResponse
 
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.views.decorators.csrf import requires_csrf_token
 
 from django.middleware.csrf import get_token
 
@@ -13,7 +14,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 
 from users.forms import CustomUserCreationForm, UpdateUserForm, UpdateProfileForm
-from users.utils import validation_register, username_is_unique, get_image_format_from_base64
+from users.utils import validation_register, username_is_unique
 
 from . import forms
 import json
@@ -57,6 +58,7 @@ def login(request):
 
 @login_required
 @require_http_methods(["POST"])
+@requires_csrf_token
 def logout_view(request):
     logout(request)
     return JsonResponse({"status": "success"}, status=200)
@@ -64,6 +66,7 @@ def logout_view(request):
 
 @login_required
 @require_http_methods(["POST"])
+@requires_csrf_token
 def update_profile(request):
     if request.content_type == 'application/json':
         try:

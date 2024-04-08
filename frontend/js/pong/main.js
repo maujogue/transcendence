@@ -89,9 +89,9 @@ document.body.addEventListener("click", function(event) {
 		isOnline = true;
 		createOnlineMenu(field);
 	}
-	if (event.target.id == 'Tournament') {
-		createTournamentMenu();
-	}
+	// if (event.target.id == 'Tournament') {
+	// 	showSubmode(event.target);
+	// }
 	if (event.target.id == '1v1') {
 		createOnlineSelectMenu(field);
 	}

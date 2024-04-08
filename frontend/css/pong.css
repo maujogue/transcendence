@@ -32,7 +32,7 @@ h1 {
 	color: white;
 	background-color: black;
 	justify-content: stretch;
-	z-index: 100;
+	z-index: 0;
 }
 
 
@@ -90,13 +90,13 @@ h1 {
 	left: 0;
 	margin: 2.5%;
 	font-size: 1em;
-	z-index: 100;
+	z-index: 1;
 }
 
 #toggleButton {
 	align-self: flex-end;
 	margin: 2.5%;
-	z-index: 100;
+	z-index: 1;
 }
 
 #toggleDiv {
@@ -126,7 +126,7 @@ h1 {
 	top: 0;
 	margin: 2.5%;
 	font-size: 1em;
-	z-index: 100;
+	z-index: 1;
 }
 
 #waitingScreen {
@@ -180,34 +180,69 @@ h1 {
 }
 
 .gamemode {
-	background-color: white;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: auto;
+	width: 25%;
+	margin: 5%;
+	padding: 0;
+	align-self: start;
+}
+
+.gamemode > p {
+	color: white;
+	margin: 2% 0;
+}
+
+.gamemode-img {
+	width: 50%;
+	height: 50%;
+}
+
+.submode-list {
 	color: black;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	height: 25%;
-	width: 25%;
-	margin: 5%;
-	transition: all 0.3s ease;
+	list-style-type: none;
+	padding: 0;
+	width: 100%;
 }
 
-.gamemode:hover {
-	transform: scale(1.1);
-	cursor: pointer;
+.submode {
+	transform: skew(-10deg);
+	background: white;
+	width: 100%;
+	margin: 3% 0;
+	transition: all 0.5s ease;
 }
 
-/* #spriteP2 {
-	left: -1%
-} */
+.submode:hover {
+	transform: scale(1.1) skew(-7deg);
+}
+
+@keyframes slideDown {
+	0% { 
+	  opacity: 0;
+	  transform: translateY(-60px);
+	}
+  
+	100% {
+	  opacity: 1;
+	  transform: translateY(0);
+	}
+  }
 
 .close-matchmaking {
 	position: absolute;
 	align-self: start;
 	left: 0;
 	margin: 0.5%;
-	/* font-size: 1em; */
-	z-index: 100;
+	z-index: 1;
 }
 
 .menu {
@@ -245,7 +280,7 @@ h1 {
 	height: 32px;
 	animation: moveKey 6s steps(3  ) infinite;
 	background-repeat: no-repeat;
-	z-index: 101;
+	z-index: 1;
 }
 
 .charactersIcon {
@@ -259,7 +294,7 @@ h1 {
 
 .swatch {
 	display: flex;
-	z-index: 100;
+	z-index: 1;
 	margin: 0 0.5%;
 	/* transform: skew(-5deg); */
 }
@@ -284,7 +319,7 @@ h1 {
 	color: white;
 	position: absolute;
 	font-size: 0.8em;
-	z-index: 100;
+	z-index: 2;
 	/* padding: 0; */
 	/* margin: 5%; */
 	bottom: 10%;
@@ -300,7 +335,7 @@ h1 {
 	right: 0;
 	margin: 2.5%;
 	font-size: 1em;
-	z-index: 100;
+	z-index: 1;
 	transition: all 0.3s ease;
 }
 

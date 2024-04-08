@@ -246,11 +246,13 @@ function displayMainMenu() {
 
 function createGamemodeDiv(text, parent) {
 	const div = document.createElement("div");
-	const textNode = document.createTextNode(text);
-	div.appendChild(textNode);
+	div.innerHTML += `<img class="gamemode-img" src="./assets/img/icon/${text}.png" alt="tournament_icon"><p>${text}</p>`;
+	const list = document.createElement("ul");
+	list.className = "submode-list submode-list-" + text;
 	div.className = "gamemode";
 	div.id = text;
 	parent.appendChild(div);
+	div.appendChild(list);
 }
 
 function createOnlineMenu() {
@@ -260,6 +262,10 @@ function createOnlineMenu() {
 	parent.innerHTML = '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>';
 	createGamemodeDiv("1v1", parent);
 	createGamemodeDiv("Tournament", parent);
+	createSubmode('Tournament', "Create");
+	createSubmode('Tournament', "Join");
+	createSubmode('1v1', "Quick Play");
+	createSubmode('1v1', "Private Game");
 }
 
 function createTournamentMenu() {
@@ -269,6 +275,18 @@ function createTournamentMenu() {
 	parent.innerHTML = '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>';
 	createGamemodeDiv("Create Tournament", parent);
 	createGamemodeDiv("Join Tournament", parent);
+}
+
+export function createMenuCreateTournament() {
+	document.getElementById("tournamentMenu").remove();
+	createDivMenu("createTournament");
+	const parent = document.getElementById("createTournament");
+	createFormTournament(parent);
+}
+
+export function createSubmode(listName, text) {
+	const list = document.querySelector('.submode-list-' + listName);
+	list.innerHTML += '<li class="submode">' + text + '</li>';
 }
 
 function createFormTournament(parent) {
@@ -339,12 +357,7 @@ export function createJoinTournamentMenu() {
 	createListTournament(parent);
 }
 
-export function createMenuCreateTournament() {
-	document.getElementById("tournamentMenu").remove();
-	createDivMenu("createTournament");
-	const parent = document.getElementById("createTournament");
-	createFormTournament(parent);
-}
+
 
 export { displayMainMenu, createSelectMenu, moveCursor, createDivMenu,
 		displayLobby, createWaitingScreen, createInterfaceSelectMenu, 

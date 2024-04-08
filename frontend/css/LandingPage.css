@@ -10,7 +10,15 @@ body::before {
 	height: 60px;
 }
 
-.portraits {
-	max-height: 210px;
-	min-height: 210px;
+.container-fluid {
+    padding-right: 0;
+    padding-left: 0;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.container-xl {
+    max-width: 1200px; /* Adjust this value as needed */
+    margin-right: auto;
+    margin-left: auto;
 }

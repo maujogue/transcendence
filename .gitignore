@@ -3,6 +3,10 @@ py_backend/mediafiles/
 py_backend/docker/cert.crt
 py_backend/docker/cert.key
 .DS_store
+py_backend/py_backend/users/migrations
+py_backend/py_backend/multiplayer/migrations
+.nfs*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -86,6 +90,9 @@ target/
 # IPython
 profile_default/
 ipython_config.py
+
+./py_backend/docker/cert.pem
+./py_backend/docker/key.pem
 
 # pyenv
 #   For a library or package, you might want to ignore these files since the code is

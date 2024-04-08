@@ -76,7 +76,7 @@
 			};
 	
 			// Effectuer une requête pour obtenir le jeton CSRF
-			fetch("http://127.0.0.1:8000/auth/get_csrf_token/", {
+			fetch("http://127.0.0.1:8000/get_csrf_token/", {
 				method: "GET",
 				credentials: "include",
 			})
@@ -85,7 +85,7 @@
 				const csrfToken = data.csrfToken;
 	
 				// Effectuer une requête POST avec les données du tournoi et le jeton CSRF
-				fetch("http://127.0.0.1:8000/auth/tournament/", {
+				fetch("http://127.0.0.1:8000/tournament/", {
 					method: "POST",
 					headers: {
 						"X-CSRFToken": csrfToken,

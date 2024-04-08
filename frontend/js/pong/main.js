@@ -2,14 +2,16 @@ import { resize, isFullScreen } from "./resize.js";
 import { checkCollision } from "./collision.js";
 import { displayMainMenu, createSelectMenu, displayLobby } from './menu.js';
 import { handleKeyPress, handleMenuKeyPress } from './handleKeyPress.js';
-import { displayCharacter } from './displayCharacter.js';
+import { displayCharacter, updateMixers } from './displayCharacter.js';
 import { initGame } from "./initGame.js";
 import { createEndScreen, returnToMenu } from "./createEndScreen.js"
 import { actualizeScore } from "./score.js";
 import { createField } from "./createField.js";
-import { connectToLobby } from "./online.js";
-import { ClearAllEnv } from "./createEnvironment.js";
-
+import { connectToLobby, onlineGameLoop, goToOnlineSelectMenu, createOnlineSelectMenu} from "./online.js";
+import { ClearAllEnv, getSize } from "./createEnvironment.js";
+import { loadAllModel } from "./loadModels.js"
+import { loadScene } from "./loadModels.js";
+import * as THREE from 'three';
 
 let start = false;
 let divMenu = document.getElementById("menu");
@@ -19,17 +21,21 @@ let player2;
 let keyPress = false;
 let keysPressed = {};
 let isOnline = false;
-const field = await createField();
+let localLoop = true;
 const gameDiv = document.getElementById('game');
+const field = await createField();
+export const lobby = await loadScene('lobbyTest');
+export const clock = new THREE.Clock();
+export const characters = new Map();
 
-displayMainMenu();
+loadAllModel();
 
 async function goToLocalSelectMenu() {
 	divMenu = document.getElementById("menu");
 	divMenu.remove();
-	environment = createSelectMenu(field);
-	player1 = await displayCharacter(player1, environment, "rgb(255, 0, 0)", "player1");
-	player2 = await displayCharacter(player2, environment, "rgb(0, 0, 255)", "player2");
+	environment = createSelectMenu(field, characters);
+	player1 = await displayCharacter(player1, environment, "chupacabra", "player1");
+	player2 = await displayCharacter(player2, environment, "elvis", "player2");
 }
 
 document.addEventListener("keydown", function(event) {
@@ -67,17 +73,19 @@ document.body.addEventListener("click", function(event) {
 		actualizeScore(player1, player2, environment, environment.font);
 		start = true;
 	}
-	if (event.target.id == 'backMenu') {
+	if (event.target.id == 'backMenu' || event.target.id == 'backIcon') {
+		localLoop = false;
 		ClearAllEnv(environment);
 		returnToMenu();
 	}
 	if (event.target.id == 'localGame') {
+		localLoop = true;
 		localGameLoop();
 		goToLocalSelectMenu();
 	}
 	if (event.target.id == 'onlineGame') {
 		isOnline = true;
-		connectToLobby(field);
+		createOnlineSelectMenu(field);
 	}
 	if (event.target.id == 'fullScreen') {
 		if (!isFullScreen())
@@ -85,8 +93,15 @@ document.body.addEventListener("click", function(event) {
 		else
 			document.exitFullscreen();
 	}
+	if (event.target.id == 'toggleButton') {
+		const div = document.getElementById('toggleDiv');
+		if (div.classList.contains('hidden'))
+			div.classList.remove('hidden');
+		else
+			div.classList.add('hidden');
+	}
 });
-
+ 
 document.addEventListener('fullscreenchange', function() {
 	resize(environment);
 });
@@ -104,8 +119,10 @@ function setIfGameIsEnd() {
 }
 
 async function localGameLoop() {
-	if (keyPress && !start)
-		handleMenuKeyPress(keysPressed, player1, player2, environment);
+	if (keyPress && !start) {
+		await handleMenuKeyPress(keysPressed, player1, player2, environment);
+		keyPress = false;
+	}
 	if (keysPressed[" "] && document.getElementById("selectMenu") && player1 && player2 && !start) {
 		start = true;
 		ClearAllEnv(environment);
@@ -113,13 +130,17 @@ async function localGameLoop() {
 		environment = await initGame(player1, player2);
 	}
 	if (start) {
+		console.log("start");
 		if (keyPress)
 			handleKeyPress(keysPressed, player1, player2, environment);
 		checkCollision(environment.ball, player1, player2, environment);
-		environment.renderer.render( environment.scene, environment.camera );
 		setIfGameIsEnd();
 	}
-	requestAnimationFrame( localGameLoop );
+	if (player1 && player2)
+		updateMixers(player1, player2);
+	environment?.renderer.render( environment.scene, environment.camera );
+	if (localLoop)
+		requestAnimationFrame( localGameLoop );
 }
 
 export { displayMainMenu }

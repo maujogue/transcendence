@@ -2,6 +2,8 @@ import { actualizeScoreOnline } from './onlineCollision.js';
 import { displayMainMenu } from './menu.js';
 import { ClearAllEnv } from './createEnvironment.js';
 import { createEndScreen } from './createEndScreen.js';
+import { sendColor } from './sendMessage.js';
+import { playersMove } from './online.js';
 
 export function setBallData(data, env) {
     if (!env.ball)
@@ -30,6 +32,7 @@ function handlerEndGame(data, status) {
         createEndScreen(data['name']);
     status.isReady = false;
     status.start = false;
+    playersMove.clear();
 }
 
 function handlerPlayerDisconnect(data, env) {
@@ -37,9 +40,7 @@ function handlerPlayerDisconnect(data, env) {
     env.renderer.render(env.scene, env.camera);
 }
 
-export function handlerStatusMessage(data, webSocket, env, status) {
-    if (data['message'] == 'connected')
-        sendColor(webSocket);
+export function handlerStatusMessage(data, webSocket, env, status, player) {
     if (data['message'] == 'disconnected')
         handlerPlayerDisconnect(data, env);
     if (data['message'] == 'stopGame')

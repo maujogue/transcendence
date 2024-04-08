@@ -14,40 +14,68 @@
                 return;
             }
 
-			const userData = {
-				username: username,
-				password: password,
-			};
+            const userData = {
+                username: username,
+                password: password,
+            };
 
-			fetch("http://127.0.0.1:8000/auth/get_csrf_token/", {
+            fetch("http://127.0.0.1:5500/get_csrf_token/", {
                     method: "GET",
                     credentials: "include",
                 })
-			.then((response) => response.json())
-			.then((data) => {
-				const csrfToken = data.csrfToken;
-				console.log(csrfToken);
-				fetch("http://127.0.0.1:8000/auth/login/", {
-					method: "POST",
-					headers: {
-						"X-CSRFToken": csrfToken,
-						"Content-Type": "application/json",
-					},
-					credentials: "include",
-					body: JSON.stringify(userData), // Sending userData directly
-				})
+            .then((response) => response.json())
+            .then((data) => {
+                const csrfToken = data.csrfToken;
+                console.log(csrfToken);
+                fetch("http://127.0.0.1:5500/login/", {
+                    method: "POST",
+                    headers: {
+                        "X-CSRFToken": csrfToken,
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+                    body: JSON.stringify(userData), // Sending userData directly
+                })
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                })
+                .catch((error) => {
+                    console.error("login failed", error);
+                    // Handle registration failure
+                });
+            })
+            .catch((error) => {
+                console.error("get csrf token fail", error);
+            });
+        }
+
+        function logout() {
+			fetch("http://127.0.0.1:5500/get_csrf_token/", {
+                    method: "GET",
+                    credentials: "include",
+                })
+            .then((response) => response.json())
+            .then((data) => {
+                const csrfToken = data.csrfToken;
+                console.log(csrfToken);
+				fetch("http://127.0.0.1:5500/logout_review/", {
+						method: "GET",
+						credentials: "include",
+					})
 				.then((response) => response.json())
 				.then((data) => {
 					console.log(data);
+					// Handle logout success
 				})
 				.catch((error) => {
-					console.error("login failed", error);
-					// Handle registration failure
+					console.error("logout failed", error);
+					// Handle logout failure
 				});
 			})
-			.catch((error) => {
-				console.error("get csrf token fail", error);
-			});
+            .catch((error) => {
+                console.error("get csrf token fail", error);
+            });
         }
     </script>
 </head>
@@ -63,6 +91,7 @@
             <input type="password" id="password" name="password" required>
         </div>
         <button type="button" onclick="login()">Se connecter</button>
+        <button type="button" onclick="logout()">Se déconnecter</button>
     </form>
 </body>
 </html>

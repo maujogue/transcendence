@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+from django.core.management.utils import get_random_secret_key
 import os
 
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -23,30 +24,35 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
+ALLOWED_HOSTS = ['*']
 
+# Define for backend
+
+MIN_LEN_USERNAME = 3
+MAX_LEN_USERNAME = 25
+MAX_LEN_EMAIL = 50
 
 # Application definition
 
 INSTALLED_APPS = [
+	'corsheaders',
 	'daphne',
-
 	'django.contrib.admin',
 	'django.contrib.auth',
 	'django.contrib.contenttypes',
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
+	# 'django_extensions',
 	'multiplayer',
-	'bootstrap5',
-	'corsheaders',
 	'users',
-	'django_extensions',
+	'friends',
+	'tournaments',
 ]
 
 ASGI_APPLICATION = 'py_backend.asgi.application'
@@ -69,7 +75,7 @@ MIDDLEWARE = [
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
-	"corsheaders.middleware.CorsMiddleware"
+	'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'py_backend.urls'
@@ -98,15 +104,22 @@ WSGI_APPLICATION = 'py_backend.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-	"default": {
-		"ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
-		"NAME": os.environ.get("SQL_DATABASE"),
-		"USER": os.environ.get("SQL_USER", "user"),
-		"PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
-		"HOST": os.environ.get("SQL_HOST", "localhost"),
-		"PORT": os.environ.get("SQL_PORT", "5432"),
-	}
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / "db.sqlite3",
+    }
 }
+
+# DATABASES = {
+# 	"default": {
+# 		"ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
+# 		"NAME": os.environ.get("SQL_DATABASE"),
+# 		"USER": os.environ.get("SQL_USER", "user"),
+# 		"PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+# 		"HOST": os.environ.get("SQL_HOST", "localhost"),
+# 		"PORT": os.environ.get("SQL_PORT", "5432"),
+# 	}
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -117,6 +130,9 @@ AUTH_PASSWORD_VALIDATORS = [
 	},
 	{
 		'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+		"OPTIONS": {
+			"min_length": 9,
+		},
 	},
 	{
 		'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
@@ -124,8 +140,19 @@ AUTH_PASSWORD_VALIDATORS = [
 	{
 		'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
 	},
+	{
+		'NAME': 'users.validators.ContainsDigitValidator',
+	},
+	{
+		'NAME': 'users.validators.ContainsSpecialCharValidator',
+	},
+	{
+		'NAME': 'users.validators.ContainsUppercaseValidator',
+	},
+	{
+		'NAME': 'users.validators.ContainsLowercaseValidator',
+	},
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
@@ -150,7 +177,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "mediafiles"
+MEDIA_ROOT = BASE_DIR / "media"
 
 
 # Default primary key field type
@@ -160,27 +187,34 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_CREDENTIALS = True
 
+CORS_ALLOWED_ORIGINS = True # A Retirer
+
 CORS_ALLOWED_ORIGINS = [
-	"http://127.0.0.1:5500",  # Add this origin
-	"http://127.0.0.1:8000",
-	"http://localhost:8000",
-	"http://localhost:5500",
+	"https://127.0.0.1:5500",
+	"https://127.0.0.1:8000",
+	"https://localhost:8000",
+    "https://127.0.0.1:8001",
+	"https://localhost:8001",
+	"https://localhost:5500",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-	"http://127.0.0.1:8000",
-	"http://127.0.0.1:5500",
-	"http://127.0.0.1:5501",
-	"http://127.0.0.1:3000",
+	"https://127.0.0.1:8000",
+	"https://127.0.0.1:5500",
+	"https://127.0.0.1:5501",
+    "https://127.0.0.1:8001",
+	"https://127.0.0.1:3000",
 ]
 
 ALLOWED_HOSTS = [
 	"localhost",
 	"127.0.0.1",
+    "0.0.0.0"
 ]
 
 CORS_ORIGIN_WHITELIST = [
-	"http://127.0.0.1:8000",
-	"http://127.0.0.1:5500",
-	"http://127.0.0.1:3000",
+	"https://127.0.0.1:8000",
+	"https://127.0.0.1:5500",
+    "https://127.0.0.1:8001",
+	"https://127.0.0.1:3000",
 ]

@@ -42,6 +42,7 @@ function createEnvironment(id) {
 	const scene = new THREE.Scene();
 	scene.background = new THREE.Color( 0x000000 );
 	const camera = new THREE.PerspectiveCamera( 45, divSize.width / divSize.height, 1, 100);
+
 	const renderer = new THREE.WebGLRenderer({ canvas: div, antialias: true });
 	renderer.setPixelRatio(window.devicePixelRatio);
 	renderer.setSize(divSize.width, divSize.height);

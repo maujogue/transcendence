@@ -5,10 +5,13 @@ services:
     build:
         context: ../py_backend/docker
         dockerfile: Dockerfile.dev
+    volumes:
+       - ../py_backend:/code
+       - certificates:/etc/nginx/ssl
     expose:
       - 8000
     ports:
-      - "8000:8000"
+      - "8080:8000"
     env_file:
       - ./.env.dev
     depends_on:
@@ -40,10 +43,11 @@ services:
       dockerfile: Dockerfile
     working_dir: /usr/app/
     volumes:
-      - ../frontend:/usr/share/nginx/html
+      - ../frontend:/usr/app
     ports:
       - 8001:80
     restart: always
 
 volumes:
   db-data:
+  certificates:

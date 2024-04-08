@@ -12,5 +12,5 @@ django-extensions==3.2.3
 django-bootstrap-v5
 wheel
 django_extensions
-requests-toolbelt==0.7.1
+requests-toolbelt
 # channels-redis==4.2.0

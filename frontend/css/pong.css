@@ -16,6 +16,10 @@ h1 {
 	text-align: center;
 }
 
+input {
+	transform: skew(-5deg);
+}
+
 #game {
 	width: 960px;
 	height: 540px;
@@ -160,6 +164,22 @@ h1 {
 	height: 50%;
 }
 
+.form-field {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 3%;
+	width: 100%;
+	padding: 5%;
+}
+
+.form-field > input {
+	margin: 2%;
+	width: 75%;
+	height: 2em;
+}
+
 .list-header {
 	display: flex;
 	font-size: 0.5em;
@@ -188,7 +208,7 @@ h1 {
 	height: auto;
 	width: 25%;
 	margin: 5%;
-	padding: 0;
+	padding:  1% 3%;
 	align-self: start;
 }
 
@@ -225,17 +245,20 @@ h1 {
 	transform: scale(1.1) skew(-7deg);
 }
 
-@keyframes slideDown {
-	0% { 
-	  opacity: 0;
-	  transform: translateY(-60px);
-	}
-  
-	100% {
-	  opacity: 1;
-	  transform: translateY(0);
-	}
-  }
+.btn-create {
+	z-index: 1;
+	position: relative;
+	left: 150%;
+	bottom: 100%;
+	border: none;
+	color: white;
+	background-color: black;
+	font-family: 'baumansregular', sans-serif;
+	font-size: 1em;
+	margin: 0.5em;
+	/* padding: 15px;e */
+
+}
 
 .close-matchmaking {
 	position: absolute;

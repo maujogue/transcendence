@@ -286,28 +286,28 @@ function createFormTournament(parent) {
 	<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>\
 	<div id="createTournamentForm">\
 	<form id="tournamentForm" method="post">\
-	<div>\
-		<label for="nom">Nom du tournoi :</label>\
+	<div class="form-field">\
+		<label for="nom">Name :</label>\
 		<input type="text" id="nom" name="nom" required>\
 	</div>\
-	<div>\
-		<label for="nb_joueurs_max">Nombre de joueurs maximum :</label>\
+	<div class="form-field">\
+		<label for="nb_joueurs_max">Max players :</label>\
 		<input type="number" id="nb_joueurs_max" name="nb_joueurs_max" min="2" required>\
 	</div>\
-	<div>\
-		<label for="points_par_match">Nombre de points par match :</label>\
+	<div class="form-field">\
+		<label for="points_par_match">Max points :</label>\
 		<input type="number" id="points_par_match" name="points_par_match" min="1" required>\
 	</div>\
-	<div>\
-		<label for="prive">Tournoi privé :</label>\
+	<div class="form-field">\
+		<label for="prive">Private :</label>\
 		<input type="checkbox" id="prive" name="prive">\
 	</div>\
-	<div id="mot_de_passe_div" style="display: none;">\
-		<label for="mot_de_passe">Mot de passe :</label>\
+	<div style="display: none;" class="form-field">\
+		<label for="mot_de_passe">Password :</label>\
 		<input type="password" id="mot_de_passe" name="mot_de_passe">\
 	</div>\
 	<div>\
-		<button type="submit">Créer le tournoi</button>\
+		<button class="btn-create icon" type="submit">Create</button>\
 	</div></div>\
 	</form>'
 }

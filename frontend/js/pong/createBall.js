@@ -6,7 +6,7 @@ function createBall(environment) {
         color: 0xebdb34
      } );
     const sphere = new THREE.Mesh( geometry, material );
-    sphere.position.set(0, 0, 0.9).unproject(environment.camera);
+    sphere.position.set(0, 0, .91).unproject(environment.camera);
     environment.camera.updateMatrixWorld();
     let direction = new THREE.Vector2(0.055, 0);
     return {

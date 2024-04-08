@@ -34,7 +34,7 @@ function setPositionPaddle(PlayerName, posX, environment) {
 	let paddle = environment.scene.getObjectByName("paddle_" + PlayerName);
 	paddle.rotation.set(0, 0, 0);
 	paddle.rotateX(Math.PI / -6);
-	paddle.position.set(posX, 0, .89).unproject(environment.camera);
+	paddle.position.set(posX, 0, .909).unproject(environment.camera);
 	paddle.scale.set(.7, .7, .7);
 	environment.scene.add(paddle);
 }

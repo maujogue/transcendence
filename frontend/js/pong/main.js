@@ -27,6 +27,7 @@ const field = await createField();
 export const lobby = await loadScene('lobbyTest');
 export const clock = new THREE.Clock();
 export const characters = new Map();
+var mouseX = 0, mouseY = 0;
 
 loadAllModel();
 
@@ -106,6 +107,20 @@ document.addEventListener('fullscreenchange', function() {
 	resize(environment);
 });
 
+function onMouseMove(event) {
+    // Calculate the change in mouse position since the last frame
+    var deltaX = event.clientX - mouseX;
+    var deltaY = event.clientY - mouseY;
+
+    // Update mouse position
+    mouseX = event.clientX;
+    mouseY = event.clientY;
+
+    // Adjust camera rotation based on mouse movement
+    environment.camera.rotation.y -= deltaX * 0.02; // Adjust sensitivity as needed
+    environment.camera.rotation.x -= deltaY * 0.02; // Adjust sensitivity as needed
+}
+
 function setIfGameIsEnd() {
 	if (player1.score < 1 && player2.score < 1)
 		return ;
@@ -134,6 +149,12 @@ async function localGameLoop() {
 		if (keyPress)
 			handleKeyPress(keysPressed, player1, player2, environment);
 		//checkCollision(environment.ball, player1, player2, environment);
+		// var x = center.x - radius * Math.cos(cameraAngle);
+		// var z = center.z + radius * Math.sin(cameraAngle);
+		// environment.camera.position.set(x, 2, z); // Set camera's y position to 2 to view the scene from above
+		// environment.camera.lookAt(center);
+		// cameraAngle += 0.01; // Increment the angle
+		document.addEventListener('mousemove', onMouseMove);
 		setIfGameIsEnd();
 	}
 	if (player1 && player2)

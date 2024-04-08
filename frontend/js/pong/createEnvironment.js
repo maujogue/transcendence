@@ -30,21 +30,22 @@ async function createMap(env) {
     model.position.set(.15, 0, .92).unproject(env.camera);
 	env.scene.add(model);
 	env.scene.add(light);
-	env.renderer.render(env.scene, env.camera);
-	// let borderUp = await createBorder(new THREE.Vector3(0, 1.075, 0.9), environment.camera);
-	// let borderDown = await createBorder(new THREE.Vector3(0, -1.075, 0.9), environment.camera);
+	let borderUp = await createBorder(new THREE.Vector3(0, .6, .93), env.camera);
+	let borderDown = await createBorder(new THREE.Vector3(0, 0, .89), env.camera);
 	// let borderCenter = await createBorder(new THREE.Vector3(0, 0, 0.95), environment.camera);
 	// borderCenter.mesh.material.metalness = 0.2;
 	// borderCenter.mesh.material.roughness = 0.8;
 	// borderCenter.mesh.rotation.set(0, 0, Math.PI / 2);
 	// borderCenter.mesh.scale.set(1, 0.3, 1);
-	// environment.scene.add(borderDown.mesh);
-	// environment.scene.add(borderUp.mesh);
+	//console.log("BorderUp : ", borderUp.mesh);
+	env.scene.add(borderDown.mesh);
+	env.scene.add(borderUp.mesh);
 	// environment.scene.add(borderCenter.mesh);
 	// environment.scene.add(await createField());
+	env.renderer.render(env.scene, env.camera);
 	return {
-		"borderUp": 0,
-		"borderDown": 0
+		"borderUp": borderUp,
+		"borderDown": borderDown
 	};
 }
 
@@ -55,6 +56,7 @@ function createEnvironment(id) {
 	const scene = new THREE.Scene();
 	scene.background = new THREE.Color( 0x000000 );
 	const camera = new THREE.PerspectiveCamera( 45, divSize.width / divSize.height, 1, 100);
+	camera.position.set(0, 0, 1.5);
 
 	const renderer = new THREE.WebGLRenderer({ canvas: div, antialias: true });
 	renderer.setPixelRatio(window.devicePixelRatio);

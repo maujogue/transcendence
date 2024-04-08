@@ -3,11 +3,10 @@ import { createTexturedMaterial } from './loadTextures.js';
 import { lobby } from './main.js';
 
 async function createBorder(position, camera) {
-    const geometry = new THREE.BoxGeometry( 100, 2, 1 );
-    const material = new THREE.MeshPhysicalMaterial( { color: 0xffffff } );
-    material.metalness = 1;
+    const geometry = new THREE.PlaneGeometry(100, 1, 1);
+    const material = new THREE.MeshBasicMaterial( { color: 0xffffff, opacity: .5, transparent: true } );
     const cube = new THREE.Mesh( geometry, material );
-    cube.position.set(position.x, position.y, position.z).unproject(camera);
+    cube.position.copy(position).unproject(camera)
     const box = new THREE.Box3().setFromObject(cube);
     return {
         "mesh": cube,

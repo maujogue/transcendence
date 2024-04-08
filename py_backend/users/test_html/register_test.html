@@ -87,34 +87,48 @@
                     password2: password2,
                 };
         
-                fetch("http://127.0.0.1:8001/get_csrf_token/", {
+                // Fetch CSRF token
+                fetch("http://127.0.0.1:8080/get_csrf_token/", {
                     method: "GET",
-                    credentials: "include",
+                    credentials: "include", // Include credentials if needed
                 })
-                .then((response) => response.json())
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch CSRF token');
+                    }
+                    return response.json();
+                })
                 .then((data) => {
                     const csrfToken = data.csrfToken;
                     console.log(csrfToken);
-                    fetch("http://127.0.0.1:8001/register/", {
+                    // Register user with CSRF token
+                    fetch("http://127.0.0.1:8080/register/", {
                         method: "POST",
                         headers: {
                             "X-CSRFToken": csrfToken,
                             "Content-Type": "application/json",
                         },
-                        credentials: "include",
-                        body: JSON.stringify(userData), // Sending userData directly
+                        credentials: "include", // Include credentials if needed
+                        body: JSON.stringify(userData),
                     })
-                    .then((response) => response.json())
+                    .then((response) => {
+                        if (!response.ok) {
+                            throw new Error('Registration failed');
+                        }
+                        return response.json();
+                    })
                     .then((data) => {
                         console.log(data);
+                        // Handle successful registration, e.g., redirect or show success message
                     })
                     .catch((error) => {
-                        console.error("register failed", error);
-                        // Handle registration failure
+                        console.error("Registration failed", error);
+                        // Handle registration failure, e.g., show error message
                     });
                 })
                 .catch((error) => {
-                    console.error("get csrf token fail", error);
+                    console.error("Failed to fetch CSRF token", error);
+                    // Handle failure to fetch CSRF token, e.g., show error message
                 });
             }
         </script>

@@ -2,6 +2,7 @@ py_backend/staticfiles
 py_backend/mediafiles/
 py_backend/docker/cert.crt
 py_backend/docker/cert.key
+.DS_store
 py_backend/py_backend/users/migrations
 py_backend/py_backend/multiplayer/migrations
 .nfs*

@@ -41,12 +41,15 @@ services:
     depends_on:
       - django-backend
   
-  nginx-frontend:
-    build: ../frontend/config
+  nginx_frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    working_dir: /usr/app/
     volumes:
       - ../frontend:/usr/share/nginx/html
     ports:
-      - 80:80
+      - 8001:80
     restart: always
 
 volumes:

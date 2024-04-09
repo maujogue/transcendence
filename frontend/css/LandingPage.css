@@ -1,0 +1,24 @@
+@media (min-width: 768px) {
+	.news-input {
+		max-width: 50%;
+	}
+}
+
+body::before {
+	display: block;
+	content: '';
+	height: 60px;
+}
+
+.container-fluid {
+    padding-right: 0;
+    padding-left: 0;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.container-xl {
+    max-width: 1200px; /* Adjust this value as needed */
+    margin-right: auto;
+    margin-left: auto;
+}

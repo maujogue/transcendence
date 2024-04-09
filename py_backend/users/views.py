@@ -12,8 +12,8 @@ from django.middleware.csrf import get_token
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 
-from users.forms import CustomUserCreationForm, UpdateProfilePictureForm
-from users.utils import validation_register
+from users.forms import CustomUserCreationForm, UpdateUserForm, UpdateProfileForm
+from users.utils import validation_register, username_is_unique, get_image_format_from_base64
 
 from . import forms
 import json
@@ -65,17 +65,30 @@ def logout_view(request):
 @login_required
 @require_http_methods(["POST"])
 def update_profile(request):
-    profile_picture_form = UpdateProfilePictureForm(request.POST, request.FILES, instance=request.user.profile)
-
-    if profile_picture_form.is_valid():
-        new_picture = profile_picture_form.save()
-        new_picture.user = request.user
-        if 'picture' in request.FILES:
-                new_picture.picture = request.FILES['picture']
-        new_picture.save()
-        return JsonResponse({'status': 'success'}, status=200)
+    if request.content_type == 'application/json':
+        try:
+            data = json.loads(request.body.decode("utf-8"))
+        except json.JSONDecodeError:
+            return JsonResponse(data={'errors': "Invalid JSON format"}, status=406)
+        username = data.get('username')
+        bio = data.get('bio')
+        avatar = data.get('avatar')
     else:
-        return JsonResponse({'status': 'error'}, status=400)
+        return JsonResponse(data={'errors': "Unsupported content type"}, status=415)
+    
+    if username:
+        is_unique, error_message = username_is_unique(username)
+        if not is_unique:
+            return JsonResponse({'error': error_message}, status=400)
+        request.user.username = username
+        request.user.save()
+    if bio or bio == '':
+        request.user.bio = bio
+        request.user.save()
+    if avatar:
+        request.user.avatar = avatar
+        request.user.save()
+    return JsonResponse({"status": "success"}, status=200)
 
 
 @require_http_methods(["GET"])

@@ -60,7 +60,7 @@ export async function loadAllModel(loadIsOver) {
         });
 
         await Promise.all(loadingPromises);
-            displayMainMenu();
+            // displayMainMenu();
     } catch (error) {
         console.error('Error loading models:', error);
     }

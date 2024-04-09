@@ -33,3 +33,8 @@
 #title {
 	position:static;
 }
+
+li.nav-item > a:hover {
+	background-color: #1d2126;
+	color: white;
+}

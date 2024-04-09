@@ -63,14 +63,12 @@ const router = async (routes, divToInsertHtml) => {
   }
   const page = match.route;
   const html = await page.fetchHtml();
-  console.log(previousPage);
   setInnerHtml(document.querySelector(mainPageDiv), html);
   if (
     page.sidebar == true &&
     (previousPage == null || previousPage.sidebar == false)
   ) {
     setInnerHtml(document.querySelector(sidebarDiv), "");
-    console.log("sidebar ");
     let sidebarHtml = await routes
       .find((elm) => elm.name === "Sidebar")
       .fetchHtml();
@@ -87,7 +85,6 @@ window.addEventListener("popstate", (event) => router(routes, mainPageDiv));
 document.addEventListener("DOMContentLoaded", () => {
   document.body.addEventListener("click", (e) => {
     let target = e.target;
-    console.log(target);
     while (
       target &&
       target.parentNode !== document.body &&
@@ -97,7 +94,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     if (target && target.matches("[navlink]")) {
       e.preventDefault();
-      console.log("prevented");
       navigateTo(target.getAttribute("href"));
     }
   });

@@ -21,8 +21,8 @@ function getSize() {
 async function createMap(env) {
 	const map = await loadScene('maps/map1/map1');
 	const model = map.scene;
-    //const mesh = model.children[0];
 	const light = new THREE.AmbientLight(0xffffff, 1);
+	var topSidePosition = new THREE.Vector3(0, 0, 0);
 
 	model.scale.set(.45, .45, .45);
     model.rotateX(Math.PI / 3);
@@ -30,16 +30,18 @@ async function createMap(env) {
     model.position.set(.15, 0, .92).unproject(env.camera);
 	env.scene.add(model);
 	env.scene.add(light);
-	let borderUp = await createBorder(new THREE.Vector3(0, .6, .93), env.camera);
-	let borderDown = await createBorder(new THREE.Vector3(0, 0, .89), env.camera);
+	model.children[1].getWorldPosition(topSidePosition);
+	env.camera.worldToLocal(topSidePosition);
+	const borderUp = await createBorder(topSidePosition, env);
+	const borderDown = await createBorder(new THREE.Vector3(0, 0, .89), env);
 	// let borderCenter = await createBorder(new THREE.Vector3(0, 0, 0.95), environment.camera);
 	// borderCenter.mesh.material.metalness = 0.2;
 	// borderCenter.mesh.material.roughness = 0.8;
 	// borderCenter.mesh.rotation.set(0, 0, Math.PI / 2);
 	// borderCenter.mesh.scale.set(1, 0.3, 1);
 	//console.log("BorderUp : ", borderUp.mesh);
-	env.scene.add(borderDown.mesh);
-	env.scene.add(borderUp.mesh);
+	// env.scene.add(borderDown.mesh);
+	// env.scene.add(borderUp.mesh);
 	// environment.scene.add(borderCenter.mesh);
 	// environment.scene.add(await createField());
 	env.renderer.render(env.scene, env.camera);

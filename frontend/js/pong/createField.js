@@ -2,16 +2,16 @@ import * as THREE from 'three'
 import { createTexturedMaterial } from './loadTextures.js';
 import { lobby } from './main.js';
 
-async function createBorder(position, camera) {
-    const geometry = new THREE.PlaneGeometry(100, 1, 1);
+async function createBorder(position, env) {
+    console.log("Position : ", position);
+    const geometry = new THREE.BoxGeometry(21, 1, 1);
     const material = new THREE.MeshBasicMaterial( { color: 0xffffff, opacity: .5, transparent: true } );
     const cube = new THREE.Mesh( geometry, material );
-    cube.position.copy(position).unproject(camera)
+    cube.position.copy(position).unproject(env.camera);
     const box = new THREE.Box3().setFromObject(cube);
-    return {
-        "mesh": cube,
-        "box": box
-    };
+    cube.lookAt(new THREE.Vector3(0, -.1, .91).unproject(env.camera));
+    env.scene.add(cube);
+    return (cube, box);
 }
 
 export function createLobbyLights(environment) {

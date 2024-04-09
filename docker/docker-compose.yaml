@@ -43,7 +43,7 @@ services:
       dockerfile: Dockerfile
     working_dir: /usr/app/
     volumes:
-      - ../frontend:/usr/app
+      - ../frontend:/usr/share/nginx/html
     ports:
       - 8001:80
     restart: always

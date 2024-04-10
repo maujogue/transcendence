@@ -508,6 +508,13 @@ class CSRFTokenTest(TestCase):
     def setUp(self):
         self.csrf_client = Client(enforce_csrf_checks=True)
 
+        self.user = CustomUser.objects.create_user(
+            username="osterga",
+            email="osterga@gmail.com",
+            password="UserPassword9+",
+            bio="Bonjours a tous, c'est Osterga")
+        self.client.login(username='osterga', password='UserPassword9+')
+
     def test_get_csrf_token(self):
         response = self.client.get(reverse('get_csrf_token'))
 
@@ -529,6 +536,17 @@ class CSRFTokenTest(TestCase):
         self.assertNotEqual(response1.json()['csrfToken'], response2.json()['csrfToken'])
         self.assertEqual(response1.status_code, 200)
         self.assertEqual(response2.status_code, 200)
+
+    def test_token(self):
+        response = self.client.get(reverse('get_csrf_token'))
+
+        response = self.client.post(
+            reverse('logout_view'), 
+            content_type='application/json')
+
+        # Assert the expected outcome
+        self.assertEqual(response.status_code, 200)
+
 
 # # =========================================================================================
         

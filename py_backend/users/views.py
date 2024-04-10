@@ -56,6 +56,7 @@ def login(request):
 
     return JsonResponse({"error": "error"}, status=400)
 
+
 @login_required
 @require_http_methods(["POST"])
 @requires_csrf_token

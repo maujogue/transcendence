@@ -68,14 +68,14 @@ CHANNEL_LAYERS = {
 }
 
 MIDDLEWARE = [
+	'corsheaders.middleware.CorsMiddleware',
+	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.middleware.security.SecurityMiddleware',
 	'django.contrib.sessions.middleware.SessionMiddleware',
 	'django.middleware.common.CommonMiddleware',
-	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
-	'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'py_backend.urls'
@@ -188,18 +188,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = True # A Retirer
+CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
 	"https://127.0.0.1:5500",
+	"https://127.0.0.1:8080",
 	"https://127.0.0.1:8000",
 	"https://localhost:8000",
     "https://127.0.0.1:8001",
 	"https://localhost:8001",
 	"https://localhost:5500",
+	"https://127.0.0.1:8001",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
 	"https://127.0.0.1:8000",
+	"https://127.0.0.1:8080",
 	"https://127.0.0.1:5500",
 	"https://127.0.0.1:5501",
     "https://127.0.0.1:8001",
@@ -214,7 +218,9 @@ ALLOWED_HOSTS = [
 
 CORS_ORIGIN_WHITELIST = [
 	"https://127.0.0.1:8000",
+	"https://127.0.0.1:8080",
 	"https://127.0.0.1:5500",
     "https://127.0.0.1:8001",
 	"https://127.0.0.1:3000",
+	"https://localhost:8080"
 ]

@@ -157,6 +157,13 @@ The CSRF token is returned in a JSON response with the key "csrfToken" and a `20
 - The `@ensure_csrf_cookie decorator` ensures that a CSRF cookie is included in the response.
 - Inside the function, `get_token(request)` is a function that retrieves or generates a CSRF token.
 
+
+- In any template that uses a POST form, use the csrf_token tag inside the `<form>` element if the form is for an internal URL, e.g.:
+
+`<form method="post">{% csrf_token %}`
+
+- **WARNING : This should not be done for POST forms that target external URLs, since that would cause the CSRF token to be leaked, leading to a vulnerability.**
+
 </details>
 <br>
 

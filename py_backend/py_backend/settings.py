@@ -36,6 +36,7 @@ ALLOWED_HOSTS = ['*']
 MIN_LEN_USERNAME = 3
 MAX_LEN_USERNAME = 25
 MAX_LEN_EMAIL = 50
+MAX_LEN_TEXT = 500
 
 # Application definition
 

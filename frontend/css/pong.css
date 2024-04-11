@@ -158,7 +158,7 @@ h1 {
 	align-items: center;
 	background-color: var(--form-input-bg-color);
 	width: 75%;
-	height: 85%;
+	/* height: 90%; */
 	opacity: 0.9;
 	box-shadow: 1px 1px 20px 2px var(--form-color);
 	border-radius: 5%;
@@ -276,7 +276,7 @@ h1 {
 .form-field > input {
 	margin: 2%;
 	width: 75%;
-	height: 2em;
+	height: 10%;
 	background-color: var(--form-input-bg-color);
 	border: 1px solid black;
 	color: white;
@@ -303,6 +303,7 @@ h1 {
 .form-field__private > input {
 	border: 1px solid #ccc;
 	cursor: pointer;
+	height: 1.5em;
 }
 
 .disabled {
@@ -403,7 +404,7 @@ h1 {
 .submode {
 	transform: skew(-10deg);
 	background: white;
-	width: 100%;
+	width: 150%;
 	margin: 3% 0;
 	transition: all 0.5s ease;
 }
@@ -470,107 +471,6 @@ h1 {
 	justify-content: center;
 	margin: 2%;
 }
-
-#tournamentMenu, #onlineMenu, #createTournament, #joinTournamentMenu {
-	display: flex;
-	flex-direction: row;
-	background-color: black;
-	justify-content: center;
-	align-items: center;
-}
-
-#listTournament{
-	background-color: white;
-	justify-content: center;
-	align-items: center;
-	width: 50%;
-	height: 50%;
-}
-
-#createTournamentForm, #listTournament {
-	font-size: 0.5em;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	background-color: var(--form-input-bg-color);
-	width: 75%;
-	height: 85%;
-	opacity: 0.9;
-	box-shadow: 1px 1px 20px 2px var(--form-color);
-	border-radius: 5%;
-	background-color: var(--form-bg-color);
-	transform: perspective(600px) rotateX(25deg);
-	perspective: 10%;
-	filter: blur(0.5px);
-	position: relative;
-	overflow: hidden;
-	top: -5%;
-}
-
-#listTournament {
-	overflow-y: scroll;
-	justify-content: start!important;
-	color: white;
-}
-
-
-.form-field {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
-	transform: perspective(600px) rotateX(25deg);
-	perspective: 10px;
-}
-
-.glitched {
-	animation: glitch 1.5s linear infinite;
-}
-
-.glitched:after, .glitched:before {
-	position: absolute;
-	left: 0;
-	animation: glitch 0.5s linear infinite;
-}
-
-.glitched:before{
-	animation: glitchTop 0.5s linear infinite;
-	clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
-	-webkit-clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
-}
-
-.glitched:after {
-	animation: glitchBottom 1.5s linear infinite;
-	clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
-	-webkit-clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
-}
-
-.form-field-name:after, .form-field-name:before {
-	content: "Name";
-	left: -1px;
-	animation: glitch 0.7s linear infinite;
-}
-
-.form-field-max_players:after, .form-field-max_players:before {
-	content: "Max Players";
-	left: -5px;
-	animation: glitch 0.4s linear infinite;
-}
-
-.form-field-max_points:after, .form-field-max_points:before {
-	content: "Max Points";
-	left: 2px;
-	animation: glitch 0.6s linear infinite;
-}
-
-.form-header::after, .form-header::before {
-	content: "Create Tournament";
-	left: -0.5px;
-	animation: glitch 1.5s linear infinite;
-}
-
 
 @keyframes glitch {
 	2%, 64% {
@@ -610,206 +510,6 @@ h1 {
 	}
 }
 
-.form-field > input {
-	margin: 2%;
-	width: 75%;
-	height: 2em;
-	background-color: var(--form-input-bg-color);
-	border: 1px solid black;
-	color: white;
-}
-
-.form-field > input:focus {
-	background-color: var(--form-color);
-	box-shadow: 2px 2px 25px 2px var(--form-color);
-}
-
-.form-field > input:hover {
-	box-shadow: 1px 1px 10px 1px var(--form-color);
-	border: 1px solid var(--form-color);
-}
-
-.form-field__private {
-	flex-direction: row;
-}
-
-.form-field__private > label {
-	width: 150%;
-}
-
-.form-field__private > input {
-	border: 1px solid #ccc;
-	cursor: pointer;
-}
-
-.disabled {
-	pointer-events: none;
-}
-
-.disabled > input {
-	background-color: rgb(128, 126, 126);
-}
-
-.btn-create {
-	border: none;
-	color: white;
-	background-color: var(--form-input-bg-color);
-	font-family: 'baumansregular', sans-serif;
-	font-size: 1em;
-	margin: 0.5em;
-	padding: 15px;
-	position: relative;
-	overflow: hidden;
-	transform: perspective(600px) rotateX(25deg);
-	perspective: 10px;
-
-}
-
-.btn-create::after, .btn-create::before {
-	content: "";
-	position: absolute;
-	left: -1px;
-	animation: glitch 2s linear infinite;
-}
-  
-.btn-create:hover {
-	box-shadow: 2px 2px 25px 2px var(--form-color);
-	background-color: var(--form-color);
-}
-
-.hidden {
-	display: none!important;
-}
-
-.list-header {
-	display: flex;
-	width: 96%;
-	font-size: 2em;
-	margin: 1% 10%;
-	/* justify-content: start; */
-	justify-content: space-between;
-	border-bottom: 1px black solid;
-}
-
-.tournament-info {
-	width: 96%;
-	display: flex;
-	font-size: 1.5em;
-	justify-content: space-between;
-}
-
-.tournament-info:hover {
-	background-color: var(--form-color);
-	box-shadow: 2px 2px 25px 2px var(--form-color);
-}
-
-.gamemode {
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	height: auto;
-	width: 25%;
-	margin: 5%;
-	padding:  1% 3%;
-	align-self: start;
-}
-
-.gamemode > p {
-	color: white;
-	margin: 2% 0;
-}
-
-.gamemode-img {
-	width: 50%;
-	height: 50%;
-}
-
-.submode-list {
-	color: black;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	list-style-type: none;
-	padding: 0;
-	width: 100%;
-}
-
-.submode {
-	transform: skew(-10deg);
-	background: white;
-	width: 100%;
-	margin: 3% 0;
-	transition: all 0.5s ease;
-}
-
-.submode:hover {
-	transform: scale(1.1) skew(-7deg);
-}
-
-
-.close-matchmaking {
-	position: absolute;
-	align-self: start;
-	left: 0;
-	margin: 0.5%;
-	/* font-size: 1em; */
-	z-index: 1;
-	margin: 0 0.5%;
-	/* transform: skew(-5deg); */
-}
-
-.menu {
-	position: absolute;
-	text-align: center;
-	color: white;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	padding: 0;
-}
-
-.inputAnimate {
-	display: flex;
-	position: relative;
-	bottom: 0%;
-	margin: 5% 5%;
-	justify-content: center;
-}
-
-.infoText {
-	width: 20%;
-	font-size: 0.6em;
-}
-
-.sprite {
-	position: relative;
-	left: 5%;
-	margin: 0% 15%;
-	width: 63px;
-	height: 32px;
-	animation: moveKey 6s steps(3  ) infinite;
-	background-repeat: no-repeat;
-	z-index: 1;
-}
-
-.charactersIcon {
-	object-fit: fill;
-	width: 50%;
-	height: 100%;
-	transform: skew(-5deg);
-	border: 3px inset rgb(223, 225, 224);
-	/* border: 2px black solid; */
-}
-
-.swatch {
-	display: flex;
-	z-index: 1;
-	margin: 0 0.5%;
-	/* transform: skew(-5deg); */
-}
 
 #game .btn {
 	border: none;
@@ -910,13 +610,12 @@ h1 {
 	}
 
 	#createTournamentForm, #listTournament {
-		height: 65%;
 		top: -15%;
-
+		height: 70%;
+		font-size: 0.45em;
 	}
-
-	#tournamentForm {
-		width: 30%;
+	.form-header {
+		font-size: 2em;
 	}
   }
 

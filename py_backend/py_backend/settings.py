@@ -191,23 +191,13 @@ CORS_ALLOWED_ORIGINS = True # A Retirer
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
-	"https://127.0.0.1:5500",
-	"https://127.0.0.1:8080",
 	"https://127.0.0.1:8000",
 	"https://localhost:8000",
-    "https://127.0.0.1:8001",
-	"https://localhost:8001",
-	"https://localhost:5500",
-	"https://127.0.0.1:8001",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
 	"https://127.0.0.1:8000",
-	"https://127.0.0.1:8080",
-	"https://127.0.0.1:5500",
-	"https://127.0.0.1:5501",
-    "https://127.0.0.1:8001",
-	"https://127.0.0.1:3000",
+	"https://localhost:8000",
 ]
 
 ALLOWED_HOSTS = [
@@ -218,9 +208,5 @@ ALLOWED_HOSTS = [
 
 CORS_ORIGIN_WHITELIST = [
 	"https://127.0.0.1:8000",
-	"https://127.0.0.1:8080",
-	"https://127.0.0.1:5500",
-    "https://127.0.0.1:8001",
-	"https://127.0.0.1:3000",
-	"https://localhost:8080"
+	"https://localhost:8000",
 ]

@@ -11,7 +11,7 @@ form.addEventListener('submit', function(event) {
 	     password2: userData.get("password"),
 	}
 
-	fetch("https://127.0.0.1:8080/get_csrf_token/", {
+	fetch("https://127.0.0.1:8000/api/get_csrf_token/", {
 		method: "GET",
 		credentials: "include",
 	})
@@ -19,7 +19,7 @@ form.addEventListener('submit', function(event) {
 	.then((data) => {
 		const csrfToken = data.csrfToken;
 		console.log(csrfToken);
-		fetch("https://127.0.0.1:8080/register/", {
+		fetch("https://127.0.0.1:8000/api/register/", {
 			method: "POST",
 			headers: {
 				"X-CSRFToken": csrfToken,

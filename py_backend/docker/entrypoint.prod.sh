@@ -1,10 +1,9 @@
 #!/bin/sh
 python manage.py migrate --noinput
 python manage.py collectstatic --noinput
-gunicorn py_backend.wsgi:application \
-			--bind 0.0.0.0:8000 \
-			--certfile /etc/nginx/ssl/ssl_certificate.crt \
-			--keyfile /etc/nginx/ssl/ssl_certificate_key.key \
+
+pip install -U "Twisted[tls,http2]"
+daphne -e ssl:8000:privateKey=/etc/nginx/ssl/ssl_certificate_key.key:certKey=/etc/nginx/ssl/ssl_certificate.crt -u /tmp/daphne.sock py_backend.asgi:application
 
 if [ "$DJANGO_SUPERUSER_USERNAME" ]
 then

@@ -14,7 +14,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 
 from users.forms import CustomUserCreationForm, UpdateUserForm, UpdateProfileForm
-from users.utils import validation_register, username_is_unique
+from users.utils import validation_register, validation_login, username_is_unique
 
 from . import forms
 import json
@@ -44,8 +44,12 @@ def login(request):
         data = json.loads(request.body.decode("utf-8"))
     except json.JSONDecodeError:
         return JsonResponse(data={'errors': "Invalid JSON format"}, status=406)
+    valid_request = validation_login(data)
+    print(valid_request)
+    if valid_request:
+        return JsonResponse({"error": valid_request}, status=400)
+    
     form = forms.LoginForm(data)
-
     if form.is_valid():
         username = form.cleaned_data['username']
         password = form.cleaned_data['password']

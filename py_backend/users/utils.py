@@ -1,4 +1,5 @@
 from users.models import CustomUser
+from django.contrib.auth.hashers import check_password
 from py_backend import settings
 
 SPECIAL_CHARS = "+/*.,!#%^&\{}[]=:;\'\"`~"
@@ -11,6 +12,24 @@ def email_is_unique(email):
 		return False, f'Email is already used.'
 	return True, None
 
+def username_exists(username):
+	if CustomUser.objects.filter(username=username).exists():
+		return True, None
+	return False, f'This username does not exist.'
+
+
+def password_is_correct(username, password):
+    try:
+        user = CustomUser.objects.get(username=username)
+    except CustomUser.DoesNotExist:
+        return False, 'User does not exist.'
+    
+    if check_password(password, user.password):
+        return True, None
+    else:
+        return False, 'The password is incorrect.'
+
+	
 def username_is_valid(username):
 	if not username or username == '':
 		return False, f'Missing username.'
@@ -24,6 +43,7 @@ def username_is_valid(username):
 		return False, f'Username already exists.'
 	return True, None
 
+
 def username_is_unique(username):
 	if not username or username == '':
 		return False, f'Username cannot be empty.'
@@ -33,6 +53,7 @@ def username_is_unique(username):
 		return False, f'Username is already used.'
 	return True, None
 	
+
 def validation_register(data):
 	validation_errors = []
 
@@ -46,6 +67,22 @@ def validation_register(data):
 		validation_errors.append(response_username)
 	if not valid_email:
 		validation_errors.append(response_email)
+	return validation_errors
+
+
+def validation_login(data):
+	validation_errors = []
+
+	username = data.get('username')
+	password = data.get('password')
+
+	valid_username, response_username = username_exists(username)
+	valid_password, response_password = password_is_correct(username, password)
+
+	if not valid_username:
+		validation_errors.append(response_username)
+	if not valid_password:
+		validation_errors.append(response_password)
 	return validation_errors
 
 

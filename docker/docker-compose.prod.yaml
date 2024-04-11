@@ -28,15 +28,15 @@ services:
       timeout: 5s
       retries: 5
 
-  nginx_proxy:
-    build: ../nginx_proxy/config
-    volumes:
-       - staticfiles:/staticfiles
-       - certificates:/etc/nginx/ssl  
-    ports:
-      - 8080:8080
-    depends_on:
-      - django_backend
+  # nginx_proxy:
+  #   build: ../nginx_proxy/config
+  #   volumes:
+  #      - staticfiles:/staticfiles
+  #      - certificates:/etc/nginx/ssl  
+  #   ports:
+  #     - 8080:8080
+  #   depends_on:
+  #     - django_backend
   
   nginx_frontend:
     build:
@@ -45,12 +45,13 @@ services:
     working_dir: /usr/app/
     volumes:
       - certificates:/etc/nginx/ssl  
+      - staticfiles:/staticfiles
       - ../frontend:/usr/share/nginx/html
     ports:
       - 8001:80
     restart: always
-    depends_on:
-      - nginx_proxy
+    # depends_on:
+    #   - nginx_proxy
   
 
 volumes:

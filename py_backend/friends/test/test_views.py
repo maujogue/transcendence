@@ -201,7 +201,7 @@ class MultipleCases(TestCase):
 			password='User2Password+')
 		self.client1.login(username='user1', password='User1Password+')
 		self.client2.login(username='user2', password='User2Password+')
-		self.friends = [CustomUser.objects.create_user(username=f'friend{i}', password='friendpassword') for i in range(5)]
+		# self.friends = [CustomUser.objects.create_user(username=f'friend{i}', password='friendpassword') for i in range(5)]
 
 
 	def test_multiple_cases(self):

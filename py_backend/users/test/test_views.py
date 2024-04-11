@@ -1,9 +1,16 @@
 from django.test import TestCase
 from django.urls import reverse
-from django.core.files.uploadedfile import SimpleUploadedFile
-from users.models import CustomUser
 from django.test import Client
+from requests_toolbelt.multipart.encoder import MultipartEncoder
+from django.core.files.uploadedfile import SimpleUploadedFile
+
+
 import json
+
+from users.models import CustomUser
+from users.models import Profile
+
+
 
 
 class RegisterTests(TestCase):
@@ -516,22 +523,143 @@ class CSRFTokenTest(TestCase):
         response = self.client.get(reverse('register'))
         self.assertEqual(response.status_code, 405)
 
-# =========================================================================================
-        
-# class ProfileUpdate(TestCase):
-#     def setUp(self):
-#         self.client = Client()
+    def test_csrf_token_is_unique(self):
+        response1 = self.client.get(reverse('get_csrf_token'))
+        response2 = self.client.get(reverse('get_csrf_token'))
+        self.assertNotEqual(response1.json()['csrfToken'], response2.json()['csrfToken'])
+        self.assertEqual(response1.status_code, 200)
+        self.assertEqual(response2.status_code, 200)
 
-#         CustomUser.objects.create_user(
-#             username="lboulatr",
-#             email="lboulatr@gmail.com",
-#             password="UserPassword9+")
+# # =========================================================================================
         
-#         self.client.login(username='lboulatr', password='UserPassword9+')
+class ProfileUpdate(TestCase):
+    def setUp(self):
+        self.client = Client()
 
-#     def test_change_profil_picture_success(self):
-#         response = self.client.post(
-#             reverse('update_profile'), 
-#             content_type='application/json')
+        self.user = CustomUser.objects.create_user(
+            username="osterga",
+            email="osterga@gmail.com",
+            password="UserPassword9+",
+            bio="Bonjours a tous, c'est Osterga")
+
+        self.user2 = CustomUser.objects.create_user(
+            username="ochoa",
+            email="ochoa@gmail.com",
+            password="UserPassword9+",
+            bio="Bonjours a tous, c'est Ochoa")
+
+        self.profile = Profile.objects.create(user=self.user)
         
-#         self.assertEqual(response.status_code, 200)
+        self.client.login(username='osterga', password='UserPassword9+')
+
+    def test_user_is_not_login(self):
+        self.client.logout()
+        update_datas = {
+            'bio': 'Lorem ipsum dolor sit amet'
+        }
+
+        response = self.client.post(
+            reverse('update_profile'), 
+            data=json.dumps(update_datas), 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 302)
+
+
+    def test_update_datas_bio(self):
+        update_datas = {
+            'bio': 'Lorem ipsum dolor sit amet'
+        }
+
+        response = self.client.post(
+            reverse('update_profile'), 
+            data=json.dumps(update_datas), 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(self.user.bio, 'Lorem ipsum dolor sit amet')
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_empty_bio(self):
+        update_datas = {
+            'bio': ''
+        }
+
+        response = self.client.post(
+            reverse('update_profile'), 
+            data=json.dumps(update_datas), 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(self.user.bio, '')
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_change_username(self):
+        update_datas = {
+            'username': 'damien'
+        }
+
+        response = self.client.post(
+            reverse('update_profile'), 
+            data=json.dumps(update_datas), 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(self.user.username, 'damien')
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_change_username_is_already_used(self):
+        update_datas = {
+            'username': 'ochoa'
+        }
+
+        response = self.client.post(
+            reverse('update_profile'), 
+            data=json.dumps(update_datas), 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        response_data = response.json()
+
+        self.assertEqual(response_data.get('error'), 'Username is already used.')
+        self.assertEqual(response.status_code, 400)
+
+    
+    def test_change_username_camelcase(self):
+        update_datas = {
+            'username': 'OchoA',
+            'avatar': 'hunter.jpg'
+        }
+
+        response = self.client.post(
+            reverse('update_profile'), 
+            data=json.dumps(update_datas), 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        response_data = response.json()
+
+        self.assertEqual(response_data.get('error'), 'Username is already used.')
+        self.assertEqual(response.status_code, 400)
+
+
+    def test_avatar_upload(self):
+        avatar_datas = {
+            'avatar': 'hunter.jpg'
+        }
+        response = self.client.post(
+            reverse('update_profile'), 
+            data=json.dumps(avatar_datas), 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.user.avatar.name, 'hunter.jpg')

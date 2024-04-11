@@ -23,6 +23,15 @@ def username_is_valid(username):
 	if CustomUser.objects.filter(username=username).exists():
 		return False, f'Username already exists.'
 	return True, None
+
+def username_is_unique(username):
+	if not username or username == '':
+		return False, f'Username cannot be empty.'
+	converted_usernane = username.lower()
+	response = CustomUser.objects.filter(username=converted_usernane).exists()
+	if response:
+		return False, f'Username is already used.'
+	return True, None
 	
 def validation_register(data):
 	validation_errors = []
@@ -38,4 +47,11 @@ def validation_register(data):
 	if not valid_email:
 		validation_errors.append(response_email)
 	return validation_errors
-	
+
+
+def get_image_format_from_base64(base64_string):
+    try:
+        image_format = base64_string.split(';base64')[0].split('/')[1]
+        return image_format
+    except Exception:
+        return None

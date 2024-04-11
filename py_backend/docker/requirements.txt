@@ -7,5 +7,5 @@ channels==4.0.0
 daphne>=4.0.0
 django-cors-headers==4.3.1
 pillow==10.2.0
-request-toolbelt==2.1.0
+requests-toolbelt
 # channels-redis==4.2.0

@@ -506,7 +506,6 @@ class LogoutTests(TestCase):
 
 class CSRFTokenTest(TestCase):
     def setUp(self):
-        self.csrf_client = Client(enforce_csrf_checks=True)
         self.user = CustomUser.objects.create_user(
             username="osterga",
             email="osterga@gmail.com",
@@ -557,10 +556,15 @@ class CSRFTokenTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_post_without_csrf_token(self):
+        self.csrf_client = Client(enforce_csrf_checks=True)
         response = self.csrf_client.post(reverse('update_profile'), data={'key': 'value'})
         self.assertEqual(response.status_code, 403)
 
-# # =========================================================================================
+    def test_csrf_token_generated(self):
+        response = self.client.get(reverse('get_csrf_token'))
+        self.assertContains(response, 'csrfToken')
+
+# =========================================================================================
         
 class ProfileUpdate(TestCase):
     def setUp(self):

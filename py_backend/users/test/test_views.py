@@ -556,7 +556,7 @@ class CSRFTokenTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-    def test_post_without_csrf_token_with_csrf_checks(self):
+    def test_post_without_csrf_token(self):
         response = self.csrf_client.post(reverse('update_profile'), data={'key': 'value'})
         self.assertEqual(response.status_code, 403)
 

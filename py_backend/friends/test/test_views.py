@@ -199,11 +199,12 @@ class MultipleCases(TestCase):
 			username='user2',
 			email='user2@gmail.com',
 			password='User2Password+')
+		self.client1.login(username='user1', password='User1Password+')
+		self.client2.login(username='user2', password='User2Password+')
+		# self.friends = [CustomUser.objects.create_user(username=f'friend{i}', password='friendpassword') for i in range(5)]
 
 
 	def test_multiple_cases(self):
-		self.client1.login(username='user1', password='User1Password+')
-		self.client2.login(username='user2', password='User2Password+')
 		self.assertEqual(int(self.client1.session['_auth_user_id']), self.user1.id)
 		self.assertEqual(int(self.client2.session['_auth_user_id']), self.user2.id)
 		self.assertEqual(self.user1.friends.count(), 0)
@@ -244,3 +245,15 @@ class MultipleCases(TestCase):
 		self.assertEqual(response_remove.status_code, 200)
 		self.assertEqual(self.user1.friends.count(), 0)
 		self.assertEqual(self.user2.friends.count(), 0)
+	
+	# def test_add_multiple_friends(self):
+    #     # Create a Friend instance for the user
+	# 	user_friend = Friend.objects.create(user=self.user)
+    #     # Add multiple friends to the user
+	# 	for friend in self.friends:
+	# 		user_friend.friends.add(friend)
+        
+    #     # Verify that the friends were added correctly
+	# 	self.assertEqual(user_friend.friends.count(), len(self.friends))
+	# 	for friend in self.friends:
+	# 		self.assertTrue(user_friend.friends.filter(id=friend.id).exists())

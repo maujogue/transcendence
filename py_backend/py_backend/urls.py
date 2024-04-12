@@ -14,8 +14,8 @@ urlpatterns = [
 	# path("pong", views.pong, name="pong"),
     
     path('', include('multiplayer.urls')),
-	path('', include('users.urls')),
-    path('', include('friends.urls')),
+	path('users/', include('users.urls')),
+    path('friends/', include('friends.urls')),
     path('', include('tournaments.urls'))
 ]
 

@@ -49,7 +49,7 @@ services:
     volumes:
       - ../frontend:/usr/share/nginx/html
     ports:
-      - 8001:80
+      - 8000:80
     restart: always
 
 volumes:

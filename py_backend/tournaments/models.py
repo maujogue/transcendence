@@ -31,4 +31,12 @@ class Participant(models.Model):
 		return f"{self.nickname} in {self.tournament.name}"
 
 #TODO create a model for the player
+"""
+-delete 'host' from tournament model
+-check for participants because I'm not sure it takes the participant class right now
+-change the tests
+-to delete a tournament, check if admin instead of if host.
+-be sure tournament in participant model is correctly set
+-add in all join test the nickname for the tournament
+"""
 #TODO create a model for the brackets

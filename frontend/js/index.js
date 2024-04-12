@@ -12,10 +12,10 @@ class Page {
 }
 
 const routes = [
-  new Page("Sidebar", "", "html/Sidebar.html", false),
-
-  new Page("LandingPage", "/", "html/LandingPage.html", false),
-  new Page("LandingPage", "/LandingPage", "html/LandingPage.html", false),
+	new Page("LandingPage", "/", "html/LandingPage.html", false),
+	new Page("LandingPage", "/home", "html/LandingPage.html", false),
+	
+	new Page("Sidebar", "", "html/Sidebar.html", false),
 
   new Page("Game", "/game", "html/Game.html", true),
   new Page("Dashboard", "/dashboard", "html/Dashboard.html", true),
@@ -44,7 +44,7 @@ function navigateTo(url) {
   if (url !== location.pathname) {
     history.pushState(null, null, url);
     router(routes, mainPageDiv);
-  }
+}
 }
 
 const router = async (routes, divToInsertHtml) => {
@@ -60,6 +60,7 @@ const router = async (routes, divToInsertHtml) => {
       route: routes[0],
       isMatch: true,
     };
+	history.replaceState({}, '', '/');
   }
   const page = match.route;
   const html = await page.fetchHtml();

@@ -13,8 +13,6 @@ RUN pip install --upgrade pip
 RUN pip install -r code/requirements.txt
 RUN pip install urllib3 requests-toolbelt
 
-EXPOSE 8000
-
 RUN		mkdir -p /etc/nginx/ssl
 
 RUN 	openssl req -x509 \

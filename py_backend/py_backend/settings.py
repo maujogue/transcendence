@@ -69,6 +69,7 @@ CHANNEL_LAYERS = {
 }
 
 MIDDLEWARE = [
+	'corsheaders.middleware.CorsMiddleware',
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.middleware.security.SecurityMiddleware',
 	'django.contrib.sessions.middleware.SessionMiddleware',
@@ -170,8 +171,8 @@ USE_I18N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_URL = "/staticfiles/"
+STATIC_ROOT = "/staticfiles/"
 # STATICFILES_DIRS = [
 #     BASE_DIR / "frontend/static",  # Path to your "frontend" folder
 # ]
@@ -189,25 +190,18 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = True # A Retirer
+CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
-	"https://127.0.0.1:5500",
-	"https://127.0.0.1:8080",
-	"https://localhost:8080",
-    "https://127.0.0.1:8001",
-	"https://localhost:8001",
-	"https://localhost:5500",
-    "http://127.0.0.1:5500"
+	"https://127.0.0.1:8000",
+	"https://localhost:8000",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-	"https://127.0.0.1:8080",
-	"https://127.0.0.1:5500",
-	"https://127.0.0.1:5501",
-    "https://127.0.0.1:8001",
-	"https://127.0.0.1:3000",
+	"https://127.0.0.1:8000",
+	"https://localhost:8000",
 ]
 
 ALLOWED_HOSTS = [
@@ -217,12 +211,7 @@ ALLOWED_HOSTS = [
 ]
 
 CORS_ORIGIN_WHITELIST = [
-	"https://127.0.0.1:8080",
-	"https://127.0.0.1:5500",
-    "https://127.0.0.1:8001",
-	"https://127.0.0.1:3000",
-    "https://localhost:8080",
-	"https://localhost:5500",
-    "https://localhost:8001",
-	"https://localhost:3000",
+	"https://127.0.0.1:8000",
+	"https://localhost:8000",
 ]
+

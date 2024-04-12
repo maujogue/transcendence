@@ -311,22 +311,22 @@
             <div class="modal-body">
                     <div class="mb-3">
                         <label for="username" class="col-form-label">Username</label>
-                        <input type="text" class="form-control" id="username" placeholder="Sweet Onion">
+                        <input type="text" name="username" class="form-control" id="username" placeholder="Sweet Onion">
                     </div>
                     <div class="mb-3">
                         <label for="email" class="col-form-label">Email</label>
-                        <input type="text" class="form-control" id="email" placeholder="name@example.com">
+                        <input type="text" name="email" class="form-control" id="email" placeholder="name@example.com">
                     </div>
 					<div class="mb-3">
                         <label for="password" class="col-form-label">Password</label>
-                        <input type="text" class="form-control" id="password">
+                        <input type="text" name="password" class="form-control" id="password">
 						<div id="passwordHelpBlock" class="form-text">
 							Your password must be 8-20 characters long, contain letters, numbers and special characters.
 						</div>
                     </div>
 					<div class="mb-3">
                         <label for="passwordagain" class="col-form-label">Repeat Password</label>
-                        <input type="text" class="form-control" id="passwordagain">
+                        <input type="text" name="passwordagain" class="form-control" id="passwordagain">
                     </div>
 			</div>
 			<div class="modal-footer d-sm-flex">
@@ -335,11 +335,11 @@
 						<a class="text-blue" data-bs-target="#login" data-bs-toggle="modal">Log In</a>
 					</div>
 					<div>
-						<button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-						<a class="btn btn-primary" data-bs-dismiss="modal" navlink>Sign up</a>
+						<button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary" navlink>Sign up</button>
 					</div>
             </div>
         </form>
     </div>
 </div>
-<script type="module" src="js/apiCall.js"></script>
+<script type="module" src="../js/apiCall.js"></script>

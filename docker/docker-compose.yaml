@@ -1,15 +1,11 @@
-version: '3.8'
-
 services:
-  django-backend:
+  django_backend:
     build:
         context: ../py_backend/docker
         dockerfile: Dockerfile.dev
     volumes:
        - ../py_backend:/code
        - certificates:/etc/nginx/ssl
-    expose:
-      - 8000
     ports:
       - "8080:8000"
     env_file:
@@ -44,6 +40,7 @@ services:
     working_dir: /usr/app/
     volumes:
       - ../frontend:/usr/share/nginx/html
+      - certificates:/etc/nginx/ssl
     ports:
       - 8001:80
     restart: always

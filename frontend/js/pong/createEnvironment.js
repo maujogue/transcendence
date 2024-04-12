@@ -31,7 +31,6 @@ async function createMap(env) {
 	env.scene.add(model);
 	env.scene.add(light);
 	model.children[1].getWorldPosition(topSidePosition);
-	env.camera.worldToLocal(topSidePosition);
 	const borderUp = await createBorder(topSidePosition, env);
 	const borderDown = await createBorder(new THREE.Vector3(0, 0, .89), env);
 	// let borderCenter = await createBorder(new THREE.Vector3(0, 0, 0.95), environment.camera);

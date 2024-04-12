@@ -7,6 +7,7 @@ async function createBorder(position, env) {
     const geometry = new THREE.BoxGeometry(21, 1, 1);
     const material = new THREE.MeshBasicMaterial( { color: 0xffffff, opacity: .5, transparent: true } );
     const cube = new THREE.Mesh( geometry, material );
+    console.log("Here");
     cube.position.copy(position).unproject(env.camera);
     const box = new THREE.Box3().setFromObject(cube);
     cube.lookAt(new THREE.Vector3(0, -.1, .91).unproject(env.camera));

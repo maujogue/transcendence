@@ -112,4 +112,43 @@ function logout() {
     });
 }
 
-export {register, login, logout}
+function updateProfile(event, userDataForm) {
+    event.preventDefault();
+
+    const userData = new FormData(userDataForm);
+	const fetchBody = {
+	     email: userData.get("username"),
+	     password: userData.get("password"),
+	}
+
+	fetch("https://127.0.0.1:8000/api/get_csrf_token/", {
+		method: "GET",
+		credentials: "include",
+	})
+	.then((response) => response.json())
+	.then((data) => {
+		const csrfToken = data.csrfToken;
+		console.log(csrfToken);
+		fetch("https://127.0.0.1:8000/api/update_profile/", {
+			method: "POST",
+			headers: {
+				"X-CSRFToken": csrfToken,
+				"Content-Type": "application/x-www-form-urlencoded",
+			},
+			credentials: "include",
+			body: JSON.stringify(fetchBody),
+		})
+		.then((response) => response.json())
+		.then((data) => {
+			console.log(data);
+		})
+		.catch((error) => {
+			console.error("login failed", error);
+		});
+	})
+	.catch((error) => {
+		console.error("get csrf token fail", error);
+	});
+}
+
+export {register, login, logout, updateProfile}

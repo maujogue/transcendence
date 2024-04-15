@@ -1,5 +1,5 @@
 
-<link rel="stylesheet" href="../css/LandingPage.css">
+<link rel="stylesheet" href="../css/Home.css">
 
 <!-- Navbar -->
 <nav class="navbar container-fluid navbar-expand-lg bg-dark navbar-dark fixed-top">
@@ -36,7 +36,7 @@
                 </h1>
                 <p class="lead my-4">Pong is one of the most iconic games of all time. <br>
                     Why not give it a lifting ? <br>
-                    Meet Pongy, the modern, online, 3d version of the original game 
+                    Meet Pong!, the modern, online, 3d version of the original game 
                 </p>
             </div>
             <img class="img-fluid d-none d-sm-block" src="assets/img/Pong_The_Next_Level_cover.jpg" alt="pong">
@@ -269,23 +269,20 @@
 <!-- modal -->
 <div class="modal fade" id="login" tabindex="-1">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <form id="loginForm" class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="exampleModalLabel">Login</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
-                    <div class="mb-3">
-                        <label for="email" class="col-form-label" >Email</label>
-                        <input type="text" class="form-control" id="email" placeholder="name@example.com">
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="col-form-label">Password</label>
-                        <input type="text" class="form-control" id="password">
-                    </div>
-                </form>
-				
+				<div class="mb-3">
+					<label for="username" class="col-form-label" >Username</label>
+					<input type="text" name="username" class="form-control" id="username" placeholder="Tazz1998">
+				</div>
+				<div class="mb-3">
+					<label for="password" class="col-form-label">Password</label>
+					<input type="text" name="password" class="form-control" id="password">
+				</div>
             </div>
             <div class="modal-footer d-sm-flex">
 				<div class="d-flex align-items-center me-auto">
@@ -294,10 +291,10 @@
 				</div>
 				<div>
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-					<a href="/dashboard" class="btn btn-primary" data-bs-dismiss="modal" navlink>Login</a>
+					<button type="submit" class="btn btn-primary" navlink>Login</button>
 				</div>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
@@ -342,4 +339,4 @@
         </form>
     </div>
 </div>
-<script type="module" src="../js/apiCall.js"></script>
+<script type="module" src="../js/Home.js"></script>

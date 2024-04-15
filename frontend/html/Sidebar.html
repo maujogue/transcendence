@@ -1,10 +1,10 @@
-<link rel="stylesheet" href="/css/Sidebar.css" />
+<link rel="stylesheet" href="/css/sidebar.css" />
 
 <nav
   id="sidebar"
   class="sidebar opened-sidebar d-flex flex-column flex-shrink-0 p-3 text-white bg-dark"
 >
-  <a class="navbar-brand d-flex align-items-center" href="LandingPage">
+  <a class="navbar-brand d-flex align-items-center" href="home">
     <img
       src="/assets/img/Pong_The_Next_Level_cover.jpg"
       alt="Logo"
@@ -46,7 +46,7 @@
       <li><a class="dropdown-item" href="/settings" navlink>Settings</a></li>
       <li><a class="dropdown-item" href="/profile" navlink>Profile</a></li>
       <li><hr class="dropdown-divider" /></li>
-      <li><a class="dropdown-item" href="#">Sign out</a></li>
+      <li><a id="logoutButton" class="dropdown-item" href="#">Sign out</a></li>
     </ul>
     <a
       href="#"
@@ -66,22 +66,4 @@
   </div>
 </nav>
 
-<script type="module">
-  const collapseButton = document.getElementById("collapseButton");
-  const sidebar = document.getElementById("sidebar");
-  const content = document.getElementById("content-container");
-
-  collapseButton.addEventListener("click", function () {
-    sidebar.classList.toggle("collapsed");
-    content.classList.toggle("collapsed");
-    var sectionNames = document.querySelectorAll(".section-name");
-    sectionNames.forEach(function (name) {
-      name.classList.toggle("section-name-collapsed");
-    });
-  });
-  document.getElementById("navList").addEventListener("click", (e) => {
-    let target = e.target.closest("a");
-    document.querySelector("a.active").classList.remove("active");
-    target.classList.add("active");
-  });
-</script>
+<script type="module" src="../js/Sidebar.js"></script>

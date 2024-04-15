@@ -16,9 +16,9 @@
   <hr />
   <ul id="navList" class="nav nav-pills flex-column mb-auto">
     <li class="nav-item text-white">
-      <a href="#" class="nav-link active" navlink>
+      <a href="/dashboard" class="nav-link active" navlink>
         <i class="bi bi-house me-2"></i>
-        <span class="section-name">Home</span>
+        <span class="section-name">Dashboard</span>
       </a>
     </li>
     <li class="nav-item text-white">
@@ -27,15 +27,17 @@
         <span class="section-name">Game</span>
       </a>
     </li>
-
-    <li class="nav-item text-white">
-      <a href="/stats" class="nav-link" navlink>
-        <i class="bi bi-bar-chart me-2"></i>
-
-        <span class="section-name">Stats</span>
-      </a>
-    </li>
   </ul>
+    <button class="btn btn-outline-secondary mb-2" data-bs-toggle="modal" data-bs-target="#login">
+      Log In
+    </button>
+    <button
+      class="btn btn-outline-info mb-2"
+      data-bs-toggle="modal"
+      data-bs-target="#signup"
+    >
+      Sign up
+    </button>
   <a id="collapseButton" class="nav-link text-white ms-2">
     <i class="bi bi-arrows-collapse-vertical text-white me-2"></i>
     <span class="section-name">Collapse</span>
@@ -43,9 +45,8 @@
   <hr />
   <div class="dropup d-flex align-items-center">
     <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-      <li><a class="dropdown-item" href="/settings" navlink>Settings</a></li>
-      <li><a class="dropdown-item" href="/profile" navlink>Profile</a></li>
-      <li><hr class="dropdown-divider" /></li>
+      <li><a id="logoutButton" class="dropdown-item" href="/about">About</a></li>
+	  <div class="dropdown-divider"></div>
       <li><a id="logoutButton" class="dropdown-item" href="#">Sign out</a></li>
     </ul>
     <a
@@ -67,3 +68,78 @@
 </nav>
 
 <script type="module" src="../js/Sidebar.js"></script>
+
+
+<div class="modal fade" id="login" tabindex="-1">
+    <div class="modal-dialog">
+        <form id="loginForm" class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Login</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+				<div class="mb-3">
+					<label for="username" class="col-form-label" >Username</label>
+					<input type="text" name="username" class="form-control" id="username" placeholder="Tazz1998">
+				</div>
+				<div class="mb-3">
+					<label for="password" class="col-form-label">Password</label>
+					<input type="text" name="password" class="form-control" id="password">
+				</div>
+            </div>
+            <div class="modal-footer d-sm-flex">
+				<div class="d-flex align-items-center me-auto">
+					<p class="m-0 me-1">New here ?</p>
+					<a class="text-info" data-bs-target="#signup" data-bs-toggle="modal"> Sign up</a>
+				</div>
+				<div>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary" navlink>Login</button>
+				</div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="signup" tabindex="-1">
+    <div class="modal-dialog">
+        <form id="registrationForm" class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Sign Up</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="username" class="col-form-label">Username</label>
+                        <input type="text" name="username" class="form-control" id="username" placeholder="Sweet Onion">
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="col-form-label">Email</label>
+                        <input type="text" name="email" class="form-control" id="email" placeholder="name@example.com">
+                    </div>
+					<div class="mb-3">
+                        <label for="password" class="col-form-label">Password</label>
+                        <input type="text" name="password" class="form-control" id="password">
+						<div id="passwordHelpBlock" class="form-text">
+							Your password must be 8-20 characters long, contain letters, numbers and special characters.
+						</div>
+                    </div>
+					<div class="mb-3">
+                        <label for="passwordagain" class="col-form-label">Repeat Password</label>
+                        <input type="text" name="passwordagain" class="form-control" id="passwordagain">
+                    </div>
+			</div>
+			<div class="modal-footer d-sm-flex">
+					<div class="d-flex align-items-center me-auto">
+						<p class="m-0 me-1">Have an account ?</p>
+						<a class="text-primary" data-bs-target="#login" data-bs-toggle="modal">Log In</a>
+					</div>
+					<div>
+						<button class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-info text-white" navlink>Sign up</button>
+					</div>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="module" src="../js/Home.js"></script>

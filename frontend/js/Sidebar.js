@@ -1,4 +1,4 @@
-import {logout} from "./ApiCalls.js"
+import {register, login, logout} from "./ApiCalls.js"
 
 const collapseButton = document.getElementById("collapseButton");
 const sidebar = document.getElementById("sidebar");
@@ -20,3 +20,9 @@ document.getElementById("navList").addEventListener("click", (e) => {
 
 var logoutButton = document.getElementById("logoutButton");
 logoutButton.addEventListener("click", e => logout())
+
+var registerForm = document.getElementById('registrationForm');
+registerForm.addEventListener('submit', (event) => register(event, registerForm));
+
+var loginForm = document.getElementById('loginForm');
+loginForm.addEventListener('submit', (event) => login(event, loginForm));

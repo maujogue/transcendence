@@ -12,16 +12,13 @@ class Page {
 }
 
 const routes = [
-	new Page("Home", "/", "html/Home.html", false),
-	new Page("Home", "/home", "html/Home.html", false),
-	
-	new Page("Sidebar", "", "html/Sidebar.html", false),
+  new Page("Dashboard", "/", "html/Dashboard.html", true),
+  new Page("Dashboard", "/dash", "html/Dashboard.html", true),
+
+  new Page("Sidebar", "", "html/Sidebar.html", false),
 
   new Page("Game", "/game", "html/Game.html", true),
-  new Page("Dashboard", "/dashboard", "html/Dashboard.html", true),
-  new Page("Stats", "/stats", "html/Stats.html", true),
-  new Page("Profile", "/profile", "html/Profile.html", true),
-  new Page("Settings", "/settings", "html/Settings.html", true),
+  new Page("About", "/about", "html/About.html", true),
 ];
 
 const mainPageDiv = "#content-container";
@@ -44,7 +41,7 @@ function navigateTo(url) {
   if (url !== location.pathname) {
     history.pushState(null, null, url);
     router(routes, mainPageDiv);
-}
+  }
 }
 
 const router = async (routes, divToInsertHtml) => {
@@ -60,7 +57,7 @@ const router = async (routes, divToInsertHtml) => {
       route: routes[0],
       isMatch: true,
     };
-	history.replaceState({}, '', '/');
+    history.replaceState({}, "", "/");
   }
   const page = match.route;
   const html = await page.fetchHtml();

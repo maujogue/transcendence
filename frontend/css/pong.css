@@ -170,7 +170,6 @@ h1 {
 	align-items: center;
 	background-color: var(--form-input-bg-color);
 	width: 75%;
-	/* height: 90%; */
 	opacity: 0.9;
 	box-shadow: 1px 1px 20px 2px var(--form-color);
 	border-radius: 5%;

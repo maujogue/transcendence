@@ -2,6 +2,7 @@ import { createEnvironment } from "./createEnvironment.js";
 import { displayCharacter } from './displayCharacter.js';
 import { createLobbyLights, createLobbyScene } from './createField.js';
 import { isFullScreen } from './resize.js';
+import { createWaitingScreenTournament } from "./createTournament.js";
 import { winWidth, winHeight, charactersNames } from './varGlobal.js';
 
 let width = winWidth;
@@ -347,6 +348,12 @@ function createListTournament(parent) {
 	listTournament.classList.add("tournament")
 	parent.appendChild(listTournament);
 	createTournamentInfo("Tournament 1", "2/50");
+	listTournament.addEventListener("click", (e) => {
+		console.log(e.target.className);
+		if (e.target.className == "tournament-info") {
+			createWaitingScreenTournament();
+		}
+	});
 }
 
 export function createJoinTournamentMenu() {

@@ -42,19 +42,19 @@ export async function sendTournamentForm(form) {
     // });
 }
 
-function createWaitingScreenTournament() {
+export function createWaitingScreenTournament() {
     const tournamentName = "HerrrCup" 
-    const form = document.getElementById("createTournamentForm");
-    form.id = "listPlayers";
-    form.innerHTML = `<h1>${tournamentName}</h1>`;
+    const tournament = document.getElementsByClassName("tournament")[0];
+    tournament.innerHTML = `<h1>${tournamentName}</h1>`;
+    tournament.id = "PlayerList";
 	const header = document.createElement("div");
 	header.className = "list-header";
 	header.textContent = "Players";
     const playerList = document.createElement("div");
     playerList.className = "player-list";
     playerList.id = "player-list";
-	form.appendChild(header);
-    form.appendChild(playerList);
+	tournament.appendChild(header);
+    tournament.appendChild(playerList);
     insertPlayer("Herrrmann");
 
 }

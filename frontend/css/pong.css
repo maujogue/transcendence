@@ -142,15 +142,18 @@ h1 {
 	align-items: center;
 }
 
-#listTournament{
-	background-color: white;
+#listTournament, #listPlayers {
 	justify-content: center;
 	align-items: center;
-	width: 50%;
+	width: 75%;
 	height: 50%;
+	overflow-y: scroll;
+	justify-content: start!important;
+	color: white;
 }
 
-#createTournamentForm, #listTournament {
+
+.tournament {
 	font-size: 0.5em;
 	display: flex;
 	flex-direction: column;
@@ -170,13 +173,6 @@ h1 {
 	overflow: hidden;
 	top: -5%;
 }
-
-#listTournament {
-	overflow-y: scroll;
-	justify-content: start!important;
-	color: white;
-}
-
 
 .form-field {
 	display: flex;
@@ -609,7 +605,7 @@ h1 {
 		height: 32px;
 	}
 
-	#createTournamentForm, #listTournament {
+	.tournament {
 		top: -15%;
 		height: 70%;
 		font-size: 0.45em;

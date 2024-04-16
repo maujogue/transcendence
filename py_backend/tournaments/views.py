@@ -1,5 +1,8 @@
 from django.http import JsonResponse
+import random
+import string
 
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 
@@ -8,11 +11,13 @@ from django.db import IntegrityError
 
 from .models import Tournament
 
+CustomUser = get_user_model()
+
 import json
 
-@login_required
 @require_http_methods(["POST"])
 def create_tournament(request):
+
 	try:
 		data = json.loads(request.body.decode("utf-8"))
 	except json.JSONDecodeError:
@@ -28,8 +33,10 @@ def create_tournament(request):
 		return JsonResponse({"errors": "A private tournament must have a password."},
 					status=400)
 
-	if not name or not isinstance(max_players, int) or max_players not in range(2, 33):
-		return JsonResponse({"errors": "Invalid tournament data."},
+	if not name or not max_players:
+		return JsonResponse({"errors": "Invalid tournament data.",
+					"max_players": max_players,
+					"name": name,},
 					status=400)
 
 	try:
@@ -42,9 +49,9 @@ def create_tournament(request):
 		)
 	except IntegrityError as e:
 		if 'unique constraint' in str(e).lower():
-			return JsonResponse({"errors": "This name is already taken."},
+			return JsonResponse({"errors": "This name is already taken.", "error": str(e)},
 					status=400)
-		return JsonResponse({"errors": "Tournament could not be created.", "id": tournament.id},
+		return JsonResponse({"errors": "Tournament could not be created.", "error": str(e)},
 					status=400)
 
 	return JsonResponse({"message": "Tournament created successfully.", "id": tournament.id},

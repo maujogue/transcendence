@@ -22,8 +22,8 @@ form.addEventListener('submit', function(event) {
 		fetch("https://127.0.0.1:8000/api/register/", {
 			method: "POST",
 			headers: {
-				"X-CSRFToken": csrfToken,
 				"Content-Type": "application/x-www-form-urlencoded",
+				"X-CSRFToken": csrfToken,
 			},
 			credentials: "include",
 			body: JSON.stringify(fetchBody),

@@ -536,7 +536,7 @@ class CSRFTokenTest(TestCase):
 
     def test_post_without_csrf_token(self):
         self.csrf_client = Client(enforce_csrf_checks=True)
-        response = self.csrf_client.post(reverse('update_profile'), data={'key': 'value'})
+        response = self.csrf_client.post(reverse('update_username'), data={'key': 'value'})
         self.assertEqual(response.status_code, 403)
 
     def test_csrf_token_generated(self):
@@ -572,44 +572,12 @@ class ProfileUpdate(TestCase):
         }
 
         response = self.client.post(
-            reverse('update_profile'), 
+            reverse('update_bio'), 
             data=json.dumps(update_datas), 
             content_type='application/json'
         )
         self.user.refresh_from_db()
         self.assertEqual(response.status_code, 302)
-
-
-    def test_update_datas_bio(self):
-        update_datas = {
-            'bio': 'Lorem ipsum dolor sit amet'
-        }
-
-        response = self.client.post(
-            reverse('update_profile'), 
-            data=json.dumps(update_datas), 
-            content_type='application/json'
-        )
-        self.user.refresh_from_db()
-
-        self.assertEqual(self.user.bio, 'Lorem ipsum dolor sit amet')
-        self.assertEqual(response.status_code, 200)
-
-
-    def test_empty_bio(self):
-        update_datas = {
-            'bio': ''
-        }
-
-        response = self.client.post(
-            reverse('update_profile'), 
-            data=json.dumps(update_datas), 
-            content_type='application/json'
-        )
-        self.user.refresh_from_db()
-
-        self.assertEqual(self.user.bio, '')
-        self.assertEqual(response.status_code, 200)
 
 
     def test_change_username(self):
@@ -618,7 +586,7 @@ class ProfileUpdate(TestCase):
         }
 
         response = self.client.post(
-            reverse('update_profile'), 
+            reverse('update_username'), 
             data=json.dumps(update_datas), 
             content_type='application/json'
         )
@@ -634,7 +602,7 @@ class ProfileUpdate(TestCase):
         }
 
         response = self.client.post(
-            reverse('update_profile'), 
+            reverse('update_username'), 
             data=json.dumps(update_datas), 
             content_type='application/json'
         )
@@ -644,15 +612,14 @@ class ProfileUpdate(TestCase):
         self.assertEqual(response_data.get('error'), 'Username is already used.')
         self.assertEqual(response.status_code, 400)
 
-    
+
     def test_change_username_camelcase(self):
         update_datas = {
             'username': 'OchoA',
-            'avatar': 'hunter.jpg'
         }
 
         response = self.client.post(
-            reverse('update_profile'), 
+            reverse('update_username'), 
             data=json.dumps(update_datas), 
             content_type='application/json'
         )
@@ -663,16 +630,33 @@ class ProfileUpdate(TestCase):
         self.assertEqual(response.status_code, 400)
 
 
-    def test_avatar_upload(self):
-        avatar_datas = {
-            'avatar': 'hunter.jpg'
+    def test_update_bio(self):
+        update_datas = {
+            'bio': 'Lorem ipsum dolor sit amet'
         }
+
         response = self.client.post(
-            reverse('update_profile'), 
-            data=json.dumps(avatar_datas), 
+            reverse('update_bio'), 
+            data=json.dumps(update_datas), 
             content_type='application/json'
         )
         self.user.refresh_from_db()
 
+        self.assertEqual(self.user.bio, 'Lorem ipsum dolor sit amet')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.user.avatar.name, 'hunter.jpg')
+
+
+    def test_empty_bio(self):
+        update_datas = {
+            'bio': ''
+        }
+
+        response = self.client.post(
+            reverse('update_bio'), 
+            data=json.dumps(update_datas), 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(self.user.bio, '')
+        self.assertEqual(response.status_code, 200)

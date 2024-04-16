@@ -6,7 +6,6 @@ class Page {
     this.urlPath = urlPath;
     this.filePath = filePath;
     this.sidebar = sidebar;
-    document.title = name;
   }
   async fetchHtml() {
     return await fetch(this.filePath).then((x) => x.text());
@@ -19,8 +18,8 @@ const routes = [
 
   new Page("Sidebar", "", "html/Sidebar.html", false),
 
-  new Page("Game", "/game", "html/Game.html", true),
   new Page("About", "/about", "html/About.html", true),
+  new Page("Game", "/game", "html/Game.html", true),
 ];
 
 const mainPageDiv = "#content-container";
@@ -41,7 +40,7 @@ function setInnerHtml(elm, html) {
 
 function navigateTo(url) {
   if (url !== location.pathname) {
-    history.pushState(null, null, url);
+    history.pushState({}, null, url);
     router(routes, mainPageDiv);
   }
 }
@@ -59,7 +58,7 @@ const router = async (routes, divToInsertHtml) => {
       route: routes[0],
       isMatch: true,
     };
-    history.replaceState({}, "", "/");
+    history.pushState({}, "", "/");
   }
   const page = match.route;
   const html = await page.fetchHtml();
@@ -77,8 +76,7 @@ const router = async (routes, divToInsertHtml) => {
   if (page.sidebar == false)
     setInnerHtml(document.querySelector(sidebarDiv), "");
   previousPage = page;
-	toggleContentOnLogState();
-
+  toggleContentOnLogState();
 };
 
 window.addEventListener("popstate", (event) => router(routes, mainPageDiv));
@@ -101,4 +99,4 @@ document.addEventListener("DOMContentLoaded", () => {
   router(routes, mainPageDiv);
 });
 
-export {navigateTo}
+export { navigateTo };

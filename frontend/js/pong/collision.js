@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import { actualizeScore } from './score.js';
 
 function resetPos(ball, player1, player2, environment) {
-    ball.mesh.position.set(0, 0, 0.9).unproject(environment.camera);
+    ball.mesh.position.set(0, 0, .91).unproject(environment.camera);
     ball.direction.y = 0;
     player1.paddle.mesh.position.set(-0.8, 0, 0.9).unproject(environment.camera);
     player2.paddle.mesh.position.set(0.8, 0, 0.9).unproject(environment.camera);

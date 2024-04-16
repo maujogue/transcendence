@@ -30,7 +30,7 @@ function setPlayersLights(player1, player2, environment) {
 	player2.lights = setPointLight(environment, player2, posTop, posBot);
 }
 
-function setPositionPaddle(PlayerName, posX, environment) {
+async function setPositionPaddle(PlayerName, posX, environment) {
 	let paddle = environment.scene.getObjectByName("paddle_" + PlayerName);
 	paddle.rotation.set(0, 0, 0);
 	paddle.rotateX(Math.PI / -6);
@@ -53,18 +53,20 @@ function removeSelectMenu() {
 
 async function initGame(player1, player2) {
 	const environment = createEnvironment("canvas");
-	const map = createMap(environment);
 
 	environment.scene.add(player1.paddle.mesh);
 	environment.scene.add(player2.paddle.mesh);
 	let spotlight = setPlayersLights(player1.character, player2.character, environment);
 	setPositionPaddle("player1", -.65, environment, player1);
 	setPositionPaddle("player2", .65, environment, player2);
+	console.log("Player1 : ", player1.paddle.mesh.position);
 	removeSelectMenu();
 	let ball = createBall(environment);
 	environment.scene.add(ball.mesh);
 	const font = await loadFont();
 	actualizeScore(player1, player2, environment, font);
+	const map = await createMap(environment);
+	
 	return { 
 		"spotlight": spotlight,
 		"renderer": environment.renderer,

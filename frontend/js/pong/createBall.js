@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-function createBall(environment) {
+async function createBall(environment) {
     const geometry = new THREE.SphereGeometry( 0.20 );
     const material = new THREE.MeshBasicMaterial( {
         color: 0xebdb34

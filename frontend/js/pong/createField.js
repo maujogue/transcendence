@@ -3,16 +3,27 @@ import { createTexturedMaterial } from './loadTextures.js';
 import { lobby } from './main.js';
 
 async function createBorder(position, env) {
-    console.log("Position : ", position);
-    const geometry = new THREE.BoxGeometry(21, 1, 1);
+    const geometry = new THREE.BoxGeometry(21, .1, .1);
     const material = new THREE.MeshBasicMaterial( { color: 0xffffff, opacity: .5, transparent: true } );
     const cube = new THREE.Mesh( geometry, material );
-    console.log("Here");
-    cube.position.copy(position).unproject(env.camera);
+
+    cube.position.copy(position);
+    if (position.y < 0) {
+        cube.position.y += .1;
+        cube.position.z -= .25;
+    }
+    else {
+        cube.position.y -= .35;
+        cube.position.z -= .1;
+    }
+    cube.position.x -= 3.3;
+    cube.rotateX(Math.PI / 2);
+
     const box = new THREE.Box3().setFromObject(cube);
-    cube.lookAt(new THREE.Vector3(0, -.1, .91).unproject(env.camera));
+
     env.scene.add(cube);
-    return (cube, box);
+
+    return {cube, box};
 }
 
 export function createLobbyLights(environment) {

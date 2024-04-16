@@ -144,10 +144,10 @@ async function localGameLoop() {
 		divMenu.remove();
 		environment = await initGame(player1, player2);
 	}
-	if (start) {
+	if (start && environment) {
 		if (keyPress)
 			handleKeyPress(keysPressed, player1, player2, environment);
-		//checkCollision(environment.ball, player1, player2, environment);
+		checkCollision(environment.ball, player1, player2, environment);
 		// var x = center.x - radius * Math.cos(cameraAngle);
 		// var z = center.z + radius * Math.sin(cameraAngle);
 		// environment.camera.position.set(x, 2, z); // Set camera's y position to 2 to view the scene from above

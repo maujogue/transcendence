@@ -14,7 +14,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 
 from users.forms import CustomUserCreationForm, UpdateUserForm, UpdateProfileForm
-from users.utils import validation_register, username_is_unique
+from users.utils import validation_register, username_is_unique, email_is_unique
 
 from . import forms
 import json
@@ -80,16 +80,13 @@ def logout_view(request):
 @require_http_methods(["POST"])
 @requires_csrf_token
 def update_profile(request):
-    if request.content_type == 'application/json':
-        try:
-            data = json.loads(request.body.decode("utf-8"))
-        except json.JSONDecodeError:
-            return JsonResponse(data={'error': "Invalid JSON format"}, status=406)
-        username = data.get('username')
-        bio = data.get('bio')
-        avatar = data.get('avatar')
-    else:
-        return JsonResponse(data={'error': "Unsupported content type"}, status=415)
+    try:
+        data = json.loads(request.body.decode("utf-8"))
+    except json.JSONDecodeError:
+        return JsonResponse(data={'error': "Invalid JSON format"}, status=406)
+    username = data.get('username')
+    email = data.get('email')
+    bio = data.get('bio')
     
     if username:
         is_unique, error_message = username_is_unique(username)
@@ -97,11 +94,14 @@ def update_profile(request):
             return JsonResponse({'error': error_message}, status=400)
         request.user.username = username
         request.user.save()
+    if email:
+        is_unique, error_message = email_is_unique(email)
+        if not is_unique:
+            return JsonResponse({'error': error_message}, status=400)
+        request.user.email = email
+        request.user.save()
     if bio or bio == '':
         request.user.bio = bio
-        request.user.save()
-    if avatar:
-        request.user.avatar = avatar
         request.user.save()
     return JsonResponse({"status": "Profile has been correctly updated."}, status=200)
 

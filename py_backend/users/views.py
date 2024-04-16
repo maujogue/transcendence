@@ -25,7 +25,7 @@ def register(request):
     try:
         data = json.loads(request.body.decode("utf-8"))
     except json.JSONDecodeError:
-        return JsonResponse(data={'errors': "Invalid JSON format"}, status=406)
+        return JsonResponse(data={'error': "Invalid JSON format"}, status=406)
     valid_request = validation_register(data)
     if valid_request:
         return JsonResponse({"error": valid_request}, status=400)
@@ -44,7 +44,7 @@ def login(request):
     try:
         data = json.loads(request.body.decode("utf-8"))
     except json.JSONDecodeError:
-        return JsonResponse(data={'errors': "Invalid JSON format"}, status=406)
+        return JsonResponse(data={'error': "Invalid JSON format"}, status=406)
     form = forms.LoginForm(data)
 
     if form.is_valid():
@@ -84,12 +84,12 @@ def update_profile(request):
         try:
             data = json.loads(request.body.decode("utf-8"))
         except json.JSONDecodeError:
-            return JsonResponse(data={'errors': "Invalid JSON format"}, status=406)
+            return JsonResponse(data={'error': "Invalid JSON format"}, status=406)
         username = data.get('username')
         bio = data.get('bio')
         avatar = data.get('avatar')
     else:
-        return JsonResponse(data={'errors': "Unsupported content type"}, status=415)
+        return JsonResponse(data={'error': "Unsupported content type"}, status=415)
     
     if username:
         is_unique, error_message = username_is_unique(username)
@@ -103,7 +103,7 @@ def update_profile(request):
     if avatar:
         request.user.avatar = avatar
         request.user.save()
-    return JsonResponse({"status": "success"}, status=200)
+    return JsonResponse({"status": "Profile has been correctly updated."}, status=200)
 
 
 @require_http_methods(["GET"])

@@ -1,7 +1,5 @@
 from django.core.mail import send_mail
 
-from django.contrib.auth import authenticate, login as auth_login
-
 from django.http import JsonResponse
 
 from django.views.decorators.http import require_http_methods
@@ -10,8 +8,10 @@ from django.views.decorators.csrf import requires_csrf_token
 
 from django.middleware.csrf import get_token
 
-from django.contrib.auth import logout
+from django.contrib import messages
+from django.contrib.auth import logout, update_session_auth_hash, authenticate, login as auth_login
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
 
 from users.forms import CustomUserCreationForm, UpdateUserForm, UpdateProfileForm
 from users.utils import validation_register, username_is_unique, email_is_unique
@@ -79,31 +79,49 @@ def logout_view(request):
 @login_required
 @require_http_methods(["POST"])
 @requires_csrf_token
-def update_profile(request):
+def update_profile_username(request):
     try:
         data = json.loads(request.body.decode("utf-8"))
     except json.JSONDecodeError:
         return JsonResponse(data={'error': "Invalid JSON format"}, status=406)
     username = data.get('username')
-    email = data.get('email')
-    bio = data.get('bio')
-    
+
     if username:
         is_unique, error_message = username_is_unique(username)
         if not is_unique:
             return JsonResponse({'error': error_message}, status=400)
         request.user.username = username
         request.user.save()
-    if email:
-        is_unique, error_message = email_is_unique(email)
-        if not is_unique:
-            return JsonResponse({'error': error_message}, status=400)
-        request.user.email = email
-        request.user.save()
+    return JsonResponse({"status": "Your username has been correctly updated."}, status=200)
+
+
+@login_required
+@require_http_methods(["POST"])
+@requires_csrf_token
+def update_profile_bio(request):
+    try:
+        data = json.loads(request.body.decode("utf-8"))
+    except json.JSONDecodeError:
+        return JsonResponse(data={'error': "Invalid JSON format"}, status=406)
+    bio = data.get('bio')
+
     if bio or bio == '':
         request.user.bio = bio
         request.user.save()
-    return JsonResponse({"status": "Profile has been correctly updated."}, status=200)
+    return JsonResponse({"status": "Your bio has been correctly updated."}, status=200)
+
+
+@login_required
+@require_http_methods(["POST"])
+@requires_csrf_token
+def update_profile_password(request):
+    form = PasswordChangeForm(request.user, request.POST)
+    if form.is_valid():
+        user = form.save()
+        update_session_auth_hash(request, user)
+        return JsonResponse({"status": "Your password has been correctly updated."}, status=200) 
+    else:
+        return JsonResponse({'status': 'error'}, status=400)
 
 
 @require_http_methods(["GET"])

@@ -152,6 +152,15 @@ h1 {
 	color: white;
 }
 
+.player-list {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: start;
+	width: 100%;
+	padding: 1% 2%;
+}
+
 
 .tournament {
 	font-size: 0.5em;

@@ -50,19 +50,19 @@ function createWaitingScreenTournament() {
 	const header = document.createElement("div");
 	header.className = "list-header";
 	header.textContent = "Players";
+    const playerList = document.createElement("div");
+    playerList.className = "player-list";
+    playerList.id = "player-list";
 	form.appendChild(header);
-	form.appendChild(listPlayers);
+    form.appendChild(playerList);
     insertPlayer("Herrrmann");
 
 }
 
 function insertPlayer(name) {
     console.log("insert player", name);
-    const parent = document.getElementById("listPlayers");
-	const tournament = document.createElement("div");
-	tournament.className = "player-list";
+    const parent = document.getElementById("player-list");
 	const div = document.createElement("div");
 	div.textContent = name;
-	tournament.appendChild(div);
-	parent.appendChild(tournament);
+    parent.appendChild(div);
 }

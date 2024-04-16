@@ -54,7 +54,7 @@ def login(request):
             auth_login(request, user)
             return JsonResponse({"status": "success"}, status=200)
 
-    return JsonResponse({"error": "error"}, status=400)
+    return JsonResponse({"error": "Wrong username or password."}, status=400)
 
 
 @login_required

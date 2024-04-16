@@ -352,6 +352,7 @@ class LoginTests(TestCase):
         user = CustomUser.objects.get(email="lboulatr@gmail.com")
         self.assertEqual(user.username, 'lboulatr')
         self.assertEqual(user.email, 'lboulatr@gmail.com')
+        self.assertEqual(CustomUser.objects.count(), 1)
 
     def test_basic_login(self):
         user = {

@@ -660,3 +660,22 @@ class ProfileUpdate(TestCase):
 
         self.assertEqual(self.user.bio, '')
         self.assertEqual(response.status_code, 200)
+
+
+    def test_update_password(self):
+        update_datas = {
+            'new_password1': 'Zxcvbnm98+',
+            'new_password2': 'Zxcvbnm98+'
+        }
+        old_password = self.user.password
+
+        response = self.client.post(
+            reverse('update_password'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        new_password = self.user.password
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(old_password, new_password)

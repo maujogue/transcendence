@@ -1,19 +1,19 @@
 from django.core.mail import send_mail
 
 from django.http import JsonResponse
-
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.csrf import requires_csrf_token
 
 from django.middleware.csrf import get_token
 
-from django.contrib import messages
+
 from django.contrib.auth import logout, update_session_auth_hash, authenticate, login as auth_login
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 
-from users.forms import CustomUserCreationForm, UpdateUserForm, UpdateProfileForm
+from users.forms import CustomUserCreationForm
 from users.utils import validation_register, username_is_unique, email_is_unique
 
 from . import forms
@@ -115,13 +115,23 @@ def update_profile_bio(request):
 @require_http_methods(["POST"])
 @requires_csrf_token
 def update_profile_password(request):
-    form = PasswordChangeForm(request.user, request.POST)
-    if form.is_valid():
-        user = form.save()
-        update_session_auth_hash(request, user)
-        return JsonResponse({"status": "Your password has been correctly updated."}, status=200) 
+    try:
+        data = json.loads(request.body.decode("utf-8"))
+    except json.JSONDecodeError:
+        return JsonResponse(data={'error': "Invalid JSON format"}, status=406)
+    new_password1 = data.get('new_password1')
+    new_password2 = data.get('new_password2')
+
+    if new_password1 and new_password2:
+        if new_password1 == new_password2:
+            hashed_password = make_password(new_password1)
+            request.user.password = hashed_password
+            request.user.save()
+            return JsonResponse({"status": "Your password has been correctly updated."}, status=200)
+        else:
+            return JsonResponse({'status': 'Passwords do not match.'}, status=400)
     else:
-        return JsonResponse({'status': 'error'}, status=400)
+        return JsonResponse({'status': 'One password is missing.'}, status=400)
 
 
 @require_http_methods(["GET"])

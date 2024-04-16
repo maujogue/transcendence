@@ -1,5 +1,5 @@
 <section>
-	<div class="container-fluid">
+	<div class="container-fluid logInContent">
 		<div class="row gx-5">
 			<div class="col-6 bg-dark rounded text-white">
 				<img
@@ -25,12 +25,26 @@
 				</div>
 			</div>
 			<div class="col-6 bg-dark rounded text-white">
-				<form id="updateProfileForm">
-					<button type="submit">form submit</button>
+				<form id="updateProfileForm" method="post" enctype="multipart/form-data">
+					<div class="mb-3">
+						<label for="avatar" class="col-form-label" >Username</label>
+						<input type="text" name="username" class="form-control" id="username" placeholder="Tazz1998">
+					</div>
+					<div class="mb-3">
+						<label for="bio" class="col-form-label">Bio</label>
+						<input type="text" name="bio" class="form-control" id="bio" placeholder="What about you ?">
+					</div>
+					<div class="mb-3">
+						<label for="avatar" class="col-form-label" >Avatar</label>
+						<input type="file" name="avatar" class="form-control" id="avatar" placeholder="avatar photo">
+					</div>
+					<button type="submit" class="btn btn-primary" navlink>Update Profile</button>
+					
 				</form>
 			</div>
 		</div>
 	</div>
+	<div class="logOutContent">Log in to see your profile!</div>
 </section>
 
 <script type="module" src="../js/Dashboard.js"></script>

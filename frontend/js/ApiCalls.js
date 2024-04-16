@@ -1,3 +1,5 @@
+import { navigateTo } from "./Router.js";
+
 function register (event, registerForm){
     event.preventDefault();
 
@@ -31,6 +33,9 @@ function register (event, registerForm){
 		.then((response) => response.json())
 		.then((data) => {
 			console.log(data);
+			Cookies.set('isLoggedIn', 'true');
+			bootstrap.Modal.getInstance(document.getElementById("register")).hide();
+			navigateTo('/dash');
 		})
 		.catch((error) => {
 			console.error("register failed", error);
@@ -70,6 +75,9 @@ function login(event, loginForm) {
 		.then((response) => response.json())
 		.then((data) => {
 			console.log(data);
+			Cookies.set('isLoggedIn', 'true');
+			bootstrap.Modal.getInstance(document.getElementById("login")).hide();
+			navigateTo('/dash');
 		})
 		.catch((error) => {
 			console.error("login failed", error);
@@ -100,6 +108,8 @@ function logout() {
         .then((response) => response.json())
         .then((data) => {
           console.log(data);
+		  Cookies.remove('isLoggedIn');
+		  navigateTo("/dash");
           // Handle logout success
         })
         .catch((error) => {
@@ -112,16 +122,18 @@ function logout() {
     });
 }
 
-function updateProfile(event, userDataForm) {
+function updateProfile(event, updateProfileForm) {
     event.preventDefault();
 
-    const userData = new FormData(userDataForm);
+    const userData = new FormData(updateProfileForm);
 	const fetchBody = {
-	     email: userData.get("username"),
-	     password: userData.get("password"),
+	     username: userData.get("username"),
+	     bio: userData.get("bio"),
+	    //  avatar: userData.get("avatar"),
 	}
 
-	fetch("https://127.0.0.1:8000/api/get_csrf_token/", {
+	console.log(userData);
+	fetch("https://127.0.0.1:8000/api/users/get_csrf_token/", {
 		method: "GET",
 		credentials: "include",
 	})
@@ -129,10 +141,11 @@ function updateProfile(event, userDataForm) {
 	.then((data) => {
 		const csrfToken = data.csrfToken;
 		console.log(csrfToken);
-		fetch("https://127.0.0.1:8000/api/update_profile/", {
+		fetch("https://127.0.0.1:8000/api/users/update_profile/", {
 			method: "POST",
 			headers: {
 				"X-CSRFToken": csrfToken,
+				'Accept': 'application/json',
 				"Content-Type": "application/x-www-form-urlencoded",
 			},
 			credentials: "include",

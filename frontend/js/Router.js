@@ -1,3 +1,5 @@
+import { toggleContentOnLogState } from "./Utils.js";
+
 class Page {
   constructor(name, urlPath, filePath, sidebar) {
     this.name = name;
@@ -74,8 +76,9 @@ const router = async (routes, divToInsertHtml) => {
   }
   if (page.sidebar == false)
     setInnerHtml(document.querySelector(sidebarDiv), "");
-
   previousPage = page;
+	toggleContentOnLogState();
+
 };
 
 window.addEventListener("popstate", (event) => router(routes, mainPageDiv));
@@ -97,3 +100,5 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   router(routes, mainPageDiv);
 });
+
+export {navigateTo}

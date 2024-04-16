@@ -16,3 +16,10 @@ h1, h2, h3 {
 p {
 	font-family: 'Satoshi-regular', Arial, Helvetica, sans-serif;
 }
+
+.logOutContent {
+	display: block;
+}
+.logInContent {
+	display: none;
+}

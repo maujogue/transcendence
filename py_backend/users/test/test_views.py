@@ -679,3 +679,39 @@ class ProfileUpdate(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertNotEqual(old_password, new_password)
+
+
+    def test_update_wrong_password(self):
+        update_datas = {
+            'new_password1': 'Zxcvbnm98+',
+            'new_password2': 'Zxcvbnm98'
+        }
+
+        response = self.client.post(
+            reverse('update_password'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        response_data = response.json()
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response_data.get('status'), 'Passwords do not match.')
+
+
+    def test_update_empty_password(self):
+        update_datas = {
+            'new_password1': 'Zxcvbnm98+',
+            'new_password2': ''
+        }
+
+        response = self.client.post(
+            reverse('update_password'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        response_data = response.json()
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response_data.get('status'), 'One password is missing.')

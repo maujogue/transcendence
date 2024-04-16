@@ -14,8 +14,6 @@ class CustomUser(AbstractUser):
 	title = models.CharField(max_length=50, null=True)
 	avatar = models.ImageField(default='avatar.jpg', upload_to='profile_avatars')
 	bio = models.TextField(max_length=settings.MAX_LEN_TEXT, default="")
-	avatar = models.ImageField(default='avatar.jpg', upload_to='profile_avatars')
-	bio = models.TextField(max_length=settings.MAX_LEN_TEXT, default="")
 	banner = models.ImageField(null=True)
 	winrate = models.DecimalField(max_digits=4, decimal_places=4, validators=[MinValueValidator(0), MaxValueValidator(1)], null=True)
 	rank = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(50)], null=True)

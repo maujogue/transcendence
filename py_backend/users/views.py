@@ -50,9 +50,19 @@ def login(request):
         username = form.cleaned_data['username']
         password = form.cleaned_data['password']
         user = authenticate(username=username, password=password)
+        
         if user is not None:
             auth_login(request, user)
-            return JsonResponse({"status": "success"}, status=200)
+            user_info = {
+                'username': user.username,
+                'email': user.email,
+                'title': user.title,
+                'bio': user.bio,
+                'winrate': user.winrate,
+                'rank': user.rank,
+                'n_games_played': user.n_games_played
+            }
+            return JsonResponse({"status": "success", "user": user_info}, status=200)
 
     return JsonResponse({"error": "Wrong username or password."}, status=400)
 

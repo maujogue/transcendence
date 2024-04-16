@@ -38,6 +38,7 @@ def register(request):
         return JsonResponse({"error": form.errors}, status=400)
 
 
+
 @require_http_methods(["POST"])
 def login(request):
     try:
@@ -50,7 +51,7 @@ def login(request):
         username = form.cleaned_data['username']
         password = form.cleaned_data['password']
         user = authenticate(username=username, password=password)
-        
+
         if user is not None:
             auth_login(request, user)
             user_info = {

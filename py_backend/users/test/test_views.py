@@ -469,14 +469,14 @@ class LogoutTests(TestCase):
     def test_logout_success(self):
         self.client.login(username='lboulatr', password='UserPassword9+')
         response = self.client.post(
-            reverse('logout_view'), 
+            reverse('logout'), 
             content_type='application/json')
 
         self.assertEqual(response.status_code, 200)
 
     def test_logout_but_not_login(self):
         response = self.client.post(
-            reverse('logout_view'), 
+            reverse('logout'), 
             content_type='application/json')
 
         self.assertEqual(response.status_code, 302)
@@ -522,14 +522,14 @@ class CSRFTokenTest(TestCase):
         response = self.client.get(reverse('get_csrf_token'))
 
         response = self.client.post(
-            reverse('logout_view'), 
+            reverse('logout'), 
             content_type='application/json')
 
         self.assertEqual(response.status_code, 200)
 
     def test_token_logout_without_token(self):
         response = self.client.post(
-            reverse('logout_view'), 
+            reverse('logout'), 
             content_type='application/json')
 
         self.assertEqual(response.status_code, 200)

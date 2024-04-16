@@ -11,7 +11,7 @@ function register (event, registerForm){
 	}
 	console.log(userData);
 
-	fetch("https://127.0.0.1:8000/api/get_csrf_token/", {
+	fetch("https://127.0.0.1:8000/api/users/get_csrf_token/", {
 		method: "GET",
 		credentials: "include",
 	})
@@ -19,7 +19,7 @@ function register (event, registerForm){
 	.then((data) => {
 		const csrfToken = data.csrfToken;
 		console.log(csrfToken);
-		fetch("https://127.0.0.1:8000/api/register/", {
+		fetch("https://127.0.0.1:8000/api/users/register/", {
 			method: "POST",
 			headers: {
 				"X-CSRFToken": csrfToken,
@@ -46,11 +46,11 @@ function login(event, loginForm) {
 
     const userData = new FormData(loginForm);
 	const fetchBody = {
-	     email: userData.get("username"),
+	     username: userData.get("username"),
 	     password: userData.get("password"),
 	}
 
-	fetch("https://127.0.0.1:8000/api/get_csrf_token/", {
+	fetch("https://127.0.0.1:8000/api/users/get_csrf_token/", {
 		method: "GET",
 		credentials: "include",
 	})
@@ -58,7 +58,7 @@ function login(event, loginForm) {
 	.then((data) => {
 		const csrfToken = data.csrfToken;
 		console.log(csrfToken);
-		fetch("https://127.0.0.1:8000/api/login/", {
+		fetch("https://127.0.0.1:8000/api/users/login/", {
 			method: "POST",
 			headers: {
 				"X-CSRFToken": csrfToken,
@@ -81,7 +81,7 @@ function login(event, loginForm) {
 }
 
 function logout() {
-  fetch("https://127.0.0.1:8000/api/get_csrf_token/", {
+  fetch("https://127.0.0.1:8000/api/users/get_csrf_token/", {
     method: "GET",
     credentials: "include",
   })
@@ -89,7 +89,7 @@ function logout() {
     .then((data) => {
       const csrfToken = data.csrfToken;
       console.log(csrfToken);
-      fetch("https://127.0.0.1:8000/api/logout_view/", {
+      fetch("https://127.0.0.1:8000/api/users/logout/", {
         method: "POST",
         headers: {
           "X-CSRFToken": csrfToken,

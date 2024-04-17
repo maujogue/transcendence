@@ -34,5 +34,5 @@ class CustomUser(AbstractUser):
 class Profile(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
 
-    avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
+    avatar = models.ImageField(default='avatar.jpg', upload_to='profile_avatar')
     bio = models.TextField(max_length=settings.MAX_LEN_TEXT)

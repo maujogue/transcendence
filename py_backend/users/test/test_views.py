@@ -731,6 +731,8 @@ from users.models import Profile
 
 class GetUserDatas(TestCase):
     def setUp(self):
+        self.client2 = Client()
+
         self.user = CustomUser.objects.create_user(
             username="osterga",
             email="osterga@gmail.com",
@@ -758,7 +760,7 @@ class GetUserDatas(TestCase):
         self.assertEqual(response_data.get('user').get('rank'), None)
         self.assertEqual(response_data.get('user').get('n_games_played'), None)
 
-    def test_get_user_data_without_login(self):
+    def test_without_login(self):
         self.client.logout()
         response = self.client.post(reverse('get_user_data'))
         self.assertEqual(response.status_code, 302)

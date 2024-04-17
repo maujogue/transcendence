@@ -61,12 +61,12 @@ async function initGame(player1, player2) {
 	setPositionPaddle("player2", .65, environment, player2);
 	console.log("Player1 : ", player1.paddle.mesh.position);
 	removeSelectMenu();
-	let ball = createBall(environment);
+	let ball = await createBall(environment);
 	environment.scene.add(ball.mesh);
 	const font = await loadFont();
 	actualizeScore(player1, player2, environment, font);
 	const map = await createMap(environment);
-	
+
 	return { 
 		"spotlight": spotlight,
 		"renderer": environment.renderer,

@@ -8,7 +8,7 @@ async function createBall(environment) {
     const sphere = new THREE.Mesh( geometry, material );
     sphere.position.set(0, 0, .91).unproject(environment.camera);
     environment.camera.updateMatrixWorld();
-    let direction = new THREE.Vector2(0.055, 0);
+    let direction = new THREE.Vector3(0.055, 0, 0);
     return {
         "direction": direction,
         "mesh": sphere

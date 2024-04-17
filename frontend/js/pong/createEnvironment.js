@@ -38,8 +38,8 @@ async function createMap(env) {
 	topSide.getWorldPosition(topSidePosition);
 	botSide.getWorldPosition(botSidePosition);
 
-	const borderUp = await createBorder(topSidePosition, env);
-	const borderDown = await createBorder(botSidePosition, env);
+	const borderUp = createBorder(topSidePosition, env);
+	const borderDown = createBorder(botSidePosition, env);
 	// let borderCenter = await createBorder(new THREE.Vector3(0, 0, 0.95), environment.camera);
 	// borderCenter.mesh.material.metalness = 0.2;
 	// borderCenter.mesh.material.roughness = 0.8;

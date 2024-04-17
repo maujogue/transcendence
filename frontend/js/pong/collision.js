@@ -4,8 +4,8 @@ import { actualizeScore } from './score.js';
 function resetPos(ball, player1, player2, environment) {
     ball.mesh.position.set(0, 0, .91).unproject(environment.camera);
     ball.direction.y = 0;
-    player1.paddle.mesh.position.set(-0.8, 0, 0.9).unproject(environment.camera);
-    player2.paddle.mesh.position.set(0.8, 0, 0.9).unproject(environment.camera);
+    player1.paddle.mesh.position.set(-.65, 0, .909).unproject(environment.camera);
+    player2.paddle.mesh.position.set(.65, 0, .909).unproject(environment.camera);
 }
 
 async function checkIfScored(ball, player1, player2, environment) {
@@ -35,7 +35,8 @@ function physicsBall(ball, paddleBox) {
         ball.direction.x -= 0.009;
     else if (ball.direction.x > 0 && ball.direction.x < 0.55)
         ball.direction.x += 0.009;
-    ball.direction.y = 0.08 * (ball.mesh.position.y - center.y);
+    ball.direction.y = .13 * (ball.mesh.position.y - center.y);
+    ball.direction.z = -.075 * (ball.mesh.position.y - center.y);
 }
 
 function checkCollisionWithBorder(ball, ballBox, environment) {
@@ -46,6 +47,7 @@ function checkCollisionWithBorder(ball, ballBox, environment) {
         else
             ball.direction.x -= 0.02;
         ball.direction.y *= -1;
+        ball.direction.z *= -1;
         return (true);
     }
     return (false);
@@ -55,6 +57,7 @@ function checkCollision(ball, player1, player2, environment) {
     let bbox1 = new THREE.Box3().setFromObject(player1.paddle.mesh);
     let bbox2 = new THREE.Box3().setFromObject(player2.paddle.mesh);
     let ballBox = new THREE.Box3();
+    //console.log("ball : ", ball.mesh.position);
     
     ball.mesh.geometry.computeBoundingBox();
     ballBox.copy(ball.mesh.geometry.boundingBox).applyMatrix4(ball.mesh.matrixWorld);
@@ -65,6 +68,7 @@ function checkCollision(ball, player1, player2, environment) {
     checkCollisionWithBorder(ball, ballBox, environment);
     ball.mesh.translateX(ball.direction.x);
     ball.mesh.translateY(ball.direction.y);
+    ball.mesh.translateZ(ball.direction.z);
     checkIfScored(ball, player1, player2, environment);
 }
 

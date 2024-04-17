@@ -2,9 +2,9 @@ import * as THREE from 'three'
 import { createTexturedMaterial } from './loadTextures.js';
 import { lobby } from './main.js';
 
-async function createBorder(position, env) {
+function createBorder(position, env) {
     const geometry = new THREE.BoxGeometry(21, .1, .1);
-    const material = new THREE.MeshBasicMaterial( { color: 0xffffff, opacity: .5, transparent: true } );
+    const material = new THREE.MeshBasicMaterial( { color: 0xffffff, opacity: 0, transparent: true } );
     const cube = new THREE.Mesh( geometry, material );
 
     cube.position.copy(position);

@@ -18,6 +18,7 @@ from users.utils import validation_register, username_is_unique, email_is_unique
 
 from . import forms
 import json
+import magic
 
 
 @require_http_methods(["POST"])

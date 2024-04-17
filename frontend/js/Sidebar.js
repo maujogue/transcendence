@@ -4,15 +4,19 @@ const collapseButton = document.getElementById("collapseButton");
 const sidebar = document.getElementById("sidebar");
 const content = document.getElementById("content-container");
 
-collapseButton.addEventListener("click", function () {
+collapseButton.addEventListener("click", toggleSidebarCollapse);
+
+function toggleSidebarCollapse() {
   sidebar.classList.toggle("collapsed");
   content.classList.toggle("collapsed");
   var sectionNames = document.querySelectorAll(".section-name");
   sectionNames.forEach(function (name) {
     name.classList.toggle("section-name-collapsed");
   });
-});
-document.getElementById("navList").addEventListener("click", (e) => {
+}
+
+var navlist = document.getElementById("navList");
+navlist.addEventListener("click", (e) => {
   let target = e.target.closest("a");
   document.querySelector("a.active").classList.remove("active");
   target.classList.add("active");
@@ -44,15 +48,20 @@ function checkPassword() {
 
   var helpTextAgain = document.getElementById("passwordagainHelpBlock");
 
-  if (/^.{8,20}$/.test(password1.value)) registerPassLength.style.color = "green";
+  if (/^.{8,20}$/.test(password1.value))
+    registerPassLength.style.color = "green";
   else registerPassLength.style.color = "red";
-  if (/^.*[a-z].*$/.test(password1.value)) registerPassLowercase.style.color = "green";
+  if (/^.*[a-z].*$/.test(password1.value))
+    registerPassLowercase.style.color = "green";
   else registerPassLowercase.style.color = "red";
-  if (/^.*[A-Z].*$/.test(password1.value)) registerPassUppercase.style.color = "green";
+  if (/^.*[A-Z].*$/.test(password1.value))
+    registerPassUppercase.style.color = "green";
   else registerPassUppercase.style.color = "red";
-  if (/^.*[0-9].*$/.test(password1.value)) registerPassNumbers.style.color = "green";
+  if (/^.*[0-9].*$/.test(password1.value))
+    registerPassNumbers.style.color = "green";
   else registerPassNumbers.style.color = "red";
-  if (/^.*[!@#$%^&*_=+].*$/.test(password1.value)) registerPassSpecial.style.color = "green";
+  if (/^.*[!@#$%^&*_=+].*$/.test(password1.value))
+    registerPassSpecial.style.color = "green";
   else registerPassSpecial.style.color = "red";
 
   if (password2.value !== "" && password1.value !== password2.value)

@@ -68,16 +68,16 @@ def login(request):
     return JsonResponse({"error": "Wrong username or password."}, status=400)
 
 
-@login_required
 @require_http_methods(["POST"])
+@login_required
 @requires_csrf_token
 def logout_view(request):
     logout(request)
     return JsonResponse({"status": "success"}, status=200)
 
 
-@login_required
 @require_http_methods(["POST"])
+@login_required
 @requires_csrf_token
 def update_profile_username(request):
     try:
@@ -95,8 +95,8 @@ def update_profile_username(request):
     return JsonResponse({"status": "Your username has been correctly updated."}, status=200)
 
 
-@login_required
 @require_http_methods(["POST"])
+@login_required
 @requires_csrf_token
 def update_profile_bio(request):
     try:
@@ -111,8 +111,8 @@ def update_profile_bio(request):
     return JsonResponse({"status": "Your bio has been correctly updated."}, status=200)
 
 
-@login_required
 @require_http_methods(["POST"])
+@login_required
 @requires_csrf_token
 def update_profile_password(request):
     try:
@@ -132,6 +132,27 @@ def update_profile_password(request):
             return JsonResponse({'status': 'Passwords do not match.'}, status=400)
     else:
         return JsonResponse({'status': 'One password is missing.'}, status=400)
+    
+
+@require_http_methods(["POST"])
+@login_required
+@requires_csrf_token
+def update_profile_picture(request):
+    uploaded_file = request.FILES.get("image")
+    if uploaded_file and uploaded_file.size > 5242880: # 5MB
+        return JsonResponse({'errors': "File size exceeds the limit"}, status=400)
+    if uploaded_file is None:
+        return JsonResponse({"errors": "No file provided"}, status=401)
+    mime = magic.Magic()
+    file_type = mime.from_buffer(uploaded_file.read(1024))
+    if 'image' not in  file_type:
+        return JsonResponse({'errors': "Invalid file type"}, status=402)
+    user_profile = get_object_or_404(Profile, user=request.user)
+    if user_profile and check_if_preset_picture(user_profile.profile_picture.path) == False:
+        default_storage.delete(user_profile.profile_picture.path)
+    user_profile.profile_picture = uploaded_file
+    user_profile.save()
+    return JsonResponse({"status": "success"}, status=200)
 
 
 @require_http_methods(["GET"])

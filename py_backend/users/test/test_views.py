@@ -715,3 +715,15 @@ class ProfileUpdate(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response_data.get('status'), 'One password is missing.')
+
+
+    def test_update_no_datas(self):
+        update_datas = {}
+
+        response = self.client.post(
+            reverse('update_password'), 
+            data=update_datas, 
+        )
+
+        self.assertEqual(response.status_code, 406)
+

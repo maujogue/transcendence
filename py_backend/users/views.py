@@ -4,17 +4,18 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.csrf import requires_csrf_token
+from django.core.files.storage import default_storage
 
 from django.middleware.csrf import get_token
-
 
 from django.contrib.auth import logout, update_session_auth_hash, authenticate, login as auth_login
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordChangeForm
+from django.shortcuts import get_object_or_404
 
 from users.forms import CustomUserCreationForm
-from users.utils import validation_register, username_is_unique, email_is_unique
+from users.utils import validation_register, username_is_unique
+from users.models import Profile
 
 from . import forms
 import json
@@ -34,7 +35,7 @@ def register(request):
     form = CustomUserCreationForm(data)
     if form.is_valid():
         form.save()
-        return JsonResponse({"status": "success"}, status=200)
+        return JsonResponse({"status": "You are now register !"}, status=200)
     else:
         return JsonResponse({"error": form.errors}, status=400)
 
@@ -64,7 +65,7 @@ def login(request):
                 'rank': user.rank,
                 'n_games_played': user.n_games_played
             }
-            return JsonResponse({"status": "success", "user": user_info}, status=200)
+            return JsonResponse({"status": "You are now login", "user": user_info}, status=200)
 
     return JsonResponse({"error": "Wrong username or password."}, status=400)
 
@@ -74,7 +75,7 @@ def login(request):
 @requires_csrf_token
 def logout_view(request):
     logout(request)
-    return JsonResponse({"status": "success"}, status=200)
+    return JsonResponse({"status": "You are now logout !"}, status=200)
 
 
 @require_http_methods(["POST"])
@@ -93,7 +94,7 @@ def update_profile_username(request):
             return JsonResponse({'error': error_message}, status=400)
         request.user.username = username
         request.user.save()
-    return JsonResponse({"status": "Your username has been correctly updated."}, status=200)
+    return JsonResponse({"status": "Your username has been correctly updated !"}, status=200)
 
 
 @require_http_methods(["POST"])
@@ -109,7 +110,7 @@ def update_profile_bio(request):
     if bio or bio == '':
         request.user.bio = bio
         request.user.save()
-    return JsonResponse({"status": "Your bio has been correctly updated."}, status=200)
+    return JsonResponse({"status": "Your bio has been correctly updated !"}, status=200)
 
 
 @require_http_methods(["POST"])
@@ -128,7 +129,7 @@ def update_profile_password(request):
             hashed_password = make_password(new_password1)
             request.user.password = hashed_password
             request.user.save()
-            return JsonResponse({"status": "Your password has been correctly updated."}, status=200)
+            return JsonResponse({"status": "Your password has been correctly updated !"}, status=200)
         else:
             return JsonResponse({'status': 'Passwords do not match.'}, status=400)
     else:
@@ -153,7 +154,7 @@ def update_profile_picture(request):
         default_storage.delete(user_profile.profile_picture.path)
     user_profile.profile_picture = uploaded_file
     user_profile.save()
-    return JsonResponse({"status": "success"}, status=200)
+    return JsonResponse({"status": "Your profile picture has been correctly updated !"}, status=200)
 
 
 @require_http_methods(["GET"])

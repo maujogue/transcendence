@@ -4,11 +4,10 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.csrf import requires_csrf_token
-from django.core.files.storage import default_storage
 
 from django.middleware.csrf import get_token
 
-from django.contrib.auth import logout, update_session_auth_hash, authenticate, login as auth_login
+from django.contrib.auth import logout, authenticate, login as auth_login
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
@@ -66,7 +65,6 @@ def login(request):
                 'n_games_played': user.n_games_played
             }
             return JsonResponse({"status": "You are now login", "user": user_info}, status=200)
-
     return JsonResponse({"error": "Wrong username or password."}, status=400)
 
 
@@ -150,8 +148,6 @@ def update_profile_picture(request):
     if 'image' not in  file_type:
         return JsonResponse({'errors': "Invalid file type"}, status=402)
     user_profile = get_object_or_404(Profile, user=request.user)
-    if user_profile and check_if_preset_picture(user_profile.profile_picture.path) == False:
-        default_storage.delete(user_profile.profile_picture.path)
     user_profile.profile_picture = uploaded_file
     user_profile.save()
     return JsonResponse({"status": "Your profile picture has been correctly updated !"}, status=200)

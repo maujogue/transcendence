@@ -3,9 +3,10 @@ from django.views.decorators.csrf import requires_csrf_token
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-import magic
 
 from users.models import Profile
+
+import magic
 
 
 @require_http_methods(["POST"])

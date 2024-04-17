@@ -140,13 +140,16 @@ def update_profile_password(request):
 def update_profile_picture(request):
     uploaded_file = request.FILES.get("image")
     if uploaded_file and uploaded_file.size > 5242880: # 5MB
-        return JsonResponse({'errors': "File size exceeds the limit"}, status=400)
+        return JsonResponse({'errors': "File size exceeds the limit."}, status=400)
+    
     if uploaded_file is None:
-        return JsonResponse({"errors": "No file provided"}, status=401)
+        return JsonResponse({"errors": "No file provided."}, status=401)
+    
     mime = magic.Magic()
     file_type = mime.from_buffer(uploaded_file.read(1024))
     if 'image' not in  file_type:
-        return JsonResponse({'errors': "Invalid file type"}, status=402)
+        return JsonResponse({'errors': "Invalid file type."}, status=402)
+    
     user_profile = get_object_or_404(Profile, user=request.user)
     user_profile.profile_picture = uploaded_file
     user_profile.save()

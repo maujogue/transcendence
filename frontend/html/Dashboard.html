@@ -1,6 +1,8 @@
 <section>
+	<!-- LOGGED IN DASHBOARD -->
   <div class="container-fluid logInContent">
     <div class="row gx-5">
+		<!-- PROFILE SECTION -->
       <div class="col-6 bg-dark rounded text-white">
         <img
           class="col rounded-circle"
@@ -26,12 +28,14 @@
           </div>
         </div>
       </div>
+	  <!-- UPDATE PROFILE FORM -->
       <div class="col-6 bg-dark rounded text-white">
         <form
           id="updateProfileForm"
           method="post"
           enctype="multipart/form-data"
         >
+		<!-- USERNAME INPUT -->
           <div class="mb-3">
             <label for="usernameDashboard" class="col-form-label"
               >Username</label
@@ -45,6 +49,7 @@
               autocomplete="off"
             />
           </div>
+		  <!-- BIO INPUT -->
           <div class="mb-3">
             <label for="bio" class="col-form-label">Bio</label>
             <input
@@ -56,6 +61,7 @@
               autocompletPong2003pong@e="off"
             />
           </div>
+		  <!-- AVATAR INPUT -->
           <div class="mb-3">
             <label for="avatar" class="col-form-label">Avatar</label>
             <input
@@ -67,6 +73,7 @@
               autocomplete="off"
             />
           </div>
+		  <!-- SUBMIT FORM -->
           <button type="submit" class="btn btn-primary" navlink>
             Update Profile
           </button>

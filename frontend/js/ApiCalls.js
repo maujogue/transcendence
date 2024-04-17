@@ -13,6 +13,8 @@ function get_csrf_token() {
     });
 }
 
+// REGISTER FETCH
+
 async function register(event, registerForm) {
   event.preventDefault();
 
@@ -52,6 +54,8 @@ async function register(event, registerForm) {
     });
 }
 
+// LOGIN FETCH
+
 async function login(event, loginForm) {
   event.preventDefault();
 
@@ -77,13 +81,15 @@ async function login(event, loginForm) {
         bootstrap.Modal.getInstance(document.getElementById("login")).hide();
         navigateTo("/dash");
       } else {
-        showError("loginError", "Username or Password incorrect");
+        showComment("loginComment", "Username or Password incorrect");
       }
     })
     .catch((error) => {
       console.error("login failed", error);
     });
 }
+
+// LOGOUT FETCH
 
 async function logout() {
   fetch("https://127.0.0.1:8000/api/users/logout/", {
@@ -105,6 +111,8 @@ async function logout() {
       console.error("logout failed", error);
     });
 }
+
+// UPDATE PROFILE FETCH
 
 async function updateProfile(event, updateProfileForm) {
   event.preventDefault();

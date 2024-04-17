@@ -1,7 +1,9 @@
+//check if user is logged in
 function isLoggedIn() {
   return Cookies.get("isLoggedIn") === "true";
 }
 
+//change content based on user log state
 function toggleContentOnLogState() {
   const logInContent = document.querySelectorAll(".logInContent");
   const logOutContent = document.querySelectorAll(".logOutContent");
@@ -16,6 +18,7 @@ function toggleContentOnLogState() {
   sidebarOnStart();
 }
 
+//disable sidebar collapse if user isn't logged in
 function sidebarOnStart() {
 	const sidebar = document.getElementById("sidebar");
 	const content = document.getElementById("content-container");
@@ -29,6 +32,7 @@ function sidebarOnStart() {
   }
 }
 
+//show success/error message on submit (login/register)
 function showComment(element, errorMsg, success) {
   var commentDiv = document.getElementById(element);
   var bgColor = success ? "bg-success" : "bg-danger";

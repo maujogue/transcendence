@@ -1,5 +1,6 @@
 import { register, login, logout } from "./ApiCalls.js";
 
+//collapse sidebar on click
 const collapseButton = document.getElementById("collapseButton");
 const sidebar = document.getElementById("sidebar");
 const content = document.getElementById("content-container");
@@ -15,6 +16,7 @@ function toggleSidebarCollapse() {
   });
 }
 
+//navbar active button switcher
 var navlist = document.getElementById("navList");
 navlist.addEventListener("click", (e) => {
   let target = e.target.closest("a");
@@ -22,17 +24,21 @@ navlist.addEventListener("click", (e) => {
   target.classList.add("active");
 });
 
+//login button fetch launcher
+var loginForm = document.getElementById("loginForm");
+loginForm.addEventListener("submit", (event) => login(event, loginForm));
+
+//logout button fetch launcher
 var logoutButton = document.getElementById("logoutButton");
 logoutButton.addEventListener("click", (e) => logout());
 
+//register button fetch launcher
 var registerForm = document.getElementById("registrationForm");
 registerForm.addEventListener("submit", (event) =>
   register(event, registerForm)
 );
 
-var loginForm = document.getElementById("loginForm");
-loginForm.addEventListener("submit", (event) => login(event, loginForm));
-
+//check password on register input
 var password1 = document.getElementById("passwordRegister");
 password1.addEventListener("input", (event) => checkPassword());
 

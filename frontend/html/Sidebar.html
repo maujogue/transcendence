@@ -4,6 +4,7 @@
   id="sidebar"
   class="sidebar opened-sidebar d-flex flex-column flex-shrink-0 p-3 text-white bg-dark"
 >
+  <!-- HEADER -->
   <a class="navbar-brand d-flex align-items-center" href="/" navlink>
     <img
       src="/assets/img/Pong_The_Next_Level_cover.jpg"
@@ -14,6 +15,7 @@
     <h3 id="title" class="ms-3 mt-2 section-name">Pong!</h3>
   </a>
   <hr />
+  <!-- NAVLIST -->
   <ul id="navList" class="nav nav-pills flex-column mb-auto">
     <li class="nav-item text-white">
       <a href="/dashboard" class="nav-link active" navlink>
@@ -28,6 +30,7 @@
       </a>
     </li>
   </ul>
+  <!-- LOGIN/REGISTER -->
   <div class="logOutContent">
     <button
       class="btn btn-outline-secondary mb-2"
@@ -44,6 +47,7 @@
       Sign up
     </button>
   </div>
+  <!-- DROPUP -->
   <div class="logInContent">
     <a id="collapseButton" class="nav-link text-white ms-2">
       <i class="bi bi-arrows-collapse-vertical text-white me-2"></i>
@@ -73,10 +77,11 @@
     </div>
   </div>
 </nav>
-
+<!-- LOGIN MODAL -->
 <div class="modal fade" id="login" tabindex="-1">
   <div class="modal-dialog">
     <form id="loginForm" class="modal-content">
+		<!-- LOGIN TITLE -->
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="exampleModalLabel">Login</h1>
         <button
@@ -86,12 +91,13 @@
           aria-label="Close"
         ></button>
       </div>
+	  <!-- LOGIN COMMENT -->
       <div
-        id="loginError"
-        class="d-none text-white bg-danger mx-3 mt-3 p-2 rounded-1"
+        id="loginComment"
+        class="d-none text-white mx-3 mt-3 p-2 rounded-1"
       >
-        Login Error
       </div>
+	  <!-- USERNAME INPUT -->
       <div class="modal-body">
         <div class="mb-3">
           <label for="usernameLogin" class="col-form-label">Username</label>
@@ -105,6 +111,7 @@
             required
           />
         </div>
+		<!-- PASSWORD INPUT -->
         <div class="mb-3">
           <label for="passwordLogin" class="col-form-label">Password</label>
           <input
@@ -117,6 +124,7 @@
           />
         </div>
       </div>
+	  <!-- SIGN UP REDIRECTION -->
       <div class="modal-footer d-sm-flex">
         <div class="d-flex align-items-center me-auto">
           <p class="m-0 me-1">New here ?</p>
@@ -128,6 +136,7 @@
             Sign up</a
           >
         </div>
+		<!-- CLOSE BUTTON -->
         <div>
           <button
             type="button"
@@ -142,10 +151,11 @@
     </form>
   </div>
 </div>
-
+<!-- REGISTER MODAL -->
 <div class="modal fade" id="register" tabindex="-1">
   <div class="modal-dialog">
     <form id="registrationForm" class="modal-content">
+		<!-- REGISTER TITLE -->
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="exampleModalLabel">Sign Up</h1>
         <button
@@ -155,12 +165,13 @@
           aria-label="Close"
         ></button>
       </div>
+	  <!-- REGISTER COMMENT -->
       <div
         id="registerComment"
         class="d-none text-white mx-3 mt-3 p-2 rounded-1"
       >
-        Register
       </div>
+	  <!-- USERNAME INPUT -->
       <div class="modal-body">
         <div class="mb-3">
           <label for="usernameRegister" class="col-form-label">Username</label>
@@ -174,6 +185,7 @@
             required
           />
         </div>
+		<!-- EMAIL INPUT -->
         <div class="mb-3">
           <label for="email" class="col-form-label">Email</label>
           <input
@@ -186,6 +198,7 @@
             required
           />
         </div>
+		<!-- PASSWORD INPUT -->
         <div class="mb-3">
           <label for="passwordRegister" class="col-form-label">Password</label>
           <input
@@ -208,6 +221,7 @@
             <span id="registerPassSpecial">- Special character</span>
           </div>
         </div>
+		<!-- PASSWORD AGAIN -->
         <div class="mb-3">
           <label for="passwordagain" class="col-form-label">
             Repeat Password
@@ -228,6 +242,7 @@
           </div>
         </div>
       </div>
+	  <!-- LOGIN REDIRECTION -->
       <div class="modal-footer d-sm-flex">
         <div class="d-flex align-items-center me-auto">
           <p class="m-0 me-1">Have an account ?</p>
@@ -235,6 +250,7 @@
             >Log In</a
           >
         </div>
+		<!-- CLOSE BUTTON -->
         <div>
           <button
             type="button"
@@ -243,6 +259,7 @@
           >
             Close
           </button>
+		  <!-- SUBMIT FORM  -->
           <button type="submit" class="btn btn-info text-white" navlink>
             Sign up
           </button>

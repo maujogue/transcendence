@@ -1,5 +1,6 @@
 import { toggleContentOnLogState } from "./Utils.js";
 
+//page constructor
 class Page {
   constructor(name, urlPath, filePath, sidebar) {
     this.name = name;
@@ -12,6 +13,7 @@ class Page {
   }
 }
 
+//page routes settings (name, urlPath, filePath, sidebarOn?)
 const routes = [
   new Page("Dashboard", "/", "html/Dashboard.html", true),
   new Page("Dashboard", "/dash", "html/Dashboard.html", true),
@@ -22,10 +24,12 @@ const routes = [
   new Page("Game", "/game", "html/Game.html", true),
 ];
 
+//index.html container variables
 const mainPageDiv = "#content-container";
 const sidebarDiv = "#sidebar-container";
 let previousPage = null;
 
+//inject html function
 function setInnerHtml(elm, html) {
   elm.innerHTML = html;
   Array.from(elm.querySelectorAll("script")).forEach((oldScript) => {
@@ -38,6 +42,7 @@ function setInnerHtml(elm, html) {
   });
 }
 
+//change pages
 function navigateTo(url) {
   if (url !== location.pathname) {
     history.pushState({}, null, url);
@@ -46,6 +51,7 @@ function navigateTo(url) {
   toggleContentOnLogState();
 }
 
+//inject html files based on url 
 const router = async (routes, divToInsertHtml) => {
   const potentialMatches = routes.map((route) => {
     return {
@@ -80,8 +86,10 @@ const router = async (routes, divToInsertHtml) => {
   toggleContentOnLogState();
 };
 
+//navigation history (back and forth button)
 window.addEventListener("popstate", (event) => router(routes, mainPageDiv));
 
+//on page load
 document.addEventListener("DOMContentLoaded", () => {
   document.body.addEventListener("click", (e) => {
     let target = e.target;

@@ -8,6 +8,14 @@ from django.http import JsonResponse
 @requires_csrf_token
 def get_user_datas(request):
     user = request.user
-    print(user.username)
-    return JsonResponse({'status': 'User have 0 friends'}, status=200)
+    user_datas = {
+        'username': user.username,
+        'email': user.email,
+        'bio': user.bio,
+        'title': user.title,
+        'winrate': user.winrate,
+        'rank': user.rank,
+        'n_games_played': user.n_games_played
+    }
+    return JsonResponse({'status': 'success', 'user': user_datas}, status=200)
 

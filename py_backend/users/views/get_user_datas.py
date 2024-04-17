@@ -3,11 +3,16 @@ from django.views.decorators.csrf import requires_csrf_token
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
+from users.models import CustomUser
+
 @require_http_methods(["POST"])
 @login_required
 @requires_csrf_token
 def get_user_data(request):
-    user = request.user
+    try:
+        user = request.user
+    except CustomUser.DoesNotExist:
+        return JsonResponse({'status': 'Custom User not found'}, status=404)
     user_datas = {
         'username': user.username,
         'email': user.email,

@@ -352,6 +352,7 @@ class LoginTests(TestCase):
         user = CustomUser.objects.get(email="lboulatr@gmail.com")
         self.assertEqual(user.username, 'lboulatr')
         self.assertEqual(user.email, 'lboulatr@gmail.com')
+        self.assertEqual(CustomUser.objects.count(), 1)
 
     def test_basic_login(self):
         user = {
@@ -468,14 +469,14 @@ class LogoutTests(TestCase):
     def test_logout_success(self):
         self.client.login(username='lboulatr', password='UserPassword9+')
         response = self.client.post(
-            reverse('logout_view'), 
+            reverse('logout'), 
             content_type='application/json')
 
         self.assertEqual(response.status_code, 200)
 
     def test_logout_but_not_login(self):
         response = self.client.post(
-            reverse('logout_view'), 
+            reverse('logout'), 
             content_type='application/json')
 
         self.assertEqual(response.status_code, 302)
@@ -521,21 +522,21 @@ class CSRFTokenTest(TestCase):
         response = self.client.get(reverse('get_csrf_token'))
 
         response = self.client.post(
-            reverse('logout_view'), 
+            reverse('logout'), 
             content_type='application/json')
 
         self.assertEqual(response.status_code, 200)
 
     def test_token_logout_without_token(self):
         response = self.client.post(
-            reverse('logout_view'), 
+            reverse('logout'), 
             content_type='application/json')
 
         self.assertEqual(response.status_code, 200)
 
     def test_post_without_csrf_token(self):
         self.csrf_client = Client(enforce_csrf_checks=True)
-        response = self.csrf_client.post(reverse('update_profile'), data={'key': 'value'})
+        response = self.csrf_client.post(reverse('update_username'), data={'key': 'value'})
         self.assertEqual(response.status_code, 403)
 
     def test_csrf_token_generated(self):
@@ -571,44 +572,12 @@ class ProfileUpdate(TestCase):
         }
 
         response = self.client.post(
-            reverse('update_profile'), 
+            reverse('update_bio'), 
             data=json.dumps(update_datas), 
             content_type='application/json'
         )
         self.user.refresh_from_db()
         self.assertEqual(response.status_code, 302)
-
-
-    def test_update_datas_bio(self):
-        update_datas = {
-            'bio': 'Lorem ipsum dolor sit amet'
-        }
-
-        response = self.client.post(
-            reverse('update_profile'), 
-            data=json.dumps(update_datas), 
-            content_type='application/json'
-        )
-        self.user.refresh_from_db()
-
-        self.assertEqual(self.user.bio, 'Lorem ipsum dolor sit amet')
-        self.assertEqual(response.status_code, 200)
-
-
-    def test_empty_bio(self):
-        update_datas = {
-            'bio': ''
-        }
-
-        response = self.client.post(
-            reverse('update_profile'), 
-            data=json.dumps(update_datas), 
-            content_type='application/json'
-        )
-        self.user.refresh_from_db()
-
-        self.assertEqual(self.user.bio, '')
-        self.assertEqual(response.status_code, 200)
 
 
     def test_change_username(self):
@@ -617,7 +586,7 @@ class ProfileUpdate(TestCase):
         }
 
         response = self.client.post(
-            reverse('update_profile'), 
+            reverse('update_username'), 
             data=json.dumps(update_datas), 
             content_type='application/json'
         )
@@ -633,7 +602,7 @@ class ProfileUpdate(TestCase):
         }
 
         response = self.client.post(
-            reverse('update_profile'), 
+            reverse('update_username'), 
             data=json.dumps(update_datas), 
             content_type='application/json'
         )
@@ -643,15 +612,14 @@ class ProfileUpdate(TestCase):
         self.assertEqual(response_data.get('error'), 'Username is already used.')
         self.assertEqual(response.status_code, 400)
 
-    
+
     def test_change_username_camelcase(self):
         update_datas = {
             'username': 'OchoA',
-            'avatar': 'hunter.jpg'
         }
 
         response = self.client.post(
-            reverse('update_profile'), 
+            reverse('update_username'), 
             data=json.dumps(update_datas), 
             content_type='application/json'
         )
@@ -662,16 +630,100 @@ class ProfileUpdate(TestCase):
         self.assertEqual(response.status_code, 400)
 
 
-    def test_avatar_upload(self):
-        avatar_datas = {
-            'avatar': 'hunter.jpg'
+    def test_update_bio(self):
+        update_datas = {
+            'bio': 'Lorem ipsum dolor sit amet'
         }
+
         response = self.client.post(
-            reverse('update_profile'), 
-            data=json.dumps(avatar_datas), 
+            reverse('update_bio'), 
+            data=json.dumps(update_datas), 
             content_type='application/json'
         )
         self.user.refresh_from_db()
 
+        self.assertEqual(self.user.bio, 'Lorem ipsum dolor sit amet')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.user.avatar.name, 'hunter.jpg')
+
+
+    def test_empty_bio(self):
+        update_datas = {
+            'bio': ''
+        }
+
+        response = self.client.post(
+            reverse('update_bio'), 
+            data=json.dumps(update_datas), 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(self.user.bio, '')
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_update_password(self):
+        update_datas = {
+            'new_password1': 'Zxcvbnm98+',
+            'new_password2': 'Zxcvbnm98+'
+        }
+        old_password = self.user.password
+
+        response = self.client.post(
+            reverse('update_password'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        new_password = self.user.password
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(old_password, new_password)
+
+
+    def test_update_wrong_password(self):
+        update_datas = {
+            'new_password1': 'Zxcvbnm98+',
+            'new_password2': 'Zxcvbnm98'
+        }
+
+        response = self.client.post(
+            reverse('update_password'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        response_data = response.json()
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response_data.get('status'), 'Passwords do not match.')
+
+
+    def test_update_empty_password(self):
+        update_datas = {
+            'new_password1': 'Zxcvbnm98+',
+            'new_password2': ''
+        }
+
+        response = self.client.post(
+            reverse('update_password'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        response_data = response.json()
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response_data.get('status'), 'One password is missing.')
+
+
+    def test_update_no_datas(self):
+        update_datas = {}
+
+        response = self.client.post(
+            reverse('update_password'), 
+            data=update_datas, 
+        )
+
+        self.assertEqual(response.status_code, 406)
+

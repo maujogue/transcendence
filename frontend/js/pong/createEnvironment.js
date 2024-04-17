@@ -38,18 +38,8 @@ async function createMap(env) {
 	topSide.getWorldPosition(topSidePosition);
 	botSide.getWorldPosition(botSidePosition);
 
-	const borderUp = createBorder(topSidePosition, env);
-	const borderDown = createBorder(botSidePosition, env);
-	// let borderCenter = await createBorder(new THREE.Vector3(0, 0, 0.95), environment.camera);
-	// borderCenter.mesh.material.metalness = 0.2;
-	// borderCenter.mesh.material.roughness = 0.8;
-	// borderCenter.mesh.rotation.set(0, 0, Math.PI / 2);
-	// borderCenter.mesh.scale.set(1, 0.3, 1);
-	// console.log("BorderUp : ", borderUp.mesh);
-	// env.scene.add(borderDown.mesh);
-	// env.scene.add(borderUp.mesh);
-	// environment.scene.add(borderCenter.mesh);
-	// environment.scene.add(await createField());
+	const borderDown = createBorder(topSidePosition, env);
+	const borderUp = createBorder(botSidePosition, env);
 	return {
 		"borderUp": borderUp,
 		"borderDown": borderDown

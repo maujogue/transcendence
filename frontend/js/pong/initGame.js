@@ -59,7 +59,6 @@ async function initGame(player1, player2) {
 	let spotlight = setPlayersLights(player1.character, player2.character, environment);
 	setPositionPaddle("player1", -.65, environment, player1);
 	setPositionPaddle("player2", .65, environment, player2);
-	console.log("Player1 : ", player1.paddle.mesh.position);
 	removeSelectMenu();
 	let ball = await createBall(environment);
 	environment.scene.add(ball.mesh);

@@ -4,6 +4,7 @@ import { actualizeScore } from './score.js';
 function resetPos(ball, player1, player2, environment) {
     ball.mesh.position.set(0, 0, .91).unproject(environment.camera);
     ball.direction.y = 0;
+    ball.direction.z = 0;
     player1.paddle.mesh.position.set(-.65, 0, .909).unproject(environment.camera);
     player2.paddle.mesh.position.set(.65, 0, .909).unproject(environment.camera);
 }

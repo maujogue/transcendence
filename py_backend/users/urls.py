@@ -9,5 +9,5 @@ urlpatterns = [
 	path('update_username/', update_profile_username, name='update_username'),
     path('update_bio/', update_profile_bio, name='update_bio'),
     path('update_password/', update_profile_password, name='update_password'),
-    path('get_user_datas/', get_user_datas, name='get_user_datas'),
+    path('get_user_data/', get_user_data, name='get_user_data'),
 ]

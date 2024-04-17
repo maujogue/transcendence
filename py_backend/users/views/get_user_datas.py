@@ -6,7 +6,7 @@ from django.http import JsonResponse
 @require_http_methods(["POST"])
 @login_required
 @requires_csrf_token
-def get_user_datas(request):
+def get_user_data(request):
     user = request.user
     user_datas = {
         'username': user.username,
@@ -18,4 +18,3 @@ def get_user_datas(request):
         'n_games_played': user.n_games_played
     }
     return JsonResponse({'status': 'success', 'user': user_datas}, status=200)
-

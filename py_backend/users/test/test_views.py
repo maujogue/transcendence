@@ -741,13 +741,13 @@ class GetUserDatas(TestCase):
         
         self.client.login(username='osterga', password='UserPassword9+')
 
-    def test_basic_get_user_datas(self):
-        response = self.client.post(reverse('get_user_datas'))
+    def test_basic_get_user_data(self):
+        response = self.client.post(reverse('get_user_data'))
 
         self.assertEqual(response.status_code, 200)
 
-    def test_get_user_datas(self):
-        response = self.client.post(reverse('get_user_datas'))
+    def test_get_user_data(self):
+        response = self.client.post(reverse('get_user_data'))
         response_data = response.json()
 
         self.assertEqual(response_data.get('user').get('username'), 'osterga')
@@ -758,8 +758,7 @@ class GetUserDatas(TestCase):
         self.assertEqual(response_data.get('user').get('rank'), None)
         self.assertEqual(response_data.get('user').get('n_games_played'), None)
 
-    def test_get_user_datas_without_login(self):
+    def test_get_user_data_without_login(self):
         self.client.logout()
-        
-        response = self.client.post(reverse('get_user_datas'))
+        response = self.client.post(reverse('get_user_data'))
         self.assertEqual(response.status_code, 302)

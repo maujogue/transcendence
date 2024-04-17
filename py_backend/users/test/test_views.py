@@ -731,14 +731,13 @@ from users.models import Profile
 
 class GetUserDatas(TestCase):
     def setUp(self):
-        self.client = Client()
-
         self.user = CustomUser.objects.create_user(
             username="osterga",
             email="osterga@gmail.com",
             password="UserPassword9+",
             bio="Bonjours a tous, c'est Osterga",
             title='L\'Inusable')
+        
         
         self.client.login(username='osterga', password='UserPassword9+')
 
@@ -758,3 +757,9 @@ class GetUserDatas(TestCase):
         self.assertEqual(response_data.get('user').get('winrate'), None)
         self.assertEqual(response_data.get('user').get('rank'), None)
         self.assertEqual(response_data.get('user').get('n_games_played'), None)
+
+    def test_get_user_datas_without_login(self):
+        self.client.logout()
+        
+        response = self.client.post(reverse('get_user_datas'))
+        self.assertEqual(response.status_code, 302)

@@ -727,3 +727,22 @@ class ProfileUpdate(TestCase):
 
         self.assertEqual(response.status_code, 406)
 
+# =========================================================================================
+
+class GetUserDatas(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        self.user = CustomUser.objects.create_user(
+            username="osterga",
+            email="osterga@gmail.com",
+            password="UserPassword9+",
+            bio="Bonjours a tous, c'est Osterga")
+
+        self.profile = Profile.objects.create(user=self.user)
+        
+        self.client.login(username='osterga', password='UserPassword9+')
+
+    def test_get_user_datas(self):
+        response = self.client.post(reverse('get_user_datas'))
+

@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 
 from users.forms import CustomUserCreationForm
-from users.utils import validation_register, username_is_unique
+from users.utils import validation_register, username_is_unique, decode_json_body
 from users.models import Profile
 
 from . import forms
@@ -23,10 +23,10 @@ import magic
 
 @require_http_methods(["POST"])
 def register(request):
-    try:
-        data = json.loads(request.body.decode("utf-8"))
-    except json.JSONDecodeError:
-        return JsonResponse(data={'error': "Invalid JSON format"}, status=406)
+    data = decode_json_body(request)
+    if isinstance(data, JsonResponse):
+        return data
+    
     valid_request = validation_register(data)
     if valid_request:
         return JsonResponse({"error": valid_request}, status=400)
@@ -42,10 +42,10 @@ def register(request):
 
 @require_http_methods(["POST"])
 def login(request):
-    try:
-        data = json.loads(request.body.decode("utf-8"))
-    except json.JSONDecodeError:
-        return JsonResponse(data={'error': "Invalid JSON format"}, status=406)
+    data = decode_json_body(request)
+    if isinstance(data, JsonResponse):
+        return data
+    
     form = forms.LoginForm(data)
 
     if form.is_valid():
@@ -80,10 +80,10 @@ def logout_view(request):
 @login_required
 @requires_csrf_token
 def update_profile_username(request):
-    try:
-        data = json.loads(request.body.decode("utf-8"))
-    except json.JSONDecodeError:
-        return JsonResponse(data={'error': "Invalid JSON format"}, status=406)
+    data = decode_json_body(request)
+    if isinstance(data, JsonResponse):
+        return data
+    
     username = data.get('username')
 
     if username:
@@ -99,10 +99,10 @@ def update_profile_username(request):
 @login_required
 @requires_csrf_token
 def update_profile_bio(request):
-    try:
-        data = json.loads(request.body.decode("utf-8"))
-    except json.JSONDecodeError:
-        return JsonResponse(data={'error': "Invalid JSON format"}, status=406)
+    data = decode_json_body(request)
+    if isinstance(data, JsonResponse):
+        return data
+    
     bio = data.get('bio')
 
     if bio or bio == '':
@@ -115,10 +115,10 @@ def update_profile_bio(request):
 @login_required
 @requires_csrf_token
 def update_profile_password(request):
-    try:
-        data = json.loads(request.body.decode("utf-8"))
-    except json.JSONDecodeError:
-        return JsonResponse(data={'error': "Invalid JSON format"}, status=406)
+    data = decode_json_body(request)
+    if isinstance(data, JsonResponse):
+        return data
+    
     new_password1 = data.get('new_password1')
     new_password2 = data.get('new_password2')
 

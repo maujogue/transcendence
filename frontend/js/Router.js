@@ -43,6 +43,7 @@ function navigateTo(url) {
     history.pushState({}, null, url);
     router(routes, mainPageDiv);
   }
+  toggleContentOnLogState();
 }
 
 const router = async (routes, divToInsertHtml) => {

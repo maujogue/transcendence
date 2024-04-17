@@ -57,7 +57,6 @@
         <li><a id="logoutButton" class="dropdown-item">Sign out</a></li>
       </ul>
       <a
-        href="#"
         class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
         id="dropdownUser1"
         data-bs-toggle="dropdown"
@@ -75,11 +74,8 @@
   </div>
 </nav>
 
-<script type="module" src="../js/Sidebar.js"></script>
-
 <div class="modal fade" id="login" tabindex="-1">
-	
-	<div class="modal-dialog">
+  <div class="modal-dialog">
     <form id="loginForm" class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="exampleModalLabel">Login</h1>
@@ -90,31 +86,45 @@
           aria-label="Close"
         ></button>
       </div>
+      <div
+        id="loginError"
+        class="d-none text-white bg-danger mx-3 mt-3 p-2 rounded-1"
+      >
+        Login Error
+      </div>
       <div class="modal-body">
         <div class="mb-3">
-          <label for="username" class="col-form-label">Username</label>
+          <label for="usernameLogin" class="col-form-label">Username</label>
           <input
             type="text"
             name="username"
             class="form-control"
-            id="username"
+            id="usernameLogin"
             placeholder="Tazz1998"
+            autocomplete="username"
+            required
           />
         </div>
         <div class="mb-3">
-          <label for="password" class="col-form-label">Password</label>
+          <label for="passwordLogin" class="col-form-label">Password</label>
           <input
             type="text"
             name="password"
             class="form-control"
-            id="password"
+            id="passwordLogin"
+            autocomplete="current-password"
+            required
           />
         </div>
       </div>
       <div class="modal-footer d-sm-flex">
         <div class="d-flex align-items-center me-auto">
           <p class="m-0 me-1">New here ?</p>
-          <a class="text-info" data-bs-target="#register" data-bs-toggle="modal">
+          <a
+            class="text-info"
+            data-bs-target="#register"
+            data-bs-toggle="modal"
+          >
             Sign up</a
           >
         </div>
@@ -128,9 +138,9 @@
           </button>
           <button type="submit" class="btn btn-primary" navlink>Login</button>
         </div>
-	</div>
-</form>
-</div>
+      </div>
+    </form>
+  </div>
 </div>
 
 <div class="modal fade" id="register" tabindex="-1">
@@ -145,50 +155,77 @@
           aria-label="Close"
         ></button>
       </div>
+      <div
+        id="registerComment"
+        class="d-none text-white mx-3 mt-3 p-2 rounded-1"
+      >
+        Register
+      </div>
       <div class="modal-body">
         <div class="mb-3">
-          <label for="username" class="col-form-label">Username</label>
+          <label for="usernameRegister" class="col-form-label">Username</label>
           <input
             type="text"
             name="username"
             class="form-control"
-            id="username"
+            id="usernameRegister"
             placeholder="Sweet Onion"
+            autocomplete="username"
+            required
           />
         </div>
         <div class="mb-3">
           <label for="email" class="col-form-label">Email</label>
           <input
-            type="text"
+            type="email"
             name="email"
             class="form-control"
             id="email"
             placeholder="name@example.com"
+            autocomplete="email"
+            required
           />
         </div>
         <div class="mb-3">
-          <label for="password" class="col-form-label">Password</label>
+          <label for="passwordRegister" class="col-form-label">Password</label>
           <input
-            type="text"
-            name="password"
+            id="passwordRegister"
             class="form-control"
-            id="password"
+            type="password"
+            name="password"
+            minlength="8"
+            maxlength="20"
+            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+]).{8,20}$"
+            autocomplete="new-password"
+            required
           />
           <div id="passwordHelpBlock" class="form-text">
-            Your password must be 8-20 characters long, contain letters, numbers
-            and special characters.
+            Your password must contain :<br />
+            <span id="registerPassLength">- 8 to 20 characters</span><br />
+            <span id="registerPassLowercase">- Lowercase</span><br />
+            <span id="registerPassUppercase">- Uppercase</span><br />
+            <span id="registerPassNumbers">- Number</span><br />
+            <span id="registerPassSpecial">- Special character</span>
           </div>
         </div>
         <div class="mb-3">
-          <label for="passwordagain" class="col-form-label"
-            >Repeat Password</label
-          >
+          <label for="passwordagain" class="col-form-label">
+            Repeat Password
+          </label>
           <input
-            type="text"
-            name="passwordagain"
-            class="form-control"
             id="passwordagain"
+            class="form-control"
+            type="password"
+            name="passwordagain"
+            minlength="8"
+            maxlength="20"
+            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+]).{8,20}$"
+            autocomplete="new-password"
+            required
           />
+          <div id="passwordagainHelpBlock" class="form-text text-danger d-none">
+            Passwords don't match
+          </div>
         </div>
       </div>
       <div class="modal-footer d-sm-flex">
@@ -199,7 +236,11 @@
           >
         </div>
         <div>
-          <button class="btn btn-secondary" data-bs-dismiss="modal">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
             Close
           </button>
           <button type="submit" class="btn btn-info text-white" navlink>
@@ -210,3 +251,4 @@
     </form>
   </div>
 </div>
+<script type="module" src="../js/Sidebar.js"></script>

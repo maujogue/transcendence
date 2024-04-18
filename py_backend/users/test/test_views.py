@@ -768,6 +768,7 @@ class UpdateProfilePictureTest(TestCase):
         self.user = CustomUser.objects.create_user(username='testuser', password='testpass', bio='jpp')
         self.client.login(username='testuser', password='testpass')
 
+
     def test_update_profile_picture(self):
         with open('media/hunter.jpg', 'rb') as img:
             response = self.client.post(
@@ -779,6 +780,7 @@ class UpdateProfilePictureTest(TestCase):
         self.user.refresh_from_db()
         self.assertIsNotNone(self.user.avatar)
 
+
     def test_picture_too_big(self):
         with open('media/river.jpg', 'rb') as img:
             response = self.client.post(
@@ -789,6 +791,7 @@ class UpdateProfilePictureTest(TestCase):
         response_data = response.json()
 
         self.assertEqual(response_data.get('error'), 'File size exceeds the limit.')
+
 
     def test_invalid_picture(self):
         with open('media/invalid.cub', 'rb') as img:

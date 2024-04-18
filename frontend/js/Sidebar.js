@@ -65,10 +65,15 @@ function checkPassword() {
   else helpTextAgain.classList.add("d-none");
 }
 
+//password visibility toggles (login/register)
+const loginPasswordField = document.getElementById("loginPassword");
+const loginPasswordToggle = document.getElementById("loginPasswordToggle");
 const registerPasswordField = document.getElementById("registerPassword");
 const registerPasswordAgainField = document.getElementById("registerPasswordAgain");
 const registerPasswordToggle = document.getElementById("registerPasswordToggle");
 const registerPasswordAgainToggle = document.getElementById("registerPasswordAgainToggle");
+
+loginPasswordToggle.addEventListener("click", () => toggleVisibility(loginPasswordToggle, loginPasswordField));
 registerPasswordToggle.addEventListener("click", () => toggleVisibility(registerPasswordToggle, registerPasswordField));
 registerPasswordAgainToggle.addEventListener("click", () => toggleVisibility(registerPasswordAgainToggle, registerPasswordAgainField));
 

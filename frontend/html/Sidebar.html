@@ -114,15 +114,18 @@
         </div>
         <!-- PASSWORD INPUT -->
         <div class="mb-3">
-          <label for="passwordLogin" class="col-form-label">Password</label>
-          <input
-            type="text"
-            name="password"
-            class="form-control"
-            id="passwordLogin"
-            autocomplete="current-password"
-            required
-          />
+          <label for="loginPassword" class="col-form-label">Password</label>
+          <div class="d-flex align-items-center gap-2">
+            <input
+              type="password"
+              name="password"
+              class="form-control"
+              id="loginPassword"
+              autocomplete="current-password"
+              required
+            />
+			<i id="loginPasswordToggle" class="fas fa-eye"></i>
+          </div>
         </div>
       </div>
       <!-- SIGN UP REDIRECTION -->

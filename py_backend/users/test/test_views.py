@@ -8,7 +8,6 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 import json
 
 from users.models import CustomUser
-from users.models import Profile
 
 
 
@@ -560,8 +559,6 @@ class ProfileUpdate(TestCase):
             email="ochoa@gmail.com",
             password="UserPassword9+",
             bio="Bonjours a tous, c'est Ochoa")
-
-        self.profile = Profile.objects.create(user=self.user)
         
         self.client.login(username='osterga', password='UserPassword9+')
 
@@ -727,3 +724,82 @@ class ProfileUpdate(TestCase):
 
         self.assertEqual(response.status_code, 406)
 
+# =========================================================================================
+
+class GetUserDatas(TestCase):
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(
+            username="osterga",
+            email="osterga@gmail.com",
+            password="UserPassword9+",
+            bio="Bonjours a tous, c'est Osterga",
+            title='L\'Inusable')
+        
+        self.client.login(username='osterga', password='UserPassword9+')
+
+    def test_basic_get_user_data(self):
+        response = self.client.post(reverse('get_user_data'))
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_user_data(self):
+        response = self.client.post(reverse('get_user_data'))
+        response_data = response.json()
+
+        self.assertEqual(response_data.get('user').get('username'), 'osterga')
+        self.assertEqual(response_data.get('user').get('email'), 'osterga@gmail.com')
+        self.assertEqual(response_data.get('user').get('bio'), "Bonjours a tous, c'est Osterga")
+        self.assertEqual(response_data.get('user').get('title'), 'L\'Inusable')
+        self.assertEqual(response_data.get('user').get('winrate'), None)
+        self.assertEqual(response_data.get('user').get('rank'), None)
+        self.assertEqual(response_data.get('user').get('n_games_played'), None)
+
+    def test_without_login(self):
+        self.client.logout()
+        response = self.client.post(reverse('get_user_data'))
+        self.assertEqual(response.status_code, 302)
+
+# =========================================================================================
+
+
+class UpdateProfilePictureTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = CustomUser.objects.create_user(username='testuser', password='testpass', bio='jpp')
+        self.client.login(username='testuser', password='testpass')
+
+
+    def test_update_profile_picture(self):
+        with open('media/hunter.jpg', 'rb') as img:
+            response = self.client.post(
+                reverse('update_profile_picture'),
+                {'image': img})
+                
+        self.assertEqual(response.status_code, 200)
+
+        self.user.refresh_from_db()
+        self.assertIsNotNone(self.user.avatar)
+
+
+    def test_picture_too_big(self):
+        with open('media/river.jpg', 'rb') as img:
+            response = self.client.post(
+                reverse('update_profile_picture'),
+                {'image': img})
+                
+        self.assertEqual(response.status_code, 400)
+        response_data = response.json()
+
+        self.assertEqual(response_data.get('error'), 'File size exceeds the limit.')
+
+
+    def test_invalid_picture(self):
+        with open('media/invalid.cub', 'rb') as img:
+            response = self.client.post(
+                reverse('update_profile_picture'),
+                {'image': img})
+                
+        self.assertEqual(response.status_code, 400)
+        response_data = response.json()
+
+        self.assertEqual(response_data.get('error'), 'Invalid image type.')

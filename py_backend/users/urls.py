@@ -1,12 +1,14 @@
 from django.urls import path
-from users import views
+from users.views import *
 
 urlpatterns = [
-    path('register/', views.register, name='register'),
-    path('login/', views.login, name='login'),
-	path('logout/', views.logout_view, name='logout'),
-    path('get_csrf_token/', views.get_csrf_token, name='get_csrf_token'),
-	path('update_username/', views.update_profile_username, name='update_username'),
-    path('update_bio/', views.update_profile_bio, name='update_bio'),
-    path('update_password/', views.update_profile_password, name='update_password'),
+    path('register/', register, name='register'),
+    path('login/', login, name='login'),
+	path('logout/', logout_view, name='logout'),
+    path('get_csrf_token/', get_csrf_token, name='get_csrf_token'),
+    path('update_bio/', update_profile_bio, name='update_bio'),
+    path('update_password/', update_profile_password, name='update_password'),
+    path('update_profile_picture/', update_profile_picture, name='update_profile_picture'),
+	path('update_username/', update_profile_username, name='update_username'),
+    path('get_user_data/', get_user_data, name='get_user_data'),
 ]

@@ -19,8 +19,6 @@ class CustomUser(AbstractUser):
 	rank = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(50)], null=True)
 	n_games_played = models.IntegerField(null=True)
 	friends = models.ManyToManyField("self", blank=True)
-	# groups = models.ManyToManyField('auth.Group', related_name='custom_user_set')
-	# user_permissions = models.ManyToManyField('auth.Permission', related_name='custom_user_set')
 	
 	def save(self, *args, **kwargs):
 		super().save(*args, **kwargs)
@@ -29,10 +27,3 @@ class CustomUser(AbstractUser):
 			output_size = (300, 300)
 			img.thumbnail(output_size)
 			img.save(self.avatar.path)
-
-
-class Profile(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-
-    avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
-    bio = models.TextField(max_length=settings.MAX_LEN_TEXT)

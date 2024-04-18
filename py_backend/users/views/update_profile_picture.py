@@ -32,8 +32,6 @@ def update_profile_picture(request):
         return JsonResponse({'errors': "Invalid file type."}, status=402)
     try:
         user_profile = get_object_or_404(Profile, user=request.user)
-        user_profile.avatar = uploaded_file
-        user_profile.save()
         user_profile.user.avatar = uploaded_file
         user_profile.user.save()
         return JsonResponse({"status": "Your profile picture has been correctly updated !"}, status=200)

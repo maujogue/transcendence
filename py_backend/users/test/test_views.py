@@ -730,15 +730,16 @@ from users.models import Profile
 
 class GetUserDatas(TestCase):
     def setUp(self):
+        self.client = Client()
         self.user = CustomUser.objects.create_user(
             username="osterga",
             email="osterga@gmail.com",
             password="UserPassword9+")
         
         self.client.login(username='osterga', password='UserPassword9+')
+        self.profile = Profile.objects.create(user=self.user, bio='jpp')
 
     def test_basic_get_user_data(self):
-        print(CustomUser.objects.count())
         response = self.client.post(reverse('get_user_data'))
 
         self.assertEqual(response.status_code, 200)
@@ -746,10 +747,16 @@ class GetUserDatas(TestCase):
     def test_get_user_data(self):
         response = self.client.post(reverse('get_user_data'))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response['Content-Type'], 'application/json')
+
         response_data = response.json()
-        self.assertEqual(response_data['status'], 'success')
         self.assertEqual(response_data['user']['username'], self.user.username)
+        self.assertEqual(response_data['user']['email'], self.user.email)
+        self.assertEqual(response_data['user']['bio'], self.profile.bio)
+        self.assertEqual(response_data['user']['title'], self.profile.title)
+        self.assertEqual(response_data['user']['winrate'], self.profile.winrate)
+        self.assertEqual(response_data['user']['rank'], self.profile.rank)
+        self.assertEqual(response_data['user']['n_games_played'], self.profile.n_games_played)
+        print(response_data['user']['bio'])
 
     def test_without_login(self):
         self.client.logout()

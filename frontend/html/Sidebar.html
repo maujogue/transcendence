@@ -30,7 +30,7 @@
       </a>
     </li>
   </ul>
-  <!-- LOGIN/REGISTER -->
+  <!-- LOGIN BUTTON / REGISTER BUTTON -->
   <div class="logOutContent">
     <button
       class="btn btn-outline-secondary mb-2"
@@ -73,7 +73,7 @@
           class="rounded-circle me-2"
         />
       </a>
-      <span class="section-name ms-2" style="position: relative">Boula</span>
+      <span class="section-name ms-2 usernameDynamic" style="position: relative">Boula</span>
     </div>
   </div>
 </nav>
@@ -174,12 +174,12 @@
 	  <!-- USERNAME INPUT -->
       <div class="modal-body">
         <div class="mb-3">
-          <label for="usernameRegister" class="col-form-label">Username</label>
+          <label for="registerUsername" class="col-form-label">Username</label>
           <input
             type="text"
             name="username"
             class="form-control"
-            id="usernameRegister"
+            id="registerUsername"
             placeholder="Sweet Onion"
             autocomplete="username"
             required
@@ -187,12 +187,12 @@
         </div>
 		<!-- EMAIL INPUT -->
         <div class="mb-3">
-          <label for="email" class="col-form-label">Email</label>
+          <label for="registerEmail" class="col-form-label">Email</label>
           <input
             type="email"
             name="email"
             class="form-control"
-            id="email"
+            id="registerEmail"
             placeholder="name@example.com"
             autocomplete="email"
             required
@@ -200,9 +200,9 @@
         </div>
 		<!-- PASSWORD INPUT -->
         <div class="mb-3">
-          <label for="passwordRegister" class="col-form-label">Password</label>
+          <label for="registerPassword" class="col-form-label">Password</label>
           <input
-            id="passwordRegister"
+            id="registerPassword"
             class="form-control"
             type="password"
             name="password"
@@ -223,11 +223,11 @@
         </div>
 		<!-- PASSWORD AGAIN -->
         <div class="mb-3">
-          <label for="passwordagain" class="col-form-label">
+          <label for="registerPasswordagain" class="col-form-label">
             Repeat Password
           </label>
           <input
-            id="passwordagain"
+            id="registerPasswordagain"
             class="form-control"
             type="password"
             name="passwordagain"

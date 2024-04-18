@@ -39,37 +39,27 @@ registerForm.addEventListener("submit", (event) =>
 );
 
 //check password on register input
-var password1 = document.getElementById("passwordRegister");
+var password1 = document.getElementById("registerPassword");
 password1.addEventListener("input", (event) => checkPassword());
 
-var password2 = document.getElementById("passwordagain");
+var password2 = document.getElementById("registerPasswordagain");
 password2.addEventListener("input", (event) => checkPassword());
 
+//check password attribute with given regEx expression
+function checkPasswordAttribute(regEx, elementID) {
+  var dynamicColorDiv = document.getElementById(elementID);
+  if (regEx.test(password1.value)) dynamicColorDiv.style.color = "green";
+  else dynamicColorDiv.style.color = "red";
+}
+
 function checkPassword() {
-  var registerPassLength = document.getElementById("registerPassLength");
-  var registerPassLowercase = document.getElementById("registerPassLowercase");
-  var registerPassUppercase = document.getElementById("registerPassUppercase");
-  var registerPassNumbers = document.getElementById("registerPassNumbers");
-  var registerPassSpecial = document.getElementById("registerPassSpecial");
+  checkPasswordAttribute(/^.{8,20}$/, "registerPassLength");
+  checkPasswordAttribute(/^.*[a-z].*$/, "registerPassLowercase");
+  checkPasswordAttribute(/^.*[A-Z].*$/, "registerPassUppercase");
+  checkPasswordAttribute(/^.*[0-9].*$/, "registerPassNumbers");
+  checkPasswordAttribute(/^.*[!@#$%^&*_=+].*$/, "registerPassSpecial");
 
   var helpTextAgain = document.getElementById("passwordagainHelpBlock");
-
-  if (/^.{8,20}$/.test(password1.value))
-    registerPassLength.style.color = "green";
-  else registerPassLength.style.color = "red";
-  if (/^.*[a-z].*$/.test(password1.value))
-    registerPassLowercase.style.color = "green";
-  else registerPassLowercase.style.color = "red";
-  if (/^.*[A-Z].*$/.test(password1.value))
-    registerPassUppercase.style.color = "green";
-  else registerPassUppercase.style.color = "red";
-  if (/^.*[0-9].*$/.test(password1.value))
-    registerPassNumbers.style.color = "green";
-  else registerPassNumbers.style.color = "red";
-  if (/^.*[!@#$%^&*_=+].*$/.test(password1.value))
-    registerPassSpecial.style.color = "green";
-  else registerPassSpecial.style.color = "red";
-
   if (password2.value !== "" && password1.value !== password2.value)
     helpTextAgain.classList.remove("d-none");
   else helpTextAgain.classList.add("d-none");

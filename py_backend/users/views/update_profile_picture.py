@@ -3,9 +3,6 @@ from django.views.decorators.csrf import requires_csrf_token
 from django.contrib.auth.decorators import login_required
 from django.core.files.images import get_image_dimensions
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
-
-from users.models import Profile
 
 import magic
 
@@ -31,9 +28,8 @@ def update_profile_picture(request):
     except Exception as e:
         return JsonResponse({'errors': "Invalid file type."}, status=402)
     try:
-        user_profile = get_object_or_404(Profile, user=request.user)
-        user_profile.user.avatar = uploaded_file
-        user_profile.user.save()
+        request.user.avatar = uploaded_file
+        request.user.save()
         return JsonResponse({"status": "Your profile picture has been correctly updated !"}, status=200)
     except Exception as e:
         return JsonResponse({'errors': "An error occurred while updating your profile picture."}, status=500)

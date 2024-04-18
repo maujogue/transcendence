@@ -6,7 +6,6 @@ from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 
 from users.utils import decode_json_body
-from users.models import Profile
 
 
 
@@ -18,10 +17,10 @@ def update_profile_bio(request):
     if isinstance(data, JsonResponse):
         return data
     
-    user_profile = get_object_or_404(Profile, user=request.user) 
     bio = data.get('bio')
 
     if bio or bio == '':
-        user_profile.bio = bio
+        request.user.bio = bio
         request.user.save()
-    return JsonResponse({"status": "Your bio has been correctly updated !"}, status=200)
+        return JsonResponse({"status": "Your bio has been correctly updated !"}, status=200)
+    return JsonResponse({"status": "Missing bio."}, status=200)

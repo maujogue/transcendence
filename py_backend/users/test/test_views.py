@@ -764,21 +764,6 @@ from users.models import Profile
 
 # =========================================================================================
 
-# class UpdateProfilePicture(TestCase):
-#     def setUp(self):
-#         self.user = CustomUser.objects.create_user(
-#             username="osterga",
-#             email="osterga@gmail.com",
-#             password="UserPassword9+")
-        
-#         self.client.login(username='osterga', password='UserPassword9+')
-    
-#     def test_baic_update_profile_picture(self):
-
-
-from django.test import TestCase, Client
-from django.urls import reverse
-
 
 class UpdateProfilePictureTest(TestCase):
     def setUp(self):
@@ -787,17 +772,14 @@ class UpdateProfilePictureTest(TestCase):
         self.client.login(username='testuser', password='testpass')
         self.profile = Profile.objects.create(user=self.user)
 
-    def test(self):
-        print(self.profile.user.bio)
-
     def test_update_profile_picture(self):
         with open('media/hunter.jpg', 'rb') as img:
             response = self.client.post(
                 reverse('update_profile_picture'),
                 {'image': img})
                 
-        self.assertEqual(response.status_code, 200) # Assuming a redirect after successful update
+        self.assertEqual(response.status_code, 200)
 
         self.profile.refresh_from_db()
-        self.assertIsNotNone(self.profile.avatar) # Check that the profile picture has been updated
-        print(self.user.avatar)
+        self.assertIsNotNone(self.profile.avatar)
+        self.assertEqual(self.profile.user.avatar, "go")

@@ -73,7 +73,9 @@
           class="rounded-circle me-2"
         />
       </a>
-      <span class="section-name ms-2 usernameDynamic" style="position: relative">Boula</span>
+      <span class="section-name ms-2 usernameDynamic" style="position: relative"
+        >Boula</span
+      >
     </div>
   </div>
 </nav>
@@ -81,7 +83,7 @@
 <div class="modal fade" id="login" tabindex="-1">
   <div class="modal-dialog">
     <form id="loginForm" class="modal-content">
-		<!-- LOGIN TITLE -->
+      <!-- LOGIN TITLE -->
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="exampleModalLabel">Login</h1>
         <button
@@ -91,13 +93,12 @@
           aria-label="Close"
         ></button>
       </div>
-	  <!-- LOGIN COMMENT -->
+      <!-- LOGIN COMMENT -->
       <div
         id="loginComment"
         class="d-none text-white mx-3 mt-3 p-2 rounded-1"
-      >
-      </div>
-	  <!-- USERNAME INPUT -->
+      ></div>
+      <!-- USERNAME INPUT -->
       <div class="modal-body">
         <div class="mb-3">
           <label for="usernameLogin" class="col-form-label">Username</label>
@@ -111,7 +112,7 @@
             required
           />
         </div>
-		<!-- PASSWORD INPUT -->
+        <!-- PASSWORD INPUT -->
         <div class="mb-3">
           <label for="passwordLogin" class="col-form-label">Password</label>
           <input
@@ -124,7 +125,7 @@
           />
         </div>
       </div>
-	  <!-- SIGN UP REDIRECTION -->
+      <!-- SIGN UP REDIRECTION -->
       <div class="modal-footer d-sm-flex">
         <div class="d-flex align-items-center me-auto">
           <p class="m-0 me-1">New here ?</p>
@@ -136,7 +137,7 @@
             Sign up</a
           >
         </div>
-		<!-- CLOSE BUTTON -->
+        <!-- CLOSE BUTTON -->
         <div>
           <button
             type="button"
@@ -155,7 +156,7 @@
 <div class="modal fade" id="register" tabindex="-1">
   <div class="modal-dialog">
     <form id="registrationForm" class="modal-content">
-		<!-- REGISTER TITLE -->
+      <!-- REGISTER TITLE -->
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="exampleModalLabel">Sign Up</h1>
         <button
@@ -165,13 +166,12 @@
           aria-label="Close"
         ></button>
       </div>
-	  <!-- REGISTER COMMENT -->
+      <!-- REGISTER COMMENT -->
       <div
         id="registerComment"
         class="d-none text-white mx-3 mt-3 p-2 rounded-1"
-      >
-      </div>
-	  <!-- USERNAME INPUT -->
+      ></div>
+      <!-- USERNAME INPUT -->
       <div class="modal-body">
         <div class="mb-3">
           <label for="registerUsername" class="col-form-label">Username</label>
@@ -185,7 +185,7 @@
             required
           />
         </div>
-		<!-- EMAIL INPUT -->
+        <!-- EMAIL INPUT -->
         <div class="mb-3">
           <label for="registerEmail" class="col-form-label">Email</label>
           <input
@@ -198,20 +198,23 @@
             required
           />
         </div>
-		<!-- PASSWORD INPUT -->
+        <!-- PASSWORD INPUT -->
         <div class="mb-3">
           <label for="registerPassword" class="col-form-label">Password</label>
-          <input
-            id="registerPassword"
-            class="form-control"
-            type="password"
-            name="password"
-            minlength="8"
-            maxlength="20"
-            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+]).{8,20}$"
-            autocomplete="new-password"
-            required
-          />
+          <div class="d-flex align-items-center gap-2">
+            <input
+              id="registerPassword"
+              class="form-control"
+              type="password"
+              name="password"
+              minlength="8"
+              maxlength="20"
+              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+]).{8,20}$"
+              autocomplete="new-password"
+              required
+            />
+            <i id="registerPasswordToggle" class="fas fa-eye"></i>
+          </div>
           <div id="passwordHelpBlock" class="form-text">
             Your password must contain :<br />
             <span id="registerPassLength">- 8 to 20 characters</span><br />
@@ -221,28 +224,31 @@
             <span id="registerPassSpecial">- Special character</span>
           </div>
         </div>
-		<!-- PASSWORD AGAIN -->
+        <!-- PASSWORD AGAIN -->
         <div class="mb-3">
-          <label for="registerPasswordagain" class="col-form-label">
+          <label for="registerPasswordAgain" class="col-form-label">
             Repeat Password
           </label>
-          <input
-            id="registerPasswordagain"
-            class="form-control"
-            type="password"
-            name="passwordagain"
-            minlength="8"
-            maxlength="20"
-            pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+]).{8,20}$"
-            autocomplete="new-password"
-            required
-          />
+          <div class="d-flex align-items-center gap-2">
+            <input
+              id="registerPasswordAgain"
+              class="form-control"
+              type="password"
+              name="passwordagain"
+              minlength="8"
+              maxlength="20"
+              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+]).{8,20}$"
+              autocomplete="new-password"
+              required
+            />
+            <i id="registerPasswordAgainToggle" class="fas fa-eye"></i>
+          </div>
           <div id="passwordagainHelpBlock" class="form-text text-danger d-none">
             Passwords don't match
           </div>
         </div>
       </div>
-	  <!-- LOGIN REDIRECTION -->
+      <!-- LOGIN REDIRECTION -->
       <div class="modal-footer d-sm-flex">
         <div class="d-flex align-items-center me-auto">
           <p class="m-0 me-1">Have an account ?</p>
@@ -250,7 +256,7 @@
             >Log In</a
           >
         </div>
-		<!-- CLOSE BUTTON -->
+        <!-- CLOSE BUTTON -->
         <div>
           <button
             type="button"
@@ -259,7 +265,7 @@
           >
             Close
           </button>
-		  <!-- SUBMIT FORM  -->
+          <!-- SUBMIT FORM  -->
           <button type="submit" class="btn btn-info text-white" navlink>
             Sign up
           </button>

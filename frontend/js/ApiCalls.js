@@ -46,7 +46,7 @@ async function register(event, registerForm) {
       } else {
         if (data.error && data.error.length > 0)
           showComment("registerComment", data.error[0]);
-        else showError("registerComment", "Register Error");
+        else showComment("registerComment", "Register Error");
       }
     })
     .catch((error) => {

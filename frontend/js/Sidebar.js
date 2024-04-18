@@ -42,7 +42,7 @@ registerForm.addEventListener("submit", (event) =>
 var password1 = document.getElementById("registerPassword");
 password1.addEventListener("input", (event) => checkPassword());
 
-var password2 = document.getElementById("registerPasswordagain");
+var password2 = document.getElementById("registerPasswordAgain");
 password2.addEventListener("input", (event) => checkPassword());
 
 //check password attribute with given regEx expression
@@ -64,3 +64,22 @@ function checkPassword() {
     helpTextAgain.classList.remove("d-none");
   else helpTextAgain.classList.add("d-none");
 }
+
+const registerPasswordField = document.getElementById("registerPassword");
+const registerPasswordAgainField = document.getElementById("registerPasswordAgain");
+const registerPasswordToggle = document.getElementById("registerPasswordToggle");
+const registerPasswordAgainToggle = document.getElementById("registerPasswordAgainToggle");
+registerPasswordToggle.addEventListener("click", () => toggleVisibility(registerPasswordToggle, registerPasswordField));
+registerPasswordAgainToggle.addEventListener("click", () => toggleVisibility(registerPasswordAgainToggle, registerPasswordAgainField));
+
+function toggleVisibility(togglePassword, passwordField) {3
+  if (passwordField.type === "password") {
+    passwordField.type = "text";
+    togglePassword.classList.remove("fa-eye");
+    togglePassword.classList.add("fa-eye-slash");
+  } else {
+    passwordField.type = "password";
+    togglePassword.classList.remove("fa-eye-slash");
+    togglePassword.classList.add("fa-eye");
+  }
+};

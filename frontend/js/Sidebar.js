@@ -1,4 +1,5 @@
 import { register, login, logout } from "./ApiCalls.js";
+import { togglePasswordVisibility } from "./Utils.js";
 
 //collapse sidebar on click
 const collapseButton = document.getElementById("collapseButton");
@@ -66,25 +67,7 @@ function checkPassword() {
 }
 
 //password visibility toggles (login/register)
-const loginPasswordField = document.getElementById("loginPassword");
-const loginPasswordToggle = document.getElementById("loginPasswordToggle");
-const registerPasswordField = document.getElementById("registerPassword");
-const registerPasswordAgainField = document.getElementById("registerPasswordAgain");
-const registerPasswordToggle = document.getElementById("registerPasswordToggle");
-const registerPasswordAgainToggle = document.getElementById("registerPasswordAgainToggle");
+togglePasswordVisibility("loginPasswordToggle", "loginPassword");
+togglePasswordVisibility("registerPasswordToggle", "registerPassword");
+togglePasswordVisibility("registerPasswordAgainToggle", "registerPasswordAgain");
 
-loginPasswordToggle.addEventListener("click", () => toggleVisibility(loginPasswordToggle, loginPasswordField));
-registerPasswordToggle.addEventListener("click", () => toggleVisibility(registerPasswordToggle, registerPasswordField));
-registerPasswordAgainToggle.addEventListener("click", () => toggleVisibility(registerPasswordAgainToggle, registerPasswordAgainField));
-
-function toggleVisibility(togglePassword, passwordField) {3
-  if (passwordField.type === "password") {
-    passwordField.type = "text";
-    togglePassword.classList.remove("fa-eye");
-    togglePassword.classList.add("fa-eye-slash");
-  } else {
-    passwordField.type = "password";
-    togglePassword.classList.remove("fa-eye-slash");
-    togglePassword.classList.add("fa-eye");
-  }
-};

@@ -20,9 +20,9 @@ function toggleContentOnLogState() {
 
 //disable sidebar collapse if user isn't logged in
 function sidebarOnStart() {
-	const sidebar = document.getElementById("sidebar");
-	const content = document.getElementById("content-container");
-	if (!isLoggedIn()) {
+  const sidebar = document.getElementById("sidebar");
+  const content = document.getElementById("content-container");
+  if (!isLoggedIn()) {
     sidebar.classList.remove("collapsed");
     content.classList.remove("collapsed");
     var sectionNames = document.querySelectorAll(".section-name");
@@ -46,4 +46,26 @@ function showComment(element, errorMsg, success) {
   }, 3000);
 }
 
-export { toggleContentOnLogState, showComment, isLoggedIn };
+//hide-show toggle for password form input
+function togglePasswordVisibility(togglePasswordInputId, passwordFieldId) {
+  var togglePassword = document.getElementById(togglePasswordInputId);
+  var passwordField = document.getElementById(passwordFieldId);
+  togglePassword.addEventListener("click", () => {
+	  if (passwordField.type === "password") {
+		  passwordField.type = "text";
+		  togglePassword.classList.remove("fa-eye");
+		  togglePassword.classList.add("fa-eye-slash");
+		} else {
+			passwordField.type = "password";
+			togglePassword.classList.remove("fa-eye-slash");
+			togglePassword.classList.add("fa-eye");
+		}
+	});
+}
+
+export {
+  toggleContentOnLogState,
+  showComment,
+  isLoggedIn,
+  togglePasswordVisibility,
+};

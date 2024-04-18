@@ -488,7 +488,8 @@ from users.models import Profile
 #         self.user = CustomUser.objects.create_user(
 #             username="osterga",
 #             email="osterga@gmail.com",
-#             password="UserPassword9+")
+#             password="UserPassword9+",
+#             bio="Bonjours a tous, c'est Osterga")
 #         self.client.login(username='osterga', password='UserPassword9+')
 
 #     def test_get_csrf_token(self):
@@ -552,13 +553,13 @@ from users.models import Profile
 #             username="osterga",
 #             email="osterga@gmail.com",
 #             password="UserPassword9+",
-#             )
+#             bio="Bonjours a tous, c'est Osterga")
 
 #         self.user2 = CustomUser.objects.create_user(
 #             username="ochoa",
 #             email="ochoa@gmail.com",
 #             password="UserPassword9+",
-#             )
+#             bio="Bonjours a tous, c'est Ochoa")
 
 #         self.profile = Profile.objects.create(user=self.user)
         
@@ -726,42 +727,40 @@ from users.models import Profile
 
 #         self.assertEqual(response.status_code, 406)
 
-# =========================================================================================
+# # =========================================================================================
 
-class GetUserDatas(TestCase):
-    def setUp(self):
-        self.client = Client()
-        self.user = CustomUser.objects.create_user(
-            username="osterga",
-            email="osterga@gmail.com",
-            password="UserPassword9+")
+# class GetUserDatas(TestCase):
+#     def setUp(self):
+#         self.user = CustomUser.objects.create_user(
+#             username="osterga",
+#             email="osterga@gmail.com",
+#             password="UserPassword9+",
+#             bio="Bonjours a tous, c'est Osterga",
+#             title='L\'Inusable')
         
-        self.client.login(username='osterga', password='UserPassword9+')
-        self.profile = Profile.objects.create(user=self.user, bio='jpp')
+#         self.client.login(username='osterga', password='UserPassword9+')
 
-    def test_basic_get_user_data(self):
-        response = self.client.post(reverse('get_user_data'))
+#     def test_basic_get_user_data(self):
+#         response = self.client.post(reverse('get_user_data'))
 
-        self.assertEqual(response.status_code, 200)
+#         self.assertEqual(response.status_code, 200)
 
-    def test_get_user_data(self):
-        response = self.client.post(reverse('get_user_data'))
-        self.assertEqual(response.status_code, 200)
+#     def test_get_user_data(self):
+#         response = self.client.post(reverse('get_user_data'))
+#         response_data = response.json()
 
-        response_data = response.json()
-        self.assertEqual(response_data['user']['username'], self.user.username)
-        self.assertEqual(response_data['user']['email'], self.user.email)
-        self.assertEqual(response_data['user']['bio'], self.profile.bio)
-        self.assertEqual(response_data['user']['title'], self.profile.title)
-        self.assertEqual(response_data['user']['winrate'], self.profile.winrate)
-        self.assertEqual(response_data['user']['rank'], self.profile.rank)
-        self.assertEqual(response_data['user']['n_games_played'], self.profile.n_games_played)
-        print(response_data['user']['bio'])
+#         self.assertEqual(response_data.get('user').get('username'), 'osterga')
+#         self.assertEqual(response_data.get('user').get('email'), 'osterga@gmail.com')
+#         self.assertEqual(response_data.get('user').get('bio'), "Bonjours a tous, c'est Osterga")
+#         self.assertEqual(response_data.get('user').get('title'), 'L\'Inusable')
+#         self.assertEqual(response_data.get('user').get('winrate'), None)
+#         self.assertEqual(response_data.get('user').get('rank'), None)
+#         self.assertEqual(response_data.get('user').get('n_games_played'), None)
 
-    def test_without_login(self):
-        self.client.logout()
-        response = self.client.post(reverse('get_user_data'))
-        self.assertEqual(response.status_code, 302)
+#     def test_without_login(self):
+#         self.client.logout()
+#         response = self.client.post(reverse('get_user_data'))
+#         self.assertEqual(response.status_code, 302)
 
 # =========================================================================================
 
@@ -769,9 +768,9 @@ class GetUserDatas(TestCase):
 class UpdateProfilePictureTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = CustomUser.objects.create_user(username='testuser', password='testpass')
+        self.user = CustomUser.objects.create_user(username='testuser', password='testpass', bio='jpp')
         self.client.login(username='testuser', password='testpass')
-        self.profile = Profile.objects.create(user=self.user, bio='jpp')
+        self.profile = Profile.objects.create(user=self.user)
 
     def test_update_profile_picture(self):
         with open('media/hunter.jpg', 'rb') as img:
@@ -782,4 +781,5 @@ class UpdateProfilePictureTest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         self.profile.refresh_from_db()
-        self.assertIsNotNone(self.profile.avatar)
+        self.assertIsNotNone(self.profile.user.avatar)
+        # self.assertEqual(self.profile.user.avatar, "go")

@@ -314,4 +314,29 @@ This function is used to change the picture of the currently logged-in user.
 - The `@requires_csrf_token` decorator is used to enforce CSRF protection on the view.
 - The view uses the `magic` library to determine the file's MIME type from the first 1024 bytes then, checks if the file is an image by verifying that 'image' is in the MIME type.
 
+</details>
+<br>
 
+<details>
+<summary>
+<code>/users/update_username</code>
+</summary>
+<br>
+
+This function is used to change the username of the currently logged-in user.
+
+### Entrypoints
+`POST /users/update_username`
+
+### Parameters
+- `request`: The HTTP request object containing the POST data.
+- `username`: the updated username.
+
+### Returns
+- `"Your username has been correctly updated !"` and a 200 status code if the username was correctly updated.
+- A 400 status code if the username send by the user is **already used or missing**.
+
+### Notes
+- This function is decorated with `@login_required` to ensure that the user in correctly login.
+- This function is decorated with `@require_http_methods(["POST"])` to ensure that it only accepts POST requests.
+- The `@requires_csrf_token` decorator is used to enforce CSRF protection on the view.

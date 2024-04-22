@@ -1,7 +1,12 @@
 from users.models import CustomUser
 from py_backend import settings
+from django.http import JsonResponse
+
+import json
+import os
 
 SPECIAL_CHARS = "+/*.,!#%^&\{}[]=:;\'\"`~"
+
 
 def email_is_unique(email):
 	if not email or email == '':
@@ -49,9 +54,19 @@ def validation_register(data):
 	return validation_errors
 
 
-def get_image_format_from_base64(base64_string):
-    try:
-        image_format = base64_string.split(';base64')[0].split('/')[1]
-        return image_format
-    except Exception:
-        return None
+def decode_json_body(request):
+	try:
+		data = json.loads(request.body.decode("utf-8"))
+		return data
+	except json.JSONDecodeError:
+		return JsonResponse(data={'error': "Invalid JSON format"}, status=406)
+	
+
+def extension_is_valid(image_name):
+	name, ext = os.path.splitext(image_name)
+	if ext == '.png':
+		return True
+	if ext == '.jpg':
+		return True
+	return False
+		

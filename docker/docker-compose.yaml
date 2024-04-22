@@ -42,7 +42,7 @@ services:
       - ../frontend:/usr/share/nginx/html
       - certificates:/etc/nginx/ssl
     ports:
-      - 8001:80
+      - 8000:80
     restart: always
 
 volumes:

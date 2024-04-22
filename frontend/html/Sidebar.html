@@ -1,10 +1,11 @@
-<link rel="stylesheet" href="/css/Sidebar.css" />
+<link rel="stylesheet" href="/css/sidebar.css" />
 
 <nav
   id="sidebar"
   class="sidebar opened-sidebar d-flex flex-column flex-shrink-0 p-3 text-white bg-dark"
 >
-  <a class="navbar-brand d-flex align-items-center" href="LandingPage">
+  <!-- HEADER -->
+  <a class="navbar-brand d-flex align-items-center" href="/" navlink>
     <img
       src="/assets/img/Pong_The_Next_Level_cover.jpg"
       alt="Logo"
@@ -14,11 +15,12 @@
     <h3 id="title" class="ms-3 mt-2 section-name">Pong!</h3>
   </a>
   <hr />
+  <!-- NAVLIST -->
   <ul id="navList" class="nav nav-pills flex-column mb-auto">
     <li class="nav-item text-white">
-      <a href="#" class="nav-link active" navlink>
+      <a href="/dashboard" class="nav-link active" navlink>
         <i class="bi bi-house me-2"></i>
-        <span class="section-name">Home</span>
+        <span class="section-name">Dashboard</span>
       </a>
     </li>
     <li class="nav-item text-white">
@@ -27,61 +29,252 @@
         <span class="section-name">Game</span>
       </a>
     </li>
-
-    <li class="nav-item text-white">
-      <a href="/stats" class="nav-link" navlink>
-        <i class="bi bi-bar-chart me-2"></i>
-
-        <span class="section-name">Stats</span>
-      </a>
-    </li>
   </ul>
-  <a id="collapseButton" class="nav-link text-white ms-2">
-    <i class="bi bi-arrows-collapse-vertical text-white me-2"></i>
-    <span class="section-name">Collapse</span>
-  </a>
-  <hr />
-  <div class="dropup d-flex align-items-center">
-    <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-      <li><a class="dropdown-item" href="/settings" navlink>Settings</a></li>
-      <li><a class="dropdown-item" href="/profile" navlink>Profile</a></li>
-      <li><hr class="dropdown-divider" /></li>
-      <li><a class="dropdown-item" href="#">Sign out</a></li>
-    </ul>
-    <a
-      href="#"
-      class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-      id="dropdownUser1"
-      data-bs-toggle="dropdown"
-      navlink
+  <!-- LOGIN BUTTON / REGISTER BUTTON -->
+  <div class="logOutContent">
+    <button
+      class="btn btn-outline-secondary mb-2"
+      data-bs-toggle="modal"
+      data-bs-target="#login"
     >
-      <img
-        src="/assets/img/leo.jpg"
-        width="30"
-        height="30"
-        class="rounded-circle me-2"
-      />
+      Log In
+    </button>
+    <button
+      class="btn btn-outline-info mb-2"
+      data-bs-toggle="modal"
+      data-bs-target="#register"
+    >
+      Sign up
+    </button>
+  </div>
+  <!-- DROPUP -->
+  <div class="logInContent">
+    <a id="collapseButton" class="nav-link text-white ms-2">
+      <i class="bi bi-arrows-collapse-vertical text-white me-2"></i>
+      <span class="section-name">Collapse</span>
     </a>
-    <span class="section-name ms-2" style="position: relative">Boula</span>
+    <hr />
+    <div class="dropup d-flex align-items-center">
+      <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+        <li><a class="dropdown-item" href="/about">About</a></li>
+        <div class="dropdown-divider"></div>
+        <li><a id="logoutButton" class="dropdown-item">Sign out</a></li>
+      </ul>
+      <a
+        class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+        id="dropdownUser1"
+        data-bs-toggle="dropdown"
+        navlink
+      >
+        <img
+          src="/assets/img/leo.jpg"
+          width="30"
+          height="30"
+          class="rounded-circle me-2"
+        />
+      </a>
+      <span class="section-name ms-2 usernameDynamic" style="position: relative"
+        >Boula</span
+      >
+    </div>
   </div>
 </nav>
-
-<script type="module">
-  const collapseButton = document.getElementById("collapseButton");
-  const sidebar = document.getElementById("sidebar");
-  const content = document.getElementById("content-container");
-
-  collapseButton.addEventListener("click", function () {
-    sidebar.classList.toggle("collapsed");
-    content.classList.toggle("collapsed");
-    var sectionNames = document.querySelectorAll(".section-name");
-    sectionNames.forEach(function (name) {
-      name.classList.toggle("section-name-collapsed");
-    });
-  });
-  document.getElementById("navList").addEventListener("click", (e) => {
-    let target = e.target.closest("a");
-    document.querySelector("a.active").classList.remove("active");
-    target.classList.add("active");
-  });
-</script>
+<!-- LOGIN MODAL -->
+<div class="modal fade" id="login" tabindex="-1">
+  <div class="modal-dialog">
+    <form id="loginForm" class="modal-content">
+      <!-- LOGIN TITLE -->
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Login</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <!-- LOGIN COMMENT -->
+      <div
+        id="loginComment"
+        class="d-none text-white mx-3 mt-3 p-2 rounded-1"
+      ></div>
+      <!-- USERNAME INPUT -->
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="usernameLogin" class="col-form-label">Username</label>
+          <input
+            type="text"
+            name="username"
+            class="form-control"
+            id="usernameLogin"
+            placeholder="Tazz1998"
+            autocomplete="username"
+            required
+          />
+        </div>
+        <!-- PASSWORD INPUT -->
+        <div class="mb-3">
+          <label for="loginPassword" class="col-form-label">Password</label>
+          <div class="d-flex align-items-center gap-2">
+            <input
+              type="password"
+              name="password"
+              class="form-control"
+              id="loginPassword"
+              autocomplete="current-password"
+              required
+            />
+			<i id="loginPasswordToggle" class="fas fa-eye"></i>
+          </div>
+        </div>
+      </div>
+      <!-- SIGN UP REDIRECTION -->
+      <div class="modal-footer d-sm-flex">
+        <div class="d-flex align-items-center me-auto">
+          <p class="m-0 me-1">New here ?</p>
+          <a
+            class="text-info"
+            data-bs-target="#register"
+            data-bs-toggle="modal"
+          >
+            Sign up</a
+          >
+        </div>
+        <!-- CLOSE BUTTON -->
+        <div>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <button type="submit" class="btn btn-primary" navlink>Login</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- REGISTER MODAL -->
+<div class="modal fade" id="register" tabindex="-1">
+  <div class="modal-dialog">
+    <form id="registrationForm" class="modal-content">
+      <!-- REGISTER TITLE -->
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Sign Up</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <!-- REGISTER COMMENT -->
+      <div
+        id="registerComment"
+        class="d-none text-white mx-3 mt-3 p-2 rounded-1"
+      ></div>
+      <!-- USERNAME INPUT -->
+      <div class="modal-body">
+        <div class="mb-3">
+          <label for="registerUsername" class="col-form-label">Username</label>
+          <input
+            type="text"
+            name="username"
+            class="form-control"
+            id="registerUsername"
+            placeholder="Sweet Onion"
+            autocomplete="username"
+            required
+          />
+        </div>
+        <!-- EMAIL INPUT -->
+        <div class="mb-3">
+          <label for="registerEmail" class="col-form-label">Email</label>
+          <input
+            type="email"
+            name="email"
+            class="form-control"
+            id="registerEmail"
+            placeholder="name@example.com"
+            autocomplete="email"
+            required
+          />
+        </div>
+        <!-- PASSWORD INPUT -->
+        <div class="mb-3">
+          <label for="registerPassword" class="col-form-label">Password</label>
+          <div class="d-flex align-items-center gap-2">
+            <input
+              id="registerPassword"
+              class="form-control"
+              type="password"
+              name="password"
+              minlength="8"
+              maxlength="20"
+              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+]).{8,20}$"
+              autocomplete="new-password"
+              required
+            />
+            <i id="registerPasswordToggle" class="fas fa-eye"></i>
+          </div>
+          <div id="passwordHelpBlock" class="form-text">
+            Your password must contain :<br />
+            <span id="registerPassLength">- 8 to 20 characters</span><br />
+            <span id="registerPassLowercase">- Lowercase</span><br />
+            <span id="registerPassUppercase">- Uppercase</span><br />
+            <span id="registerPassNumbers">- Number</span><br />
+            <span id="registerPassSpecial">- Special character</span>
+          </div>
+        </div>
+        <!-- PASSWORD AGAIN -->
+        <div class="mb-3">
+          <label for="registerPasswordAgain" class="col-form-label">
+            Repeat Password
+          </label>
+          <div class="d-flex align-items-center gap-2">
+            <input
+              id="registerPasswordAgain"
+              class="form-control"
+              type="password"
+              name="passwordagain"
+              minlength="8"
+              maxlength="20"
+              pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+]).{8,20}$"
+              autocomplete="new-password"
+              required
+            />
+            <i id="registerPasswordAgainToggle" class="fas fa-eye"></i>
+          </div>
+          <div id="passwordagainHelpBlock" class="form-text text-danger d-none">
+            Passwords don't match
+          </div>
+        </div>
+      </div>
+      <!-- LOGIN REDIRECTION -->
+      <div class="modal-footer d-sm-flex">
+        <div class="d-flex align-items-center me-auto">
+          <p class="m-0 me-1">Have an account ?</p>
+          <a class="text-primary" data-bs-target="#login" data-bs-toggle="modal"
+            >Log In</a
+          >
+        </div>
+        <!-- CLOSE BUTTON -->
+        <div>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Close
+          </button>
+          <!-- SUBMIT FORM  -->
+          <button type="submit" class="btn btn-info text-white" navlink>
+            Sign up
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<script type="module" src="../js/Sidebar.js"></script>

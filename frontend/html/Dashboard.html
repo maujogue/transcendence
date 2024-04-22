@@ -114,7 +114,14 @@
         </div>
         <div class="modal-footer">
           <a
-			id="saveChangesButton"
+            id="updatePassword"
+            class="btn btn-outline-secondary me-auto"
+            data-bs-toggle="modal"
+            data-bs-target="#updatePasswordModal"
+            >Update Password</a
+          >
+          <a
+            id="saveChangesButton"
             class="btn btn-primary disabled"
             data-bs-toggle="modal"
             data-bs-target="#confirmPasswordModal"
@@ -132,9 +139,7 @@
     <div class="modal-content">
       <!-- LOGIN TITLE -->
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">
-        	Password Check
-        </h1>
+        <h1 class="modal-title fs-5">Password Check</h1>
         <button
           type="button"
           class="btn-close"
@@ -179,19 +184,132 @@
             Back
           </button>
           <button
-		  form="updateProfileForm"
+            form="updateProfileForm"
             type="submit"
             class="btn btn-primary"
           >
             Confirm Password
-		</button>
+          </button>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<!-- UPDATE PASSWORD MODAL -->
+<div class="modal fade" id="updatePasswordModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="updatePasswordForm">
+        <!-- LOGIN TITLE -->
+        <div class="modal-header">
+          <h1 class="modal-title fs-5">
+            Password Update
+          </h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <!-- COMMENT -->
+        <div
+          id="updatePasswordComment"
+          class="d-none text-white mx-3 mt-3 p-2 rounded-1"
+        ></div>
+        <!-- PASSWORD INPUT -->
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="updatePasswordCurrentPassword" class="col-form-label"
+              >Current Password</label
+            >
+            <div class="d-flex align-items-center gap-2">
+              <input
+                type="password"
+                name="password"
+                class="form-control"
+                id="updatePasswordCurrentPassword"
+                autocomplete="current-password"
+                required
+              />
+              <i id="updatePasswordCurrentPasswordToggle" class="fas fa-eye"></i>
+            </div>
+          </div>
+		  <div class="mb-3">
+            <label for="updatePasswordFirstPassword" class="col-form-label"
+              >New Password</label
+            >
+            <div class="d-flex align-items-center gap-2">
+              <input
+			  id="updatePasswordFirstPassword"
+                type="password"
+                name="new_password1"
+                class="form-control"
+                autocomplete="current-password"
+				minlength="8"
+				maxlength="20"
+				pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+]).{8,20}$"
+				autocomplete="new-password"
+				required
+              />
+              <i id="updatePasswordFirstPasswordToggle" class="fas fa-eye"></i>
+            </div>
+			  <div id="updatePasswordHelpBlock" class="form-text">
+				Your password must contain :<br />
+				<span id="updatePassLength">- 8 to 20 characters</span><br />
+				<span id="updatePassLowercase">- Lowercase</span><br />
+				<span id="updatePassUppercase">- Uppercase</span><br />
+				<span id="updatePassNumbers">- Number</span><br />
+				<span id="updatePassSpecial">- Special character</span>
+			  </div>
+          </div>
+		  <div class="mb-3">
+            <label for="updatePasswordSecondPassword" class="col-form-label"
+              >Repeat New Password</label
+            >
+            <div class="d-flex align-items-center gap-2">
+              <input
+			  id="updatePasswordSecondPassword"
+                type="password"
+                name="new_password2"
+                class="form-control"
+                autocomplete="current-password"
+				minlength="8"
+				maxlength="20"
+				pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+]).{8,20}$"
+				autocomplete="new-password"
+				required
+              />
+              <i id="updatePasswordSecondPasswordToggle" class="fas fa-eye"></i>
+            </div>
+			<div id="updatePasswordAgainHelpBlock" class="form-text text-danger d-none">
+				Passwords don't match
+			  </div>
+          </div>
+        </div>
+        <div class="modal-footer d-sm-flex">
+          <!-- CLOSE BUTTON -->
+          <div>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-toggle="modal"
+              data-bs-target="#updateProfileModal"
+            >
+              Back
+            </button>
+            <button type="submit" class="btn btn-primary">
+              Confirm Password
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
 <script type="module" src="../js/Dashboard.js"></script>
 <script type="module">
-	import onLoad from "../js/Dashboard.js";
-	onLoad();
+  import onLoad from "../js/Dashboard.js";
+  onLoad();
 </script>

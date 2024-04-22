@@ -1,5 +1,5 @@
 import { register, login, logout } from "./ApiCalls.js";
-import { togglePasswordVisibility } from "./Utils.js";
+import { togglePasswordVisibility, checkPassword } from "./Utils.js";
 
 //collapse sidebar on click
 const collapseButton = document.getElementById("collapseButton");
@@ -27,7 +27,10 @@ navlist.addEventListener("click", (e) => {
 
 //login button fetch launcher
 var loginForm = document.getElementById("loginForm");
-loginForm.addEventListener("submit", (event) => login(event, loginForm));
+loginForm.addEventListener("submit", (event) => {
+	event.preventDefault();
+	login(loginForm)
+});
 
 //logout button fetch launcher
 var logoutButton = document.getElementById("logoutButton");
@@ -41,33 +44,12 @@ registerForm.addEventListener("submit", (event) =>
 
 //check password on register input
 var password1 = document.getElementById("registerPassword");
-password1.addEventListener("input", (event) => checkPassword());
-
 var password2 = document.getElementById("registerPasswordAgain");
-password2.addEventListener("input", (event) => checkPassword());
 
-//check password attribute with given regEx expression
-function checkPasswordAttribute(regEx, elementID) {
-  var dynamicColorDiv = document.getElementById(elementID);
-  if (regEx.test(password1.value)) dynamicColorDiv.style.color = "green";
-  else dynamicColorDiv.style.color = "red";
-}
-
-function checkPassword() {
-  checkPasswordAttribute(/^.{8,20}$/, "registerPassLength");
-  checkPasswordAttribute(/^.*[a-z].*$/, "registerPassLowercase");
-  checkPasswordAttribute(/^.*[A-Z].*$/, "registerPassUppercase");
-  checkPasswordAttribute(/^.*[0-9].*$/, "registerPassNumbers");
-  checkPasswordAttribute(/^.*[!@#$%^&*_=+].*$/, "registerPassSpecial");
-
-  var helpTextAgain = document.getElementById("passwordagainHelpBlock");
-  if (password2.value !== "" && password1.value !== password2.value)
-    helpTextAgain.classList.remove("d-none");
-  else helpTextAgain.classList.add("d-none");
-}
+password1.addEventListener("input", (event) => checkPassword("register", password1, password2));
+password2.addEventListener("input", (event) => checkPassword("register", password1, password2));
 
 //password visibility toggles (login/register)
 togglePasswordVisibility("loginPasswordToggle", "loginPassword");
 togglePasswordVisibility("registerPasswordToggle", "registerPassword");
 togglePasswordVisibility("registerPasswordAgainToggle", "registerPasswordAgain");
-

@@ -5,7 +5,7 @@ import { get_csrf_token } from "./ApiCalls.js";
 async function setUserData() {
   var user = await getUserData();
   Object.keys(user).forEach((element) => {
-	console.log(element, user[element]);
+	// console.log(element, user[element]);
     Cookies.set(element, user[element]);
   });
 }
@@ -48,7 +48,7 @@ async function getUserData(dataElement) {
       if (statusCode === 200) {
         if (dataElement) return data.user[dataElement];
         else return data.user;
-      } else console.log("getUserData failed:", data.error);
+      } else console.log("User not Logged in:", data.error);
     })
     .catch((error) => {
       console.error("getUserData failed", error);

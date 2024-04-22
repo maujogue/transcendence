@@ -54,6 +54,13 @@ export function createWaitingScreenTournament() {
     const playerList = document.createElement("div");
     playerList.className = "player-list";
     playerList.id = "player-list";
+    const unsubscribeBtn = document.createElement("button");
+    unsubscribeBtn.textContent = "Unsubscribe";
+    unsubscribeBtn.onclick = () => {
+        console.log("unsubscribe");
+    }
+    unsubscribeBtn.className = "unsubscribe-btn form-btn";
+    tournament.appendChild(unsubscribeBtn);
 	tournament.appendChild(header);
     tournament.appendChild(playerList);
     insertPlayer("Herrrmann");

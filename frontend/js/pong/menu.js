@@ -305,7 +305,7 @@ function createFormTournament(parent) {
 		<input type="password" class="glitched" id="tournamentPassword" name="tournamentPassword">\
 	</div>\
 	<div class="glitched">\
-		<button class="btn-create" type="submit">Create</button>\
+		<button class="form-btn" type="submit">Create</button>\
 	</div>\
 		</div>\
 	</form>'

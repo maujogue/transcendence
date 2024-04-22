@@ -156,6 +156,19 @@ h1 {
 	height: auto;
 }
 
+.unsubscribe-btn {
+	position: absolute !important;
+	bottom: 0;
+	right: 0;
+	margin: 4.5%;
+	background-color: rgb(120, 2, 2) !important;
+	padding: 5px!important;
+}
+
+.unsubscribe-btn:hover {
+	box-shadow: 2px 2px 25px 2px rgb(226, 3, 3) !important;
+}
+
 .player-list {
 	display: flex;
 	flex-direction: column;
@@ -324,7 +337,7 @@ h1 {
 	background-color: rgb(128, 126, 126);
 }
 
-.btn-create {
+.form-btn {
 	border: none;
 	color: white;
 	background-color: var(--form-input-bg-color);
@@ -339,14 +352,14 @@ h1 {
 
 }
 
-.btn-create::after, .btn-create::before {
+.form-btn::after, .form-btn::before {
 	content: "";
 	position: absolute;
 	left: -1px;
 	animation: glitch 2s linear infinite;
 }
   
-.btn-create:hover {
+.form-btn:hover {
 	box-shadow: 2px 2px 25px 2px var(--form-color);
 	background-color: var(--form-color);
 }

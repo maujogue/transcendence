@@ -195,8 +195,35 @@ This function is used to retrieve data from the currently logged-in user. It ret
 
 ### Notes
 - This function is decorated with `@login_required` to ensure that the user in correctly login.
-- The `@require_http_methods(["GET"])` decorator ensures that the view only accepts HTTP GET requests. Other request methods will result in a "Method Not Allowed" response.
+- This function is decorated with `@require_http_methods(["POST"])` to ensure that it only accepts POST requests.
 - The `@requires_csrf_token` decorator is used to enforce CSRF protection on the view. 
+</details>
+<br>
+
+<details>
+<summary>
+<code>/users/update_profile_bio</code>
+</summary>
+<br>
+
+This function is used to change the bio of the currently logged-in user.
+
+### Entrypoints
+`POST /users/update_profile_bio`
+
+### Parameters
+- `request`: The HTTP request object containing the POST data.
+- `bio`: the updated bio.
+
+### Returns
+- `"Your bio has been correctly updated !"` and a 200 status code if the bio was correctly updated.
+- A 400 status code if the bio is either too long or missing.
+
+### Notes
+- This function is decorated with `@login_required` to ensure that the user in correctly login.
+- This function is decorated with `@require_http_methods(["POST"])` to ensure that it only accepts POST requests.
+- The `@requires_csrf_token` decorator is used to enforce CSRF protection on the view. 
+
 </details>
 <br>
 
@@ -213,6 +240,7 @@ This function is used to change the email of the currently logged-in user.
 
 ### Parameters
 - `request`: The HTTP request object containing the POST data.
+- `email`: the updated email.
 
 ### Returns
 - `"Your email has been correctly updated !"` and a 200 status code if the email was correctly updated.
@@ -220,21 +248,70 @@ This function is used to change the email of the currently logged-in user.
 
 ### Notes
 - This function is decorated with `@login_required` to ensure that the user in correctly login.
-- The `@require_http_methods(["GET"])` decorator ensures that the view only accepts HTTP GET requests. Other request methods will result in a "Method Not Allowed" response.
+- This function is decorated with `@require_http_methods(["POST"])` to ensure that it only accepts POST requests.
 - The `@requires_csrf_token` decorator is used to enforce CSRF protection on the view. 
 
 </details>
 <br>
+
 <details>
 <summary>
-<code>/users/update_profile_bio</code>
+<code>/users/update_profile_password</code>
 </summary>
 <br>
 
-This function is used to change the bio of the currently logged-in user.
+This function is used to change the password of the currently logged-in user.
 
 ### Entrypoints
-`POST /users/update_email`
+`POST /users/update_profile_password`
 
 ### Parameters
 - `request`: The HTTP request object containing the POST data.
+- `new_password1`: the updated password.
+- `new_password2`: the second updated password, to check if both are the same.
+
+### Returns
+- `"Your password has been correctly updated !"` and a 200 status code if the password was correctly updated.
+- A 400 status code if passwords do not match or if one password is missing.
+
+### Notes
+- This function is decorated with `@login_required` to ensure that the user in correctly login.
+- This function is decorated with `@require_http_methods(["POST"])` to ensure that it only accepts POST requests.
+- The `@requires_csrf_token` decorator is used to enforce CSRF protection on the view. 
+- This view uses the built-in fonction `make_password` that converts a plain-text password into a hash that is appropriate for storing in a persistent database.
+
+</details>
+<br>
+
+<details>
+<summary>
+<code>/users/update_profile_picture</code>
+</summary>
+<br>
+
+This function is used to change the picture of the currently logged-in user.
+
+### Entrypoints
+`POST /users/update_profile_password`
+
+### Parameters
+- `request`: The HTTP request object containing the POST data.
+- `image`: the new profile picture.
+
+### Returns
+- `"Your profile picture has been correctly updated !"` and a 200 status code if the profile picture was correctly updated.
+- A 400 status code if :
+    - the extension is invalid (it has to be `.jpg` or `.png`)
+    - the image size exceeds the limit (max is 5MB)
+    - there is no file provided
+    - the file is invalid
+    - dimensions are to large
+    - or if there is an unexpected error while updating the profile picture
+
+### Notes
+- This function is decorated with `@login_required` to ensure that the user in correctly login.
+- This function is decorated with `@require_http_methods(["POST"])` to ensure that it only accepts POST requests.
+- The `@requires_csrf_token` decorator is used to enforce CSRF protection on the view.
+- The view uses the `magic` library to determine the file's MIME type from the first 1024 bytes then, checks if the file is an image by verifying that 'image' is in the MIME type.
+
+

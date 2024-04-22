@@ -658,6 +658,18 @@ class ProfileUpdate(TestCase):
         self.assertEqual(self.user.bio, '')
         self.assertEqual(response.status_code, 200)
 
+    def test_missing_bio(self):
+        update_datas = {}
+
+        response = self.client.post(
+            reverse('update_bio'), 
+            data=json.dumps(update_datas), 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, 400)
+
 
     def test_update_password(self):
         update_datas = {
@@ -765,7 +777,7 @@ class GetUserDatas(TestCase):
 class UpdateProfilePictureTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = CustomUser.objects.create_user(username='testuser', password='testpass', bio='jpp')
+        self.user = CustomUser.objects.create_user(username='testuser', password='testpass', bio='Hello !')
         self.client.login(username='testuser', password='testpass')
 
 
@@ -803,3 +815,12 @@ class UpdateProfilePictureTest(TestCase):
         response_data = response.json()
 
         self.assertEqual(response_data.get('error'), 'Invalid image type.')
+
+
+# =========================================================================================
+
+class UtilsFunctionsTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = CustomUser.objects.create_user(username='testuser', password='testpass', bio='Hello !')
+        self.client.login(username='testuser', password='testpass')

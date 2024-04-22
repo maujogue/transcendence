@@ -23,4 +23,4 @@ def update_profile_bio(request):
         request.user.bio = bio
         request.user.save()
         return JsonResponse({"status": "Your bio has been correctly updated !"}, status=200)
-    return JsonResponse({"status": "Missing bio."}, status=200)
+    return JsonResponse({"status": "Missing bio."}, status=400)

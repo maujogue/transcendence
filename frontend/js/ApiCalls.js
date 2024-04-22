@@ -111,10 +111,13 @@ async function update_info(endpoint, fetchBody, commentDiv, modaltoDismiss) {
     setTimeout(async () => {
       setUserData();
     }, 1000);
-    showComment("confirmPasswordComment", "Profile updated successfully", "success");
-    setTimeout(() => {
-      hideModalAndGoHome(modaltoDismiss);
-    }, 1500);
+    showComment(commentDiv, "Profile updated successfully", "success");
+	if (modaltoDismiss)
+	{
+		setTimeout(() => {
+		  hideModalAndGoHome(modaltoDismiss);
+		}, 1500);
+	}
   } else if (data.error && data.error.length > 0)
     showComment(commentDiv, data.error);
   else showComment(commentDiv, "Username update Error");
@@ -171,13 +174,19 @@ async function updatePassword(updatePasswordForm) {
       new_password1: userData.get("new_password1"),
       new_password2: userData.get("new_password2"),
     };
-    update_info("update_password/", fetchBody, "updatePasswordComment");
-    setTimeout(() => {
-      hideModalAndGoHome("updatePasswordModal");
-    }, 1500);
+    update_info("users/update_password/", fetchBody, "updatePasswordComment","updatePasswordModal");
   } else {
     showComment("updatePasswordComment", "Password Incorrect, try again.");
   }
+}
+
+async function updateAvatar(updateAvatarForm) {
+	const fetchBody = {
+		username: await getUserData("username"),
+		password: userData.get("password"),
+	  };
+	  var response = await runEndPoint("users/update_profile_picture/")
+	//   if (response.statusCode == 200)
 }
 
 export {

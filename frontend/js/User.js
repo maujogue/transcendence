@@ -50,9 +50,7 @@ async function getUserData(dataElement) {
         else return data.user;
       } else console.log("User not Logged in:", data.error);
     })
-    .catch((error) => {
-      console.error("getUserData failed", error);
-    });
+    .catch((error) => {});
 }
 
 export { getUserData, setUserData, injectUserData };

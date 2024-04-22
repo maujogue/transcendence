@@ -1,8 +1,6 @@
 import { updateProfile, updatePassword } from "./ApiCalls.js";
 import { getUserData } from "./User.js";
 import { togglePasswordVisibility, checkPassword, isLoggedIn} from "./Utils.js";
-
-export default async function onlogIn() {
 	
   //submit update profile form and update userData
   var updateProfileForm = document.getElementById("updateProfileForm");
@@ -51,4 +49,3 @@ export default async function onlogIn() {
 			else saveChangesButton.classList.add("disabled");
 		});
 		});
-}

@@ -10,535 +10,535 @@ from users.models import CustomUser
 
 
 
-# class RegisterTests(TestCase):
+class RegisterTests(TestCase):
 
-#     def setUp(self):
-#         CustomUser.objects.create(
-#             username="lboulatr",
-#             email="lboulatr@gmail.com",
-#             password="Damiendubocal75")
+    def setUp(self):
+        CustomUser.objects.create(
+            username="lboulatr",
+            email="lboulatr@gmail.com",
+            password="Damiendubocal75")
     
-#     def test_basic_user(self):
-#         user = CustomUser.objects.get(username="lboulatr")
-#         user = CustomUser.objects.get(email="lboulatr@gmail.com")
-#         self.assertEqual(user.username, 'lboulatr')
-#         self.assertEqual(user.email, 'lboulatr@gmail.com')
+    def test_basic_user(self):
+        user = CustomUser.objects.get(username="lboulatr")
+        user = CustomUser.objects.get(email="lboulatr@gmail.com")
+        self.assertEqual(user.username, 'lboulatr')
+        self.assertEqual(user.email, 'lboulatr@gmail.com')
 
-#     def test_new_user_in_database(self):
-#         newUser = {
-#             'username': 'bob_seger',
-#             'email': 'bobseger@gmail.com',
-#             'password1': 'Mewtransse9+',
-#             'password2': 'Mewtransse9+'
-#         }
+    def test_new_user_in_database(self):
+        newUser = {
+            'username': 'bob_seger',
+            'email': 'bobseger@gmail.com',
+            'password1': 'Mewtransse9+',
+            'password2': 'Mewtransse9+'
+        }
 
-#         initial_user_count = CustomUser.objects.count()
+        initial_user_count = CustomUser.objects.count()
 
-#         response = self.client.post(
-#             reverse('register'), 
-#             data=json.dumps(newUser), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 200)
-#         self.assertEqual(CustomUser.objects.count(), initial_user_count + 1)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(CustomUser.objects.count(), initial_user_count + 1)
 
-#     def test_new_user_username_too_short(self):
-#         newUser = {
-#             'username': 'bo',
-#             'email': 'bobseger@gmail.com',
-#             'password1': 'Newtrans9+',
-#             'password2': 'Newtrans9+'
-#         }
+    def test_new_user_username_too_short(self):
+        newUser = {
+            'username': 'bo',
+            'email': 'bobseger@gmail.com',
+            'password1': 'Newtrans9+',
+            'password2': 'Newtrans9+'
+        }
 
-#         response = self.client.post(
-#             reverse('register'), 
-#             data=json.dumps(newUser), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
-#     def test_new_user_username_has_forbidden_characters(self):
-#         newUser = {
-#             'username': 'bob+seger',
-#             'email': 'bobseger@gmail.com',
-#             'password1': 'Newtrans9+',
-#             'password2': 'Newtrans9+'
-#         }
+    def test_new_user_username_has_forbidden_characters(self):
+        newUser = {
+            'username': 'bob+seger',
+            'email': 'bobseger@gmail.com',
+            'password1': 'Newtrans9+',
+            'password2': 'Newtrans9+'
+        }
 
-#         response = self.client.post(
-#             reverse('register'), 
-#             data=json.dumps(newUser), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
-#     def test_username_is_already_used(self):
-#         newUser = {
-#             'username': 'lboulatr',
-#             'email': 'routine@gmail.com',
-#             'password1': 'Newtrans9+',
-#             'password2': 'Newtrans9+'
-#         }
+    def test_username_is_already_used(self):
+        newUser = {
+            'username': 'lboulatr',
+            'email': 'routine@gmail.com',
+            'password1': 'Newtrans9+',
+            'password2': 'Newtrans9+'
+        }
 
-#         response = self.client.post(
-#             reverse('register'), 
-#             data=json.dumps(newUser), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
-#     def test_new_user_password_too_short(self):
-#         newUser = {
-#             'username': 'bobby_seger',
-#             'email': 'bobseger@gmail.com',
-#             'password1': 'Newtr',
-#             'password2': 'Newtr'
-#         }
+    def test_new_user_password_too_short(self):
+        newUser = {
+            'username': 'bobby_seger',
+            'email': 'bobseger@gmail.com',
+            'password1': 'Newtr',
+            'password2': 'Newtr'
+        }
 
-#         response = self.client.post(
-#             reverse('register'), 
-#             data=json.dumps(newUser), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
-#     def test_new_user_same_username_and_password(self):
-#         newUser = {
-#             'username': 'bobbyseger',
-#             'email': 'bonjour@gmail.com',
-#             'password1': 'Bobbyseger2+',
-#             'password2': 'Bobbyseger2+'
-#         }
+    def test_new_user_same_username_and_password(self):
+        newUser = {
+            'username': 'bobbyseger',
+            'email': 'bonjour@gmail.com',
+            'password1': 'Bobbyseger2+',
+            'password2': 'Bobbyseger2+'
+        }
 
-#         response = self.client.post(
-#             reverse('register'), 
-#             data=json.dumps(newUser), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
-#     def test_username_too_long(self):
-#         newUser = {
-#             'username': 'ochoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-#             'email': 'ochoaloco@gmail.com',
-#             'password1': 'Km4C47_x£6v,',
-#             'password2': 'Km4C47_x£6v,'
-#         }
+    def test_username_too_long(self):
+        newUser = {
+            'username': 'ochoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+            'email': 'ochoaloco@gmail.com',
+            'password1': 'Km4C47_x£6v,',
+            'password2': 'Km4C47_x£6v,'
+        }
 
-#         response = self.client.post(
-#             reverse('register'), 
-#             data=json.dumps(newUser), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
-#     def test_invalid_email(self):
-#         newUser = {
-#             'username': 'bob_seger',
-#             'email': 'lboulatrgmail.com',
-#             'password1': 'Newtrans9+',
-#             'password2': 'Newtrans9+'
-#         }
+    def test_invalid_email(self):
+        newUser = {
+            'username': 'bob_seger',
+            'email': 'lboulatrgmail.com',
+            'password1': 'Newtrans9+',
+            'password2': 'Newtrans9+'
+        }
 
-#         response = self.client.post(
-#             reverse('register'), 
-#             data=json.dumps(newUser), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
     
-#     def test_invalid_email_2(self):
-#         newUser = {
-#             'username': 'bob_seger',
-#             'email': 'lboulatr@gmailcom',
-#             'password1': 'Newtrans9+',
-#             'password2': 'Newtrans9+'
-#         }
+    def test_invalid_email_2(self):
+        newUser = {
+            'username': 'bob_seger',
+            'email': 'lboulatr@gmailcom',
+            'password1': 'Newtrans9+',
+            'password2': 'Newtrans9+'
+        }
 
-#         response = self.client.post(
-#             reverse('register'), 
-#             data=json.dumps(newUser), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
-#     def test_email_is_already_used(self):
-#         newUser = {
-#             'username': 'bob_seger',
-#             'email': 'lboulatr@gmail.com',
-#             'password1': 'Newtrans9+',
-#             'password2': 'Newtrans9+'
-#         }
+    def test_email_is_already_used(self):
+        newUser = {
+            'username': 'bob_seger',
+            'email': 'lboulatr@gmail.com',
+            'password1': 'Newtrans9+',
+            'password2': 'Newtrans9+'
+        }
 
-#         response = self.client.post(
-#             reverse('register'), 
-#             data=json.dumps(newUser), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
-#     def test_weak_password(self):
-#         newUser = {
-#             'username': 'ochoa',
-#             'email': 'ochoaloco@gmail.com',
-#             'password1': '+',
-#             'password2': '+'
-#         }
+    def test_weak_password(self):
+        newUser = {
+            'username': 'ochoa',
+            'email': 'ochoaloco@gmail.com',
+            'password1': '+',
+            'password2': '+'
+        }
 
-#         response = self.client.post(
-#             reverse('register'), 
-#             data=json.dumps(newUser), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
-#     def test_different_password_1(self):
-#         newUser = {
-#             'username': 'ochoa',
-#             'email': 'ochoaloco@gmail.com',
-#             'password1': 'Km4C47_x£6v,',
-#             'password2': 'Km4C47_x£6v,+'
-#         }
+    def test_different_password_1(self):
+        newUser = {
+            'username': 'ochoa',
+            'email': 'ochoaloco@gmail.com',
+            'password1': 'Km4C47_x£6v,',
+            'password2': 'Km4C47_x£6v,+'
+        }
 
-#         response = self.client.post(
-#             reverse('register'), 
-#             data=json.dumps(newUser), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
-#     def test_different_password_2(self):
-#         newUser = {
-#             'username': 'ochoa',
-#             'email': 'ochoaloco@gmail.com',
-#             'password1': 'Km4C47_x£6v,+',
-#             'password2': 'Km4C47_x£6v,'
-#         }
+    def test_different_password_2(self):
+        newUser = {
+            'username': 'ochoa',
+            'email': 'ochoaloco@gmail.com',
+            'password1': 'Km4C47_x£6v,+',
+            'password2': 'Km4C47_x£6v,'
+        }
 
-#         response = self.client.post(
-#             reverse('register'), 
-#             data=json.dumps(newUser), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
-#     def test_missing_username(self):
-#         newUser = {
-#             'username': '',
-#             'email': 'ochoaloco@gmail.com',
-#             'password1': 'Km4C47_x£6v,+',
-#             'password2': 'Km4C47_x£6v,'
-#         }
+    def test_missing_username(self):
+        newUser = {
+            'username': '',
+            'email': 'ochoaloco@gmail.com',
+            'password1': 'Km4C47_x£6v,+',
+            'password2': 'Km4C47_x£6v,'
+        }
 
-#         response = self.client.post(
-#             reverse('register'), 
-#             data=json.dumps(newUser), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
-#     def test_missing_email(self):
-#         newUser = {
-#             'username': 'ochoa',
-#             'email': '',
-#             'password1': 'Km4C47_x£6v,+',
-#             'password2': 'Km4C47_x£6v,'
-#         }
+    def test_missing_email(self):
+        newUser = {
+            'username': 'ochoa',
+            'email': '',
+            'password1': 'Km4C47_x£6v,+',
+            'password2': 'Km4C47_x£6v,'
+        }
 
-#         response = self.client.post(
-#             reverse('register'), 
-#             data=json.dumps(newUser), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
-#     def test_missing_password_1(self):
-#         newUser = {
-#             'username': 'ochoa',
-#             'email': 'ochoaloco@gmail.com',
-#             'password2': 'Km4C47_x£6v,'
-#         }
+    def test_missing_password_1(self):
+        newUser = {
+            'username': 'ochoa',
+            'email': 'ochoaloco@gmail.com',
+            'password2': 'Km4C47_x£6v,'
+        }
 
-#         response = self.client.post(
-#             reverse('register'), 
-#             data=json.dumps(newUser), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
-#     def test_missing_password_2(self):
-#         newUser = {
-#             'username': 'ochoa',
-#             'email': 'ochoaloco@gmail.com',
-#             'password1': 'Km4C47_x£6v,',
-#         }
+    def test_missing_password_2(self):
+        newUser = {
+            'username': 'ochoa',
+            'email': 'ochoaloco@gmail.com',
+            'password1': 'Km4C47_x£6v,',
+        }
 
-#         response = self.client.post(
-#             reverse('register'), 
-#             data=json.dumps(newUser), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
     
-#     def test_not_json_register(self):
-#         newUser = {
-#             'username': 'ochoa',
-#             'email': 'ochoaloco@gmail.com',
-#             'password1': 'Km4C47_x£6v,+',
-#             'password2': 'Km4C47_x£6v,'
-#         }
+    def test_not_json_register(self):
+        newUser = {
+            'username': 'ochoa',
+            'email': 'ochoaloco@gmail.com',
+            'password1': 'Km4C47_x£6v,+',
+            'password2': 'Km4C47_x£6v,'
+        }
 
-#         response = self.client.post(
-#             reverse('register'), 
-#             data=newUser)
+        response = self.client.post(
+            reverse('register'), 
+            data=newUser)
 
-#         self.assertEqual(response.status_code, 406)
+        self.assertEqual(response.status_code, 406)
 
-#     def test_missing_datas(self):
-#         newUser = {}
+    def test_missing_datas(self):
+        newUser = {}
 
-#         response = self.client.post(
-#             reverse('register'), 
-#             data=json.dumps(newUser), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
     
-#     def test_invalid_email(self):
-#         newUser = {
-#             'username': 'ochoa',
-#             'email': 'ochoalocogmail.com',
-#             'password1': 'Km4C47_x£6v,',
-#             'password2': 'Km4C47_x£6v,'
-#         }
+    def test_invalid_email(self):
+        newUser = {
+            'username': 'ochoa',
+            'email': 'ochoalocogmail.com',
+            'password1': 'Km4C47_x£6v,',
+            'password2': 'Km4C47_x£6v,'
+        }
 
-#         response = self.client.post(
-#             reverse('register'), 
-#             data=json.dumps(newUser), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
     
-#     def test_invalid_email_2(self):
-#         newUser = {
-#             'username': 'ochoa',
-#             'email': 'ochoaloco@gmailcom',
-#             'password1': 'Km4C47_x£6v,',
-#             'password2': 'Km4C47_x£6v,'
-#         }
+    def test_invalid_email_2(self):
+        newUser = {
+            'username': 'ochoa',
+            'email': 'ochoaloco@gmailcom',
+            'password1': 'Km4C47_x£6v,',
+            'password2': 'Km4C47_x£6v,'
+        }
 
-#         response = self.client.post(
-#             reverse('register'), 
-#             data=json.dumps(newUser), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('register'), 
+            data=json.dumps(newUser), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
-# # =========================================================================================
+# =========================================================================================
 
-# class LoginTests(TestCase):
+class LoginTests(TestCase):
 
-#     def setUp(self):
-#         CustomUser.objects.create_user(
-#             username="lboulatr",
-#             email="lboulatr@gmail.com",
-#             password="Damiendubocal75")
+    def setUp(self):
+        CustomUser.objects.create_user(
+            username="lboulatr",
+            email="lboulatr@gmail.com",
+            password="Damiendubocal75")
 
-#     def test_basic_user(self):
-#         user = CustomUser.objects.get(username="lboulatr")
-#         user = CustomUser.objects.get(email="lboulatr@gmail.com")
-#         self.assertEqual(user.username, 'lboulatr')
-#         self.assertEqual(user.email, 'lboulatr@gmail.com')
-#         self.assertEqual(CustomUser.objects.count(), 1)
+    def test_basic_user(self):
+        user = CustomUser.objects.get(username="lboulatr")
+        user = CustomUser.objects.get(email="lboulatr@gmail.com")
+        self.assertEqual(user.username, 'lboulatr')
+        self.assertEqual(user.email, 'lboulatr@gmail.com')
+        self.assertEqual(CustomUser.objects.count(), 1)
 
-#     def test_basic_login(self):
-#         user = {
-#             'username': 'lboulatr',
-#             'password': 'Damiendubocal75'
-#         }
+    def test_basic_login(self):
+        user = {
+            'username': 'lboulatr',
+            'password': 'Damiendubocal75'
+        }
 
-#         response = self.client.post(
-#             reverse('login'), 
-#             data=json.dumps(user), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('login'), 
+            data=json.dumps(user), 
+            content_type='application/json')
         
-#         self.assertEqual(response.status_code, 200)
-#         self.assertTrue('_auth_user_id' in self.client.session)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('_auth_user_id' in self.client.session)
 
-#     def test_not_json_login(self):
-#         user = {
-#             'username': 'lboulatr',
-#             'password': 'Damiendubocal75'
-#         }
+    def test_not_json_login(self):
+        user = {
+            'username': 'lboulatr',
+            'password': 'Damiendubocal75'
+        }
 
-#         response = self.client.post(
-#             reverse('login'), 
-#             data=user)
+        response = self.client.post(
+            reverse('login'), 
+            data=user)
 
-#         self.assertEqual(response.status_code, 406)
+        self.assertEqual(response.status_code, 406)
         
-#     def test_wrong_login(self):
-#         user = {
-#             'username': 'lboulatx',
-#             'password': 'Damiendubocal75'
-#         }
+    def test_wrong_login(self):
+        user = {
+            'username': 'lboulatx',
+            'password': 'Damiendubocal75'
+        }
 
-#         response = self.client.post(
-#             reverse('login'), 
-#             data=json.dumps(user), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('login'), 
+            data=json.dumps(user), 
+            content_type='application/json')
         
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
-#     def test_wrong_password(self):
-#         user = {
-#             'username': 'lboulatr',
-#             'password': 'Damiendubocal75*'
-#         }
+    def test_wrong_password(self):
+        user = {
+            'username': 'lboulatr',
+            'password': 'Damiendubocal75*'
+        }
 
-#         response = self.client.post(
-#             reverse('login'), 
-#             data=json.dumps(user), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('login'), 
+            data=json.dumps(user), 
+            content_type='application/json')
         
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
-#     def test_missing_username(self):
-#         user = {
-#             'username': '',
-#             'password': 'Damiendubocal75'
-#         }
+    def test_missing_username(self):
+        user = {
+            'username': '',
+            'password': 'Damiendubocal75'
+        }
 
-#         response = self.client.post(
-#             reverse('login'), 
-#             data=json.dumps(user), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('login'), 
+            data=json.dumps(user), 
+            content_type='application/json')
         
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
-#     def test_missing_password(self):
-#         user = {
-#             'username': 'lboulatr',
-#             'password': ''
-#         }
+    def test_missing_password(self):
+        user = {
+            'username': 'lboulatr',
+            'password': ''
+        }
 
-#         response = self.client.post(
-#             reverse('login'), 
-#             data=json.dumps(user), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('login'), 
+            data=json.dumps(user), 
+            content_type='application/json')
         
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
-#     def test_missing_datas(self):
-#         user = {}
+    def test_missing_datas(self):
+        user = {}
 
-#         response = self.client.post(
-#             reverse('login'), 
-#             data=json.dumps(user), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('login'), 
+            data=json.dumps(user), 
+            content_type='application/json')
         
-#         self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
-#     def test_login_invalid_credentials(self):
-#         user = {
-#             'username': 'lboulatr',
-#             'password': 'Damiendubocal75+'
-#         }
+    def test_login_invalid_credentials(self):
+        user = {
+            'username': 'lboulatr',
+            'password': 'Damiendubocal75+'
+        }
 
-#         response = self.client.post(
-#             reverse('login'), 
-#             data=json.dumps(user), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('login'), 
+            data=json.dumps(user), 
+            content_type='application/json')
         
-#         self.assertEqual(response.status_code, 400)
-#         self.assertFalse('_auth_user_id' in self.client.session)
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse('_auth_user_id' in self.client.session)
 
-# # =========================================================================================
+# =========================================================================================
 
-# class LogoutTests(TestCase):
+class LogoutTests(TestCase):
 
-#     def setUp(self):
-#         CustomUser.objects.create_user(
-#             username="lboulatr",
-#             email="lboulatr@gmail.com",
-#             password="UserPassword9+")
+    def setUp(self):
+        CustomUser.objects.create_user(
+            username="lboulatr",
+            email="lboulatr@gmail.com",
+            password="UserPassword9+")
         
-#     def test_logout_success(self):
-#         self.client.login(username='lboulatr', password='UserPassword9+')
-#         response = self.client.post(
-#             reverse('logout'), 
-#             content_type='application/json')
+    def test_logout_success(self):
+        self.client.login(username='lboulatr', password='UserPassword9+')
+        response = self.client.post(
+            reverse('logout'), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
-#     def test_logout_but_not_login(self):
-#         response = self.client.post(
-#             reverse('logout'), 
-#             content_type='application/json')
+    def test_logout_but_not_login(self):
+        response = self.client.post(
+            reverse('logout'), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 302)
 
-# # =========================================================================================
+# =========================================================================================
 
-# class CSRFTokenTest(TestCase):
-#     def setUp(self):
-#         self.user = CustomUser.objects.create_user(
-#             username="osterga",
-#             email="osterga@gmail.com",
-#             password="UserPassword9+",
-#             bio="Bonjours a tous, c'est Osterga")
-#         self.client.login(username='osterga', password='UserPassword9+')
+class CSRFTokenTest(TestCase):
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(
+            username="osterga",
+            email="osterga@gmail.com",
+            password="UserPassword9+",
+            bio="Bonjours a tous, c'est Osterga")
+        self.client.login(username='osterga', password='UserPassword9+')
 
-#     def test_get_csrf_token(self):
+    def test_get_csrf_token(self):
     
-#         response = self.client.get(reverse('get_csrf_token'))
+        response = self.client.get(reverse('get_csrf_token'))
 
-#         self.assertEqual(response.status_code, 200)
-#         self.assertIn('csrfToken', response.json())
-#         self.assertIn('csrftoken', response.cookies)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('csrfToken', response.json())
+        self.assertIn('csrftoken', response.cookies)
     
-#     def test_post_response(self):
+    def test_post_response(self):
     
-#         response = self.client.post(reverse('get_csrf_token'))
-#         self.assertEqual(response.status_code, 405)
+        response = self.client.post(reverse('get_csrf_token'))
+        self.assertEqual(response.status_code, 405)
 
-#     def test_get_request_for_post_function(self):
+    def test_get_request_for_post_function(self):
     
-#         response = self.client.get(reverse('register'))
-#         self.assertEqual(response.status_code, 405)
+        response = self.client.get(reverse('register'))
+        self.assertEqual(response.status_code, 405)
 
-#     def test_csrf_token_is_unique(self):
+    def test_csrf_token_is_unique(self):
     
-#         response1 = self.client.get(reverse('get_csrf_token'))
-#         response2 = self.client.get(reverse('get_csrf_token'))
-#         self.assertNotEqual(response1.json()['csrfToken'], response2.json()['csrfToken'])
-#         self.assertEqual(response1.status_code, 200)
-#         self.assertEqual(response2.status_code, 200)
+        response1 = self.client.get(reverse('get_csrf_token'))
+        response2 = self.client.get(reverse('get_csrf_token'))
+        self.assertNotEqual(response1.json()['csrfToken'], response2.json()['csrfToken'])
+        self.assertEqual(response1.status_code, 200)
+        self.assertEqual(response2.status_code, 200)
 
-#     def test_token_logout_with_token(self):
-#         response = self.client.get(reverse('get_csrf_token'))
+    def test_token_logout_with_token(self):
+        response = self.client.get(reverse('get_csrf_token'))
 
-#         response = self.client.post(
-#             reverse('logout'), 
-#             content_type='application/json')
+        response = self.client.post(
+            reverse('logout'), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
-#     def test_token_logout_without_token(self):
-#         response = self.client.post(
-#             reverse('logout'), 
-#             content_type='application/json')
+    def test_token_logout_without_token(self):
+        response = self.client.post(
+            reverse('logout'), 
+            content_type='application/json')
 
-#         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
-#     def test_post_without_csrf_token(self):
-#         self.csrf_client = Client(enforce_csrf_checks=True)
-#         response = self.csrf_client.post(reverse('update_username'), data={'key': 'value'})
-#         self.assertEqual(response.status_code, 403)
+    def test_post_without_csrf_token(self):
+        self.csrf_client = Client(enforce_csrf_checks=True)
+        response = self.csrf_client.post(reverse('update_username'), data={'key': 'value'})
+        self.assertEqual(response.status_code, 403)
 
-#     def test_csrf_token_generated(self):
-#         response = self.client.get(reverse('get_csrf_token'))
-#         self.assertContains(response, 'csrfToken')
+    def test_csrf_token_generated(self):
+        response = self.client.get(reverse('get_csrf_token'))
+        self.assertContains(response, 'csrfToken')
 
 # =========================================================================================
         
@@ -824,159 +824,159 @@ class GetUserDatas(TestCase):
 # =========================================================================================
 
 
-# class UpdateProfilePictureTest(TestCase):
-#     def setUp(self):
-#         self.client = Client()
-#         self.user = CustomUser.objects.create_user(username='testuser', password='testpass', bio='Hello !')
-#         self.client.login(username='testuser', password='testpass')
+class UpdateProfilePictureTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = CustomUser.objects.create_user(username='testuser', password='testpass', bio='Hello !')
+        self.client.login(username='testuser', password='testpass')
 
 
-#     def test_update_profile_picture(self):
-#         with open('media/hunter.jpg', 'rb') as img:
-#             response = self.client.post(
-#                 reverse('update_profile_picture'),
-#                 {'image': img})
+    def test_update_profile_picture(self):
+        with open('media/hunter.jpg', 'rb') as img:
+            response = self.client.post(
+                reverse('update_profile_picture'),
+                {'image': img})
                 
-#         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
-#         self.user.refresh_from_db()
-#         self.assertIsNotNone(self.user.avatar)
+        self.user.refresh_from_db()
+        self.assertIsNotNone(self.user.avatar)
 
 
-#     def test_picture_too_big(self):
-#         with open('media/river.jpg', 'rb') as img:
-#             response = self.client.post(
-#                 reverse('update_profile_picture'),
-#                 {'image': img})
+    def test_picture_too_big(self):
+        with open('media/river.jpg', 'rb') as img:
+            response = self.client.post(
+                reverse('update_profile_picture'),
+                {'image': img})
                 
-#         self.assertEqual(response.status_code, 400)
-#         response_data = response.json()
+        self.assertEqual(response.status_code, 400)
+        response_data = response.json()
 
-#         self.assertEqual(response_data.get('error'), 'File size exceeds the limit.')
+        self.assertEqual(response_data.get('error'), 'File size exceeds the limit.')
 
 
-#     def test_invalid_picture(self):
-#         with open('media/invalid.cub', 'rb') as img:
-#             response = self.client.post(
-#                 reverse('update_profile_picture'),
-#                 {'image': img})
+    def test_invalid_picture(self):
+        with open('media/invalid.cub', 'rb') as img:
+            response = self.client.post(
+                reverse('update_profile_picture'),
+                {'image': img})
                 
-#         self.assertEqual(response.status_code, 400)
-#         response_data = response.json()
+        self.assertEqual(response.status_code, 400)
+        response_data = response.json()
 
-#         self.assertEqual(response_data.get('error'), 'Invalid image type.')
+        self.assertEqual(response_data.get('error'), 'Invalid image type.')
 
 
-# # =========================================================================================
+# =========================================================================================
 
-# class UtilsFunctionsTest(TestCase):
-#     def setUp(self):
-#         self.user = CustomUser.objects.create_user(
-#             username="osterga",
-#             email="osterga@gmail.com",
-#             password="UserPassword9+",
-#             bio="Bonjours a tous, c'est Osterga",
-#             title='L\'Inusable')
+class UtilsFunctionsTest(TestCase):
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(
+            username="osterga",
+            email="osterga@gmail.com",
+            password="UserPassword9+",
+            bio="Bonjours a tous, c'est Osterga",
+            title='L\'Inusable')
         
-#         self.client.login(username='osterga', password='UserPassword9+')
+        self.client.login(username='osterga', password='UserPassword9+')
 
-#     def test_unique_username(self):
-#         update_datas = {
-#             'username': 'damien-cooper'
-#         }
+    def test_unique_username(self):
+        update_datas = {
+            'username': 'damien-cooper'
+        }
 
-#         response = self.client.post(
-#             reverse('username_available'), 
-#             data=update_datas, 
-#             content_type='application/json'
-#         )
+        response = self.client.post(
+            reverse('username_available'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
 
-#         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
     
-#     def test_username_already_used(self):
-#         update_datas = {
-#             'username': 'osterga'
-#         }
+    def test_username_already_used(self):
+        update_datas = {
+            'username': 'osterga'
+        }
 
-#         response = self.client.post(
-#             reverse('username_available'), 
-#             data=update_datas, 
-#             content_type='application/json'
-#         )
+        response = self.client.post(
+            reverse('username_available'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
 
-#         response_data = response.json()
-#         self.assertEqual(response_data.get('error'), 'Username is already used.')
-#         self.assertEqual(response.status_code, 400)
+        response_data = response.json()
+        self.assertEqual(response_data.get('error'), 'Username is already used.')
+        self.assertEqual(response.status_code, 400)
 
-#     def test_username_already_used_letter_case(self):
-#         update_datas = {
-#             'username': 'OSTERGA'
-#         }
+    def test_username_already_used_letter_case(self):
+        update_datas = {
+            'username': 'OSTERGA'
+        }
 
-#         response = self.client.post(
-#             reverse('username_available'), 
-#             data=update_datas, 
-#             content_type='application/json'
-#         )
+        response = self.client.post(
+            reverse('username_available'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
 
-#         response_data = response.json()
-#         self.assertEqual(response_data.get('error'), 'Username is already used.')
-#         self.assertEqual(response.status_code, 400)
+        response_data = response.json()
+        self.assertEqual(response_data.get('error'), 'Username is already used.')
+        self.assertEqual(response.status_code, 400)
 
-#     def test_empty_username(self):
-#         update_datas = {
-#             'username': ''
-#         }
+    def test_empty_username(self):
+        update_datas = {
+            'username': ''
+        }
 
-#         response = self.client.post(
-#             reverse('username_available'), 
-#             data=update_datas, 
-#             content_type='application/json'
-#         )
+        response = self.client.post(
+            reverse('username_available'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
 
-#         response_data = response.json()
-#         self.assertEqual(response_data.get('status'), 'Missing username.')
-#         self.assertEqual(response.status_code, 400)
+        response_data = response.json()
+        self.assertEqual(response_data.get('status'), 'Missing username.')
+        self.assertEqual(response.status_code, 400)
 
-#     def test_unique_email(self):
-#         update_datas = {
-#             'email': 'damien-cooper@gmail.com'
-#         }
+    def test_unique_email(self):
+        update_datas = {
+            'email': 'damien-cooper@gmail.com'
+        }
 
-#         response = self.client.post(
-#             reverse('email_available'), 
-#             data=update_datas, 
-#             content_type='application/json'
-#         )
+        response = self.client.post(
+            reverse('email_available'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
 
-#         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
     
-#     def test_email_already_used(self):
-#         update_datas = {
-#             'email': 'osterga@gmail.com'
-#         }
+    def test_email_already_used(self):
+        update_datas = {
+            'email': 'osterga@gmail.com'
+        }
 
-#         response = self.client.post(
-#             reverse('email_available'), 
-#             data=update_datas, 
-#             content_type='application/json'
-#         )
+        response = self.client.post(
+            reverse('email_available'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
 
-#         response_data = response.json()
-#         self.assertEqual(response_data.get('error'), 'Email is already used.')
-#         self.assertEqual(response.status_code, 400)
+        response_data = response.json()
+        self.assertEqual(response_data.get('error'), 'Email is already used.')
+        self.assertEqual(response.status_code, 400)
 
-#     def test_empty_email(self):
-#         update_datas = {
-#             'email': ''
-#         }
+    def test_empty_email(self):
+        update_datas = {
+            'email': ''
+        }
 
-#         response = self.client.post(
-#             reverse('email_available'), 
-#             data=update_datas, 
-#             content_type='application/json'
-#         )
+        response = self.client.post(
+            reverse('email_available'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
 
-#         response_data = response.json()
-#         self.assertEqual(response_data.get('status'), 'Missing email.')
-#         self.assertEqual(response.status_code, 400)
+        response_data = response.json()
+        self.assertEqual(response_data.get('status'), 'Missing email.')
+        self.assertEqual(response.status_code, 400)

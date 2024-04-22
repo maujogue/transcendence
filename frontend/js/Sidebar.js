@@ -28,8 +28,8 @@ navlist.addEventListener("click", (e) => {
 //login button fetch launcher
 var loginForm = document.getElementById("loginForm");
 loginForm.addEventListener("submit", (event) => {
-	event.preventDefault();
-	login(loginForm)
+  event.preventDefault();
+  login(loginForm);
 });
 
 //logout button fetch launcher
@@ -38,18 +38,26 @@ logoutButton.addEventListener("click", (e) => logout());
 
 //register button fetch launcher
 var registerForm = document.getElementById("registrationForm");
-registerForm.addEventListener("submit", (event) =>
-  register(event, registerForm)
-);
+registerForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  register(registerForm);
+});
 
 //check password on register input
 var password1 = document.getElementById("registerPassword");
 var password2 = document.getElementById("registerPasswordAgain");
 
-password1.addEventListener("input", (event) => checkPassword("register", password1, password2));
-password2.addEventListener("input", (event) => checkPassword("register", password1, password2));
+password1.addEventListener("input", (event) =>
+  checkPassword("register", password1, password2)
+);
+password2.addEventListener("input", (event) =>
+  checkPassword("register", password1, password2)
+);
 
 //password visibility toggles (login/register)
 togglePasswordVisibility("loginPasswordToggle", "loginPassword");
 togglePasswordVisibility("registerPasswordToggle", "registerPassword");
-togglePasswordVisibility("registerPasswordAgainToggle", "registerPasswordAgain");
+togglePasswordVisibility(
+  "registerPasswordAgainToggle",
+  "registerPasswordAgain"
+);

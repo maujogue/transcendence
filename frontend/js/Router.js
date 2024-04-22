@@ -1,5 +1,6 @@
 import { toggleContentOnLogState } from "./Utils.js";
 import { injectUserData } from "./User.js";
+import onlogIn from "./Dashboard.js"
 
 //page constructor
 class Page {
@@ -111,4 +112,9 @@ document.addEventListener("DOMContentLoaded", () => {
   router(routes, mainPageDiv);
 });
 
-export { navigateTo };
+const logIn = new Event("logIn");
+document.addEventListener("logIn", () => {
+	onlogIn();
+})
+
+export { navigateTo, logIn};

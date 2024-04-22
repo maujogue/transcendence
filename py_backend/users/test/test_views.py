@@ -821,6 +821,24 @@ class UpdateProfilePictureTest(TestCase):
 
 class UtilsFunctionsTest(TestCase):
     def setUp(self):
-        self.client = Client()
-        self.user = CustomUser.objects.create_user(username='testuser', password='testpass', bio='Hello !')
-        self.client.login(username='testuser', password='testpass')
+        self.user = CustomUser.objects.create_user(
+            username="osterga",
+            email="osterga@gmail.com",
+            password="UserPassword9+",
+            bio="Bonjours a tous, c'est Osterga",
+            title='L\'Inusable')
+        
+        self.client.login(username='osterga', password='UserPassword9+')
+
+    def test_unique_username(self):
+        update_datas = {
+            'username': 'osterga'
+        }
+
+        response = self.client.post(
+            reverse('unique_username'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+
+        self.assertEqual(response.status_code, 200)

@@ -11,4 +11,5 @@ urlpatterns = [
     path('update_profile_picture/', update_profile_picture, name='update_profile_picture'),
 	path('update_username/', update_profile_username, name='update_username'),
     path('get_user_data/', get_user_data, name='get_user_data'),
+    path('unique_username/', unique_username, name='unique_username'),
 ]

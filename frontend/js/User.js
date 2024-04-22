@@ -22,7 +22,6 @@ function injectUserData() {
     "winrate",
   ];
   userInfos.forEach((info) => {
-	console.log(info);
     var usernameDivs = document.querySelectorAll("." + info + "Dynamic");
     usernameDivs.forEach((div) => {
 

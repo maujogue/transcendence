@@ -163,6 +163,13 @@ async function updateProfile(event, updateProfileForm) {
     });
 }
 
+function hideModalAndGoHome(modalId) {
+	var modal = document.getElementById(modalId);
+	modal.addEventListener("hidden.bs.modal", () => navigateTo("/dash"));
+	bootstrap.Modal.getInstance(modal).hide();
+	modal.removeEventListener("hidden.bs.modal", () => navigateTo("/dash"));
+}
+
 async function update_username(username) {
   
 	const fetchBody = {
@@ -184,10 +191,7 @@ async function update_username(username) {
 		console.log(statusCode);
 		if (statusCode === 200) {
 			setUserData();
-			var modal = document.getElementById("confirmPasswordModal");
-			modal.addEventListener("hidden.bs.modal", () => navigateTo("/dash"));
-			bootstrap.Modal.getInstance(modal).hide();
-			modal.removeEventListener("hidden.bs.modal", () => navigateTo("/dash"));
+			hideModalAndGoHome("confirmPasswordModal");
 		}
 		else if (data.error && data.error.length > 0)
           showComment("confirmPasswordComment", data.error);

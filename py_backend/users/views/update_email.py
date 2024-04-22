@@ -21,9 +21,9 @@ def update_email(request):
     is_unique, error_unique = email_is_unique(email)
 
     if not is_valid:
-        return JsonResponse({'status', error_valid}, status=400)
+        return JsonResponse({'status': error_valid}, status=400)
     if not is_unique:
-         return JsonResponse({'status', error_unique}, status=400)
+        return JsonResponse({'status': error_unique}, status=400)
     
     if email or email == '':
         request.user.email = email

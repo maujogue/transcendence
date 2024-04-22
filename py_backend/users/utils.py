@@ -6,12 +6,13 @@ import json
 import os
 
 SPECIAL_CHARS = "+/*.,!#%^&\{}[]=:;\'\"`~"
+SPECIAL_CHARS_EMAIL = "+/*,!#%^&\{}[]=:;\'\"`~"
 
 
 def email_is_valid(email):
 	if not email or email == '':
 		return False, f'Missing email.'
-	if any(char in SPECIAL_CHARS for char in email):
+	if any(char in SPECIAL_CHARS_EMAIL for char in email):
 		return False, f'Email contains forbidden characters.'
 	if not '@' in email:
 		return False, f'Invalid email.'

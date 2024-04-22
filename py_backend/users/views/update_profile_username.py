@@ -22,4 +22,4 @@ def update_profile_username(request):
             return JsonResponse({'error': error_message}, status=400)
         request.user.username = username
         request.user.save()
-    return JsonResponse({"status": "Your username has been correctly updated !"}, status=200)
+    return JsonResponse({'status': "Your username has been correctly updated !"}, status=200)

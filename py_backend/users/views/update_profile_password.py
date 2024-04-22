@@ -23,7 +23,7 @@ def update_profile_password(request):
             hashed_password = make_password(new_password1)
             request.user.password = hashed_password
             request.user.save()
-            return JsonResponse({"status": "Your password has been correctly updated !"}, status=200)
+            return JsonResponse({'status': "Your password has been correctly updated !"}, status=200)
         else:
             return JsonResponse({'status': 'Passwords do not match.'}, status=400)
     else:

@@ -167,17 +167,74 @@ The CSRF token is returned in a JSON response with the key "csrfToken" and a `20
 </details>
 <br>
 
+## Users management
+
 <details>
 <summary>
-<code>/users/check_if_email_is_unique</code>
+<code>/users/get_user_datas</code>
 </summary>
 <br>
 
-This function is a custom utility function that checks for email uniqueness in the database.
+This function is used to retrieve data from the currently logged-in user. It returns the following information:
+- username
+- email
+- bio
+- title
+- winrate
+- rank
+- number of games played
+
+### Entry point
+`POST /users/get_user_datas`
 
 ### Parameters
-- `email` : the email which we want to check whether or not it is in the database.
+- `request`: The HTTP request object containing the POST data.
 
 ### Returns
-- `True` if the email already exists.
-- `False` if the email does not exist in the database.
+- `success` and a dictionnary with all datas.
+
+### Notes
+- This function is decorated with `@login_required` to ensure that the user in correctly login.
+- The `@require_http_methods(["GET"])` decorator ensures that the view only accepts HTTP GET requests. Other request methods will result in a "Method Not Allowed" response.
+- The `@requires_csrf_token` decorator is used to enforce CSRF protection on the view. 
+</details>
+<br>
+
+<details>
+<summary>
+<code>/users/update_email</code>
+</summary>
+<br>
+
+This function is used to change the email of the currently logged-in user.
+
+### Entrypoints
+`POST /users/update_email`
+
+### Parameters
+- `request`: The HTTP request object containing the POST data.
+
+### Returns
+- `"Your email has been correctly updated !"` and a 200 status code if the email was correctly updated.
+- A 400 status code if the email send by the user is **not valid, already used or missing**.
+
+### Notes
+- This function is decorated with `@login_required` to ensure that the user in correctly login.
+- The `@require_http_methods(["GET"])` decorator ensures that the view only accepts HTTP GET requests. Other request methods will result in a "Method Not Allowed" response.
+- The `@requires_csrf_token` decorator is used to enforce CSRF protection on the view. 
+
+</details>
+<br>
+<details>
+<summary>
+<code>/users/update_profile_bio</code>
+</summary>
+<br>
+
+This function is used to change the bio of the currently logged-in user.
+
+### Entrypoints
+`POST /users/update_email`
+
+### Parameters
+- `request`: The HTTP request object containing the POST data.

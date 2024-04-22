@@ -167,6 +167,61 @@ The CSRF token is returned in a JSON response with the key "csrfToken" and a `20
 </details>
 <br>
 
+<details>
+<summary>
+<code>/users/email_available</code>
+</summary>
+<br>
+
+This util function is used to check if a email is available or not.
+
+### Entrypoint
+
+`GET /users/email_available`
+
+### Parameters
+- `request`: The HTTP request object.
+- `email` : The email we want to check
+
+### Returns
+- Return `success` if the email is available and a 200 status code.
+- Return `failure` if the email is already used and a 400 status code.
+- Return also `Missing email` if the email is missing and a 400 status code.
+
+### Notes
+- This function is decorated with `@require_http_methods(["POST"])` to ensure that it only accepts POST requests.
+- The `@requires_csrf_token` decorator is used to enforce CSRF protection on the view. 
+
+</details>
+<br>
+
+<details>
+<summary>
+<code>/users/username_available</code>
+</summary>
+<br>
+
+This util function is used to check if a username is available or not.
+
+### Entrypoint
+
+`GET /users/username_available`
+
+### Parameters
+- `request`: The HTTP request object.
+- `username` : The username we want to check
+
+### Returns
+- Return `success` if the username is available and a 200 status code.
+- Return `failure` if the username is already used and a 400 status code.
+- Return also `Missing username` if the username is missing and a 400 status code.
+
+### Notes
+- This function is decorated with `@require_http_methods(["POST"])` to ensure that it only accepts POST requests.
+- The `@requires_csrf_token` decorator is used to enforce CSRF protection on the view. 
+
+</details>
+
 ## Users management
 
 <details>
@@ -340,3 +395,5 @@ This function is used to change the username of the currently logged-in user.
 - This function is decorated with `@login_required` to ensure that the user in correctly login.
 - This function is decorated with `@require_http_methods(["POST"])` to ensure that it only accepts POST requests.
 - The `@requires_csrf_token` decorator is used to enforce CSRF protection on the view.
+
+</details>

@@ -152,6 +152,10 @@ h1 {
 	color: white;
 }
 
+#tournamentForm {
+	height: auto;
+}
+
 .player-list {
 	display: flex;
 	flex-direction: column;
@@ -180,6 +184,8 @@ h1 {
 	position: relative;
 	overflow: hidden;
 	top: -5%;
+	height: 85%;
+	justify-content: start;
 }
 
 .form-field {
@@ -617,6 +623,8 @@ h1 {
 		top: -15%;
 		height: 70%;
 		font-size: 0.45em;
+		transform: perspective(900px) rotateX(25deg);
+		perspective: 25%;
 	}
 	.form-header {
 		font-size: 2em;

@@ -349,10 +349,9 @@ function createListTournament(parent) {
 	parent.appendChild(listTournament);
 	createTournamentInfo("Tournament 1", "2/50");
 	listTournament.addEventListener("click", (e) => {
-		console.log(e.target.className);
-		if (e.target.className == "tournament-info") {
+		console.log(e.target.parentNode.className);
+		if (e.target.className == "tournament-info" || e.target.parentNode.className == "tournament-info")
 			createWaitingScreenTournament();
-		}
 	});
 }
 

@@ -1,4 +1,5 @@
 export async function sendTournamentForm(form) {
+    console.log("sendTournamentForm")
     createWaitingScreenTournament();
     // const formData = new FormData(form);
     // const fetchBody = {

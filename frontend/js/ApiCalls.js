@@ -30,7 +30,7 @@ function get_csrf_token() {
 }
 
 //execute endpoint and returns the response with status code
-async function runEndpoint(endpoint, fetchBody) {
+async function runEndPoint(endpoint, fetchBody) {
   return fetch("https://127.0.0.1:8000/api/" + endpoint, {
     method: "POST",
     headers: {
@@ -61,7 +61,7 @@ async function register(registerForm) {
     password2: userData.get("passwordagain"),
   };
 
-  var response = await runEndpoint("users/register/", fetchBody);
+  var response = await runEndPoint("users/register/", fetchBody);
   if (response.statusCode === 200) {
     showComment("registerComment", "Registered, you can now Login", "success");
   } else {
@@ -79,7 +79,7 @@ async function login(loginForm) {
     password: userData.get("password"),
   };
 
-  var response = await runEndpoint("users/login/", fetchBody);
+  var response = await runEndPoint("users/login/", fetchBody);
 
   if (response.statusCode === 200) {
     setUserData();
@@ -94,7 +94,7 @@ async function login(loginForm) {
 
 // LOGOUT FETCH
 async function logout() {
-  var response = await runEndpoint("users/logout/");
+  var response = await runEndPoint("users/logout/");
   if (response.statusCode === 200) {
     Cookies.remove("isLoggedIn");
     navigateTo("/dash");
@@ -104,7 +104,7 @@ async function logout() {
 // UPDATE PROFILE FETCH
 //Update a single info with endpoint, fetchbody, the success/error div and the modal to dismiss
 async function update_info(endpoint, fetchBody, commentDiv, modaltoDismiss) {
-  var response = await runEndpoint(endpoint, fetchBody);
+  var response = await runEndPoint(endpoint, fetchBody);
   var data = response.data;
 
   if (response.statusCode === 200) {
@@ -129,7 +129,7 @@ async function updateProfile(updateProfileForm) {
     password: userData.get("password"),
   };
 
-  var response = await runEndpoint("users/login/", fetchBody);
+  var response = await runEndPoint("users/login/", fetchBody);
 
   if (response.statusCode === 200) {
     const fetchBody = {
@@ -164,7 +164,7 @@ async function updatePassword(updatePasswordForm) {
     password: userData.get("password"),
   };
 
-  var response = await runEndpoint("users/login/", fetchBody);
+  var response = await runEndPoint("users/login/", fetchBody);
 
   if (response.statusCode === 200) {
     const fetchBody = {

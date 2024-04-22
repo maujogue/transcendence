@@ -401,7 +401,7 @@ h1 {
 	width: 100%;
 }
 
-.submode {
+.submode, #game .btn {
 	transform: skew(-10deg);
 	background: white;
 	width: 150%;
@@ -409,8 +409,13 @@ h1 {
 	transition: all 0.5s ease;
 }
 
-.submode:hover {
+#game .btn {
+	width: auto;
+}
+
+.submode:hover, #game .btn:hover {
 	transform: scale(1.1) skew(-7deg);
+	color: black;
 }
 
 
@@ -513,19 +518,12 @@ h1 {
 
 #game .btn {
 	border: none;
-	color: white;
 	font-family: 'baumansregular', sans-serif;
 	font-size: 1em;
-	background-color: rgba(0, 0, 0, 0);
-	margin: 0.5em 7em;
+	margin: 0.5em 8em;
 	padding: 15px;
 }
 
-#game .btn:hover {
-	background-color: whitesmoke;
-	color: black;
-	border-radius: 0.5em;
-}
 
 .cursorP1, .cursorP2 {
 	color: white;

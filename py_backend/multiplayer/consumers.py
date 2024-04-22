@@ -250,7 +250,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
         if message == "endGame":
             self.resetGame()
-        await self.send(text_data=json.dumps({"type": "status", "message": message, "name": name}))
+        await self.send(text_data=json.dumps({"type": 'status', "message": message, "name": name}))
 
     async def pong_character_data(self, event): 
         # print('pong_character_data')

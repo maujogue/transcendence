@@ -7,5 +7,5 @@ from .update_profile_password import *
 from .update_profile_picture import *
 from .get_csrf_token import *
 from .get_user_datas import *
-from .unique_username import *
-from .unique_email import *
+from .username_availaible import *
+from .email_available import *

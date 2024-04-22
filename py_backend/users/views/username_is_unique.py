@@ -15,8 +15,8 @@ def unique_username(request):
     username = data.get('username')
 
     if username:
-        is_unique, response = username_is_unique
+        is_unique, response = username_is_unique(username)
         if is_unique:
-            return JsonResponse({'status': 'success'})
-        return JsonResponse({"status": 'failure', 'error': response}, status=400)
-    return JsonResponse({"status": "Missing username."}, status=400)
+            return JsonResponse({'status': 'success'}, status=200)
+        return JsonResponse({'status': 'failure', 'error': response}, status=400)
+    return JsonResponse({'status': "Missing username."}, status=400)

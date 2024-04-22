@@ -15,9 +15,9 @@ CustomUser = get_user_model()
 
 import json
 
+@login_required
 @require_http_methods(["POST"])
 def create_tournament(request):
-
 	try:
 		data = json.loads(request.body.decode("utf-8"))
 	except json.JSONDecodeError:
@@ -33,10 +33,8 @@ def create_tournament(request):
 		return JsonResponse({"errors": "A private tournament must have a password."},
 					status=400)
 
-	if not name or not max_players:
-		return JsonResponse({"errors": "Invalid tournament data.",
-					"max_players": max_players,
-					"name": name,},
+	if not name or not isinstance(max_players, int) or max_players not in range(2, 33):
+		return JsonResponse({"errors": "Invalid tournament data."},
 					status=400)
 
 	try:
@@ -49,9 +47,9 @@ def create_tournament(request):
 		)
 	except IntegrityError as e:
 		if 'unique constraint' in str(e).lower():
-			return JsonResponse({"errors": "This name is already taken.", "error": str(e)},
+			return JsonResponse({"errors": "This name is already taken."},
 					status=400)
-		return JsonResponse({"errors": "Tournament could not be created.", "error": str(e)},
+		return JsonResponse({"errors": "Tournament could not be created.", "id": tournament.id},
 					status=400)
 
 	return JsonResponse({"message": "Tournament created successfully.", "id": tournament.id},

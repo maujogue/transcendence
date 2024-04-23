@@ -13,4 +13,6 @@ urlpatterns = [
     path('get_user_data/', get_user_data, name='get_user_data'),
     path('username_available/', username_available, name='username_available'),
     path('email_available/', email_available, name='email_available'),
+    path('verification_email/', verification_email, name='verification_email'),
+    path('verify-email-confirm/<uidb64>/<token>/', verification_email_confirm, name='verification_email_confirm'),
 ]

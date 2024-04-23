@@ -724,7 +724,7 @@ class ProfileUpdate(TestCase):
         self.assertEqual(response_data.get('status'), 'One password is missing.')
 
 
-    def test_update_no_datas(self):
+    def test_update_password_no_datas(self):
         update_datas = {}
 
         response = self.client.post(
@@ -733,6 +733,58 @@ class ProfileUpdate(TestCase):
         )
 
         self.assertEqual(response.status_code, 406)
+
+
+    def test_update_email(self):
+        update_datas = {
+            'email': 'damian-cooper@gmail.com'
+        }
+
+        response = self.client.post(
+            reverse('update_email'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_update_email_already_used(self):
+        update_datas = {
+            'email': 'ochoa@gmail.com'
+        }
+
+        response = self.client.post(
+            reverse('update_email'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 400)
+
+    def test_update_email_empty(self):
+        update_datas = {
+            'email': ''
+        }
+
+        response = self.client.post(
+            reverse('update_email'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 400)
+
+    def test_update_email_missing(self):
+        update_datas = {}
+
+        response = self.client.post(
+            reverse('update_email'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 400)
 
 # =========================================================================================
 

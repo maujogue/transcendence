@@ -1,33 +1,35 @@
+import { toggleContentOnLogState } from "./Utils.js";
+
+//page constructor
 class Page {
   constructor(name, urlPath, filePath, sidebar) {
     this.name = name;
     this.urlPath = urlPath;
     this.filePath = filePath;
     this.sidebar = sidebar;
-    document.title = name;
   }
   async fetchHtml() {
     return await fetch(this.filePath).then((x) => x.text());
   }
 }
 
+//page routes settings (name, urlPath, filePath, sidebarOn?)
 const routes = [
-	new Page("LandingPage", "/", "html/LandingPage.html", false),
-	new Page("LandingPage", "/home", "html/LandingPage.html", false),
-	
-	new Page("Sidebar", "", "html/Sidebar.html", false),
+  new Page("Dashboard", "/", "html/Dashboard.html", true),
+  new Page("Dashboard", "/dash", "html/Dashboard.html", true),
 
+  new Page("Sidebar", "", "html/Sidebar.html", false),
+
+  new Page("About", "/about", "html/About.html", true),
   new Page("Game", "/game", "html/Game.html", true),
-  new Page("Dashboard", "/dashboard", "html/Dashboard.html", true),
-  new Page("Stats", "/stats", "html/Stats.html", true),
-  new Page("Profile", "/profile", "html/Profile.html", true),
-  new Page("Settings", "/settings", "html/Settings.html", true),
 ];
 
+//index.html container variables
 const mainPageDiv = "#content-container";
 const sidebarDiv = "#sidebar-container";
 let previousPage = null;
 
+//inject html function
 function setInnerHtml(elm, html) {
   elm.innerHTML = html;
   Array.from(elm.querySelectorAll("script")).forEach((oldScript) => {
@@ -40,13 +42,16 @@ function setInnerHtml(elm, html) {
   });
 }
 
+//change pages
 function navigateTo(url) {
   if (url !== location.pathname) {
-    history.pushState(null, null, url);
+    history.pushState({}, null, url);
     router(routes, mainPageDiv);
-}
+  }
+  toggleContentOnLogState();
 }
 
+//inject html files based on url 
 const router = async (routes, divToInsertHtml) => {
   const potentialMatches = routes.map((route) => {
     return {
@@ -60,7 +65,7 @@ const router = async (routes, divToInsertHtml) => {
       route: routes[0],
       isMatch: true,
     };
-	history.replaceState({}, '', '/');
+    history.pushState({}, "", "/");
   }
   const page = match.route;
   const html = await page.fetchHtml();
@@ -77,12 +82,14 @@ const router = async (routes, divToInsertHtml) => {
   }
   if (page.sidebar == false)
     setInnerHtml(document.querySelector(sidebarDiv), "");
-
   previousPage = page;
+  toggleContentOnLogState();
 };
 
+//navigation history (back and forth button)
 window.addEventListener("popstate", (event) => router(routes, mainPageDiv));
 
+//on page load
 document.addEventListener("DOMContentLoaded", () => {
   document.body.addEventListener("click", (e) => {
     let target = e.target;
@@ -100,3 +107,5 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   router(routes, mainPageDiv);
 });
+
+export { navigateTo };

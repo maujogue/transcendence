@@ -4,11 +4,9 @@ from django.test import Client
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-
 import json
 
 from users.models import CustomUser
-
 
 
 
@@ -658,6 +656,18 @@ class ProfileUpdate(TestCase):
         self.assertEqual(self.user.bio, '')
         self.assertEqual(response.status_code, 200)
 
+    def test_missing_bio(self):
+        update_datas = {}
+
+        response = self.client.post(
+            reverse('update_bio'), 
+            data=json.dumps(update_datas), 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, 400)
+
 
     def test_update_password(self):
         update_datas = {
@@ -714,7 +724,7 @@ class ProfileUpdate(TestCase):
         self.assertEqual(response_data.get('status'), 'One password is missing.')
 
 
-    def test_update_no_datas(self):
+    def test_update_password_no_datas(self):
         update_datas = {}
 
         response = self.client.post(
@@ -723,6 +733,58 @@ class ProfileUpdate(TestCase):
         )
 
         self.assertEqual(response.status_code, 406)
+
+
+    def test_update_email(self):
+        update_datas = {
+            'email': 'damian-cooper@gmail.com'
+        }
+
+        response = self.client.post(
+            reverse('update_email'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_update_email_already_used(self):
+        update_datas = {
+            'email': 'ochoa@gmail.com'
+        }
+
+        response = self.client.post(
+            reverse('update_email'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 400)
+
+    def test_update_email_empty(self):
+        update_datas = {
+            'email': ''
+        }
+
+        response = self.client.post(
+            reverse('update_email'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 400)
+
+    def test_update_email_missing(self):
+        update_datas = {}
+
+        response = self.client.post(
+            reverse('update_email'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 400)
 
 # =========================================================================================
 
@@ -765,7 +827,7 @@ class GetUserDatas(TestCase):
 class UpdateProfilePictureTest(TestCase):
     def setUp(self):
         self.client = Client()
-        self.user = CustomUser.objects.create_user(username='testuser', password='testpass', bio='jpp')
+        self.user = CustomUser.objects.create_user(username='testuser', password='testpass', bio='Hello !')
         self.client.login(username='testuser', password='testpass')
 
 
@@ -803,3 +865,118 @@ class UpdateProfilePictureTest(TestCase):
         response_data = response.json()
 
         self.assertEqual(response_data.get('error'), 'Invalid image type.')
+
+
+# =========================================================================================
+
+class UtilsFunctionsTest(TestCase):
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(
+            username="osterga",
+            email="osterga@gmail.com",
+            password="UserPassword9+",
+            bio="Bonjours a tous, c'est Osterga",
+            title='L\'Inusable')
+        
+        self.client.login(username='osterga', password='UserPassword9+')
+
+    def test_unique_username(self):
+        update_datas = {
+            'username': 'damien-cooper'
+        }
+
+        response = self.client.post(
+            reverse('username_available'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+
+        self.assertEqual(response.status_code, 200)
+    
+    def test_username_already_used(self):
+        update_datas = {
+            'username': 'osterga'
+        }
+
+        response = self.client.post(
+            reverse('username_available'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+
+        response_data = response.json()
+        self.assertEqual(response_data.get('error'), 'Username is already used.')
+        self.assertEqual(response.status_code, 400)
+
+    def test_username_already_used_letter_case(self):
+        update_datas = {
+            'username': 'OSTERGA'
+        }
+
+        response = self.client.post(
+            reverse('username_available'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+
+        response_data = response.json()
+        self.assertEqual(response_data.get('error'), 'Username is already used.')
+        self.assertEqual(response.status_code, 400)
+
+    def test_empty_username(self):
+        update_datas = {
+            'username': ''
+        }
+
+        response = self.client.post(
+            reverse('username_available'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+
+        response_data = response.json()
+        self.assertEqual(response_data.get('status'), 'Missing username.')
+        self.assertEqual(response.status_code, 400)
+
+    def test_unique_email(self):
+        update_datas = {
+            'email': 'damien-cooper@gmail.com'
+        }
+
+        response = self.client.post(
+            reverse('email_available'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+
+        self.assertEqual(response.status_code, 200)
+    
+    def test_email_already_used(self):
+        update_datas = {
+            'email': 'osterga@gmail.com'
+        }
+
+        response = self.client.post(
+            reverse('email_available'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+
+        response_data = response.json()
+        self.assertEqual(response_data.get('error'), 'Email is already used.')
+        self.assertEqual(response.status_code, 400)
+
+    def test_empty_email(self):
+        update_datas = {
+            'email': ''
+        }
+
+        response = self.client.post(
+            reverse('email_available'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+
+        response_data = response.json()
+        self.assertEqual(response_data.get('status'), 'Missing email.')
+        self.assertEqual(response.status_code, 400)

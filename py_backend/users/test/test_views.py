@@ -939,10 +939,20 @@ class VerificationEmail(TestCase):
             email="lboulatr@gmail.com",
             password="Damiendubocal75")
         
-    def test_send_verification_email(self):
+    def test_new_user_in_database(self):
+        newUser = {
+            'username': 'bob_seger',
+            'email': 'bobseger@gmail.com',
+            'password1': 'Mewtransse9+',
+            'password2': 'Mewtransse9+'
+        }
+
+        initial_user_count = CustomUser.objects.count()
 
         response = self.client.post(
-            reverse('verification_email'), 
+            reverse('register'), 
+            data=json.dumps(newUser), 
             content_type='application/json')
 
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(CustomUser.objects.count(), initial_user_count + 1)

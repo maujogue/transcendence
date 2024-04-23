@@ -81,23 +81,25 @@ def extension_is_valid(image_name):
 	return False
 		
 
-def send_confirmation_email(request):
-	if request.user.email_is_verified != True:
-		current_site = get_current_site(request)
-		user = request.user
-		email = request.user.email
-		subject = "Verify Email"
-		message = render_to_string('user/verify_email_message.html', {
-            'request': request,
-            'user': user,
-            'domain': current_site.domain,
-            'uid':urlsafe_base64_encode(force_bytes(user.pk)),
-            'token':account_activation_token.make_token(user),
-        })
+def send_confirmation_email(user, request):
+	if user.is_authenticated:
+		if user.email_is_verified != True:
+			current_site = get_current_site(request)
+			user = user
+			email = user.email
+			subject = "Verify Email"
+			message = render_to_string('../templates/verification_email_message.html', {
+				'request': request,
+				'user': user,
+				'domain': current_site.domain,
+				'uid':urlsafe_base64_encode(force_bytes(user.pk)),
+				'token':account_activation_token.make_token(user),
+			})
 
-		email = EmailMessage(
-            subject, message, to=[email]
-        )
-		email.content_subtype = 'html'
-		return email.send()
+			email = EmailMessage(
+				subject, message, to=[email]
+			)
+			email.content_subtype = 'html'
+			return email.send()
+		return False
 	return False

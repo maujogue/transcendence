@@ -9,4 +9,5 @@ django-cors-headers==4.3.1
 pillow==10.2.0
 requests-toolbelt
 mimetypes-magic
+six
 # channels-redis==4.2.0

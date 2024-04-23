@@ -1,10 +1,10 @@
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
-from .tokens import account_activation_token
 from django.contrib import messages
 from django.http import JsonResponse
 
 from users.models import CustomUser
+from users.tokens import account_activation_token
 
 def verification_email_confirm(request, uidb64, token):
     try:

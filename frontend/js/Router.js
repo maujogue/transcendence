@@ -1,4 +1,5 @@
 import { toggleContentOnLogState } from "./Utils.js";
+import { injectUserData } from "./User.js";
 
 //page constructor
 class Page {
@@ -49,6 +50,7 @@ function navigateTo(url) {
     router(routes, mainPageDiv);
   }
   toggleContentOnLogState();
+  injectUserData();
 }
 
 //inject html files based on url 
@@ -84,6 +86,7 @@ const router = async (routes, divToInsertHtml) => {
     setInnerHtml(document.querySelector(sidebarDiv), "");
   previousPage = page;
   toggleContentOnLogState();
+  injectUserData();
 };
 
 //navigation history (back and forth button)
@@ -108,4 +111,8 @@ document.addEventListener("DOMContentLoaded", () => {
   router(routes, mainPageDiv);
 });
 
-export { navigateTo };
+const logIn = new Event("logIn");
+document.addEventListener("logIn", () => {
+})
+
+export { navigateTo, logIn};

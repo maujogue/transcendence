@@ -89,7 +89,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             user = await CustomUser.objects.aget(username=username)
             return user
         except CustomUser.DoesNotExist:
-            print('User does not exist')
             return None
 
     async def receive(self, text_data):
@@ -98,16 +97,14 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
         text_data_json = json.loads(text_data)
         
-        print('text_data:', text_data_json)
         if text_data_json.get("type") == 'auth':
             username = text_data_json['username']
             user = await self.authenticate_user_with_username(username)
             if user is not None:
                 self.scope['user'] = user
-                print('user:', user.username)
-                print("Authentification réussie.")
+                await self.send(text_data=json.dumps({ "type": "auth", "status": "success"}))
             else:
-                print("Authentification échouée.")
+                 await self.send(text_data=json.dumps({ "type": "auth", "status": "failed"}))
         if text_data_json.get("ready") != None:
             await self.lobby.setPlayerReady(text_data_json.get("ready"), self.player)
         if text_data_json.get("character") != None:
@@ -230,6 +227,9 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def setGameOver(self):
         await self.lobby.stopGame()
+        self.scope['user'].n_games_played = 1
+        await self.scope['user'].asave()
+        print(self.scope['user'].username, ' winrate: ', self.scope['user'].n_games_played)
         await self.channel_layer.group_send(
             self.lobby_group_name, { 'type': 'pong.status', 'message': 'endGame', 'name': self.player.name}
         )

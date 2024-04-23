@@ -99,7 +99,7 @@ async function connectToLobby(username) {
         document.getElementById("selectMenu").remove();
         webSocket.send(JSON.stringify({
             'type': 'auth',
-            'username': "Herrrman42",
+            'username': username,
         }));
         createWaitingScreen();
         onlineGameLoop(webSocket);

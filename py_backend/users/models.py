@@ -15,9 +15,9 @@ class CustomUser(AbstractUser):
 	avatar = models.ImageField(default='avatar.jpg', upload_to='profile_avatars')
 	bio = models.TextField(max_length=settings.MAX_LEN_TEXT, default="")
 	banner = models.ImageField(null=True)
-	winrate = models.DecimalField(max_digits=4, decimal_places=4, validators=[MinValueValidator(0), MaxValueValidator(1)], null=True)
-	rank = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(50)], null=True)
-	n_games_played = models.IntegerField(null=True)
+	winrate = models.DecimalField(max_digits=4, decimal_places=4, validators=[MinValueValidator(0), MaxValueValidator(1)], default=0)
+	rank = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(50)], default=0)
+	n_games_played = models.IntegerField(default=0)
 	friends = models.ManyToManyField("self", blank=True)
 	
 	def save(self, *args, **kwargs):

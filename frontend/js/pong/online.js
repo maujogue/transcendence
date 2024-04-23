@@ -9,6 +9,7 @@ import { sendCharacter} from "./sendMessage.js";
 import { characters } from "./main.js";
 import { updateMixers } from "./displayCharacter.js";
 import { resize } from "./resize.js";
+import { getUserData } from "../User.js";
 import * as THREE from 'three';
 
 let env;
@@ -89,12 +90,17 @@ async function createOnlineSelectMenu(field) {
     });
 }
 
-async function connectToLobby() {
-    webSocket = new WebSocket('wss://127.0.0.1:8000/ws/lobby/');
+async function connectToLobby(username) {
+    webSocket = new WebSocket('ws://127.0.0.1:8080/ws/lobby/');
     
-    webSocket.onopen = function() { 
+    webSocket.onopen = function() {
         console.log('Connection established');
+        console.log('Sending username: ' + username);
         document.getElementById("selectMenu").remove();
+        webSocket.send(JSON.stringify({
+            'type': 'auth',
+            'username': "Herrrman42",
+        }));
         createWaitingScreen();
         onlineGameLoop(webSocket);
     }
@@ -103,6 +109,7 @@ async function connectToLobby() {
     
     webSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
+        console.log(data);
 
         if (data['type'] == 'player_data') {
             const paddle = env.scene.getObjectByName("paddle_" + player.name);
@@ -121,7 +128,6 @@ async function connectToLobby() {
             }
         }
         if (data['message'] == 'start') {
-            console.log("start message");
             status.gameIsInit = true;
             document.getElementById("waitingScreen")?.remove();
         }
@@ -236,7 +242,10 @@ async function onlineGameLoop(webSocket) {
     if (!status.isReady && !status.start && keysPressed[' '] && !webSocket) {
         status.isReady = true;
         keysPressed[' '] = false;
-        connectToLobby();
+        getUserData('username').then((res) => {
+            console.log('username: ' + res);
+            connectToLobby(res);
+        });
     }
     if (!status.start && keyPress) {
         handleMenuKeyPress(keysPressed, player, null, env);

@@ -5,6 +5,9 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from .models import Lobby
 from multiplayer.ball import Ball
 from multiplayer.player import Player
+from django.contrib.auth.models import User
+from users.models import CustomUser
+from django.contrib.sessions.models import Session
 
 class PongConsumer(AsyncWebsocketConsumer):
 
@@ -74,11 +77,20 @@ class PongConsumer(AsyncWebsocketConsumer):
         print(self.lobby.connected_user)
         self.is_connected = True
         await self.accept()
+        print('connection accepted')
         await self.send_player_data()
         if self.lobby.connected_user == 2:
             await self.channel_layer.group_send(
                 self.lobby_group_name, { 'type': 'pong.ask_character', 'name': self.player.name}
             )
+    
+    async def authenticate_user_with_username(self, username):
+        try:
+            user = await CustomUser.objects.aget(username=username)
+            return user
+        except CustomUser.DoesNotExist:
+            print('User does not exist')
+            return None
 
     async def receive(self, text_data):
         # print('receive')
@@ -87,6 +99,15 @@ class PongConsumer(AsyncWebsocketConsumer):
         text_data_json = json.loads(text_data)
         
         print('text_data:', text_data_json)
+        if text_data_json.get("type") == 'auth':
+            username = text_data_json['username']
+            user = await self.authenticate_user_with_username(username)
+            if user is not None:
+                self.scope['user'] = user
+                print('user:', user.username)
+                print("Authentification réussie.")
+            else:
+                print("Authentification échouée.")
         if text_data_json.get("ready") != None:
             await self.lobby.setPlayerReady(text_data_json.get("ready"), self.player)
         if text_data_json.get("character") != None:

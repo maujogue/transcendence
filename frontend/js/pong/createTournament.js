@@ -3,7 +3,7 @@ export async function sendTournamentForm(form) {
     createWaitingScreenTournament();
 }
 
-function fetchCreateTournament(formData){
+function fetchCreateTournament(form){
 	const formData = new FormData(form);
 	const fetchBody = {
 	name: formData.get("name"),

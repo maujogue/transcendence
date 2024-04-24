@@ -1,8 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
-from django.test import Client
-from requests_toolbelt.multipart.encoder import MultipartEncoder
-from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core import mail
 
 import json
 
@@ -956,3 +954,22 @@ class VerificationEmail(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(CustomUser.objects.count(), initial_user_count + 1)
+
+
+    def test_email_confirmation(self):
+        response = self.client.post(reverse('register'), {
+            'username': 'testuser',
+            'email': 'testuser@example.com',
+            'password1': 'testpassword',
+            'password2': 'testpassword',
+        })
+
+        # Check that the response is as expected
+        self.assertEqual(response.status_code, 200)
+
+        # Check that one email was sent
+        self.assertEqual(len(mail.outbox), 1)
+
+        email = mail.outbox[0]
+        # self.assertEqual(email.subject, 'Your subject here')
+        # self.assertIn('Your confirmation link here', email.body)

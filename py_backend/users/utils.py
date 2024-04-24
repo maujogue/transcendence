@@ -95,7 +95,6 @@ def send_confirmation_email(user, request):
 				'uid':urlsafe_base64_encode(force_bytes(user.pk)),
 				'token':account_activation_token.make_token(user),
 			})
-
 			email = EmailMessage(
 				subject, message, to=[email]
 			)

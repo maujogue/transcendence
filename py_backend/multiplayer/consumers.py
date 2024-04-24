@@ -1,13 +1,10 @@
 import json
-# from asgiref.sync import sync_to_async
-
+import base64
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .models import Lobby
 from multiplayer.ball import Ball
 from multiplayer.player import Player
-from django.contrib.auth.models import User
 from users.models import CustomUser
-from django.contrib.sessions.models import Session
 
 class PongConsumer(AsyncWebsocketConsumer):
 
@@ -104,7 +101,10 @@ class PongConsumer(AsyncWebsocketConsumer):
                 self.scope['user'] = user
                 await self.send(text_data=json.dumps({ "type": "auth", "status": "success"}))
             else:
-                 await self.send(text_data=json.dumps({ "type": "auth", "status": "failed"}))
+                await self.send(text_data=json.dumps({ "type": "auth", "status": "failed"}))
+            await self.channel_layer.group_send(
+                self.lobby_group_name, { 'type': 'pong.user_info', 'user': self.scope['user'], 'name': self.player.name}
+            )
         if text_data_json.get("ready") != None:
             await self.lobby.setPlayerReady(text_data_json.get("ready"), self.player)
         if text_data_json.get("character") != None:
@@ -320,3 +320,12 @@ class PongConsumer(AsyncWebsocketConsumer):
         name = event["name"]
 
         await self.send(text_data=json.dumps({ "type": "ask_character", "name": name}))
+    
+    async def pong_user_info(self, event):
+        avatar = event["user"].avatar
+        username = event["user"].username
+        name = event["name"]
+        with open(avatar.path, "rb") as avatar:
+            encoded_string = base64.b64encode(avatar.read()).decode('utf-8')
+
+        await self.send(text_data=json.dumps({ "type": "user_info", "avatar": encoded_string, "username": username, "name": name}))

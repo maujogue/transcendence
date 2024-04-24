@@ -177,6 +177,12 @@ h1 {
 	color: white;
 }
 
+#avatar_pong {
+	height: 50px;
+	width: 50px;
+	object-fit: cover;
+}
+
 
 .form-field {
 	display: flex;

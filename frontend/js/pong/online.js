@@ -25,10 +25,20 @@ let status = {
 }
 let keyUp = false;
 let webSocket;
+let playerInfo
+let oppInfo
 
 document.addEventListener('fullscreenchange', function() {
 	resize(env);
 });
+
+function setUserInfo(data) {
+    let user = {
+        'username': data['username'],
+        'avatar': `data:image/png;base64, ${data['avatar']}`
+    }
+    return user;
+}
 
 export const playersMove = new Map();
 
@@ -91,6 +101,8 @@ async function createOnlineSelectMenu(field) {
 }
 
 async function connectToLobby(username) {
+    if (username == null)
+        return ;
     webSocket = new WebSocket('ws://127.0.0.1:8080/ws/lobby/');
     
     webSocket.onopen = function() {
@@ -120,11 +132,22 @@ async function connectToLobby(username) {
             handlerStatusMessage(data, webSocket, env, status, player);
         if (data['type'] == 'ball_data')
             setBallData(data, env);
+        if (data['type'] == 'auth' && data['status'] == 'failed') 
+            webSocket.close();
         if (data['type'] == 'character_data') {
             if (data['name'] != player.name) {
                 displayCharacter(opp, env, data['character'], data['name']).then((res) => {
                     opp = res;
                 });
+            }
+        }
+        if (data['type'] == 'user_info') {
+            if (data['username'] == username) {
+                playerInfo = setUserInfo(data);
+                console.log('playerInfo: ' + playerInfo.username + ' ' + playerInfo.avatar);
+            } else {
+                oppInfo = setUserInfo(data);
+                console.log('oppInfo: ' + oppInfo.username + ' ' + oppInfo.avatar);
             }
         }
         if (data['message'] == 'start') {

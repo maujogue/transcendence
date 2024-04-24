@@ -142,15 +142,44 @@ h1 {
 	align-items: center;
 }
 
-#listTournament{
-	background-color: white;
+#listTournament, #listPlayers {
 	justify-content: center;
 	align-items: center;
-	width: 50%;
+	width: 75%;
 	height: 50%;
+	overflow-y: scroll;
+	justify-content: start!important;
+	color: white;
 }
 
-#createTournamentForm, #listTournament {
+#tournamentForm {
+	height: auto;
+}
+
+.unsubscribe-btn {
+	position: absolute !important;
+	bottom: 0;
+	right: 0;
+	margin: 4.5%;
+	background-color: rgb(120, 2, 2) !important;
+	padding: 5px!important;
+}
+
+.unsubscribe-btn:hover {
+	box-shadow: 2px 2px 25px 2px rgb(226, 3, 3) !important;
+}
+
+.player-list {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: start;
+	width: 100%;
+	padding: 1% 2%;
+}
+
+
+.tournament {
 	font-size: 0.5em;
 	display: flex;
 	flex-direction: column;
@@ -158,7 +187,6 @@ h1 {
 	align-items: center;
 	background-color: var(--form-input-bg-color);
 	width: 75%;
-	/* height: 90%; */
 	opacity: 0.9;
 	box-shadow: 1px 1px 20px 2px var(--form-color);
 	border-radius: 5%;
@@ -169,12 +197,8 @@ h1 {
 	position: relative;
 	overflow: hidden;
 	top: -5%;
-}
-
-#listTournament {
-	overflow-y: scroll;
-	justify-content: start!important;
-	color: white;
+	height: 85%;
+	justify-content: start;
 }
 
 #avatar_pong {
@@ -320,7 +344,7 @@ h1 {
 	background-color: rgb(128, 126, 126);
 }
 
-.btn-create {
+.form-btn {
 	border: none;
 	color: white;
 	background-color: var(--form-input-bg-color);
@@ -335,14 +359,14 @@ h1 {
 
 }
 
-.btn-create::after, .btn-create::before {
+.form-btn::after, .form-btn::before {
 	content: "";
 	position: absolute;
 	left: -1px;
 	animation: glitch 2s linear infinite;
 }
   
-.btn-create:hover {
+.form-btn:hover {
 	box-shadow: 2px 2px 25px 2px var(--form-color);
 	background-color: var(--form-color);
 }
@@ -613,10 +637,12 @@ h1 {
 		height: 32px;
 	}
 
-	#createTournamentForm, #listTournament {
+	.tournament {
 		top: -15%;
 		height: 70%;
 		font-size: 0.45em;
+		transform: perspective(900px) rotateX(25deg);
+		perspective: 25%;
 	}
 	.form-header {
 		font-size: 2em;

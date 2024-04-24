@@ -63,9 +63,30 @@ function togglePasswordVisibility(togglePasswordInputId, passwordFieldId) {
 	});
 }
 
+//check password attribute with given regEx expression
+function checkPasswordAttribute(regEx, elementID, password) {
+	var dynamicColorDiv = document.getElementById(elementID);
+	if (regEx.test(password.value)) dynamicColorDiv.style.color = "green";
+	else dynamicColorDiv.style.color = "red";
+  }
+  
+  function checkPassword(category, password1, password2) {
+	checkPasswordAttribute(/^.{8,20}$/, category + "PassLength", password1);
+	checkPasswordAttribute(/^.*[a-z].*$/, category + "PassLowercase", password1);
+	checkPasswordAttribute(/^.*[A-Z].*$/, category + "PassUppercase", password1);
+	checkPasswordAttribute(/^.*[0-9].*$/, category + "PassNumbers", password1);
+	checkPasswordAttribute(/^.*[!@#$%^&*_=+].*$/, category + "PassSpecial", password1);
+  
+	var helpTextAgain = document.getElementById(category + "PasswordAgainHelpBlock");
+	if (password2.value !== "" && password1.value !== password2.value)
+	  helpTextAgain.classList.remove("d-none");
+	else helpTextAgain.classList.add("d-none");
+  }
+  
 export {
   toggleContentOnLogState,
   showComment,
   isLoggedIn,
   togglePasswordVisibility,
+  checkPassword,
 };

@@ -666,6 +666,18 @@ from users.models import CustomUser
 
 #         self.assertEqual(response.status_code, 400)
 
+    def test_bio_too_long(self):
+        update_datas = {'bio': 'fG08ptDo07C1keR6B7idYblHCcwyIDjk6MrIWBYhbeuE3QjgGhbbEz99f85kQstbLJmEy7l16YXR1ZPVJoajotgUNFkQg9rhrFHvHNvr3Q9wWHKBmoWnQgcjms1zpHx31geUz44aSSVbZiMd9yYPAYiskX26hGWhihhY6QoBVT1yczy4IfVgcvqHkViKNeyGnTKEFVorjZfBVbBBa1jiKDK47SFqnd7iPT0uazYjtRNyK3dDj4198X0jYtqh59Yim3zuzRRGnPt72xjjrguyc9XgWodVLTKMV2s7xcK4fCp5Q4VEs5UR4DplYgwAhH36pEsYWMDQQ7fqViX3r1UWPSZB0XkOZu5AwhobNZhQ9jfEAHj3G39lnSANhNovEavVZH6zG1pa8dBWWJJCh3s0L5RIW4eht7e77iCPh38l2IOLeL8VFfKR3uYQObwwGcqQaRzO8j4g38GhaKj2FRIRwFbXLP4DRlRmKlaavUaDtbUtYi7kTDoRc'}
+
+        response = self.client.post(
+            reverse('update_bio'), 
+            data=json.dumps(update_datas), 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, 400)
+
 
 #     def test_update_password(self):
 #         update_datas = {
@@ -722,6 +734,8 @@ from users.models import CustomUser
 #         self.assertEqual(response_data.get('status'), 'One password is missing.')
 
 
+    def test_update_password_no_datas(self):
+        update_datas = {}
 #     def test_update_no_datas(self):
 #         update_datas = {}
 
@@ -732,6 +746,59 @@ from users.models import CustomUser
 
 #         self.assertEqual(response.status_code, 406)
 
+
+    def test_update_email(self):
+        update_datas = {
+            'email': 'damian-cooper@gmail.com'
+        }
+
+        response = self.client.post(
+            reverse('update_email'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_update_email_already_used(self):
+        update_datas = {
+            'email': 'ochoa@gmail.com'
+        }
+
+        response = self.client.post(
+            reverse('update_email'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 400)
+
+    def test_update_email_empty(self):
+        update_datas = {
+            'email': ''
+        }
+
+        response = self.client.post(
+            reverse('update_email'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 400)
+
+    def test_update_email_missing(self):
+        update_datas = {}
+
+        response = self.client.post(
+            reverse('update_email'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 400)
+
+# =========================================================================================
 # # =========================================================================================
 
 # class GetUserDatas(TestCase):

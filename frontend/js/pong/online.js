@@ -144,6 +144,7 @@ async function connectToLobby(username) {
                 playerInfo = setUserInfo(data);
             } else {
                 oppInfo = setUserInfo(data);
+                console.log(oppInfo);
             }
         }
         if (data['message'] == 'start') {
@@ -161,11 +162,11 @@ async function connectToLobby(username) {
                 "character": player.character.name
             }));
         }
-        if (data['type'] == 'ask_user') {
+        if (data['type'] == 'ask_user' && playerInfo) {
             webSocket.send(JSON.stringify({
                 'type': 'user_info',
                 'username': username,
-                'avatar': playerInfo.avatar,
+                'avatar': playerInfo.avatar.split(' ')[1],
                 'name': player.name
             }));
         } 

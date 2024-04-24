@@ -94,8 +94,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             return None
 
     async def receive(self, text_data):
-        # print('receive')
-        # print('lobby:', self.lobby.player_ready)
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
         text_data_json = json.loads(text_data)
         

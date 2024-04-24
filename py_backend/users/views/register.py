@@ -13,11 +13,11 @@ def register(request):
     
     valid_request = validation_register(data)
     if valid_request:
-        return JsonResponse({"error": valid_request}, status=400)
+        return JsonResponse({'error': valid_request}, status=400)
 
     form = CustomUserCreationForm(data)
     if form.is_valid():
         form.save()
-        return JsonResponse({"status": "You are now register !"}, status=200)
+        return JsonResponse({'status': "You are now register !"}, status=200)
     else:
-        return JsonResponse({"error": form.errors}, status=400)
+        return JsonResponse({'error': form.errors}, status=400)

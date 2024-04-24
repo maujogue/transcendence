@@ -30,5 +30,5 @@ def login(request):
                 'rank': user.rank,
                 'n_games_played': user.n_games_played
             }
-            return JsonResponse({"status": "You are now login", "user": user_info}, status=200)
-    return JsonResponse({"error": "Wrong username or password."}, status=400)
+            return JsonResponse({'status': "You are now logged in !", "user": user_info}, status=200)
+    return JsonResponse({'error': "Wrong username or password."}, status=400)

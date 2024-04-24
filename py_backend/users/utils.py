@@ -6,6 +6,17 @@ import json
 import os
 
 SPECIAL_CHARS = "+/*.,!#%^&\{}[]=:;\'\"`~"
+SPECIAL_CHARS_EMAIL = "+/*,!#%^&\{}[]=:;\'\"`~"
+
+
+def email_is_valid(email):
+	if not email or email == '':
+		return False, f'Missing email.'
+	if any(char in SPECIAL_CHARS_EMAIL for char in email):
+		return False, f'Email contains forbidden characters.'
+	if not '@' in email:
+		return False, f'Invalid email.'
+	return True, None
 
 
 def email_is_unique(email):
@@ -15,6 +26,7 @@ def email_is_unique(email):
 	if response:
 		return False, f'Email is already used.'
 	return True, None
+
 
 def username_is_valid(username):
 	if not username or username == '':
@@ -29,6 +41,7 @@ def username_is_valid(username):
 		return False, f'Username already exists.'
 	return True, None
 
+
 def username_is_unique(username):
 	if not username or username == '':
 		return False, f'Username cannot be empty.'
@@ -37,7 +50,8 @@ def username_is_unique(username):
 	if response:
 		return False, f'Username is already used.'
 	return True, None
-	
+
+
 def validation_register(data):
 	validation_errors = []
 

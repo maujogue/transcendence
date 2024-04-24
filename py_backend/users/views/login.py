@@ -2,7 +2,7 @@ from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login as auth_login
 
-from users.utils import decode_json_body
+from users.utils import decode_json_body, convert_image_to_base64
 from users import forms
 
 
@@ -24,6 +24,7 @@ def login(request):
             user_info = {
                 'username': user.username,
                 'email': user.email,
+                'avatar': convert_image_to_base64(user.avatar),
                 'title': user.title,
                 'bio': user.bio,
                 'winrate': user.winrate,

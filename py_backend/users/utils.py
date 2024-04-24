@@ -91,13 +91,12 @@ def extension_is_valid(image_name):
 	if ext == '.jpg':
 		return True
 	return False
-		
+
 
 def send_confirmation_email(user, request):
 	if user.is_authenticated:
 		if user.email_is_verified != True:
 			current_site = get_current_site(request)
-			user = user
 			email = user.email
 			subject = "Verify Email"
 			message = render_to_string('../templates/verification_email_message.html', {

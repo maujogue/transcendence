@@ -48,7 +48,6 @@ document.addEventListener("keyup", function(event) {
 
 function clickHandler(event) {
     if (event.target.id == 'restart') {
-        console.log('restart');
         if (document.getElementById("endscreen"))
             document.getElementById("endscreen").remove();
         sendIsReady(webSocket);
@@ -71,7 +70,7 @@ function clickHandler(event) {
 }
 
 async function goToOnlineSelectMenu(field) {
-    document.getElementById("menu").remove();
+    document.getElementsByClassName("menu")[0].remove();
     env = createSelectMenu(field, characters);
     document.getElementById("cursorP2").remove();
     document.getElementsByClassName("inputP2")[0].remove();
@@ -84,7 +83,6 @@ async function createOnlineSelectMenu(field) {
     goToOnlineSelectMenu(field);
     displayCharacter(player, env, "chupacabra", "player").then((res) => {
         player = res;
-        console.log(player);
         const paddle = env.scene.getObjectByName("paddle_" + player.name);
         paddle.position.x = 2.5;
         onlineGameLoop(webSocket);
@@ -92,7 +90,7 @@ async function createOnlineSelectMenu(field) {
 }
 
 async function connectToLobby() {
-    webSocket = new WebSocket('ws://0.0.0.0:8080/ws/lobby/');
+    webSocket = new WebSocket('wss://127.0.0.1:8000/ws/lobby/');
     
     webSocket.onopen = function() { 
         console.log('Connection established');

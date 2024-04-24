@@ -1,15 +1,12 @@
-version: '3.8'
-
 services:
-  django-backend:
+  django_backend:
     build:
         context: ../py_backend/docker
         dockerfile: Dockerfile.prod
     volumes:
-      - static_volume:/home/py_backend/web/staticfiles
-      - media_volume:/home/py_backend/web/mediafiles
-    expose:
-      - 8000
+       - staticfiles:/staticfiles
+       - ../py_backend:/code
+       - certificates:/etc/nginx/ssl  
     env_file:
       - ./.env.prod
     depends_on:
@@ -31,28 +28,21 @@ services:
       timeout: 5s
       retries: 5
 
-  nginx-proxy:
-    build: ../nginx_proxy/config
-    volumes:
-      - static_volume:/home/py_backend/web/staticfiles
-      - media_volume:/home/py_backend/web/mediafiles
-    ports:
-      - 8000:8080
-    depends_on:
-      - django-backend
-  
   nginx_frontend:
     build:
       context: ../frontend
       dockerfile: Dockerfile
     working_dir: /usr/app/
     volumes:
+      - certificates:/etc/nginx/ssl  
+      - staticfiles:/staticfiles
       - ../frontend:/usr/share/nginx/html
     ports:
-      - 8001:80
+      - 8000:80
     restart: always
+  
 
 volumes:
   postgres_data:
-  static_volume:
-  media_volume:
+  certificates:
+  staticfiles: 

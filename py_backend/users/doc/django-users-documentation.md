@@ -157,20 +157,243 @@ The CSRF token is returned in a JSON response with the key "csrfToken" and a `20
 - The `@ensure_csrf_cookie decorator` ensures that a CSRF cookie is included in the response.
 - Inside the function, `get_token(request)` is a function that retrieves or generates a CSRF token.
 
+
+- In any template that uses a POST form, use the csrf_token tag inside the `<form>` element if the form is for an internal URL, e.g.:
+
+`<form method="post">{% csrf_token %}`
+
+- **WARNING : This should not be done for POST forms that target external URLs, since that would cause the CSRF token to be leaked, leading to a vulnerability.**
+
 </details>
 <br>
 
 <details>
 <summary>
-<code>/users/check_if_email_is_unique</code>
+<code>/users/email_available</code>
 </summary>
 <br>
 
-This function is a custom utility function that checks for email uniqueness in the database.
+This util function is used to check if a email is available or not.
+
+### Entrypoint
+
+`GET /users/email_available`
 
 ### Parameters
-- `email` : the email which we want to check whether or not it is in the database.
+- `request`: The HTTP request object.
+- `email` : The email we want to check
 
 ### Returns
-- `True` if the email already exists.
-- `False` if the email does not exist in the database.
+- Return `success` if the email is available and a 200 status code.
+- Return `failure` if the email is already used and a 400 status code.
+- Return also `Missing email` if the email is missing and a 400 status code.
+
+### Notes
+- This function is decorated with `@require_http_methods(["POST"])` to ensure that it only accepts POST requests.
+- The `@requires_csrf_token` decorator is used to enforce CSRF protection on the view. 
+
+</details>
+<br>
+
+<details>
+<summary>
+<code>/users/username_available</code>
+</summary>
+<br>
+
+This util function is used to check if a username is available or not.
+
+### Entrypoint
+
+`GET /users/username_available`
+
+### Parameters
+- `request`: The HTTP request object.
+- `username` : The username we want to check
+
+### Returns
+- Return `success` if the username is available and a 200 status code.
+- Return `failure` if the username is already used and a 400 status code.
+- Return also `Missing username` if the username is missing and a 400 status code.
+
+### Notes
+- This function is decorated with `@require_http_methods(["POST"])` to ensure that it only accepts POST requests.
+- The `@requires_csrf_token` decorator is used to enforce CSRF protection on the view. 
+
+</details>
+
+## Users management
+
+<details>
+<summary>
+<code>/users/get_user_datas</code>
+</summary>
+<br>
+
+This function is used to retrieve data from the currently logged-in user. It returns the following information:
+- username
+- email
+- bio
+- title
+- winrate
+- rank
+- number of games played
+
+### Entry point
+`POST /users/get_user_datas`
+
+### Parameters
+- `request`: The HTTP request object containing the POST data.
+
+### Returns
+- `success` and a dictionnary with all datas.
+
+### Notes
+- This function is decorated with `@login_required` to ensure that the user in correctly login.
+- This function is decorated with `@require_http_methods(["POST"])` to ensure that it only accepts POST requests.
+- The `@requires_csrf_token` decorator is used to enforce CSRF protection on the view. 
+</details>
+<br>
+
+<details>
+<summary>
+<code>/users/update_profile_bio</code>
+</summary>
+<br>
+
+This function is used to change the bio of the currently logged-in user.
+
+### Entrypoints
+`POST /users/update_profile_bio`
+
+### Parameters
+- `request`: The HTTP request object containing the POST data.
+- `bio`: the updated bio.
+
+### Returns
+- `"Your bio has been correctly updated !"` and a 200 status code if the bio was correctly updated.
+- A 400 status code if the bio is either too long or missing.
+
+### Notes
+- This function is decorated with `@login_required` to ensure that the user in correctly login.
+- This function is decorated with `@require_http_methods(["POST"])` to ensure that it only accepts POST requests.
+- The `@requires_csrf_token` decorator is used to enforce CSRF protection on the view. 
+
+</details>
+<br>
+
+<details>
+<summary>
+<code>/users/update_email</code>
+</summary>
+<br>
+
+This function is used to change the email of the currently logged-in user.
+
+### Entrypoints
+`POST /users/update_email`
+
+### Parameters
+- `request`: The HTTP request object containing the POST data.
+- `email`: the updated email.
+
+### Returns
+- `"Your email has been correctly updated !"` and a 200 status code if the email was correctly updated.
+- A 400 status code if the email send by the user is **not valid, already used or missing**.
+
+### Notes
+- This function is decorated with `@login_required` to ensure that the user in correctly login.
+- This function is decorated with `@require_http_methods(["POST"])` to ensure that it only accepts POST requests.
+- The `@requires_csrf_token` decorator is used to enforce CSRF protection on the view. 
+
+</details>
+<br>
+
+<details>
+<summary>
+<code>/users/update_profile_password</code>
+</summary>
+<br>
+
+This function is used to change the password of the currently logged-in user.
+
+### Entrypoints
+`POST /users/update_profile_password`
+
+### Parameters
+- `request`: The HTTP request object containing the POST data.
+- `new_password1`: the updated password.
+- `new_password2`: the second updated password, to check if both are the same.
+
+### Returns
+- `"Your password has been correctly updated !"` and a 200 status code if the password was correctly updated.
+- A 400 status code if passwords do not match or if one password is missing.
+
+### Notes
+- This function is decorated with `@login_required` to ensure that the user in correctly login.
+- This function is decorated with `@require_http_methods(["POST"])` to ensure that it only accepts POST requests.
+- The `@requires_csrf_token` decorator is used to enforce CSRF protection on the view. 
+- This view uses the built-in fonction `make_password` that converts a plain-text password into a hash that is appropriate for storing in a persistent database.
+
+</details>
+<br>
+
+<details>
+<summary>
+<code>/users/update_profile_picture</code>
+</summary>
+<br>
+
+This function is used to change the picture of the currently logged-in user.
+
+### Entrypoints
+`POST /users/update_profile_password`
+
+### Parameters
+- `request`: The HTTP request object containing the POST data.
+- `image`: the new profile picture.
+
+### Returns
+- `"Your profile picture has been correctly updated !"` and a 200 status code if the profile picture was correctly updated.
+- A 400 status code if :
+    - the extension is invalid (it has to be `.jpg` or `.png`)
+    - the image size exceeds the limit (max is 5MB)
+    - there is no file provided
+    - the file is invalid
+    - dimensions are to large
+    - or if there is an unexpected error while updating the profile picture
+
+### Notes
+- This function is decorated with `@login_required` to ensure that the user in correctly login.
+- This function is decorated with `@require_http_methods(["POST"])` to ensure that it only accepts POST requests.
+- The `@requires_csrf_token` decorator is used to enforce CSRF protection on the view.
+- The view uses the `magic` library to determine the file's MIME type from the first 1024 bytes then, checks if the file is an image by verifying that 'image' is in the MIME type.
+
+</details>
+<br>
+
+<details>
+<summary>
+<code>/users/update_username</code>
+</summary>
+<br>
+
+This function is used to change the username of the currently logged-in user.
+
+### Entrypoints
+`POST /users/update_username`
+
+### Parameters
+- `request`: The HTTP request object containing the POST data.
+- `username`: the updated username.
+
+### Returns
+- `"Your username has been correctly updated !"` and a 200 status code if the username was correctly updated.
+- A 400 status code if the username send by the user is **already used or missing**.
+
+### Notes
+- This function is decorated with `@login_required` to ensure that the user in correctly login.
+- This function is decorated with `@require_http_methods(["POST"])` to ensure that it only accepts POST requests.
+- The `@requires_csrf_token` decorator is used to enforce CSRF protection on the view.
+
+</details>

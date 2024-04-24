@@ -3,13 +3,11 @@ from django.urls import reverse
 from django.test import Client
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 from django.core.files.uploadedfile import SimpleUploadedFile
-
+import base64
 
 import json
 
 from users.models import CustomUser
-from users.models import Profile
-
 
 
 
@@ -31,7 +29,6 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'bob_seger',
             'email': 'bobseger@gmail.com',
-            'password': 'Mewtransse9+',
             'password1': 'Mewtransse9+',
             'password2': 'Mewtransse9+'
         }
@@ -50,7 +47,6 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'bo',
             'email': 'bobseger@gmail.com',
-            'password': 'Newtrans9+',
             'password1': 'Newtrans9+',
             'password2': 'Newtrans9+'
         }
@@ -66,7 +62,6 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'bob+seger',
             'email': 'bobseger@gmail.com',
-            'password': 'Newtrans9+',
             'password1': 'Newtrans9+',
             'password2': 'Newtrans9+'
         }
@@ -82,7 +77,6 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'lboulatr',
             'email': 'routine@gmail.com',
-            'password': 'Newtrans9+',
             'password1': 'Newtrans9+',
             'password2': 'Newtrans9+'
         }
@@ -98,7 +92,6 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'bobby_seger',
             'email': 'bobseger@gmail.com',
-            'password': 'Newtr',
             'password1': 'Newtr',
             'password2': 'Newtr'
         }
@@ -114,7 +107,6 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'bobbyseger',
             'email': 'bonjour@gmail.com',
-            'password': 'Bobbyseger2',
             'password1': 'Bobbyseger2+',
             'password2': 'Bobbyseger2+'
         }
@@ -130,7 +122,6 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'ochoaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
             'email': 'ochoaloco@gmail.com',
-            'password': 'Km4C47_x£6v,',
             'password1': 'Km4C47_x£6v,',
             'password2': 'Km4C47_x£6v,'
         }
@@ -146,7 +137,6 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'bob_seger',
             'email': 'lboulatrgmail.com',
-            'password': 'Newtrans9+',
             'password1': 'Newtrans9+',
             'password2': 'Newtrans9+'
         }
@@ -162,7 +152,6 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'bob_seger',
             'email': 'lboulatr@gmailcom',
-            'password': 'Newtrans9+',
             'password1': 'Newtrans9+',
             'password2': 'Newtrans9+'
         }
@@ -178,7 +167,6 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'bob_seger',
             'email': 'lboulatr@gmail.com',
-            'password': 'Newtrans9+',
             'password1': 'Newtrans9+',
             'password2': 'Newtrans9+'
         }
@@ -194,7 +182,6 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'ochoa',
             'email': 'ochoaloco@gmail.com',
-            'password': '+',
             'password1': '+',
             'password2': '+'
         }
@@ -210,7 +197,6 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'ochoa',
             'email': 'ochoaloco@gmail.com',
-            'password': 'Km4C47_x£6v,',
             'password1': 'Km4C47_x£6v,',
             'password2': 'Km4C47_x£6v,+'
         }
@@ -226,7 +212,6 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'ochoa',
             'email': 'ochoaloco@gmail.com',
-            'password': 'Km4C47_x£6v,+',
             'password1': 'Km4C47_x£6v,+',
             'password2': 'Km4C47_x£6v,'
         }
@@ -242,7 +227,6 @@ class RegisterTests(TestCase):
         newUser = {
             'username': '',
             'email': 'ochoaloco@gmail.com',
-            'password': 'Km4C47_x£6v,+',
             'password1': 'Km4C47_x£6v,+',
             'password2': 'Km4C47_x£6v,'
         }
@@ -258,7 +242,6 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'ochoa',
             'email': '',
-            'password': 'Km4C47_x£6v,+',
             'password1': 'Km4C47_x£6v,+',
             'password2': 'Km4C47_x£6v,'
         }
@@ -274,8 +257,6 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'ochoa',
             'email': 'ochoaloco@gmail.com',
-            'password': 'Km4C47_x£6v,',
-            'password': '',
             'password2': 'Km4C47_x£6v,'
         }
 
@@ -290,9 +271,7 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'ochoa',
             'email': 'ochoaloco@gmail.com',
-            'password': 'Km4C47_x£6v,',
             'password1': 'Km4C47_x£6v,',
-            'password2': ''
         }
 
         response = self.client.post(
@@ -306,7 +285,6 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'ochoa',
             'email': 'ochoaloco@gmail.com',
-            'password': 'Km4C47_x£6v,+',
             'password1': 'Km4C47_x£6v,+',
             'password2': 'Km4C47_x£6v,'
         }
@@ -331,7 +309,6 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'ochoa',
             'email': 'ochoalocogmail.com',
-            'password': 'Km4C47_x£6v,',
             'password1': 'Km4C47_x£6v,',
             'password2': 'Km4C47_x£6v,'
         }
@@ -347,7 +324,6 @@ class RegisterTests(TestCase):
         newUser = {
             'username': 'ochoa',
             'email': 'ochoaloco@gmailcom',
-            'password': 'Km4C47_x£6v,',
             'password1': 'Km4C47_x£6v,',
             'password2': 'Km4C47_x£6v,'
         }
@@ -374,6 +350,7 @@ class LoginTests(TestCase):
         user = CustomUser.objects.get(email="lboulatr@gmail.com")
         self.assertEqual(user.username, 'lboulatr')
         self.assertEqual(user.email, 'lboulatr@gmail.com')
+        self.assertEqual(CustomUser.objects.count(), 1)
 
     def test_basic_login(self):
         user = {
@@ -490,14 +467,14 @@ class LogoutTests(TestCase):
     def test_logout_success(self):
         self.client.login(username='lboulatr', password='UserPassword9+')
         response = self.client.post(
-            reverse('logout_view'), 
+            reverse('logout'), 
             content_type='application/json')
 
         self.assertEqual(response.status_code, 200)
 
     def test_logout_but_not_login(self):
         response = self.client.post(
-            reverse('logout_view'), 
+            reverse('logout'), 
             content_type='application/json')
 
         self.assertEqual(response.status_code, 302)
@@ -506,9 +483,15 @@ class LogoutTests(TestCase):
 
 class CSRFTokenTest(TestCase):
     def setUp(self):
-        self.csrf_client = Client(enforce_csrf_checks=True)
+        self.user = CustomUser.objects.create_user(
+            username="osterga",
+            email="osterga@gmail.com",
+            password="UserPassword9+",
+            bio="Bonjours a tous, c'est Osterga")
+        self.client.login(username='osterga', password='UserPassword9+')
 
     def test_get_csrf_token(self):
+    
         response = self.client.get(reverse('get_csrf_token'))
 
         self.assertEqual(response.status_code, 200)
@@ -516,21 +499,49 @@ class CSRFTokenTest(TestCase):
         self.assertIn('csrftoken', response.cookies)
     
     def test_post_response(self):
+    
         response = self.client.post(reverse('get_csrf_token'))
         self.assertEqual(response.status_code, 405)
 
     def test_get_request_for_post_function(self):
+    
         response = self.client.get(reverse('register'))
         self.assertEqual(response.status_code, 405)
 
     def test_csrf_token_is_unique(self):
+    
         response1 = self.client.get(reverse('get_csrf_token'))
         response2 = self.client.get(reverse('get_csrf_token'))
         self.assertNotEqual(response1.json()['csrfToken'], response2.json()['csrfToken'])
         self.assertEqual(response1.status_code, 200)
         self.assertEqual(response2.status_code, 200)
 
-# # =========================================================================================
+    def test_token_logout_with_token(self):
+        response = self.client.get(reverse('get_csrf_token'))
+
+        response = self.client.post(
+            reverse('logout'), 
+            content_type='application/json')
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_token_logout_without_token(self):
+        response = self.client.post(
+            reverse('logout'), 
+            content_type='application/json')
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_without_csrf_token(self):
+        self.csrf_client = Client(enforce_csrf_checks=True)
+        response = self.csrf_client.post(reverse('update_username'), data={'key': 'value'})
+        self.assertEqual(response.status_code, 403)
+
+    def test_csrf_token_generated(self):
+        response = self.client.get(reverse('get_csrf_token'))
+        self.assertContains(response, 'csrfToken')
+
+# =========================================================================================
         
 class ProfileUpdate(TestCase):
     def setUp(self):
@@ -547,8 +558,6 @@ class ProfileUpdate(TestCase):
             email="ochoa@gmail.com",
             password="UserPassword9+",
             bio="Bonjours a tous, c'est Ochoa")
-
-        self.profile = Profile.objects.create(user=self.user)
         
         self.client.login(username='osterga', password='UserPassword9+')
 
@@ -559,44 +568,12 @@ class ProfileUpdate(TestCase):
         }
 
         response = self.client.post(
-            reverse('update_profile'), 
+            reverse('update_bio'), 
             data=json.dumps(update_datas), 
             content_type='application/json'
         )
         self.user.refresh_from_db()
         self.assertEqual(response.status_code, 302)
-
-
-    def test_update_datas_bio(self):
-        update_datas = {
-            'bio': 'Lorem ipsum dolor sit amet'
-        }
-
-        response = self.client.post(
-            reverse('update_profile'), 
-            data=json.dumps(update_datas), 
-            content_type='application/json'
-        )
-        self.user.refresh_from_db()
-
-        self.assertEqual(self.user.bio, 'Lorem ipsum dolor sit amet')
-        self.assertEqual(response.status_code, 200)
-
-
-    def test_empty_bio(self):
-        update_datas = {
-            'bio': ''
-        }
-
-        response = self.client.post(
-            reverse('update_profile'), 
-            data=json.dumps(update_datas), 
-            content_type='application/json'
-        )
-        self.user.refresh_from_db()
-
-        self.assertEqual(self.user.bio, '')
-        self.assertEqual(response.status_code, 200)
 
 
     def test_change_username(self):
@@ -605,7 +582,7 @@ class ProfileUpdate(TestCase):
         }
 
         response = self.client.post(
-            reverse('update_profile'), 
+            reverse('update_username'), 
             data=json.dumps(update_datas), 
             content_type='application/json'
         )
@@ -621,7 +598,7 @@ class ProfileUpdate(TestCase):
         }
 
         response = self.client.post(
-            reverse('update_profile'), 
+            reverse('update_username'), 
             data=json.dumps(update_datas), 
             content_type='application/json'
         )
@@ -631,15 +608,14 @@ class ProfileUpdate(TestCase):
         self.assertEqual(response_data.get('error'), 'Username is already used.')
         self.assertEqual(response.status_code, 400)
 
-    
+
     def test_change_username_camelcase(self):
         update_datas = {
             'username': 'OchoA',
-            'avatar': 'hunter.jpg'
         }
 
         response = self.client.post(
-            reverse('update_profile'), 
+            reverse('update_username'), 
             data=json.dumps(update_datas), 
             content_type='application/json'
         )
@@ -650,16 +626,374 @@ class ProfileUpdate(TestCase):
         self.assertEqual(response.status_code, 400)
 
 
-    def test_avatar_upload(self):
-        avatar_datas = {
-            'avatar': 'hunter.jpg'
+    def test_update_bio(self):
+        update_datas = {
+            'bio': 'Lorem ipsum dolor sit amet'
         }
+
         response = self.client.post(
-            reverse('update_profile'), 
-            data=json.dumps(avatar_datas), 
+            reverse('update_bio'), 
+            data=json.dumps(update_datas), 
             content_type='application/json'
         )
         self.user.refresh_from_db()
 
+        self.assertEqual(self.user.bio, 'Lorem ipsum dolor sit amet')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(self.user.avatar.name, 'hunter.jpg')
+
+
+    def test_empty_bio(self):
+        update_datas = {
+            'bio': ''
+        }
+
+        response = self.client.post(
+            reverse('update_bio'), 
+            data=json.dumps(update_datas), 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(self.user.bio, '')
+        self.assertEqual(response.status_code, 200)
+
+    def test_missing_bio(self):
+        update_datas = {}
+
+        response = self.client.post(
+            reverse('update_bio'), 
+            data=json.dumps(update_datas), 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_bio_too_long(self):
+        update_datas = {'bio': 'fG08ptDo07C1keR6B7idYblHCcwyIDjk6MrIWBYhbeuE3QjgGhbbEz99f85kQstbLJmEy7l16YXR1ZPVJoajotgUNFkQg9rhrFHvHNvr3Q9wWHKBmoWnQgcjms1zpHx31geUz44aSSVbZiMd9yYPAYiskX26hGWhihhY6QoBVT1yczy4IfVgcvqHkViKNeyGnTKEFVorjZfBVbBBa1jiKDK47SFqnd7iPT0uazYjtRNyK3dDj4198X0jYtqh59Yim3zuzRRGnPt72xjjrguyc9XgWodVLTKMV2s7xcK4fCp5Q4VEs5UR4DplYgwAhH36pEsYWMDQQ7fqViX3r1UWPSZB0XkOZu5AwhobNZhQ9jfEAHj3G39lnSANhNovEavVZH6zG1pa8dBWWJJCh3s0L5RIW4eht7e77iCPh38l2IOLeL8VFfKR3uYQObwwGcqQaRzO8j4g38GhaKj2FRIRwFbXLP4DRlRmKlaavUaDtbUtYi7kTDoRc'}
+
+        response = self.client.post(
+            reverse('update_bio'), 
+            data=json.dumps(update_datas), 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, 400)
+
+
+    def test_update_password(self):
+        update_datas = {
+            'new_password1': 'Zxcvbnm98+',
+            'new_password2': 'Zxcvbnm98+'
+        }
+        old_password = self.user.password
+
+        response = self.client.post(
+            reverse('update_password'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        new_password = self.user.password
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotEqual(old_password, new_password)
+
+
+    def test_update_wrong_password(self):
+        update_datas = {
+            'new_password1': 'Zxcvbnm98+',
+            'new_password2': 'Zxcvbnm98'
+        }
+
+        response = self.client.post(
+            reverse('update_password'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        response_data = response.json()
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response_data.get('status'), 'Passwords do not match.')
+
+
+    def test_update_empty_password(self):
+        update_datas = {
+            'new_password1': 'Zxcvbnm98+',
+            'new_password2': ''
+        }
+
+        response = self.client.post(
+            reverse('update_password'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        response_data = response.json()
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response_data.get('status'), 'One password is missing.')
+
+
+    def test_update_password_no_datas(self):
+        update_datas = {}
+
+        response = self.client.post(
+            reverse('update_password'), 
+            data=update_datas, 
+        )
+
+        self.assertEqual(response.status_code, 406)
+
+
+    def test_update_email(self):
+        update_datas = {
+            'email': 'damian-cooper@gmail.com'
+        }
+
+        response = self.client.post(
+            reverse('update_email'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_update_email_already_used(self):
+        update_datas = {
+            'email': 'ochoa@gmail.com'
+        }
+
+        response = self.client.post(
+            reverse('update_email'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 400)
+
+    def test_update_email_empty(self):
+        update_datas = {
+            'email': ''
+        }
+
+        response = self.client.post(
+            reverse('update_email'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 400)
+
+    def test_update_email_missing(self):
+        update_datas = {}
+
+        response = self.client.post(
+            reverse('update_email'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 400)
+
+# =========================================================================================
+
+class GetUserDatas(TestCase):
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(
+            username="osterga",
+            email="osterga@gmail.com",
+            password="UserPassword9+",
+            bio="Bonjours a tous, c'est Osterga",
+            title='L\'Inusable')
+        
+        self.client.login(username='osterga', password='UserPassword9+')
+
+    def test_basic_get_user_data(self):
+        response = self.client.post(reverse('get_user_data'))
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_user_data(self):
+        response = self.client.post(reverse('get_user_data'))
+        response_data = response.json()
+
+        with open(self.user.avatar.path, "rb") as image_file:
+            encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+
+        self.assertEqual(response_data.get('user').get('username'), 'osterga')
+        self.assertEqual(response_data.get('user').get('email'), 'osterga@gmail.com')
+        self.assertEqual(response_data.get('user').get('avatar'), encoded_string)
+        self.assertEqual(response_data.get('user').get('bio'), "Bonjours a tous, c'est Osterga")
+        self.assertEqual(response_data.get('user').get('title'), 'L\'Inusable')
+        self.assertEqual(response_data.get('user').get('winrate'), None)
+        self.assertEqual(response_data.get('user').get('rank'), None)
+        self.assertEqual(response_data.get('user').get('n_games_played'), None)
+
+    def test_without_login(self):
+        self.client.logout()
+        response = self.client.post(reverse('get_user_data'))
+        self.assertEqual(response.status_code, 302)
+
+# =========================================================================================
+
+
+class UpdateProfilePictureTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.user = CustomUser.objects.create_user(username='testuser', password='testpass', bio='Hello !')
+        self.client.login(username='testuser', password='testpass')
+
+
+    def test_update_profile_picture(self):
+        with open('media/hunter.jpg', 'rb') as img:
+            response = self.client.post(
+                reverse('update_profile_picture'),
+                {'image': img})
+                
+        self.assertEqual(response.status_code, 200)
+
+        self.user.refresh_from_db()
+        self.assertIsNotNone(self.user.avatar)
+
+
+    def test_picture_too_big(self):
+        with open('media/river.jpg', 'rb') as img:
+            response = self.client.post(
+                reverse('update_profile_picture'),
+                {'image': img})
+                
+        self.assertEqual(response.status_code, 400)
+        response_data = response.json()
+
+        self.assertEqual(response_data.get('error'), 'File size exceeds the limit.')
+
+
+    def test_invalid_picture(self):
+        with open('media/invalid.cub', 'rb') as img:
+            response = self.client.post(
+                reverse('update_profile_picture'),
+                {'image': img})
+                
+        self.assertEqual(response.status_code, 400)
+        response_data = response.json()
+
+        self.assertEqual(response_data.get('error'), 'Invalid image type.')
+
+
+# =========================================================================================
+
+class UtilsFunctionsTest(TestCase):
+    def setUp(self):
+        self.user = CustomUser.objects.create_user(
+            username="osterga",
+            email="osterga@gmail.com",
+            password="UserPassword9+",
+            bio="Bonjours a tous, c'est Osterga",
+            title='L\'Inusable')
+        
+        self.client.login(username='osterga', password='UserPassword9+')
+
+    def test_unique_username(self):
+        update_datas = {
+            'username': 'damien-cooper'
+        }
+
+        response = self.client.post(
+            reverse('username_available'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+
+        self.assertEqual(response.status_code, 200)
+    
+    def test_username_already_used(self):
+        update_datas = {
+            'username': 'osterga'
+        }
+
+        response = self.client.post(
+            reverse('username_available'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+
+        response_data = response.json()
+        self.assertEqual(response_data.get('error'), 'Username is already used.')
+        self.assertEqual(response.status_code, 400)
+
+    def test_username_already_used_letter_case(self):
+        update_datas = {
+            'username': 'OSTERGA'
+        }
+
+        response = self.client.post(
+            reverse('username_available'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+
+        response_data = response.json()
+        self.assertEqual(response_data.get('error'), 'Username is already used.')
+        self.assertEqual(response.status_code, 400)
+
+    def test_empty_username(self):
+        update_datas = {
+            'username': ''
+        }
+
+        response = self.client.post(
+            reverse('username_available'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+
+        response_data = response.json()
+        self.assertEqual(response_data.get('status'), 'Missing username.')
+        self.assertEqual(response.status_code, 400)
+
+    def test_unique_email(self):
+        update_datas = {
+            'email': 'damien-cooper@gmail.com'
+        }
+
+        response = self.client.post(
+            reverse('email_available'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+
+        self.assertEqual(response.status_code, 200)
+    
+    def test_email_already_used(self):
+        update_datas = {
+            'email': 'osterga@gmail.com'
+        }
+
+        response = self.client.post(
+            reverse('email_available'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+
+        response_data = response.json()
+        self.assertEqual(response_data.get('error'), 'Email is already used.')
+        self.assertEqual(response.status_code, 400)
+
+    def test_empty_email(self):
+        update_datas = {
+            'email': ''
+        }
+
+        response = self.client.post(
+            reverse('email_available'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+
+        response_data = response.json()
+        self.assertEqual(response_data.get('status'), 'Missing email.')
+        self.assertEqual(response.status_code, 400)

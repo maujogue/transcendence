@@ -15,10 +15,10 @@ all: $(NAME)
 $(NAME): 
 		$(MAKE) up
 
-prod_up:
+prod_up: prod_down
 		$(DOCKER_COMPOSE_PROD) up -d --build
 
-dev_up:
+dev_up:	dev_down
 		$(DOCKER_COMPOSE_DEV) up -d --build
 
 prod_down:

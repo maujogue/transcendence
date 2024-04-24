@@ -14,15 +14,11 @@ class CustomUser(AbstractUser):
 	title = models.CharField(max_length=50, null=True)
 	avatar = models.ImageField(default='avatar.jpg', upload_to='profile_avatars')
 	bio = models.TextField(max_length=settings.MAX_LEN_TEXT, default="")
-	avatar = models.ImageField(default='avatar.jpg', upload_to='profile_avatars')
-	bio = models.TextField(max_length=settings.MAX_LEN_TEXT, default="")
 	banner = models.ImageField(null=True)
 	winrate = models.DecimalField(max_digits=4, decimal_places=4, validators=[MinValueValidator(0), MaxValueValidator(1)], null=True)
 	rank = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(50)], null=True)
 	n_games_played = models.IntegerField(null=True)
 	friends = models.ManyToManyField("self", blank=True)
-	# groups = models.ManyToManyField('auth.Group', related_name='custom_user_set')
-	# user_permissions = models.ManyToManyField('auth.Permission', related_name='custom_user_set')
 	
 	def save(self, *args, **kwargs):
 		super().save(*args, **kwargs)
@@ -31,10 +27,3 @@ class CustomUser(AbstractUser):
 			output_size = (300, 300)
 			img.thumbnail(output_size)
 			img.save(self.avatar.path)
-
-
-class Profile(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
-
-    avatar = models.ImageField(default='default.jpg', upload_to='profile_images')
-    bio = models.TextField(max_length=settings.MAX_LEN_TEXT)

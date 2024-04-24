@@ -1,17 +1,18 @@
 import { resize, isFullScreen } from "./resize.js";
 import { checkCollision } from "./collision.js";
-import { displayMainMenu, createSelectMenu, displayLobby } from './menu.js';
+import { displayMainMenu, createSelectMenu, createOnlineMenu, createMenuCreateTournament, createJoinTournamentMenu} from './menu.js';
 import { handleKeyPress, handleMenuKeyPress } from './handleKeyPress.js';
 import { displayCharacter, updateMixers } from './displayCharacter.js';
 import { initGame } from "./initGame.js";
 import { createEndScreen, returnToMenu } from "./createEndScreen.js"
 import { actualizeScore } from "./score.js";
 import { createField } from "./createField.js";
-import { connectToLobby, onlineGameLoop, goToOnlineSelectMenu, createOnlineSelectMenu} from "./online.js";
+import { createOnlineSelectMenu} from "./online.js";
 import { ClearAllEnv, getSize } from "./createEnvironment.js";
 import { loadAllModel } from "./loadModels.js"
 import { loadScene } from "./loadModels.js";
 import * as THREE from 'three';
+import { sendTournamentForm } from "./createTournament.js";
 
 let start = false;
 let divMenu = document.getElementById("menu");
@@ -22,6 +23,7 @@ let keyPress = false;
 let keysPressed = {};
 let isOnline = false;
 let localLoop = true;
+let form;
 const gameDiv = document.getElementById('game');
 const field = await createField();
 export const lobby = await loadScene('lobbyTest');
@@ -86,7 +88,21 @@ document.body.addEventListener("click", function(event) {
 	}
 	if (event.target.id == 'onlineGame') {
 		isOnline = true;
+		createOnlineMenu(field);
+	}
+	if (event.target.id == 'quick') {
 		createOnlineSelectMenu(field);
+	}
+	if (event.target.id == 'create') {
+		createMenuCreateTournament();
+		form = document.getElementById("tournamentForm");
+		form.addEventListener('submit', function(event) {
+			event.preventDefault();
+			sendTournamentForm(form);
+		});
+	}
+	if (event.target.id == 'join') {
+		createJoinTournamentMenu();
 	}
 	if (event.target.id == 'fullScreen') {
 		if (!isFullScreen())

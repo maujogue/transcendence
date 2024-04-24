@@ -22,17 +22,17 @@ def update_profile_picture(request):
         return JsonResponse({'error': "File size exceeds the limit."}, status=400)
     
     if uploaded_file is None:
-        return JsonResponse({'error': "No file provided."}, status=401)
+        return JsonResponse({'error': "No file provided."}, status=400)
     
     mime = magic.Magic()
     file_type = mime.from_buffer(uploaded_file.read(1024))
     if 'image' not in file_type:
-        return JsonResponse({'error': "Invalid file."}, status=402)
+        return JsonResponse({'error': "Invalid file."}, status=400)
     
     try:
         get_image_dimensions(uploaded_file)
     except Exception as e:
-        return JsonResponse({'error': "Invalid file."}, status=402)
+        return JsonResponse({'error': "Invalid file."}, status=400)
     try:
         request.user.avatar = uploaded_file
         request.user.save()

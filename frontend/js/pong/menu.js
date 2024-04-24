@@ -350,7 +350,6 @@ function createListTournament(parent) {
 	parent.appendChild(listTournament);
 	createTournamentInfo("Tournament 1", "2/50");
 	listTournament.addEventListener("click", (e) => {
-		console.log(e.target.parentNode.className);
 		if (e.target.className == "tournament-info" || e.target.parentNode.className == "tournament-info")
 			createWaitingScreenTournament();
 	});
@@ -362,6 +361,18 @@ export function createJoinTournamentMenu() {
 	const parent = document.getElementById("joinTournamentMenu");
 	parent.innerHTML = '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>';
 	createListTournament(parent);
+}
+
+export function createHUD(playerInfo, oppInfo) {
+	if (document.getElementById("hud"))
+		return ;
+	console.log(playerInfo.username," , " ,oppInfo.username);
+	createDivMenu("hud");
+	const parent = document.getElementById("hud");
+	parent.innerHTML = `\
+	<img id="avatar_player1" class="avatar-in-game" src='${playerInfo.avatar}' alt="avatar">\
+	<img id="avatar_player2" class="avatar-in-game" src='${oppInfo.avatar}' alt="avatar">\
+	`
 }
 
 

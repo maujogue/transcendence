@@ -1,5 +1,5 @@
 import { displayCharacter } from "./displayCharacter.js";
-import { createSelectMenu, createWaitingScreen, createInterfaceSelectMenu} from "./menu.js";
+import { createSelectMenu, createWaitingScreen, createInterfaceSelectMenu, createHUD} from "./menu.js";
 import { handleMenuKeyPress} from "./handleKeyPress.js";
 import { ClearAllEnv } from "./createEnvironment.js";
 import { initGame } from "./initGame.js";
@@ -107,7 +107,6 @@ async function connectToLobby(username) {
     
     webSocket.onopen = function() {
         console.log('Connection established');
-        console.log('Sending username: ' + username);
         document.getElementById("selectMenu").remove();
         webSocket.send(JSON.stringify({
             'type': 'auth',
@@ -121,7 +120,6 @@ async function connectToLobby(username) {
     
     webSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
-        console.log(data);
 
         if (data['type'] == 'player_data') {
             const paddle = env.scene.getObjectByName("paddle_" + player.name);
@@ -144,10 +142,8 @@ async function connectToLobby(username) {
         if (data['type'] == 'user_info') {
             if (data['username'] == username) {
                 playerInfo = setUserInfo(data);
-                console.log('playerInfo: ' + playerInfo.username + ' ' + playerInfo.avatar);
             } else {
                 oppInfo = setUserInfo(data);
-                console.log('oppInfo: ' + oppInfo.username + ' ' + oppInfo.avatar);
             }
         }
         if (data['message'] == 'start') {
@@ -165,6 +161,14 @@ async function connectToLobby(username) {
                 "character": player.character.name
             }));
         }
+        if (data['type'] == 'ask_user') {
+            webSocket.send(JSON.stringify({
+                'type': 'user_info',
+                'username': username,
+                'avatar': playerInfo.avatar,
+                'name': player.name
+            }));
+        } 
     }
 
     webSocket.onclose = function(e) {
@@ -249,6 +253,7 @@ async function setGameIsStart() {
     if (player && opp) {
         ClearAllEnv(env);
         env = await initGame(player, opp);
+        createHUD(playerInfo, oppInfo);
         status.gameIsInit = false;
         status.start = true;
     }
@@ -266,7 +271,6 @@ async function onlineGameLoop(webSocket) {
         status.isReady = true;
         keysPressed[' '] = false;
         getUserData('username').then((res) => {
-            console.log('username: ' + res);
             connectToLobby(res);
         });
     }
@@ -274,10 +278,11 @@ async function onlineGameLoop(webSocket) {
         handleMenuKeyPress(keysPressed, player, null, env);
         keyPress = false;
     }
-    if (status.gameIsInit)
+    if (status.gameIsInit) {
         await setGameIsStart();
+        
+    }
     if (status.start && webSocket) {
-        console.log('game start');
         sendMove(webSocket);
         movePlayers();
         translateBall(env.ball);

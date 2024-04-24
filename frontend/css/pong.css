@@ -156,6 +156,22 @@ h1 {
 	height: auto;
 }
 
+#avatar-player1 {
+	top: 0;
+	left: 0;
+}
+
+#avatar-player2 {
+	top: 0;
+	right: 0;
+}
+
+.avatar-in-game {
+	position: absolute;
+	width: 50px
+}
+
+
 .unsubscribe-btn {
 	position: absolute !important;
 	bottom: 0;

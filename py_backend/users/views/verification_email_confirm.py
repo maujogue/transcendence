@@ -15,7 +15,7 @@ def verification_email_confirm(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.email_is_verified = True
         user.save()
-        messages.success(request, 'Your email has been verified.')
+        messages.success(request, 'Your email has been verified !')
         return JsonResponse({'status': "success"}, status=200)  
     else:
         messages.warning(request, 'The link is invalid.')

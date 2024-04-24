@@ -1,6 +1,10 @@
 from django.test import TestCase
 from django.urls import reverse
 from django.core import mail
+from django.test import Client
+from requests_toolbelt.multipart.encoder import MultipartEncoder
+from django.core.files.uploadedfile import SimpleUploadedFile
+import base64
 
 import json
 
@@ -828,6 +832,17 @@ from users.models import CustomUser
 #         self.assertEqual(response_data.get('user').get('winrate'), None)
 #         self.assertEqual(response_data.get('user').get('rank'), None)
 #         self.assertEqual(response_data.get('user').get('n_games_played'), None)
+        with open(self.user.avatar.path, "rb") as image_file:
+            encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+
+        self.assertEqual(response_data.get('user').get('username'), 'osterga')
+        self.assertEqual(response_data.get('user').get('email'), 'osterga@gmail.com')
+        self.assertEqual(response_data.get('user').get('avatar'), encoded_string)
+        self.assertEqual(response_data.get('user').get('bio'), "Bonjours a tous, c'est Osterga")
+        self.assertEqual(response_data.get('user').get('title'), 'L\'Inusable')
+        self.assertEqual(response_data.get('user').get('winrate'), None)
+        self.assertEqual(response_data.get('user').get('rank'), None)
+        self.assertEqual(response_data.get('user').get('n_games_played'), None)
 
 #     def test_without_login(self):
 #         self.client.logout()

@@ -8,6 +8,7 @@ from django.core.mail import EmailMessage
 
 from users.tokens import account_activation_token
 from py_backend import settings
+import base64
 
 import json
 import os
@@ -113,3 +114,9 @@ def send_confirmation_email(user, request):
 			return email.send()
 		return False
 	return False
+
+
+def convert_image_to_base64(image_field):
+    with open(image_field.path, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+    return encoded_string

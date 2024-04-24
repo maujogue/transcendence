@@ -1,5 +1,8 @@
 from django.http import JsonResponse
+import random
+import string
 
+from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 
@@ -7,6 +10,8 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
 from .models import Tournament
+
+CustomUser = get_user_model()
 
 import json
 

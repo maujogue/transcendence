@@ -73,6 +73,8 @@ gameDiv.addEventListener('click', function () {
 document.body.addEventListener("click", function(event) {
 	if (event.target.id == 'restart' && !isOnline) {
 		document.getElementById("endscreen").remove();
+		player1.score = 0;
+		player2.score = 0;
 		actualizeScore(player1, player2, environment, environment.font);
 		start = true;
 	}
@@ -123,22 +125,6 @@ document.addEventListener('fullscreenchange', function() {
 	resize(environment);
 });
 
-/* Camera movement for debugging*/
-
-// function onMouseMove(event) {
-//     // Calculate the change in mouse position since the last frame
-//     var deltaX = event.clientX - mouseX;
-//     var deltaY = event.clientY - mouseY;
-
-//     // Update mouse position
-//     mouseX = event.clientX;
-//     mouseY = event.clientY;
-
-//     // Adjust camera rotation based on mouse movement
-//     environment.camera.rotation.y -= deltaX * 0.02; // Adjust sensitivity as needed
-//     environment.camera.rotation.x -= deltaY * 0.02; // Adjust sensitivity as needed
-// }
-
 function setIfGameIsEnd() {
 	if (player1.score < 1 && player2.score < 1)
 		return ;
@@ -147,8 +133,6 @@ function setIfGameIsEnd() {
 		winner = player2.name;
 	createEndScreen(winner);
 	start = false;
-	player1.score = 0;
-	player2.score = 0;
 }
 
 async function localGameLoop() {
@@ -166,7 +150,7 @@ async function localGameLoop() {
 		if (keyPress)
 			handleKeyPress(keysPressed, player1, player2, environment);
 		checkCollision(environment.ball, player1, player2, environment);
-		//document.addEventListener('mousemove', onMouseMove); <= Debugging
+		// document.addEventListener('mousemove', onMouseMove); //<= Debugging
 		setIfGameIsEnd();
 	}
 	if (player1 && player2)

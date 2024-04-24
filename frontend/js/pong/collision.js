@@ -1,12 +1,13 @@
 import * as THREE from 'three'
 import { actualizeScore } from './score.js';
+import {initialP1Pos, initialP2Pos} from './initGame.js';
 
-function resetPos(ball, player1, player2, environment) {
-    ball.mesh.position.set(0, 0, .91).unproject(environment.camera);
+function resetPos(ball, player1, player2) {
+    ball.mesh.position.set(0, 0, -18.1);
     ball.direction.y = 0;
     ball.direction.z = 0;
-    player1.paddle.mesh.position.set(-.65, 0, .909).unproject(environment.camera);
-    player2.paddle.mesh.position.set(.65, 0, .909).unproject(environment.camera);
+    player1.paddle.mesh.position.copy(initialP1Pos);
+    player2.paddle.mesh.position.copy(initialP2Pos);
 }
 
 async function checkIfScored(ball, player1, player2, environment) {
@@ -58,7 +59,6 @@ function checkCollision(ball, player1, player2, environment) {
     let bbox1 = new THREE.Box3().setFromObject(player1.paddle.mesh);
     let bbox2 = new THREE.Box3().setFromObject(player2.paddle.mesh);
     let ballBox = new THREE.Box3();
-    //console.log("ball : ", ball.mesh.position);
     
     ball.mesh.geometry.computeBoundingBox();
     ballBox.copy(ball.mesh.geometry.boundingBox).applyMatrix4(ball.mesh.matrixWorld);

@@ -4,6 +4,9 @@ import { loadFont, actualizeScore } from './score.js';
 import { colors } from './varGlobal.js';
 import * as THREE from 'three';
 
+export let initialP1Pos = new THREE.Vector3(-8.5, 0, -18);
+export let initialP2Pos = new THREE.Vector3(8.5, 0, -18);
+
 function setPointLight(env, player, posTop, posBot) {
 	const color = colors.get(player.name);
 	const botLight = new THREE.PointLight(color, 50);
@@ -34,7 +37,7 @@ async function setPositionPaddle(PlayerName, posX, environment) {
 	let paddle = environment.scene.getObjectByName("paddle_" + PlayerName);
 	paddle.rotation.set(0, 0, 0);
 	paddle.rotateX(Math.PI / -6);
-	paddle.position.set(posX, 0, .909).unproject(environment.camera);
+	paddle.position.set(posX, 0, -18);
 	paddle.scale.set(.7, .7, .7);
 	environment.scene.add(paddle);
 }
@@ -57,8 +60,9 @@ async function initGame(player1, player2) {
 	environment.scene.add(player1.paddle.mesh);
 	environment.scene.add(player2.paddle.mesh);
 	let spotlight = setPlayersLights(player1.character, player2.character, environment);
-	setPositionPaddle("player1", -.65, environment, player1);
-	setPositionPaddle("player2", .65, environment, player2);
+	setPositionPaddle("player1", -8.5, environment, player1);
+	setPositionPaddle("player2", 8.5, environment, player2);
+	console.log("Paddle 1 init : ", environment.scene.getObjectByName("paddle_player1").position);
 	removeSelectMenu();
 	let ball = await createBall(environment);
 	environment.scene.add(ball.mesh);

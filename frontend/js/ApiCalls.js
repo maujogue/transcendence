@@ -65,8 +65,8 @@ async function register(registerForm) {
   if (response.statusCode === 200) {
     showComment("registerComment", "Registered, you can now Login", "success");
   } else {
-    if (data.error && data.error.length > 0)
-      showComment("registerComment", data.error[0]);
+    if (response.error && response.error.length > 0)
+      showComment("registerComment", response.error[0]);
     else showComment("registerComment", "Register Error");
   }
 }

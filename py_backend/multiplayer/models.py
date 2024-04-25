@@ -1,6 +1,6 @@
+from typing import Any
 from django.db import models
 import uuid
-from django.core.validators import MinValueValidator, MaxValueValidator
 
 class Lobby(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -41,14 +41,4 @@ class Lobby(models.Model):
     async def startGame(self):
         self.game_started = True
         await self.asave(update_fields=['game_started'])
-
-class Stats(models.Model):
-    won = models.IntegerField(null=True)
-    lost = models.IntegerField(null=True)
-    rank = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(50)], null=True)
-    n_games_played = models.IntegerField(null=True)
-
-    def get_winrate(self):
-        if self.won is not None and self.lost is not None:
-            return self.won / (self.won + self.lost)
-        return None
+  

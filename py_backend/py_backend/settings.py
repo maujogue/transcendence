@@ -54,6 +54,7 @@ INSTALLED_APPS = [
 	'users',
 	'friends',
 	'tournaments',
+    'history',
 ]
 
 ASGI_APPLICATION = 'py_backend.asgi.application'

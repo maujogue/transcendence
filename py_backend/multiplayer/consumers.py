@@ -5,6 +5,7 @@ from .models import Lobby
 from multiplayer.ball import Ball
 from multiplayer.player import Player
 from users.models import CustomUser
+from history.models import Match
 
 class PongConsumer(AsyncWebsocketConsumer):
 
@@ -237,6 +238,21 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_send(
             self.lobby_group_name, { 'type': 'pong.status', 'message': 'endGame', 'name': self.player.name}
         )
+        self.createHistoryMatch()
+    
+    async def createHistoryMatch(self):
+        player1 = self.player.name if self.player.name == 'player1' else self.opp.name
+        player2 = self.player.name if self.player.name == 'player2' else self.opp.name
+        winner = player1.name if player1.score > player2.score else player2.name
+        loser = player1.name if player1.score < player2.score else player2.name
+        match = Match(player1=player1, 
+                      player2=player2, 
+                      winner=winner, 
+                      loser=loser, 
+                      player1_score=player1.score, 
+                      player2_score=player2.score)
+        await match.asave()
+        
 
 
     async def gameLoop(self):

@@ -1,35 +1,21 @@
 import { get_csrf_token } from "./ApiCalls.js";
-
-
-//fill cookies with user infos
-async function setUserData() {
-  var user = await getUserData();
-  Object.keys(user).forEach((element) => {
-	// console.log(element, user[element]);
-    Cookies.set(element, user[element]);
-  });
-}
+import { isLoggedIn } from "./Utils.js";
 
 //fill pages with user infos
-function injectUserData() {
-  var userInfos = [
-    "username",
-    "email",
-    "bio",
-    "title",
-    "n_games_played",
-    "rank",
-    "winrate",
-  ];
-  userInfos.forEach((info) => {
-    var usernameDivs = document.querySelectorAll("." + info + "Dynamic");
-    usernameDivs.forEach((div) => {
-
-      if (div.tagName === "INPUT") div.setAttribute("value", Cookies.get(info));
-      else
-	  div.innerHTML = Cookies.get(info);
-    });
-  });
+async function injectUserData() {
+	if (isLoggedIn())
+	{
+		var userInfos = await getUserData();
+		
+		Object.keys(userInfos).forEach((info) => {
+			var usernameDivs = document.querySelectorAll("." + info + "Dynamic");
+			usernameDivs.forEach((div) => {
+				if (div.tagName === "INPUT") div.value = userInfos[info];
+				else if (div.tagName === "IMG") div.setAttribute("src", "data:image/png;base64," + userInfos[info]);
+				else div.innerHTML = userInfos[info];
+			});
+		});
+	}
 }
 
 async function getUserData(dataElement) {
@@ -53,4 +39,4 @@ async function getUserData(dataElement) {
     .catch((error) => {});
 }
 
-export { getUserData, setUserData, injectUserData };
+export { getUserData, injectUserData };

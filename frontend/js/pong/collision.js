@@ -3,7 +3,7 @@ import { actualizeScore } from './score.js';
 import {initialP1Pos, initialP2Pos} from './initGame.js';
 
 function resetPos(ball, player1, player2) {
-    ball.mesh.position.set(0, 0, -18.1);
+    ball.mesh.position.set(0, 0, -18.2);
     ball.direction.y = 0;
     ball.direction.z = 0;
     player1.paddle.mesh.position.copy(initialP1Pos);
@@ -34,10 +34,10 @@ function physicsBall(ball, paddleBox) {
 
     ball.direction.x *= -1;
     if (ball.direction.x < 0 && ball.direction.x > -0.55)
-        ball.direction.x -= 0.009;
+        ball.direction.x -= 0.01;
     else if (ball.direction.x > 0 && ball.direction.x < 0.55)
-        ball.direction.x += 0.009;
-    ball.direction.y = .13 * (ball.mesh.position.y - center.y);
+        ball.direction.x += 0.01;
+    ball.direction.y = .12 * (ball.mesh.position.y - center.y);
     ball.direction.z = -.075 * (ball.mesh.position.y - center.y);
 }
 
@@ -45,9 +45,9 @@ function checkCollisionWithBorder(ball, ballBox, environment) {
     if (environment.border.up.box.intersectsBox(ballBox) || 
         environment.border.down.box.intersectsBox(ballBox)) {
         if (ball.direction.x > 0)
-            ball.direction.x += 0.02;
+            ball.direction.x += 0.01;
         else
-            ball.direction.x -= 0.02;
+            ball.direction.x -= 0.01;
         ball.direction.y *= -1;
         ball.direction.z *= -1;
         return (true);

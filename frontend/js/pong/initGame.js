@@ -24,7 +24,6 @@ function setPointLight(env, player, posTop, posBot) {
 }
 
 function setPlayersLights(player1, player2, environment) {
-	console.log("Name : ", player1.name);
 	let posBot = new THREE.Vector3(-.5, -.1, .9);
 	let posTop = new THREE.Vector3(-.42, .5, .92);
 	player1.lights = setPointLight(environment, player1, posTop, posBot);
@@ -62,7 +61,6 @@ async function initGame(player1, player2) {
 	let spotlight = setPlayersLights(player1.character, player2.character, environment);
 	setPositionPaddle("player1", -8.5, environment, player1);
 	setPositionPaddle("player2", 8.5, environment, player2);
-	console.log("Paddle 1 init : ", environment.scene.getObjectByName("paddle_player1").position);
 	removeSelectMenu();
 	let ball = await createBall(environment);
 	environment.scene.add(ball.mesh);

@@ -3,7 +3,6 @@ import { checkInputAvailable } from "./ApiCalls.js";
 
 function resetForm(input) {
 	var formInputs = document.querySelectorAll(".formInputs");
-	var updatePasswordButton = document.getElementById("updatePasswordButton");
 	var saveChangesButton = document.getElementById("saveChangesButton");
 	var discardChangesButton = document.getElementById("discardChangesButton");
 	var updatePasswordButton = document.getElementById("updatePassword");
@@ -24,7 +23,6 @@ function resetForm(input) {
 
 function disableFormInputs(input) {
 	var formInputs = document.querySelectorAll(".formInputs");
-	var updatePasswordButton = document.getElementById("updatePasswordButton");
 	var saveChangesButton = document.getElementById("saveChangesButton");
 	var discardChangesButton = document.getElementById("discardChangesButton");
 	var updatePasswordButton = document.getElementById("updatePassword");
@@ -43,35 +41,6 @@ function disableFormInputs(input) {
 
 let debounceTimer;
 
-async function invalidateUsernameIfUnavailable(input, userInput) {
-	var saveChangesButton = document.getElementById("saveChangesButton");
-	const inputFeedback = document.querySelector('#usernameDashboard ~ div');
-	clearTimeout(debounceTimer);
-
-	debounceTimer = setTimeout(async () => {
-		if (input.value.length < 3) {
-			inputFeedback.innerHTML = "Username must be at least 3 characters long";
-			input.classList.remove("is-valid");
-			input.classList.add("is-invalid");
-			saveChangesButton.classList.add("disabled");
-		} else {
-			var usernameAvailable = await checkInputAvailable(input.value, "username");
-			if (input.value == userInput)
-				resetForm();
-			else if (!usernameAvailable) {
-				inputFeedback.innerHTML = "Username is not Available!";
-				input.classList.remove("is-valid");
-				input.classList.add("is-invalid");
-				saveChangesButton.classList.add("disabled");
-
-			} else {
-				input.classList.remove("is-invalid");
-				input.classList.add("is-valid");
-				saveChangesButton.classList.remove("disabled");
-			}
-		}
-	}, 300);
-}
 
 async function invalidateEmailIfUnavailable(input, userInput) {
 	var saveChangesButton = document.getElementById("saveChangesButton");
@@ -126,8 +95,6 @@ function toggleConfirmPasswordModal(modalToDismiss) {
 
 async function enableDisableSaveButtonOnInput(input, userData) {
 	if (input.value !== userData[input.name]) {
-		if (input.name === "username")
-			invalidateUsernameIfUnavailable(input, userData[input.name]);
 		if (input.name === "email")
 			invalidateEmailIfUnavailable(input, userData[input.name]);
 		disableFormInputs(input);

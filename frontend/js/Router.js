@@ -115,4 +115,4 @@ const logIn = new Event("logIn");
 document.addEventListener("logIn", () => {
 })
 
-export { navigateTo, logIn};
+export { navigateTo, logIn, setInnerHtml};

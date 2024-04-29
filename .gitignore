@@ -1,5 +1,6 @@
 py_backend/staticfiles
 py_backend/mediafiles/
+py_backend/media/
 py_backend/docker/cert.crt
 py_backend/docker/cert.key
 .DS_store

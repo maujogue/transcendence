@@ -231,7 +231,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def setGameOver(self):
         await self.lobby.stopGame()
-        await self.createHistoryMatch()
+        if self.player.name == 'player1':
+            await self.createHistoryMatch()
         await self.channel_layer.group_send(
             self.lobby_group_name, { 'type': 'pong.status', 'message': 'endGame', 'name': self.player.name}
         )
@@ -247,7 +248,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                       loser=loser,
                       player1_score=player1.score, 
                       player2_score=player2.score)
-        print('match winner:', match.winner, 'loser:', match.loser)
         await match.asave()
         
 
@@ -288,7 +288,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 
         if message == "endGame":
             self.resetGame()
-        print('pong_status', message, ' ', name)
         await self.send(text_data=json.dumps({"type": 'status', "message": message, "name": name}))
 
     async def pong_character_data(self, event): 

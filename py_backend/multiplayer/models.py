@@ -17,7 +17,6 @@ class Lobby(models.Model):
         else:
             self.player_ready -= 1
             player.is_ready = False
-        print('player_ready:', self.player_ready)
         await self.asave(update_fields=['player_ready'])
     
     async def disconnectUser(self, player):

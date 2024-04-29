@@ -25,8 +25,7 @@ let status = {
 }
 let keyUp = false;
 let webSocket;
-let playerInfo
-let oppInfo
+let oppInfo;
 
 document.addEventListener('fullscreenchange', function() {
 	resize(env);
@@ -141,12 +140,10 @@ async function connectToLobby(username) {
             }
         }
         if (data['type'] == 'user_info') {
-            if (data['username'] == username) {
-                playerInfo = setUserInfo(data);
-            } else {
+            if (data['username'] == username)
+                player.userInfo = setUserInfo(data);
+            else 
                 oppInfo = setUserInfo(data);
-                console.log(oppInfo);
-            }
         }
         if (data['message'] == 'start') {
             status.gameIsInit = true;
@@ -163,11 +160,11 @@ async function connectToLobby(username) {
                 "character": player.character.name
             }));
         }
-        if (data['type'] == 'ask_user' && playerInfo) {
+        if (data['type'] == 'ask_user' && player.userInfo) {
             webSocket.send(JSON.stringify({
                 'type': 'user_info',
                 'username': username,
-                'avatar': playerInfo.avatar.split(' ')[1],
+                'avatar': player.userInfo.avatar.split(' ')[1],
                 'name': player.name
             }));
         } 
@@ -253,9 +250,10 @@ async function sendIsReady(webSocket) {
 
 async function setGameIsStart() {
     if (player && opp) {
+        opp.userInfo = oppInfo;
         ClearAllEnv(env);
         env = await initGame(player, opp);
-        createHUD(playerInfo, oppInfo);
+        createHUD(player, opp);
         status.gameIsInit = false;
         status.start = true;
     }
@@ -287,7 +285,6 @@ async function onlineGameLoop(webSocket) {
     }
     if (status.gameIsInit) {
         await setGameIsStart();
-        
     }
     if (status.start && webSocket) {
         sendMove(webSocket);

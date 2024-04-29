@@ -363,15 +363,21 @@ export function createJoinTournamentMenu() {
 	createListTournament(parent);
 }
 
-export function createHUD(playerInfo, oppInfo) {
+export function createHUD(player, opp) {
+	var player1Avatar = player.userInfo.avatar;
+	var player2Avatar = opp.userInfo.avatar;
+
 	if (document.getElementById("hud"))
 		return ;
-	console.log(playerInfo.username," , " ,oppInfo.username);
+	if (player.name == "player2") {
+		player1Avatar = opp.userInfo.avatar;
+	    player2Avatar = player.userInfo.avatar;
+	}
 	createDivMenu("hud");
 	const parent = document.getElementById("hud");
 	parent.innerHTML = `\
-	<img id="avatar_player1" class="avatar-in-game" src='${playerInfo.avatar}' alt="avatar">\
-	<img id="avatar_player2" class="avatar-in-game" src='${oppInfo.avatar}' alt="avatar">\
+	<img id="avatar_player1" class="avatar-in-game" src='${player1Avatar}' alt="avatar Player1">\
+	<img id="avatar_player2" class="avatar-in-game" src='${player2Avatar}' alt="avatar Player2">\
 	`
 }
 

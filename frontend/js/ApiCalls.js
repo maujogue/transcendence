@@ -71,7 +71,8 @@ async function updatePassword(updatePasswordForm) {
 		};
 		updateInfo(
 			"users/update_password/",
-			JSON.stringify(fetchBody)
+			JSON.stringify(fetchBody),
+			"updatePasswordModal"
 		);
 	} else {
 		showAlert("Password Incorrect, try again.");

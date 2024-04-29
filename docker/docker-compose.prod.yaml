@@ -12,10 +12,11 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    restart: always
+
 
   db:
     image: postgres:latest
-    restart: always
     user: postgres
     env_file:
       - ./.env.prod.db
@@ -27,6 +28,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    restart: always
+
+    
 
   nginx_frontend:
     build:

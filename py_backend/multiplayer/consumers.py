@@ -157,7 +157,6 @@ class PongConsumer(AsyncWebsocketConsumer):
     
     
     async def startGame(self):
-        print(self.player.name, "is starting the game")
         await self.channel_layer.group_send(
         self.lobby_group_name, { 
             'type': 'pong.status', 
@@ -232,25 +231,23 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def setGameOver(self):
         await self.lobby.stopGame()
-        self.scope['user'].n_games_played = 1
-        await self.scope['user'].asave()
-        print(self.scope['user'].username, ' winrate: ', self.scope['user'].n_games_played)
+        await self.createHistoryMatch()
         await self.channel_layer.group_send(
             self.lobby_group_name, { 'type': 'pong.status', 'message': 'endGame', 'name': self.player.name}
         )
-        self.createHistoryMatch()
     
     async def createHistoryMatch(self):
-        player1 = self.player.name if self.player.name == 'player1' else self.opp.name
-        player2 = self.player.name if self.player.name == 'player2' else self.opp.name
-        winner = player1.name if player1.score > player2.score else player2.name
-        loser = player1.name if player1.score < player2.score else player2.name
-        match = Match(player1=player1, 
-                      player2=player2, 
-                      winner=winner, 
-                      loser=loser, 
+        player1 = self.player if self.player.name == 'player1' else self.opp
+        player2 = self.player if self.player.name == 'player2' else self.opp
+        winner = player1.user.username if player1.score > player2.score else player2.user.username
+        loser = player1.user.username if player1.score < player2.score else player2.user.username
+        match = Match(player1=player1.user.username, 
+                      player2=player2.user.username, 
+                      winner=winner,
+                      loser=loser,
                       player1_score=player1.score, 
                       player2_score=player2.score)
+        print('match winner:', match.winner, 'loser:', match.loser)
         await match.asave()
         
 
@@ -295,19 +292,12 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({"type": 'status', "message": message, "name": name}))
 
     async def pong_character_data(self, event): 
-        # print('pong_character_data')
-        # print('channel_name:', self.channel_name)
-        # print('sender:', event["sender"])
-
         if (self.player.name == event["name"]):
             self.opp.character = event["character"]
         if (self.player.name != event["name"]):
             await self.send(text_data=json.dumps({ "type": "character_data", "character": event["character"], "name": event["name"]}))
     
     async def pong_user_data(self, event):
-        # print('pong_character_data')
-        # print('channel_name:', self.channel_name)
-        # print('sender:', event["sender"])
         avatar = event["avatar"]
         username = event["username"]
         name = event["name"]
@@ -357,11 +347,14 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({ "type": "ask_user", "name": name}))
     
     async def pong_user_info(self, event):
-        print('pong_user_info ', event['user'].username, ' ', event['name'])
         avatar = event["user"].avatar
         username = event["user"].username
         name = event["name"]
         with open(avatar.path, "rb") as avatar:
             encoded_string = base64.b64encode(avatar.read()).decode('utf-8')
+        if self.player.name == name:
+            self.player.user = event["user"]
+        else:
+            self.opp.user = event["user"]
 
         await self.send(text_data=json.dumps({ "type": "user_info", "avatar": encoded_string, "username": username, "name": name}))

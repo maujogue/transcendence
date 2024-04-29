@@ -101,6 +101,7 @@ async function createOnlineSelectMenu(field) {
 }
 
 async function connectToLobby(username) {
+    console.log("username: ", username);
     if (username == null)
         return ;
     webSocket = new WebSocket('ws://127.0.0.1:8080/ws/lobby/');
@@ -269,10 +270,15 @@ async function onlineGameLoop(webSocket) {
         document.removeEventListener('click', clickHandler);
     }
     if (!status.isReady && !status.start && keysPressed[' '] && !webSocket) {
-        status.isReady = true;
+        console.log('ready');
         keysPressed[' '] = false;
         getUserData('username').then((res) => {
+            console.log(res);
             connectToLobby(res);
+            status.isReady = true;
+        })
+        .catch((err) => {
+            console.log(err);
         });
     }
     if (!status.start && keyPress) {

@@ -121,14 +121,16 @@ class PongConsumer(AsyncWebsocketConsumer):
                     'name': self.player.name
                 }
             )
-        if (text_data_json.get("type") == "user_info"):
+        if self.lobby.player_ready == 2 and self.lobby.game_started == False:
+            await self.startGame()
+        if text_data_json.get("type") == "user_info":
             await self.channel_layer.group_send(
                 self.lobby_group_name, { 'type': 'pong.user_data', 'username': text_data_json.get('username'), 'avatar': text_data_json.get('avatar'), 'name': text_data_json.get('name')}
             )
-        if (self.lobby.game_started == True):
+        if self.lobby.game_started == True:
             if text_data_json.get("type") == "player_pos":
                 await self.movePlayer(text_data_json)
-            if (text_data_json.get("type") == "frame" and self.lobby.game_started == True):
+            if text_data_json.get("type") == "frame" and self.lobby.game_started == True:
                 await self.gameLoop()
 
     async def disconnect(self, close_code):

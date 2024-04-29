@@ -5,7 +5,7 @@ from .models import Lobby
 from multiplayer.ball import Ball
 from multiplayer.player import Player
 from users.models import CustomUser
-from history.models import Match
+from stats.models import Match
 
 class PongConsumer(AsyncWebsocketConsumer):
 

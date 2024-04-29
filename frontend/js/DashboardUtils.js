@@ -1,6 +1,14 @@
 import { injectUserData } from "./User.js";
 import { checkInputAvailable } from "./ApiCalls.js";
 
+async function enableDisableSaveButtonOnInput(input, userData) {
+	if (input.value !== userData[input.name]) {
+		disableFormInputs(input);
+	}
+	else
+		resetForm(input);
+}
+
 function resetForm(input) {
 	var formInputs = document.querySelectorAll(".formInputs");
 	var saveChangesButton = document.getElementById("saveChangesButton");
@@ -39,38 +47,6 @@ function disableFormInputs(input) {
 	updatePasswordButton.classList.add("d-none");
 }
 
-let debounceTimer;
-
-
-async function invalidateEmailIfUnavailable(input, userInput) {
-	var saveChangesButton = document.getElementById("saveChangesButton");
-	const inputFeedback = document.querySelector('#emailDashboard ~ div');
-	clearTimeout(debounceTimer);
-	const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-	debounceTimer = setTimeout(async () => {
-		if (!emailPattern.test(input.value)) {
-			inputFeedback.innerHTML = "Please enter a valid email adress";
-			input.classList.remove("is-valid");
-			input.classList.add("is-invalid");
-			saveChangesButton.classList.add("disabled");
-		} else {
-			var emailAvailable = await checkInputAvailable(input.value, "email");
-			if (input.value == userInput)
-				resetForm();
-			else if (!emailAvailable) {
-				inputFeedback.innerHTML = "Email is not Available!";
-				input.classList.remove("is-valid");
-				input.classList.add("is-invalid");
-				saveChangesButton.classList.add("disabled");
-			} else {
-				input.classList.remove("is-invalid");
-				input.classList.add("is-valid");
-				saveChangesButton.classList.remove("disabled");
-			}
-		}
-	}, 300);
-}
 
 function getSubmittedInput() {
 	var formInputs = document.querySelectorAll(".formInputs");
@@ -91,16 +67,6 @@ function toggleConfirmPasswordModal(modalToDismiss) {
 			confirmPasswordModal.toggle();
 		}
 	}
-}
-
-async function enableDisableSaveButtonOnInput(input, userData) {
-	if (input.value !== userData[input.name]) {
-		if (input.name === "email")
-			invalidateEmailIfUnavailable(input, userData[input.name]);
-		disableFormInputs(input);
-	}
-	else
-		resetForm(input);
 }
 
 export {

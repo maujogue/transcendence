@@ -12,6 +12,7 @@ class Module {
 
 const modules = [
 	new Module("usernameInput", "js/modules/usernameInput.html"),
+	new Module("emailInput", "js/modules/emailInput.html"),
 ];
 
 async function injectModule(name, div) {

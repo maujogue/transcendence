@@ -7,7 +7,8 @@ import { injectModule } from "./Modules.js";
 init();
 
 async function init() {
-	injectModule('usernameInput', document.querySelector(".usernameInput"));
+	injectModule('usernameInput', document.querySelector(".usernameInputModule"));
+	injectModule('emailInput', document.querySelector(".emailInputModule"));
 
 
 	var userData = await getUserData();

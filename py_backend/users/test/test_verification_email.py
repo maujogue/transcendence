@@ -2,7 +2,6 @@ from django.test import TestCase
 from users.models import CustomUser
 from django.urls import reverse
 from django.core import mail
-from django.test import Client
 import json
 
 class VerificationEmail(TestCase):

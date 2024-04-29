@@ -43,9 +43,9 @@ function disableFormInputs(input) {
 
 let debounceTimer;
 
-async function invalidateUsernameIfUnavailable(input, userInput, inputFeedbackDiv, confirmationButton) {
-	var saveChangesButton = document.getElementById(confirmationButton);
-	const inputFeedback = document.querySelector(inputFeedbackDiv);
+async function invalidateUsernameIfUnavailable(input, userInput) {
+	var saveChangesButton = document.getElementById("saveChangesButton");
+	const inputFeedback = document.querySelector('#usernameDashboard ~ div');
 	clearTimeout(debounceTimer);
 
 	debounceTimer = setTimeout(async () => {
@@ -73,9 +73,9 @@ async function invalidateUsernameIfUnavailable(input, userInput, inputFeedbackDi
 	}, 300);
 }
 
-async function invalidateEmailIfUnavailable(input, userInput, inputFeedbackDiv , confirmationButton) {
-	var saveChangesButton = document.getElementById(confirmationButton);
-	const inputFeedback = document.querySelector(inputFeedbackDiv);
+async function invalidateEmailIfUnavailable(input, userInput) {
+	var saveChangesButton = document.getElementById("saveChangesButton");
+	const inputFeedback = document.querySelector('#emailDashboard ~ div');
 	clearTimeout(debounceTimer);
 	const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -127,9 +127,9 @@ function toggleConfirmPasswordModal(modalToDismiss) {
 async function enableDisableSaveButtonOnInput(input, userData) {
 	if (input.value !== userData[input.name]) {
 		if (input.name === "username")
-			invalidateUsernameIfUnavailable(input, userData[input.name], '#usernameDashboard ~ div', "saveChangesButton");
+			invalidateUsernameIfUnavailable(input, userData[input.name]);
 		if (input.name === "email")
-			invalidateEmailIfUnavailable(input, userData[input.name], '#emailDashboard ~ div', "saveChangesButton");
+			invalidateEmailIfUnavailable(input, userData[input.name]);
 		disableFormInputs(input);
 	}
 	else

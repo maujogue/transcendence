@@ -101,7 +101,7 @@ def send_confirmation_email(user, request):
 			subject = "Verify Email"
 			message = render_to_string('../templates/verification_email_message.html', {
 				'request': request,
-				'user': user,
+				'username': user.username,
 				'domain': current_site.domain,
 				'uid':urlsafe_base64_encode(force_bytes(user.pk)),
 				'token':account_activation_token.make_token(user),

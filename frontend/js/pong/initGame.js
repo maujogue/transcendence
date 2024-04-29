@@ -14,18 +14,18 @@ function setPointLight(env, player, posTop, posBot) {
 	const helperTop = new THREE.PointLightHelper(topLight, 1);
 	const helperBot = new THREE.PointLightHelper(botLight, 1);
 
-	// env.scene.add(helperBot);
-	// env.scene.add(helperTop);
-	botLight.position.copy(posBot).unproject(env.camera);
-	topLight.position.copy(posTop).unproject(env.camera);
+	env.scene.add(helperBot);
+	env.scene.add(helperTop);
+	botLight.position.copy(posBot);
+	topLight.position.copy(posTop);
 	env.scene.add(botLight);
 	env.scene.add(topLight);
 	return {botLight, topLight};
 }
 
 function setPlayersLights(player1, player2, environment) {
-	let posBot = new THREE.Vector3(-.5, -.1, .9);
-	let posTop = new THREE.Vector3(-.42, .5, .92);
+	let posBot = new THREE.Vector3(-8.5, 1, 2);
+	let posTop = new THREE.Vector3(-8.5, 3, -2);
 	player1.lights = setPointLight(environment, player1, posTop, posBot);
 	posBot = new THREE.Vector3(.5, -.1, .9);
 	posTop = new THREE.Vector3(.42, .5, .92);
@@ -35,8 +35,8 @@ function setPlayersLights(player1, player2, environment) {
 async function setPositionPaddle(PlayerName, posX, environment) {
 	let paddle = environment.scene.getObjectByName("paddle_" + PlayerName);
 	paddle.rotation.set(0, 0, 0);
-	paddle.rotateX(Math.PI / -6);
-	paddle.position.set(posX, 0, -18);
+	paddle.rotateX(Math.PI / 2);
+	paddle.position.set(posX, 0, 0);
 	paddle.scale.set(.7, .7, .7);
 	environment.scene.add(paddle);
 }

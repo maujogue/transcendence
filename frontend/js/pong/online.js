@@ -104,6 +104,7 @@ async function connectToLobby() {
     webSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
 
+        console.log('Paddle : ', env.scene.getObjectByName("paddle_" + player.name));
         if (data['type'] == 'player_data') {
             const paddle = env.scene.getObjectByName("paddle_" + player.name);
             player.name = data['name'];

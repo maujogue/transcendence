@@ -23,10 +23,11 @@ async function createMap(env) {
 	const model = map.scene;
 	const light = new THREE.AmbientLight(0xffffff, 1);
 
+	env.camera.position.set(0, 0, 10);
 	model.scale.set(.45, .45, .45);
-    model.rotateX(Math.PI / 3);
+    //model.rotateX(Math.PI / 3);
     model.rotateY(Math.PI / 2);
-    model.position.set(.15, 0, .92).unproject(env.camera);
+    model.position.set(2, -.3, 0);
 	env.scene.add(model);
 	env.scene.add(light);
 
@@ -38,6 +39,7 @@ async function createMap(env) {
 	topSide.getWorldPosition(topSidePosition);
 	botSide.getWorldPosition(botSidePosition);
 
+	console.log("Top : ", topSidePosition);
 	const borderDown = createBorder(topSidePosition, env);
 	const borderUp = createBorder(botSidePosition, env);
 	return {
@@ -53,7 +55,7 @@ function createEnvironment(id) {
 	const scene = new THREE.Scene();
 	scene.background = new THREE.Color( 0x000000 );
 	const camera = new THREE.PerspectiveCamera( 45, divSize.width / divSize.height, 1, 100);
-	camera.position.set(0, 0, 1.5);
+	camera.position.set(0, 0, -2);
 
 	const renderer = new THREE.WebGLRenderer({ canvas: div, antialias: true });
 	renderer.setPixelRatio(window.devicePixelRatio);

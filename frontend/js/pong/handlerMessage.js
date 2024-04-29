@@ -4,20 +4,23 @@ import { ClearAllEnv } from './createEnvironment.js';
 import { createEndScreen } from './createEndScreen.js';
 import { sendColor } from './sendMessage.js';
 import { playersMove } from './online.js';
+import { initialP1Pos, initialP2Pos } from './initGame.js';
 
 export function setBallData(data, env) {
     if (!env.ball)
         return ;
     env.ball.direction.x = data['dirX'];
     env.ball.direction.y = data['dirY'];
+    env.ball.direction.z = data['dirZ'];
     env.ball.mesh.position.y = data['posY'];
     env.ball.mesh.position.x = data['posX'];
+    env.ball.mesh.position.z = data['posZ'];
 }
 
 export function handlerScore(data, env, player, opp) {
     actualizeScoreOnline(data, env);
-    player.paddle.mesh.position.y = 0;
-    opp.paddle.mesh.position.y = 0;
+    player.paddle.mesh.position.copy(initialP1Pos);
+    opp.paddle.mesh.position.copy(initialP2Pos);
 }
 
 function handlerStopGame(webSocket, env, start) {

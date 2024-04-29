@@ -9,13 +9,13 @@ function actualizeScoreOnline(data, env) {
         removeObject('score' + name, env);
         const score = res;
         if (data['name'] == 'player1')
-            score.position.set(-0.60, -0.2, 0.935).unproject(env.camera);
+            score.position.set(-5, -1.5, -18.1);
         else
-            score.position.set(0.20, -0.2, 0.935).unproject(env.camera);
+            score.position.set(3, -1.5, -18.1);
         env.scene.add(score);
         env.renderer.render(env.scene, env.camera);
     });
-    env.ball.mesh.position.set(0, 0, 0.9).unproject(env.camera);
+    env.ball.mesh.position.set(0, 0, -18.2);
 }
 
 function sendIfScored(ball, player, webSocket, env) {
@@ -32,7 +32,7 @@ function sendIfScored(ball, player, webSocket, env) {
     }
     if (!isScored)
         return ;
-    ball.mesh.position.set(0, 0, 0.9).unproject(env.camera);
+    ball.mesh.position.set(0, 0, -18.2);
     webSocket.send(JSON.stringify({
         'type': 'score',
         'score': player.score + 1,
@@ -42,14 +42,17 @@ function sendIfScored(ball, player, webSocket, env) {
         'type': 'ball_data',
         'posX': 0,
         'posY': 0,
+        'posZ': -18.2,
         'dirX': ball.direction.x,
-        'dirY': 0
+        'dirY': 0,
+        'dirZ': 0
     }));
 }
 
 function translateBall(ball) {
     ball.mesh.translateX(ball.direction.x);
     ball.mesh.translateY(ball.direction.y);
+    ball.mesh.translateZ(ball.direction.z);
 }
 
 export { translateBall, sendIfScored, actualizeScoreOnline}

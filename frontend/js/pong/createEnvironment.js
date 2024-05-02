@@ -23,11 +23,11 @@ async function createMap(env) {
 	const model = map.scene;
 	const light = new THREE.AmbientLight(0xffffff, 1);
 
-	env.camera.position.set(0, 0, 10);
+	env.camera.position.set(0, 13, 10);
+	env.camera.lookAt(0, 0, 0);
 	model.scale.set(.45, .45, .45);
-    //model.rotateX(Math.PI / 3);
     model.rotateY(Math.PI / 2);
-    model.position.set(2, -.3, 0);
+    model.position.set(2.2, -.3, 0);
 	env.scene.add(model);
 	env.scene.add(light);
 

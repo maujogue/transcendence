@@ -3,19 +3,12 @@ import { createTexturedMaterial } from './loadTextures.js';
 import { lobby } from './main.js';
 
 function createBorder(position, env) {
-    const geometry = new THREE.BoxGeometry(21, .1, .1);
-    const material = new THREE.MeshBasicMaterial( { color: 0xffffff, opacity: 0, transparent: true } );
+    const geometry = new THREE.BoxGeometry(21, .45, .5);
+    const material = new THREE.MeshBasicMaterial( { color: 0xffffff, opacity: 0, transparent: true} );
     const cube = new THREE.Mesh( geometry, material );
 
     cube.position.copy(position);
-    if (position.y < 0) {
-        cube.position.y += .1;
-        cube.position.z -= .25;
-    }
-    else {
-        cube.position.y -= .35;
-        cube.position.z -= .1;
-    }
+    cube.position.y -= .1;
     cube.position.x -= 3.3;
     cube.rotateX(Math.PI / 2);
 

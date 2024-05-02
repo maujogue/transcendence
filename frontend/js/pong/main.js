@@ -171,7 +171,7 @@ async function localGameLoop() {
 		// environment.camera.position.set(x, 2, z); // Set camera's y position to 2 to view the scene from above
 		// environment.camera.lookAt(center);
 		// cameraAngle += 0.01; // Increment the angle
-		document.addEventListener('mousemove', onMouseMove);
+		// document.addEventListener('mousemove', onMouseMove);
 		setIfGameIsEnd();
 	}
 	if (player1 && player2)

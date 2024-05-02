@@ -11,11 +11,7 @@ function setPointLight(env, player, posTop, posBot) {
 	const color = colors.get(player.name);
 	const botLight = new THREE.PointLight(color, 50);
 	const topLight = new THREE.PointLight(color, 50);
-	const helperTop = new THREE.PointLightHelper(topLight, 1);
-	const helperBot = new THREE.PointLightHelper(botLight, 1);
 
-	env.scene.add(helperBot);
-	env.scene.add(helperTop);
 	botLight.position.copy(posBot);
 	topLight.position.copy(posTop);
 	env.scene.add(botLight);
@@ -24,11 +20,11 @@ function setPointLight(env, player, posTop, posBot) {
 }
 
 function setPlayersLights(player1, player2, environment) {
-	let posBot = new THREE.Vector3(-8.5, 1, 2);
-	let posTop = new THREE.Vector3(-8.5, 3, -2);
+	let posBot = new THREE.Vector3(-8.5, 3, 5);
+	let posTop = new THREE.Vector3(-8.5, 3, -5);
 	player1.lights = setPointLight(environment, player1, posTop, posBot);
-	posBot = new THREE.Vector3(.5, -.1, .9);
-	posTop = new THREE.Vector3(.42, .5, .92);
+	posBot = new THREE.Vector3(8.5, 3, 5);
+	posTop = new THREE.Vector3(8.5, 3, -5);
 	player2.lights = setPointLight(environment, player2, posTop, posBot);
 }
 

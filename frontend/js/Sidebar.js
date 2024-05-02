@@ -18,14 +18,6 @@ function toggleSidebarCollapse() {
   });
 }
 
-//navbar active button switcher
-var navlist = document.getElementById("navList");
-navlist.addEventListener("click", (e) => {
-  let target = e.target.closest("a");
-  document.querySelector("a.active").classList.remove("active");
-  target.classList.add("active");
-});
-
 //login button fetch launcher
 var loginForm = document.getElementById("loginForm");
 loginForm.addEventListener("submit", (event) => {

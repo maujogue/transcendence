@@ -1,4 +1,4 @@
-import { toggleContentOnLogState } from "./Utils.js";
+import { isLoggedIn, toggleContentOnLogState } from "./Utils.js";
 import { injectUserData } from "./User.js";
 
 //page constructor
@@ -51,6 +51,7 @@ function navigateTo(url) {
   }
   toggleContentOnLogState();
   injectUserData();
+  toggleActiveTab(url);
 }
 
 //inject html files based on url 
@@ -87,6 +88,7 @@ const router = async (routes, divToInsertHtml) => {
   previousPage = page;
   toggleContentOnLogState();
   injectUserData();
+  toggleActiveTab(location.pathname);
 };
 
 //navigation history (back and forth button)
@@ -115,4 +117,13 @@ const logIn = new Event("logIn");
 document.addEventListener("logIn", () => {
 })
 
+function toggleActiveTab(target) {
+	var currentActive = document.querySelector(".active");
+	if (currentActive != null)
+		currentActive.classList.remove("active");
+	if (target == "/")
+		target = "/dash";
+	if (target == "/dash" || target == "/game" || (target == "/about" && !isLoggedIn()))
+		document.querySelector("a[href='" + target + "']").classList.add("active");
+}
 export { navigateTo, logIn, setInnerHtml};

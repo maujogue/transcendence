@@ -95,7 +95,6 @@ async function updateUsername(updateUsernameForm) {
 		const fetchBody = {
 			username: userData.get("username"),
 		};
-		console.log(userData.get("username"));
 		updateInfo(
 			"users/update_username/",
 			JSON.stringify(fetchBody),

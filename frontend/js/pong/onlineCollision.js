@@ -15,18 +15,18 @@ function actualizeScoreOnline(data, env) {
         env.scene.add(score);
         env.renderer.render(env.scene, env.camera);
     });
-    env.ball.mesh.position.set(0, 0, -18.2);
+    env.ball.mesh.position.set(0, 0, 0);
 }
 
 function sendIfScored(ball, player, webSocket, env) {
     let bbox = new THREE.Box3().setFromObject(player.paddle.mesh);
     let isScored = false;
 
-    if (player.name == 'player1' && ball.mesh.position.x < bbox.min.x - 2) {
+    if (player.name == 'player1' && ball.mesh.position.x < bbox.min.x - 1) {
         ball.direction.x = -0.1;
         isScored = true;
     }
-    if (player.name == 'player2' && ball.mesh.position.x > bbox.max.x + 2) {
+    if (player.name == 'player2' && ball.mesh.position.x > bbox.max.x + 1) {
         ball.direction.x = 0.1;
         isScored = true;
     }
@@ -41,17 +41,14 @@ function sendIfScored(ball, player, webSocket, env) {
     webSocket.send(JSON.stringify({
         'type': 'ball_data',
         'posX': 0,
-        'posY': 0,
-        'posZ': -18.2,
+        'posZ': 0,
         'dirX': ball.direction.x,
-        'dirY': 0,
         'dirZ': 0
     }));
 }
 
 function translateBall(ball) {
     ball.mesh.translateX(ball.direction.x);
-    ball.mesh.translateY(ball.direction.y);
     ball.mesh.translateZ(ball.direction.z);
 }
 

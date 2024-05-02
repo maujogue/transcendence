@@ -4,8 +4,8 @@ import { loadFont, actualizeScore } from './score.js';
 import { colors } from './varGlobal.js';
 import * as THREE from 'three';
 
-export let initialP1Pos = new THREE.Vector3(-8.5, 0, -18);
-export let initialP2Pos = new THREE.Vector3(8.5, 0, -18);
+export let initialP1Pos = new THREE.Vector3(-8.5, 0, 0);
+export let initialP2Pos = new THREE.Vector3(8.5, 0, 0);
 
 function setPointLight(env, player, posTop, posBot) {
 	const color = colors.get(player.name);

@@ -29,8 +29,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         else:
             self.lobby.player2Present = True
         oppName = 'player2' if name == 'player1' else 'player1'
-        posX = -9.50 if name == 'player1' else 9.50
-        oppPosX = 9.50 if name == 'player1' else -9.50
+        posX = -8.5 if name == 'player1' else 8.5
+        oppPosX = 8.5 if name == 'player1' else -8.5
         self.player = Player(name, character='chupacabra', lobby_id=self.lobby.uuid, posX=posX)
         self.opp = Player(oppName, character='chupacabra', lobby_id=self.lobby.uuid, posX=oppPosX)
         await self.lobby.asave()
@@ -134,7 +134,7 @@ class PongConsumer(AsyncWebsocketConsumer):
     
     async def startGame(self):
         print('startGame')
-        print('dirX:', self.ball.dirX, 'dirY:', self.ball.dirY)
+        print('dirX:', self.ball.dirX, 'dirZ:', self.ball.dirZ)
         await self.channel_layer.group_send(
         self.lobby_group_name, { 
             'type': 'pong.status', 
@@ -146,9 +146,9 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.lobby_group_name, {
                 'type': 'pong.ball_data',
                 'posX': self.ball.posX,
-                'posY': self.ball.posY,
+                'posZ': self.ball.posZ,
                 'dirX': self.ball.dirX,
-                'dirY': self.ball.dirY
+                'dirZ': self.ball.dirZ
             }
         )
         await self.lobby.startGame()
@@ -159,7 +159,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         if move != 0 and move != 1 and move != -1:
             return
         if move != 0:
-            move = 0.095 if move == 1 else -0.095
+            move = -0.15 if move == 1 else 0.15
         if self.player.move == move:
             return
         self.player.move = move
@@ -170,7 +170,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             'type': 'pong.player_pos',
             'name': self.player.name, 
             'move': move,
-            'posY': self.player.posY
+            'posZ': self.player.posZ
         })
 
     async def sendScore(self):
@@ -185,9 +185,9 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.lobby_group_name, { 
                 'type': 'pong.ball_data', 
                 'posX': self.ball.posX, 
-                'posY': self.ball.posY, 
+                'posZ': self.ball.posZ, 
                 'dirX': self.ball.dirX, 
-                'dirY': self.ball.dirY
+                'dirZ': self.ball.dirZ
             }
         )
     
@@ -222,10 +222,10 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'type': 'pong.player_pos',
                 'name': self.player.name, 
                 'move': self.player.move,
-                'posY': self.player.posY
+                'posZ': self.player.posZ
             })
 
-        self.player.posY += self.player.move
+        self.player.posZ += self.player.move
         
         await self.checkAllCollisions()
         if self.ball.checkIfScored(self.player) or self.ball.checkIfScored(self.opp):
@@ -269,21 +269,21 @@ class PongConsumer(AsyncWebsocketConsumer):
 
         if self.opp.name == name:
             self.opp.move = move
-            self.opp.posY = posY
+            self.opp.posZ = posZ
         await self.send(text_data=json.dumps({ "type": "player_pos", "move": move, "name": name, "posY": posY}))
 
     async def pong_ball_data(self, event):
         posX = event["posX"]
-        posY = event["posY"]
+        posZ = event["posZ"]
         dirX = event["dirX"]
-        dirY = event["dirY"]
+        dirZ = event["dirZ"]
 
         self.ball.posX = posX
-        self.ball.posY = posY
+        self.ball.posZ = posZ
         self.ball.dirX = dirX
-        self.ball.dirY = dirY
+        self.ball.dirZ = dirZ
 
-        await self.send(text_data=json.dumps({ "type": "ball_data", "posX": posX, "posY": posY, "dirX": dirX, "dirY": dirY}))
+        await self.send(text_data=json.dumps({ "type": "ball_data", "posX": posX, "posZ": posZ, "dirX": dirX, "dirZ": dirZ}))
 
     async def pong_score(self, event):
         name = event["name"]

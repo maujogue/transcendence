@@ -104,7 +104,6 @@ async function connectToLobby() {
     webSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
 
-        console.log('Paddle : ', env.scene.getObjectByName("paddle_" + player.name));
         if (data['type'] == 'player_data') {
             const paddle = env.scene.getObjectByName("paddle_" + player.name);
             player.name = data['name'];
@@ -127,7 +126,7 @@ async function connectToLobby() {
             document.getElementById("waitingScreen")?.remove();
         }
         if (data['type'] == 'player_pos') {
-            env.scene.getObjectByName("paddle_" + data['name']).position.y = data['posY'];
+            env.scene.getObjectByName("paddle_" + data['name']).position.z = data['posZ'];
             playersMove.set("paddle_" + data['name'], data['move']);
         }
         if (data['type'] == 'score')
@@ -201,9 +200,9 @@ function movePlayers() {
             return ;
         const playerBox = new THREE.Box3().setFromObject(paddle);
         if (value > 0 && !env.border.up.box.intersectsBox(playerBox))
-            paddle.translateY(value);
+            paddle.translateZ(value);
         if (value < 0 && !env.border.down.box.intersectsBox(playerBox))
-            paddle.translateY(value);
+            paddle.translateZ(value);
     });
 }
 
@@ -221,6 +220,8 @@ async function setGameIsStart() {
     if (player && opp) {
         ClearAllEnv(env);
         env = await initGame(player, opp);
+        console.log("Paddle 1: ", env.scene.getObjectByName("paddle_player1"));
+        console.log("Paddle 2: ", env.scene.getObjectByName("paddle_player2"));
         status.gameIsInit = false;
         status.start = true;
     }

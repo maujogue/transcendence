@@ -249,7 +249,7 @@ async function sendIsReady(webSocket) {
 }
 
 async function setGameIsStart() {
-    if (player && opp) {
+    if (player && opp && oppInfo) {
         opp.userInfo = oppInfo;
         ClearAllEnv(env);
         env = await initGame(player, opp);
@@ -271,7 +271,6 @@ async function onlineGameLoop(webSocket) {
         console.log('ready');
         keysPressed[' '] = false;
         getUserData('username').then((res) => {
-            console.log(res);
             connectToLobby(res);
             status.isReady = true;
         })

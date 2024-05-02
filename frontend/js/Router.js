@@ -1,5 +1,6 @@
 import { isLoggedIn, toggleContentOnLogState } from "./Utils.js";
 import { injectUserData } from "./User.js";
+import { injectModule } from "./Modules.js";
 
 //page constructor
 class Page {
@@ -86,6 +87,7 @@ const router = async (routes, divToInsertHtml) => {
   if (page.sidebar == false)
     setInnerHtml(document.querySelector(sidebarDiv), "");
   previousPage = page;
+  injectModule();
   toggleContentOnLogState();
   injectUserData();
   toggleActiveTab(location.pathname);

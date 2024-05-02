@@ -7,12 +7,14 @@ import { injectModule } from "./Modules.js";
 init();
 
 async function init() {
-	injectModule('usernameInputModule', 'updateProfileModal');
-	injectModule('emailInputModule', 'updateProfileModal');
-
 	var modal = document.getElementById("updateProfileModal");
-	var userData = await getUserData();
 	var formInputs = modal.querySelectorAll(".formInputs");
+	var userData = getUserData().then(() => {
+		formInputs.forEach((input) => {
+			input.addEventListener("input", () => enableDisableSaveButtonOnInput(input, userData))
+		});
+	});
+	
 	var saveChangesButton = modal.querySelector("#saveChangesButton");
 	var discardChangesButton = modal.querySelector("#discardChangesButton");
 	var confirmPasswordButton = document.querySelector("#confirmPasswordButton");
@@ -20,9 +22,6 @@ async function init() {
 	var password1 = document.querySelector("#updatePasswordFirstPassword");
 	var password2 = document.querySelector("#updatePasswordSecondPassword");
 
-	formInputs.forEach((input) => {
-		input.addEventListener("input", () => enableDisableSaveButtonOnInput(input, userData))
-	});
 	updatePasswordButton.addEventListener("click", () => updatePassword());
 	discardChangesButton.addEventListener("click", () => resetForm());
 	saveChangesButton.addEventListener("click", () => updateProfile());

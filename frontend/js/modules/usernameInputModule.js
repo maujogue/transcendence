@@ -3,43 +3,46 @@ import { checkInputAvailable } from "../ApiCalls.js";
 import { disableSaveChangesButton, resetForm } from "../DashboardUtils.js";
 import { getModuleDiv } from "../Modules.js";
 
-async function init() {
-
-	var module = getModuleDiv("emailInputModule");
+export async function init() {
+	var module = getModuleDiv("usernameInputModule");
+	if (!module)
+		return ;
 
 	var userData = await getUserData();
-	var input = module.querySelector(".emailInput");
+	var input = module.querySelector(".usernameInput");
 
-	input.addEventListener("input", () => checkEmail(input, userData))
+	input.addEventListener("input", () => {
+		checkUsername(input, userData);
+	});
 
-	async function checkEmail(input, userData) {
+	async function checkUsername(input, userData) {
 		if (userData && input.value !== userData[input.name]) {
-			invalidateEmailIfUnavailable(input, userData[input.name]);
+			await invalidateUsernameIfUnavailable(input, userData[input.name]);
 		}
 		else if (!userData)
-			invalidateEmailIfUnavailable(input);
+			await invalidateUsernameIfUnavailable(input);
 	}
 
 	let debounceTimer;
 
-	async function invalidateEmailIfUnavailable(input, userInput) {
-		const inputFeedback = module.querySelector('.emailInput ~ div');
+	async function invalidateUsernameIfUnavailable(input, userInput) {
+		const inputFeedback = module.querySelector('.usernameInput ~ div');
 		clearTimeout(debounceTimer);
-		const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 		debounceTimer = setTimeout(async () => {
-			if (!emailPattern.test(input.value)) {
-				inputFeedback.innerHTML = "Please enter a valid email adress";
+			if (input.value.length < 3) {
+				inputFeedback.innerHTML = "Username must be at least 3 characters long";
 				input.classList.remove("is-valid");
 				input.classList.add("is-invalid");
 			} else {
-				var emailAvailable = await checkInputAvailable(input.value, "email");
+				var usernameAvailable = await checkInputAvailable(input.value, "username");
 				if (userInput && input.value == userInput)
 					resetForm();
-				else if (!emailAvailable) {
-					inputFeedback.innerHTML = "Email is not Available!";
+				else if (!usernameAvailable) {
+					inputFeedback.innerHTML = "Username is not Available!";
 					input.classList.remove("is-valid");
 					input.classList.add("is-invalid");
+
 				} else {
 					input.classList.remove("is-invalid");
 					input.classList.add("is-valid");
@@ -49,5 +52,3 @@ async function init() {
 		}, 300);
 	}
 }
-
-export { init }

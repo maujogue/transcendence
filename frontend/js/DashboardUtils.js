@@ -1,7 +1,7 @@
 import { injectUserData } from "./User.js";
 
-async function enableDisableSaveButtonOnInput(input, userData) {
-	if (input.value !== userData[input.name]) {
+function enableDisableSaveButtonOnInput(input, userData) {
+	if (userData && input.value !== userData[input.name]) {
 		disableFormInputs(input);
 		disableSaveChangesButton(input);
 	}

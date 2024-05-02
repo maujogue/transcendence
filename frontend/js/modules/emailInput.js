@@ -5,7 +5,7 @@ import { getModuleDiv } from "../Modules.js";
 
 async function init() {
 
-	var module = getModuleDiv("emailInput");
+	var module = getModuleDiv("emailInputModule");
 
 	var userData = await getUserData();
 	var input = module.querySelector(".emailInput");

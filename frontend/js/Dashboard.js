@@ -7,8 +7,8 @@ import { injectModule } from "./Modules.js";
 init();
 
 async function init() {
-	injectModule('usernameInput', 'updateProfileModal');
-	injectModule('emailInput', 'updateProfileModal');
+	injectModule('usernameInputModule', 'updateProfileModal');
+	injectModule('emailInputModule', 'updateProfileModal');
 
 	var modal = document.getElementById("updateProfileModal");
 	var userData = await getUserData();

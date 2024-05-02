@@ -11,13 +11,13 @@ class Module {
 }
 
 const modules = [
-	new Module("usernameInput", "js/modules/usernameInput.html"),
-	new Module("emailInput", "js/modules/emailInput.html"),
+	new Module("usernameInputModule", "js/modules/usernameInput.html"),
+	new Module("emailInputModule", "js/modules/emailInput.html"),
 ];
 
 async function injectModule(moduleName, parentDivName) {
 	var parentDiv = document.getElementById(parentDivName);
-	var div = parentDiv.querySelector("." + moduleName + "Module");
+	var div = parentDiv.querySelector("." + moduleName);
 	var module = modules.find((elm) => elm.name === moduleName);
 	if (module) {
 		var html = await module.fetchHtml();
@@ -34,7 +34,7 @@ function generateUniqueId(moduleName) {
 }
 
 function getModuleDiv(moduleName) {
-	var modules = document.querySelectorAll("." + moduleName + "Module");
+	var modules = document.querySelectorAll("." + moduleName);
 	for (const module of modules)
 	{
 		if (!module.hasAttribute("id"))

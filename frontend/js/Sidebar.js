@@ -55,5 +55,5 @@ togglePasswordVisibility(
   "registerPasswordAgain"
 );
 
-injectModule('usernameInput', "register");
-injectModule('emailInput', "register");
+injectModule('usernameInputModule', "register");
+injectModule('emailInputModule', "register");

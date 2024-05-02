@@ -4,7 +4,7 @@ import { disableSaveChangesButton, resetForm } from "../DashboardUtils.js";
 import { getModuleDiv } from "../Modules.js";
 
 async function init() {
-	var module = getModuleDiv("usernameInput");
+	var module = getModuleDiv("usernameInputModule");
 
 	var userData = await getUserData();
 	var input = module.querySelector(".usernameInput");

@@ -1,5 +1,6 @@
 import { register, login, logout } from "./ApiCalls.js";
 import { togglePasswordVisibility, checkPassword } from "./Utils.js";
+import { injectModule } from "./Modules.js";
 
 //collapse sidebar on click
 const collapseButton = document.getElementById("collapseButton");
@@ -61,3 +62,6 @@ togglePasswordVisibility(
   "registerPasswordAgainToggle",
   "registerPasswordAgain"
 );
+
+injectModule('usernameInput', "register");
+injectModule('emailInput', "register");

@@ -7,18 +7,18 @@ import { injectModule } from "./Modules.js";
 init();
 
 async function init() {
-	injectModule('usernameInput', document.querySelector(".usernameInputModule"));
-	injectModule('emailInput', document.querySelector(".emailInputModule"));
+	injectModule('usernameInput', 'updateProfileModal');
+	injectModule('emailInput', 'updateProfileModal');
 
-
+	var modal = document.getElementById("updateProfileModal");
 	var userData = await getUserData();
-	var formInputs = document.querySelectorAll(".formInputs");
-	var saveChangesButton = document.getElementById("saveChangesButton");
-	var discardChangesButton = document.getElementById("discardChangesButton");
-	var confirmPasswordButton = document.getElementById("confirmPasswordButton");
-	var updatePasswordButton = document.getElementById("updatePasswordButton");
-	var password1 = document.getElementById("updatePasswordFirstPassword");
-	var password2 = document.getElementById("updatePasswordSecondPassword");
+	var formInputs = modal.querySelectorAll(".formInputs");
+	var saveChangesButton = modal.querySelector("#saveChangesButton");
+	var discardChangesButton = modal.querySelector("#discardChangesButton");
+	var confirmPasswordButton = document.querySelector("#confirmPasswordButton");
+	var updatePasswordButton = document.querySelector("#updatePasswordButton");
+	var password1 = document.querySelector("#updatePasswordFirstPassword");
+	var password2 = document.querySelector("#updatePasswordSecondPassword");
 
 	formInputs.forEach((input) => {
 		input.addEventListener("input", () => enableDisableSaveButtonOnInput(input, userData))

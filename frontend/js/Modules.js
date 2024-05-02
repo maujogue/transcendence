@@ -15,10 +15,35 @@ const modules = [
 	new Module("emailInput", "js/modules/emailInput.html"),
 ];
 
-async function injectModule(name, div) {
-	var module = modules.find((elm) => elm.name === name);
-	var html = await module.fetchHtml();
-	setInnerHtml(div, html);
+async function injectModule(moduleName, parentDivName) {
+	var parentDiv = document.getElementById(parentDivName);
+	var div = parentDiv.querySelector("." + moduleName + "Module");
+	var module = modules.find((elm) => elm.name === moduleName);
+	if (module) {
+		var html = await module.fetchHtml();
+		setInnerHtml(div, html);
+	}
+}	
+
+function generateUniqueId(moduleName) {
+	var iterator = 1;
+	while (document.getElementById(moduleName + "Module_" + iterator) != null)
+		iterator++;
+	const moduleId = moduleName + "Module_" + iterator;
+	return moduleId;
 }
 
-export { injectModule };
+function getModuleDiv(moduleName) {
+	var modules = document.querySelectorAll("." + moduleName + "Module");
+	for (const module of modules)
+	{
+		if (!module.hasAttribute("id"))
+		{
+			module.id = generateUniqueId(moduleName);
+			return (module);
+		}
+	}
+	return null
+}
+
+export { injectModule, getModuleDiv};

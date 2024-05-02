@@ -1,4 +1,3 @@
-<!-- USERNAME INPUT -->
 <div class="mb-3">
 	<label for="usernameDashboard" class="form-label">Username</label>
 	<input type="text" name="username" class="usernameInput form-control usernameDynamic formInputs"
@@ -9,4 +8,7 @@
 
 </div>
 
-<script type="module" src="../../js/modules/usernameInput.js"></script>
+<script type="module">
+	import {init} from "/js/modules/usernameInput.js";
+	init();
+</script>

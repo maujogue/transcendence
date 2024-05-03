@@ -1,10 +1,11 @@
 import json
-# from asgiref.sync import sync_to_async
-
+import base64
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .models import Lobby
 from multiplayer.ball import Ball
 from multiplayer.player import Player
+from users.models import CustomUser
+from stats.models import Match
 
 class PongConsumer(AsyncWebsocketConsumer):
 
@@ -74,19 +75,40 @@ class PongConsumer(AsyncWebsocketConsumer):
         print(self.lobby.connected_user)
         self.is_connected = True
         await self.accept()
+        print('connection accepted')
         await self.send_player_data()
         if self.lobby.connected_user == 2:
             await self.channel_layer.group_send(
                 self.lobby_group_name, { 'type': 'pong.ask_character', 'name': self.player.name}
             )
+            await self.channel_layer.group_send(
+                self.lobby_group_name, { 'type': 'pong.ask_user', 'name': self.player.name}
+            )
+            await self.startGame()
+            
+    
+    async def authenticate_user_with_username(self, username):
+        try:
+            user = await CustomUser.objects.aget(username=username)
+            return user
+        except CustomUser.DoesNotExist:
+            return None
 
     async def receive(self, text_data):
-        # print('receive')
-        # print('lobby:', self.lobby.player_ready)
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
         text_data_json = json.loads(text_data)
         
-        print('text_data:', text_data_json)
+        if text_data_json.get("type") == 'auth':
+            username = text_data_json['username']
+            user = await self.authenticate_user_with_username(username)
+            if user is not None:
+                self.scope['user'] = user
+                await self.send(text_data=json.dumps({ "type": "auth", "status": "success"}))
+            else:
+                await self.send(text_data=json.dumps({ "type": "auth", "status": "failed"}))
+            await self.channel_layer.group_send(
+                self.lobby_group_name, { 'type': 'pong.user_info', 'user': self.scope['user'], 'name': self.player.name}
+            )
         if text_data_json.get("ready") != None:
             await self.lobby.setPlayerReady(text_data_json.get("ready"), self.player)
         if text_data_json.get("character") != None:
@@ -99,12 +121,16 @@ class PongConsumer(AsyncWebsocketConsumer):
                     'name': self.player.name
                 }
             )
-        if (self.lobby.player_ready == 2 and self.lobby.game_started == False):
+        if self.lobby.player_ready == 2 and self.lobby.game_started == False:
             await self.startGame()
-        if (self.lobby.game_started == True):
+        if text_data_json.get("type") == "user_info":
+            await self.channel_layer.group_send(
+                self.lobby_group_name, { 'type': 'pong.user_data', 'username': text_data_json.get('username'), 'avatar': text_data_json.get('avatar'), 'name': text_data_json.get('name')}
+            )
+        if self.lobby.game_started == True:
             if text_data_json.get("type") == "player_pos":
                 await self.movePlayer(text_data_json)
-            if (text_data_json.get("type") == "frame" and self.lobby.game_started == True):
+            if text_data_json.get("type") == "frame" and self.lobby.game_started == True:
                 await self.gameLoop()
 
     async def disconnect(self, close_code):
@@ -133,8 +159,6 @@ class PongConsumer(AsyncWebsocketConsumer):
     
     
     async def startGame(self):
-        print('startGame')
-        print('dirX:', self.ball.dirX, 'dirY:', self.ball.dirY)
         await self.channel_layer.group_send(
         self.lobby_group_name, { 
             'type': 'pong.status', 
@@ -209,9 +233,25 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def setGameOver(self):
         await self.lobby.stopGame()
+        if self.player.name == 'player1':
+            await self.createHistoryMatch()
         await self.channel_layer.group_send(
             self.lobby_group_name, { 'type': 'pong.status', 'message': 'endGame', 'name': self.player.name}
         )
+    
+    async def createHistoryMatch(self):
+        player1 = self.player if self.player.name == 'player1' else self.opp
+        player2 = self.player if self.player.name == 'player2' else self.opp
+        winner = player1.user.username if player1.score > player2.score else player2.user.username
+        loser = player1.user.username if player1.score < player2.score else player2.user.username
+        match = Match(player1=player1.user.username, 
+                      player2=player2.user.username, 
+                      winner=winner,
+                      loser=loser,
+                      player1_score=player1.score, 
+                      player2_score=player2.score)
+        await match.asave()
+        
 
 
     async def gameLoop(self):
@@ -253,14 +293,17 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({"type": 'status', "message": message, "name": name}))
 
     async def pong_character_data(self, event): 
-        # print('pong_character_data')
-        # print('channel_name:', self.channel_name)
-        # print('sender:', event["sender"])
-
         if (self.player.name == event["name"]):
             self.opp.character = event["character"]
         if (self.player.name != event["name"]):
             await self.send(text_data=json.dumps({ "type": "character_data", "character": event["character"], "name": event["name"]}))
+    
+    async def pong_user_data(self, event):
+        avatar = event["avatar"]
+        username = event["username"]
+        name = event["name"]
+        if (self.player.name != event["name"]):
+            await self.send(text_data=json.dumps({ "type": "user_info", "avatar": avatar, "username": username, "name": name}))
 
     async def pong_player_pos(self, event):
         move = event["move"]
@@ -295,7 +338,24 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({ "type": "score", "score": score, "name": name}))
 
     async def pong_ask_character(self, event):
-        print('pong_ask_character')
         name = event["name"]
 
         await self.send(text_data=json.dumps({ "type": "ask_character", "name": name}))
+    
+    async def pong_ask_user(self, event):
+        name = event["name"]
+
+        await self.send(text_data=json.dumps({ "type": "ask_user", "name": name}))
+    
+    async def pong_user_info(self, event):
+        avatar = event["user"].avatar
+        username = event["user"].username
+        name = event["name"]
+        with open(avatar.path, "rb") as avatar:
+            encoded_string = base64.b64encode(avatar.read()).decode('utf-8')
+        if self.player.name == name:
+            self.player.user = event["user"]
+        else:
+            self.opp.user = event["user"]
+
+        await self.send(text_data=json.dumps({ "type": "user_info", "avatar": encoded_string, "username": username, "name": name}))

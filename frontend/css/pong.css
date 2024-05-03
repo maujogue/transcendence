@@ -156,6 +156,22 @@ h1 {
 	height: auto;
 }
 
+#avatar_player1 {
+	top: 0;
+	left: 0;
+}
+
+#avatar_player2 {
+	top: 0;
+	right: 0;
+}
+
+.avatar-in-game {
+	position: absolute;
+	width: 50px
+}
+
+
 .unsubscribe-btn {
 	position: absolute !important;
 	bottom: 0;
@@ -200,6 +216,13 @@ h1 {
 	height: 85%;
 	justify-content: start;
 }
+
+#avatar_pong {
+	height: 50px;
+	width: 50px;
+	object-fit: cover;
+}
+
 
 .form-field {
 	display: flex;
@@ -424,7 +447,7 @@ h1 {
 	width: 100%;
 }
 
-.submode {
+.submode, #game .btn {
 	transform: skew(-10deg);
 	background: white;
 	width: 150%;
@@ -432,8 +455,13 @@ h1 {
 	transition: all 0.5s ease;
 }
 
-.submode:hover {
+#game .btn {
+	width: auto;
+}
+
+.submode:hover, #game .btn:hover {
 	transform: scale(1.1) skew(-7deg);
+	color: black;
 }
 
 
@@ -536,19 +564,12 @@ h1 {
 
 #game .btn {
 	border: none;
-	color: white;
 	font-family: 'baumansregular', sans-serif;
 	font-size: 1em;
-	background-color: rgba(0, 0, 0, 0);
-	margin: 0.5em 7em;
+	margin: 0.5em 8em;
 	padding: 15px;
 }
 
-#game .btn:hover {
-	background-color: whitesmoke;
-	color: black;
-	border-radius: 0.5em;
-}
 
 .cursorP1, .cursorP2 {
 	color: white;

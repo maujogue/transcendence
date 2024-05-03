@@ -16,6 +16,7 @@ urlpatterns = [
     path('', include('multiplayer.urls')),
 	path('users/', include('users.urls')),
     path('friends/', include('friends.urls')),
+    path('stats/', include('stats.urls')),
     path('', include('tournaments.urls'))
 ]
 

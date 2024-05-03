@@ -35,6 +35,7 @@ function createWaitingScreen() {
 	const waitingScreen = document.getElementById("waitingScreen");
 	waitingScreen.innerHTML = '\
 		<i class="fa-solid fa-xmark close-matchmaking" id="closeMatchmaking"></i> \
+		<img id="avatar_pong" src="" alt="avatar">\
 		<div id="waitingText">Waiting for other player</div>';
 	
 }
@@ -349,7 +350,6 @@ function createListTournament(parent) {
 	parent.appendChild(listTournament);
 	createTournamentInfo("Tournament 1", "2/50");
 	listTournament.addEventListener("click", (e) => {
-		console.log(e.target.parentNode.className);
 		if (e.target.className == "tournament-info" || e.target.parentNode.className == "tournament-info")
 			createWaitingScreenTournament();
 	});
@@ -361,6 +361,24 @@ export function createJoinTournamentMenu() {
 	const parent = document.getElementById("joinTournamentMenu");
 	parent.innerHTML = '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>';
 	createListTournament(parent);
+}
+
+export function createHUD(player, opp) {
+	var player1Avatar = player.userInfo.avatar;
+	var player2Avatar = opp.userInfo.avatar;
+
+	if (document.getElementById("hud"))
+		return ;
+	if (player.name == "player2") {
+		player1Avatar = opp.userInfo.avatar;
+	    player2Avatar = player.userInfo.avatar;
+	}
+	createDivMenu("hud");
+	const parent = document.getElementById("hud");
+	parent.innerHTML = `\
+	<img id="avatar_player1" class="avatar-in-game" src='${player1Avatar}' alt="avatar Player1">\
+	<img id="avatar_player2" class="avatar-in-game" src='${player2Avatar}' alt="avatar Player2">\
+	`
 }
 
 

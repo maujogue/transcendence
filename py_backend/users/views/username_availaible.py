@@ -17,6 +17,6 @@ def username_available(request):
     if username:
         is_unique, response = username_is_unique(username)
         if is_unique:
-            return JsonResponse({'status': 'success'}, status=200)
-        return JsonResponse({'status': 'failure', 'error': response}, status=400)
+            return JsonResponse({'status': 'true'}, status=200)
+        return JsonResponse({'status': 'false', 'response': response}, status=200)
     return JsonResponse({'status': "Missing username."}, status=400)

@@ -1,4 +1,5 @@
 class Player:
+    user = None
     posY = 0
     is_ready = False
     score = 0

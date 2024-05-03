@@ -71,7 +71,6 @@ export function createWaitingScreenTournament() {
 }
 
 function insertPlayer(name) {
-    console.log("insert player", name);
     const parent = document.getElementById("player-list");
 	const div = document.createElement("div");
 	div.textContent = name;

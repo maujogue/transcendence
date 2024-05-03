@@ -7,6 +7,7 @@ class Player {
 		this.score = 0;
 		this.ready = false;
 		this.character = character;
+		this.userInfo = null;
 	}
 
 	setCharacter(environment, characterName) {

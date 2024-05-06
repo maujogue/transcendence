@@ -14,10 +14,10 @@ async function getAllTournaments() {
 }
 
 function createTournamentInfo(name, currentParticipants, maxParticipants) {
-    console.log("name: ", name, "currentParticipants: ", currentParticipants, "maxParticipants: ", maxParticipants);
 	const parent = document.getElementById("listTournament");
 	const tournament = document.createElement("div");
 	tournament.className = "tournament-info";
+    tournament.id = name;
 	const div = document.createElement("div");
 	div.textContent = name;
 	const div2 = document.createElement("div");
@@ -45,12 +45,12 @@ function createDivJoinTournament(parent) {
 }
 
 async function createListTournament(parent) {
-    var allTournaments;
+    var allTournaments
 
     createDivJoinTournament(parent);
     try {
         const data = await getAllTournaments();
-        allTournaments = data;
+        allTournaments = data.tournaments;
         data.tournaments.map((tournament) => {
             createTournamentInfo(tournament.name, tournament.currentParticipants, tournament.maxParticipants);
         });
@@ -60,7 +60,10 @@ async function createListTournament(parent) {
 
 	listTournament.addEventListener("click", (e) => {
 		if (e.target.className == "tournament-info" || e.target.parentNode.className == "tournament-info")
-			createWaitingScreenTournament();
+            allTournaments.find((tournament) => {
+                if (tournament.name == e.target.id)
+                    createWaitingScreenTournament(tournament);
+            });
 	});
 
 }

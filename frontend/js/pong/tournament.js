@@ -1,8 +1,8 @@
-export function createWaitingScreenTournament() {
-    const tournamentName = "HerrrCup" 
-    const tournament = document.getElementsByClassName("tournament")[0];
-    tournament.innerHTML = `<h1>${tournamentName}</h1>`;
-    tournament.id = "PlayerList";
+export function createWaitingScreenTournament(tournament) {
+    const tournamentName = tournament.name;
+    const tournamentDiv = document.getElementsByClassName("tournament")[0];
+    tournamentDiv.innerHTML = `<h1>${tournamentName}</h1>`;
+    tournamentDiv.id = "PlayerList";
 	const header = document.createElement("div");
 	header.className = "list-header";
 	header.textContent = "Players";
@@ -15,15 +15,17 @@ export function createWaitingScreenTournament() {
         console.log("unsubscribe");
     }
     unsubscribeBtn.className = "unsubscribe-btn form-btn";
-    tournament.appendChild(unsubscribeBtn);
-	tournament.appendChild(header);
-    tournament.appendChild(playerList);
-    insertPlayer("Herrrmann");
+    tournamentDiv.appendChild(unsubscribeBtn);
+	tournamentDiv.appendChild(header);
+    tournamentDiv.appendChild(playerList);
+    tournament.participants.map((participant) => { 
+        insertPlayer(participant);
+    });
 }
 
-function insertPlayer(name) {
+function insertPlayer(player) {
     const parent = document.getElementById("player-list");
 	const div = document.createElement("div");
-	div.textContent = name;
+	div.textContent = player.name;
     parent.appendChild(div);
 }

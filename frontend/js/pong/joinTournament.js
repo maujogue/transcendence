@@ -60,8 +60,12 @@ async function createListTournament(parent) {
 
 	listTournament.addEventListener("click", (e) => {
 		if (e.target.className == "tournament-info" || e.target.parentNode.className == "tournament-info")
+            var tournamentName = e.target.id;
+            if (e.target.parentNode.className == "tournament-info")
+                tournamentName = e.target.parentNode.id
+            console.log(tournamentName);
             allTournaments.find((tournament) => {
-                if (tournament.name == e.target.id)
+                if (tournament.name == tournamentName)
                     createWaitingScreenTournament(tournament);
             });
 	});

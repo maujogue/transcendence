@@ -2,56 +2,45 @@ import { register, login, logout } from "./ApiCalls.js";
 import { togglePasswordVisibility, checkPassword } from "./Utils.js";
 import { injectModule } from "./Modules.js";
 
-//collapse sidebar on click
-const collapseButton = document.getElementById("collapseButton");
-const sidebar = document.getElementById("sidebar");
-const content = document.getElementById("content-container");
+init();
 
-collapseButton.addEventListener("click", toggleSidebarCollapse);
+function init() {
+	const collapseButton = document.getElementById("collapseButton");
+	var loginForm = document.getElementById("loginForm");
+	var logoutButton = document.getElementById("logoutButton");
+	var registerForm = document.getElementById("registrationForm");
+	var password1 = document.getElementById("registerPassword");
+	var password2 = document.getElementById("registerPasswordAgain");
 
-function toggleSidebarCollapse() {
-  sidebar.classList.toggle("collapsed");
-  content.classList.toggle("collapsed");
-  var sectionNames = document.querySelectorAll(".section-name");
-  sectionNames.forEach(function (name) {
-    name.classList.toggle("section-name-collapsed");
-  });
+	collapseButton.addEventListener("click", toggleSidebarCollapse);
+	logoutButton.addEventListener("click", () => logout());
+	loginForm.addEventListener("submit", (event) => {
+		event.preventDefault();
+		login(loginForm);
+	});
+	registerForm.addEventListener("submit", (event) => {
+		event.preventDefault();
+		register(registerForm);
+	});
+	password1.addEventListener("input", (event) =>
+		checkPassword("register", password1, password2)
+	);
+	password2.addEventListener("input", (event) =>
+		checkPassword("register", password1, password2)
+	);
+	togglePasswordVisibility("loginPasswordToggle", "loginPassword");
+	togglePasswordVisibility("registerPasswordToggle", "registerPassword");
+	togglePasswordVisibility("registerPasswordAgainToggle", "registerPasswordAgain");
 }
 
-//login button fetch launcher
-var loginForm = document.getElementById("loginForm");
-loginForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  login(loginForm);
-});
+function toggleSidebarCollapse() {
+	const sidebar = document.getElementById("sidebar");
+	const content = document.getElementById("content-container");
+	var sectionNames = document.querySelectorAll(".section-name");
 
-//logout button fetch launcher
-var logoutButton = document.getElementById("logoutButton");
-logoutButton.addEventListener("click", (e) => logout());
-
-//register button fetch launcher
-var registerForm = document.getElementById("registrationForm");
-registerForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  register(registerForm);
-});
-
-//check password on register input
-var password1 = document.getElementById("registerPassword");
-var password2 = document.getElementById("registerPasswordAgain");
-
-password1.addEventListener("input", (event) =>
-  checkPassword("register", password1, password2)
-);
-password2.addEventListener("input", (event) =>
-  checkPassword("register", password1, password2)
-);
-
-//password visibility toggles (login/register)
-togglePasswordVisibility("loginPasswordToggle", "loginPassword");
-togglePasswordVisibility("registerPasswordToggle", "registerPassword");
-togglePasswordVisibility(
-  "registerPasswordAgainToggle",
-  "registerPasswordAgain"
-);
-
+	sidebar.classList.toggle("collapsed");
+	content.classList.toggle("collapsed");
+	sectionNames.forEach(function (name) {
+		name.classList.toggle("section-name-collapsed");
+	});
+}

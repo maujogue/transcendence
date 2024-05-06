@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { createPlayer } from "./createPlayer.js";
-import { clock } from './main.js';
+import { clock } from '../pages/Game.js';
 import { colors, lobbyCharPos, lobbyPaddlePos } from './varGlobal.js';
 
 async function removeObject(name, environment) {

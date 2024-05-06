@@ -1,5 +1,5 @@
-import { register, login, logout } from "./ApiCalls.js";
-import { togglePasswordVisibility, checkPassword } from "./Utils.js";
+import { register, login, logout } from "../ApiCalls.js";
+import { togglePasswordVisibility, checkPassword } from "../Utils.js";
 
 export function init() {
 	const collapseButton = document.getElementById("collapseButton");

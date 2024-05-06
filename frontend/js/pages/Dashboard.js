@@ -1,7 +1,7 @@
-import { updatePassword, updateProfile, updateProfileWithPassword } from "./ApiCalls.js";
-import { togglePasswordVisibility, checkPassword } from "./Utils.js";
-import { enableDisableSaveButtonOnInput, resetForm } from "./DashboardUtils.js"
-import { getUserData } from "./User.js";
+import { updatePassword, updateProfile, updateProfileWithPassword } from "../ApiCalls.js";
+import { togglePasswordVisibility, checkPassword } from "../Utils.js";
+import { enableDisableSaveButtonOnInput, resetForm } from "../DashboardUtils.js"
+import { getUserData } from "../User.js";
 
 export async function init() {
 	var modal = document.getElementById("updateProfileModal");

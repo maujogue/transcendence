@@ -15,7 +15,7 @@ class Page {
 		this.html = await fetch(this.filePath).then((x) => x.text());
 	}
 	async fetchInit() {
-		this.init = await importFunction("./", this.name, this.importJs);
+		this.init = await importFunction("./pages/", this.name, this.importJs);
 	}
 }
 
@@ -24,19 +24,20 @@ const routes = [
 	new Page("Dashboard", "/dash", "html/Dashboard.html", true),
 	new Page("Sidebar", "", "html/Sidebar.html", true),
 	new Page("About", "/about", "html/About.html"),
-	new Page("Game", "/game", "html/Game.html"),
+	new Page("Game", "/game", "html/Game.html", true),
 ];
 
 window.addEventListener("popstate", () => router(routes));
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
 	document.body.addEventListener("click", (e) => navigateOnClick(e));
+	await initArray(routes);
+	await initGame();
+	await initSidebar();
 	router(routes);
 });
 
 async function router() {
-	await initArray(routes);
-	await initSidebar();
 	await injectPageHtml();
 	await injectModule();
 	await injectPageJs();
@@ -50,9 +51,9 @@ function navigateTo(url) {
 		history.pushState({}, null, url);
 		router(routes);
 	}
-	toggleContentOnLogState();
+	toggleActiveTab(location.pathname);
 	injectUserData();
-	toggleActiveTab(url);
+	toggleContentOnLogState();
 }
 
 function navigateOnClick(e) {
@@ -75,10 +76,17 @@ function getCurrentPage() {
 }
 
 async function injectPageHtml() {
-	const mainPageDiv = document.getElementById("content-container");
+	const mainPageDiv = document.getElementById("content");
 	var page = getCurrentPage();
-	if (page && page.html)
+	console.log(page.name);
+	if (page && page.name == "Game") {
+		mainPageDiv.innerHTML = "";
+		document.getElementById("game").removeAttribute('hidden');
+	}
+	else if (page && page.html) {
 		mainPageDiv.innerHTML = page.html;
+		document.getElementById("game").setAttribute('hidden', '');
+	}
 }
 
 async function injectPageJs() {
@@ -88,12 +96,16 @@ async function injectPageJs() {
 }
 
 async function initSidebar() {
-	if (!document.getElementById("sidebar")){
-		const sidebarDiv = document.getElementById("sidebar-container");
-		let sidebar = routes.find((elm) => elm.name === "Sidebar");
-		sidebarDiv.innerHTML = sidebar.html;
-		sidebar.init();
-	}
+	const sidebarDiv = document.getElementById("sidebar-container");
+	let sidebar = routes.find((elm) => elm.name === "Sidebar");
+	sidebarDiv.innerHTML = sidebar.html;
+	sidebar.init();
+}
+
+async function initGame() {
+	let game = routes.find((elm) => elm.name === "Game");
+	document.getElementById("game").innerHTML = game.html;
+	await game.init();
 }
 
 function toggleActiveTab(target) {

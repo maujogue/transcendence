@@ -14,7 +14,6 @@ export async function sendCharacter(webSocket) {
     const character = getCharacterChoose('cursorP1');
     if (!character)
         return ;
-    console.log('sendCharacter', character);
     await webSocket.send(JSON.stringify({
         'character': character
     }));

@@ -1,5 +1,6 @@
+from typing import Any
 from django.db import models
-import uuid 
+import uuid
 
 class Lobby(models.Model):
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -16,7 +17,6 @@ class Lobby(models.Model):
         else:
             self.player_ready -= 1
             player.is_ready = False
-        print('player_ready:', self.player_ready)
         await self.asave(update_fields=['player_ready'])
     
     async def disconnectUser(self, player):
@@ -40,3 +40,4 @@ class Lobby(models.Model):
     async def startGame(self):
         self.game_started = True
         await self.asave(update_fields=['game_started'])
+  

@@ -14,7 +14,6 @@ async function loadFont() {
 }
   
 async function createTextMesh(text, font, environment, name) {
-	console.log(name);
 	const geometry = new TextGeometry(text, {
 	  font: font,
 	  size: 1,

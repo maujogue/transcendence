@@ -32,6 +32,7 @@ function resetForm(input) {
 function disableSaveChangesButton(input) {
 	var modal = input.closest(".modal");
 	var saveChangesButton = modal.querySelector(".saveChangesButton");
+	console.log(modal, saveChangesButton);
 	if (saveChangesButton) {
 		if (!input.classList.contains("is-invalid"))
 			saveChangesButton.classList.remove("disabled");

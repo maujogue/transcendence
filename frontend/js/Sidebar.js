@@ -1,10 +1,7 @@
 import { register, login, logout } from "./ApiCalls.js";
 import { togglePasswordVisibility, checkPassword } from "./Utils.js";
-import { injectModule } from "./Modules.js";
 
-init();
-
-function init() {
+export function init() {
 	const collapseButton = document.getElementById("collapseButton");
 	var loginForm = document.getElementById("loginForm");
 	var logoutButton = document.getElementById("logoutButton");

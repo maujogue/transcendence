@@ -1,115 +1,100 @@
 import { isLoggedIn, toggleContentOnLogState } from "./Utils.js";
 import { injectUserData } from "./User.js";
-import { injectModule } from "./Modules.js";
+import { injectModule, initArray, importFunction } from "./Modules.js";
 
 class Page {
-	constructor(name, urlPath, filePath, sidebar) {
+	constructor(name, urlPath, filePath, importJs) {
 		this.name = name;
 		this.urlPath = urlPath;
 		this.filePath = filePath;
-		this.sidebar = sidebar;
+		this.importJs = importJs;
+		this.init = null;
+		this.html = null;
 	}
 	async fetchHtml() {
-		return await fetch(this.filePath).then((x) => x.text());
+		this.html = await fetch(this.filePath).then((x) => x.text());
+	}
+	async fetchInit() {
+		this.init = await importFunction("./", this.name, this.importJs);
 	}
 }
 
 const routes = [
 	new Page("Dashboard", "/", "html/Dashboard.html", true),
 	new Page("Dashboard", "/dash", "html/Dashboard.html", true),
-
-	new Page("Sidebar", "", "html/Sidebar.html", false),
-
-	new Page("About", "/about", "html/About.html", true),
-	new Page("Game", "/game", "html/Game.html", true),
+	new Page("Sidebar", "", "html/Sidebar.html", true),
+	new Page("About", "/about", "html/About.html"),
+	new Page("Game", "/game", "html/Game.html"),
 ];
 
-const mainPageDiv = "#content-container";
-const sidebarDiv = "#sidebar-container";
-let previousPage = null;
+window.addEventListener("popstate", () => router(routes));
 
-function setInnerHtml(elm, html) {
-	elm.innerHTML = html;
-	Array.from(elm.querySelectorAll("script")).forEach((oldScript) => {
-		const newScript = document.createElement("script");
-		Array.from(oldScript.attributes).forEach((attr) =>
-			newScript.setAttribute(attr.name, attr.value)
-		);
-		newScript.appendChild(document.createTextNode(oldScript.innerHTML));
-		oldScript.parentNode.replaceChild(newScript, oldScript);
-	});
-}
+document.addEventListener("DOMContentLoaded", () => {
+	document.body.addEventListener("click", (e) => navigateOnClick(e));
+	router(routes);
+});
+
+async function router() {
+	await initArray(routes);
+	await initSidebar();
+	await injectPageHtml();
+	await injectModule();
+	await injectPageJs();
+	toggleContentOnLogState();
+	await injectUserData();
+	toggleActiveTab(location.pathname);
+};
 
 function navigateTo(url) {
 	if (url !== location.pathname) {
 		history.pushState({}, null, url);
-		router(routes, mainPageDiv);
+		router(routes);
 	}
 	toggleContentOnLogState();
 	injectUserData();
 	toggleActiveTab(url);
 }
 
-const router = async (routes) => {
-	const potentialMatches = routes.map((route) => {
-		return {
-			route: route,
-			isMatch: location.pathname === route.urlPath,
-		};
-	});
-	let match = potentialMatches.find((potentialMatch) => potentialMatch.isMatch);
-	if (!match) {
-		match = {
-			route: routes[0],
-			isMatch: true,
-		};
+function navigateOnClick(e) {
+	let target = e.target;
+	while (target && target.parentNode !== document.body && !target.getAttribute("href"))
+		target = target.parentNode;
+	if (target && target.matches("[navlink]")) {
+		e.preventDefault();
+		navigateTo(target.getAttribute("href"));
+	}
+}
+
+function getCurrentPage() {
+	let page = routes.find((page) => page.urlPath === location.pathname);
+	if (!page) {
+		page = routes[0];
 		history.pushState({}, "", "/");
 	}
-	const page = match.route;
-	const html = await page.fetchHtml();
-	setInnerHtml(document.querySelector(mainPageDiv), html);
-	if (
-		page.sidebar == true &&
-		(previousPage == null || previousPage.sidebar == false)
-	) {
-		setInnerHtml(document.querySelector(sidebarDiv), "");
-		let sidebarHtml = await routes
-			.find((elm) => elm.name === "Sidebar")
-			.fetchHtml();
-		setInnerHtml(document.querySelector(sidebarDiv), sidebarHtml);
+	return page;
+}
+
+async function injectPageHtml() {
+	const mainPageDiv = document.getElementById("content-container");
+	var page = getCurrentPage();
+	if (page && page.html)
+		mainPageDiv.innerHTML = page.html;
+}
+
+async function injectPageJs() {
+	var page = getCurrentPage();
+	if (page && page.init)
+		page.init();
+}
+
+async function initSidebar() {
+	if (!document.getElementById("sidebar")){
+		const sidebarDiv = document.getElementById("sidebar-container");
+		let sidebar = routes.find((elm) => elm.name === "Sidebar");
+		sidebarDiv.innerHTML = sidebar.html;
+		sidebar.init();
 	}
-	if (page.sidebar == false)
-		setInnerHtml(document.querySelector(sidebarDiv), "");
-	previousPage = page;
-	injectModule();
-	toggleContentOnLogState();
-	injectUserData();
-	toggleActiveTab(location.pathname);
-};
-
-window.addEventListener("popstate", (event) => router(routes));
-
-document.addEventListener("DOMContentLoaded", () => {
-	document.body.addEventListener("click", (e) => {
-		let target = e.target;
-		while (
-			target &&
-			target.parentNode !== document.body &&
-			!target.getAttribute("href")
-		) {
-			target = target.parentNode;
-		}
-		if (target && target.matches("[navlink]")) {
-			e.preventDefault();
-			navigateTo(target.getAttribute("href"));
-		}
-	});
-	router(routes);
-});
-
-const logIn = new Event("logIn");
-document.addEventListener("logIn", () => {
-})
+}
 
 function toggleActiveTab(target) {
 	var currentActive = document.querySelector(".active");
@@ -121,4 +106,16 @@ function toggleActiveTab(target) {
 		document.querySelector("a[href='" + target + "']").classList.add("active");
 }
 
-export { navigateTo, logIn, setInnerHtml };
+function setInnerHtml(elm, html) {
+	elm.innerHTML = html;
+	routes.from(elm.querySelectorAll("script")).forEach((oldScript) => {
+		const newScript = document.createElement("script");
+		Array.from(oldScript.attributes).forEach((attr) =>
+			newScript.setAttribute(attr.name, attr.value)
+		);
+		newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+		oldScript.parentNode.replaceChild(newScript, oldScript);
+	});
+}
+
+export { navigateTo, setInnerHtml };

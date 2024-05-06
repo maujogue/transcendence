@@ -2,19 +2,14 @@ import { updatePassword, updateProfile, updateProfileWithPassword } from "./ApiC
 import { togglePasswordVisibility, checkPassword } from "./Utils.js";
 import { enableDisableSaveButtonOnInput, resetForm } from "./DashboardUtils.js"
 import { getUserData } from "./User.js";
-import { injectModule } from "./Modules.js";
 
-init();
-
-async function init() {
+export async function init() {
 	var modal = document.getElementById("updateProfileModal");
 	var formInputs = modal.querySelectorAll(".formInputs");
-	var userData = getUserData().then(() => {
-		formInputs.forEach((input) => {
-			input.addEventListener("input", () => enableDisableSaveButtonOnInput(input, userData))
-		});
+	var userData = await getUserData();
+	formInputs.forEach((input) => {
+		input.addEventListener("input", () => enableDisableSaveButtonOnInput(input, userData))
 	});
-	
 	var saveChangesButton = modal.querySelector("#saveChangesButton");
 	var discardChangesButton = modal.querySelector("#discardChangesButton");
 	var confirmPasswordButton = document.querySelector("#confirmPasswordButton");

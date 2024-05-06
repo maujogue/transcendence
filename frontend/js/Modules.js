@@ -1,5 +1,3 @@
-import { setInnerHtml } from "./Router.js";
-
 class Module {
 	constructor(name) {
 		this.name = name;
@@ -11,7 +9,7 @@ class Module {
 		this.html = await fetch(this.filePath).then((x) => x.text());
 	}
 	async fetchInit() {
-		this.init = await importFunction(this.name);
+		this.init = await importFunction("./modules/", this.name, true);
 	}
 }
 
@@ -20,36 +18,38 @@ const modules = [
 	new Module("emailInputModule"),
 ];
 
-initModules();
+initArray(modules);
 
-async function initModules() {
-    await Promise.all(modules.map(module => module.fetchInit()));
-    await Promise.all(modules.map(module => module.fetchHtml()));
+async function initArray(array) {
+	await Promise.all(array.map(module => module.fetchInit()));
+	await Promise.all(array.map(module => module.fetchHtml()));
 }
 
 async function injectModule() {
-	await initModules();
+	await initArray(modules);
 	modules.forEach((moduleType) => {
 		var moduleDivs = document.querySelectorAll("." + moduleType.name);
 		moduleDivs.forEach(async (div) => {
-			setInnerHtml(div, moduleType.html);
+			div.innerHTML = moduleType.html;
 			moduleType.init();
 		});
 	});
 }
 
-async function importFunction(moduleName) {
-	try {
-		const module = await import(`./modules/${moduleName}.js`);
-		const func = module["init"];
-		if (typeof func === 'function') {
-			return func;
-		} else {
-			throw new Error(`Function '${functionName}' not found in module '${moduleName}'`);
+async function importFunction(modulePath, moduleName, run) {
+	if (modulePath && moduleName && run) {
+		try {
+			const module = await import(`${modulePath}${moduleName}.js`);
+			const func = module["init"];
+			if (typeof func === 'function') {
+				return func;
+			} else {
+				throw new Error(`Function '${functionName}' not found in module '${moduleName}'`);
+			}
+		} catch (error) {
+			console.error('Error importing function:', error);
+			throw error;
 		}
-	} catch (error) {
-		console.error('Error importing function:', error);
-		throw error;
 	}
 }
 
@@ -72,4 +72,4 @@ function getModuleDiv(moduleName) {
 	return null
 }
 
-export { injectModule, getModuleDiv };
+export { initArray, injectModule, getModuleDiv, importFunction };

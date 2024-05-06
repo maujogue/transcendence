@@ -1,6 +1,7 @@
 import { resize, isFullScreen } from "./resize.js";
 import { checkCollision } from "./collision.js";
-import { displayMainMenu, createSelectMenu, createOnlineMenu, createMenuCreateTournament, createJoinTournamentMenu} from './menu.js';
+import { displayMainMenu, createSelectMenu, createOnlineMenu, createMenuCreateTournament} from './menu.js';
+import { createJoinTournamentMenu } from './joinTournament.js';
 import { handleKeyPress, handleMenuKeyPress } from './handleKeyPress.js';
 import { displayCharacter, updateMixers } from './displayCharacter.js';
 import { initGame } from "./initGame.js";

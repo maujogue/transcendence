@@ -1,3 +1,5 @@
+import { createWaitingScreenTournament } from "./tournament.js";
+
 export async function sendTournamentForm(form) {
     console.log("sendTournamentForm")
     createWaitingScreenTournament();
@@ -46,33 +48,44 @@ function fetchCreateTournament(form){
 	});
 }
 
-export function createWaitingScreenTournament() {
-    const tournamentName = "HerrrCup" 
-    const tournament = document.getElementsByClassName("tournament")[0];
-    tournament.innerHTML = `<h1>${tournamentName}</h1>`;
-    tournament.id = "PlayerList";
-	const header = document.createElement("div");
-	header.className = "list-header";
-	header.textContent = "Players";
-    const playerList = document.createElement("div");
-    playerList.className = "player-list";
-    playerList.id = "player-list";
-    const unsubscribeBtn = document.createElement("button");
-    unsubscribeBtn.textContent = "Unsubscribe";
-    unsubscribeBtn.onclick = () => {
-        console.log("unsubscribe");
-    }
-    unsubscribeBtn.className = "unsubscribe-btn form-btn";
-    tournament.appendChild(unsubscribeBtn);
-	tournament.appendChild(header);
-    tournament.appendChild(playerList);
-    insertPlayer("Herrrmann");
+export function createFormTournament(parent) {
+	parent.innerHTML = '\
+	<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>\
+	<div id="createTournamentForm" class="tournament">\
+	<h1 class="form-header glitched">Create Tournament</h1>\
+	<form id="tournamentForm" method="post">\
+	<div class="form-field">\
+		<label for="name" class="form-field-name glitched">Name :</label>\
+		<input class="glitched" type="text" id="name" name="name" required>\
+	</div>\
+	<div class="form-field">\
+		<label for="max_players" class="form-field-max_players glitched">Max players :</label>\
+		<input type="number" class="glitched" id="max_players" name="max_players" min="2" required>\
+	</div>\
+	<div class="form-field">\
+		<label for="points_per_match" class="glitched form-field-max_points">Max points :</label>\
+		<input class="glitched" type="number" id="points_per_match" name="points_per_match" min="1" required>\
+	</div>\
+	<div class="form-field form-field__private">\
+		<label for="private" class="glitched">Private :</label>\
+		<input type="checkbox" id="private" class="glitched" name="prive">\
+	</div>\
+	<div class="form-field form-field__password disabled">\
+		<label for="tournamentPassword" class="glitched" >Password :</label>\
+		<input type="password" class="glitched" id="tournamentPassword" name="tournamentPassword">\
+	</div>\
+	<div class="glitched">\
+		<button class="form-btn" type="submit">Create</button>\
+	</div>\
+		</div>\
+	</form>'
 
-}
-
-function insertPlayer(name) {
-    const parent = document.getElementById("player-list");
-	const div = document.createElement("div");
-	div.textContent = name;
-    parent.appendChild(div);
+	const privateCheckbox = document.getElementById("private");
+	const passwordField = document.querySelector(".form-field__password");
+	privateCheckbox.addEventListener("change", (e) => {
+		if (e.target.checked)
+			passwordField.classList.remove("disabled");
+		else
+			passwordField.classList.add("disabled");
+	});
 }

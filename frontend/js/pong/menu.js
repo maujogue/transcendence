@@ -2,8 +2,8 @@ import { createEnvironment } from "./createEnvironment.js";
 import { displayCharacter } from './displayCharacter.js';
 import { createLobbyLights, createLobbyScene } from './createField.js';
 import { isFullScreen } from './resize.js';
-import { createWaitingScreenTournament } from "./createTournament.js";
 import { winWidth, winHeight, charactersNames } from './varGlobal.js';
+import { createFormTournament } from "./createTournament.js";
 
 let width = winWidth;
 let height = winHeight;
@@ -277,90 +277,6 @@ export function createSubmode(listName, text) {
 	const firstWord = text.split(' ')[0].toLowerCase();
 	const list = document.querySelector('.submode-list-' + listName);
 	list.innerHTML += `<li class="submode" id="${firstWord}">${text}</li>`;
-}
-
-function createFormTournament(parent) {
-	parent.innerHTML = '\
-	<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>\
-	<div id="createTournamentForm" class="tournament">\
-	<h1 class="form-header glitched">Create Tournament</h1>\
-	<form id="tournamentForm" method="post">\
-	<div class="form-field">\
-		<label for="name" class="form-field-name glitched">Name :</label>\
-		<input class="glitched" type="text" id="name" name="name" required>\
-	</div>\
-	<div class="form-field">\
-		<label for="max_players" class="form-field-max_players glitched">Max players :</label>\
-		<input type="number" class="glitched" id="max_players" name="max_players" min="2" required>\
-	</div>\
-	<div class="form-field">\
-		<label for="points_per_match" class="glitched form-field-max_points">Max points :</label>\
-		<input class="glitched" type="number" id="points_per_match" name="points_per_match" min="1" required>\
-	</div>\
-	<div class="form-field form-field__private">\
-		<label for="private" class="glitched">Private :</label>\
-		<input type="checkbox" id="private" class="glitched" name="prive">\
-	</div>\
-	<div class="form-field form-field__password disabled">\
-		<label for="tournamentPassword" class="glitched" >Password :</label>\
-		<input type="password" class="glitched" id="tournamentPassword" name="tournamentPassword">\
-	</div>\
-	<div class="glitched">\
-		<button class="form-btn" type="submit">Create</button>\
-	</div>\
-		</div>\
-	</form>'
-
-	const privateCheckbox = document.getElementById("private");
-	const passwordField = document.querySelector(".form-field__password");
-	privateCheckbox.addEventListener("change", (e) => {
-		if (e.target.checked)
-			passwordField.classList.remove("disabled");
-		else
-			passwordField.classList.add("disabled");
-	});
-}
-
-function createTournamentInfo(name, nb) {
-	const parent = document.getElementById("listTournament");
-	const tournament = document.createElement("div");
-	tournament.className = "tournament-info";
-	const div = document.createElement("div");
-	div.textContent = name;
-	const div2 = document.createElement("div");
-	div2.textContent = nb;
-	tournament.appendChild(div);
-	tournament.appendChild(div2);
-	parent.appendChild(tournament);
-}
-
-function createListTournament(parent) {
-	const listTournament = document.createElement("div");
-	const header = document.createElement("div");
-	header.className = "list-header";
-	const div = document.createElement("div");
-	div.textContent = "Tournaments name";
-	const div2 = document.createElement("div");
-	div2.textContent = "Nb";
-	header.appendChild(div);
-	header.appendChild(div2);
-	listTournament.appendChild(header);
-	listTournament.id = "listTournament";
-	listTournament.classList.add("tournament")
-	parent.appendChild(listTournament);
-	createTournamentInfo("Tournament 1", "2/50");
-	listTournament.addEventListener("click", (e) => {
-		if (e.target.className == "tournament-info" || e.target.parentNode.className == "tournament-info")
-			createWaitingScreenTournament();
-	});
-}
-
-export function createJoinTournamentMenu() {
-	document.getElementById("onlineMenu").remove();
-	createDivMenu("joinTournamentMenu");
-	const parent = document.getElementById("joinTournamentMenu");
-	parent.innerHTML = '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>';
-	createListTournament(parent);
 }
 
 export function createHUD(player, opp) {

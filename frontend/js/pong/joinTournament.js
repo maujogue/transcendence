@@ -44,6 +44,17 @@ function createDivJoinTournament(parent) {
     parent.appendChild(listTournament);
 }
 
+function joinTournament(event, allTournaments) {
+    if (event.target.className == "tournament-info" || event.target.parentNode.className == "tournament-info")
+        var tournamentName = event.target.id;
+        if (event.target.parentNode.className == "tournament-info")
+            tournamentName = event.target.parentNode.id
+        allTournaments.find((tournament) => {
+            if (tournament.name == tournamentName)
+                createWaitingScreenTournament(tournament);
+        });
+}
+
 async function createListTournament(parent) {
     var allTournaments
 
@@ -59,15 +70,7 @@ async function createListTournament(parent) {
     }
 
 	listTournament.addEventListener("click", (e) => {
-		if (e.target.className == "tournament-info" || e.target.parentNode.className == "tournament-info")
-            var tournamentName = e.target.id;
-            if (e.target.parentNode.className == "tournament-info")
-                tournamentName = e.target.parentNode.id
-            console.log(tournamentName);
-            allTournaments.find((tournament) => {
-                if (tournament.name == tournamentName)
-                    createWaitingScreenTournament(tournament);
-            });
+        joinTournament(e, allTournaments);
 	});
 
 }

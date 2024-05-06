@@ -32,10 +32,14 @@ def create_tournament(request):
 	if is_private and not password:
 		return JsonResponse({"errors": "A private tournament must have a password."},
 					status=400)
+	
+	if not name:
+		return JsonResponse({"errors": "Name is required."},
+				status=400)
 
-	if not name or not isinstance(max_players, int) or max_players not in range(2, 33):
-		return JsonResponse({"errors": "Invalid tournament data."},
-					status=400)
+	if not isinstance(max_players, int) or max_players not in range(2, 33):
+		return JsonResponse({"errors": "Invalid number of players."},
+				status=400)
 
 	try:
 		tournament = Tournament.objects.create(

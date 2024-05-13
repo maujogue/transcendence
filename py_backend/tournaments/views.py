@@ -25,7 +25,10 @@ def create_tournament(request):
 					status=406)
 
 	name = data.get('name')
-	max_players = data.get('max_players')
+	try:
+		max_players = int(data.get('max_players'))
+	except ValueError:
+		return JsonResponse({"errors": "Invalid number of players."}, status=400)
 	is_private = data.get('is_private')
 	password = data.get('password')
 
@@ -37,9 +40,9 @@ def create_tournament(request):
 		return JsonResponse({"errors": "Name is required."},
 				status=400)
 
-	if not isinstance(max_players, int) or max_players not in range(2, 33):
-		return JsonResponse({"errors": "Invalid number of players."},
-				status=400)
+	if not max_players in range(2, 33):
+		return JsonResponse({"errors": "Invalid number of players."}, status=400)
+
 
 	try:
 		tournament = Tournament.objects.create(

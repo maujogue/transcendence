@@ -18,7 +18,7 @@ async function fetchCreateTournament(form){
 	}
 	console.log('Envoi du formulaire :', JSON.stringify(fetchBody));
 	
-	fetch('http://127.0.0.1:8080/api/create_tournament/', {
+	fetch('https://127.0.0.1:8000/api/tournament/create/', {
 	    method: 'POST',
 	    headers: {
 		'Content-Type': 'application/x-www-form-urlencoded',

@@ -3,7 +3,7 @@ import { createWaitingScreenTournament } from "./tournament.js";
 
 async function getAllTournaments() {
     try {
-        const response = await fetch('./js/pong/dev/tournament.json');
+        const response = await fetch('https://127.0.0.1:8000/api/tournament/list/');
         if (!response.ok) {
             throw new Error('Erreur de chargement du fichier JSON');
         }
@@ -63,7 +63,8 @@ async function createListTournament(parent) {
         const data = await getAllTournaments();
         allTournaments = data.tournaments;
         data.tournaments.map((tournament) => {
-            createTournamentInfo(tournament.name, tournament.currentParticipants, tournament.maxParticipants);
+            console.log(tournament);
+            createTournamentInfo(tournament.name, tournament.participants.length, tournament.max_players);
         });
     } catch (error) {
         console.error('Erreur:', error);

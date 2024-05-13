@@ -61,7 +61,17 @@ def create_tournament(request):
 
 	return JsonResponse({"message": "Tournament created successfully.", "id": tournament.id},
 					status=201)
-		
+
+@require_http_methods(["GET"])
+def list_tournaments(request):
+	tournaments = Tournament.objects.all()
+	tournaments = [{"id": t.id, "name": t.name, "max_players": t.max_players,
+					"is_private": t.is_private, "host": t.host.username,
+					"participants": [p.username for p in t.participants.all()]}
+					for t in tournaments]
+	return JsonResponse({"tournaments": tournaments},
+					status=200)
+	
 @login_required
 @require_http_methods(["POST"])
 def join_tournament(request, tournament_id):

@@ -1,5 +1,5 @@
 import { createDivMenu } from "./menu.js";
-import { createWaitingScreenTournament } from "./tournament.js";
+import { connectToTournament } from "./tournament.js";
 import { get_csrf_token } from "../ApiUtils.js";
 
 async function getAllTournaments() {
@@ -69,7 +69,7 @@ async function joinTournament(tournament) {
         if (!response.ok) {
             throw new Error('Erreur HTTP, statut ' + response.status);
         }
-        createWaitingScreenTournament(tournament);
+        connectToTournament(tournament);
     })
     .catch((error) => {
         console.error("join Tournament", error);

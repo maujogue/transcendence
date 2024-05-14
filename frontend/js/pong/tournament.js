@@ -1,3 +1,22 @@
+export function connectToTournament(tournament) {
+    const websocket = new WebSocket(`ws://127.0.0.1:8080/ws/tournament/${tournament.id}/`);
+
+    websocket.onopen = () => {
+        createWaitingScreenTournament(tournament);
+    }
+    websocket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type == "participants") {
+            console.log(data);
+            data.participants.map((participant) => {
+                document.getElementById("player-list").innerHTML = "";
+                insertPlayer(participant);
+            });
+        }
+        
+    }
+}
+
 export function createWaitingScreenTournament(tournament) {
     const tournamentName = tournament.name;
     const tournamentDiv = document.getElementsByClassName("tournament")[0];
@@ -24,8 +43,8 @@ export function createWaitingScreenTournament(tournament) {
 }
 
 function insertPlayer(player) {
-    const parent = document.getElementById("player-list");
 	const div = document.createElement("div");
+    const playerList = document.getElementById("player-list");
 	div.textContent = player;
-    parent.appendChild(div);
+    playerList.appendChild(div);
 }

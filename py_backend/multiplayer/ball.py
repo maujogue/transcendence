@@ -10,9 +10,9 @@ class Ball:
         self.posZ += self.dirZ
 
     def checkCollisionBorder(self):
-        if self.dirZ > 0 and self.posZ >= 6.25:
+        if self.dirZ > 0 and self.posZ >= 5:
             return True
-        if self.dirZ < 0 and self.posZ <= -6.25:
+        if self.dirZ < 0 and self.posZ <= -5:
             return True
         # if (self.posY <= -0.9 or self.posY >= 0.9):
         #     return True
@@ -30,11 +30,11 @@ class Ball:
         if badDir == True: 
             return False
         isOnPaddle = False
-        if player.name == "player2" and self.posX >= player.posX and self.posX <= player.posX + 0.5:
+        if player.name == "player2" and self.posX >= player.posX and self.posX <= player.posX + 0.1:
             isOnPaddle = True
-        if player.name == "player1" and self.posX <= player.posX and self.posX >= player.posX - 0.5:
+        if player.name == "player1" and self.posX <= player.posX and self.posX >= player.posX - 0.1:
             isOnPaddle = True
-        if (isOnPaddle and self.posY >= player.posY - 1 and self.posY <= player.posY + 1):
+        if (isOnPaddle and self.posZ >= player.posZ - 1.5 and self.posZ <= player.posZ + 1.5):
             return True
         return False
     
@@ -51,7 +51,7 @@ class Ball:
         if player.name == "player1" and self.posX <= -10:
             return True
         if player.name == "player2" and self.posX >= 10:
-            return True
+            return True            
         return False
     
     def reset(self):

@@ -103,7 +103,7 @@ async function connectToLobby(username) {
     console.log("username: ", username);
     if (username == null)
         return ;
-    webSocket = new WebSocket('wss://127.0.0.1:8000/ws/lobby/');
+    webSocket = new WebSocket('ws://127.0.0.1:8080/ws/lobby/');
     
     webSocket.onopen = function() {
         console.log('Connection established');
@@ -150,7 +150,7 @@ async function connectToLobby(username) {
             document.getElementById("waitingScreen")?.remove();
         }
         if (data['type'] == 'player_pos') {
-            env.scene.getObjectByName("paddle_" + data['name']).position.z = data['posZ'];
+            //env.scene.getObjectByName("paddle_" + data['name']).position.y = data['posZ'];
             playersMove.set("paddle_" + data['name'], data['move']);
         }
         if (data['type'] == 'score')
@@ -231,10 +231,10 @@ function movePlayers() {
         if (!paddle)
             return ;
         const playerBox = new THREE.Box3().setFromObject(paddle);
-        if (value > 0 && !env.border.up.box.intersectsBox(playerBox))
-            paddle.translateZ(value);
-        if (value < 0 && !env.border.down.box.intersectsBox(playerBox))
-            paddle.translateZ(value);
+        if (value > 0 && !env.border.down.box.intersectsBox(playerBox))
+            paddle.position.z += value;
+        if (value < 0 && !env.border.up.box.intersectsBox(playerBox))
+            paddle.position.z += value;
     });
 }
 
@@ -250,12 +250,14 @@ async function sendIsReady(webSocket) {
 
 async function setGameIsStart() {
     if (player && opp && oppInfo) {
-        opp.userInfo = oppInfo;
-        ClearAllEnv(env);
-        env = await initGame(player, opp);
-        createHUD(player, opp);
         status.gameIsInit = false;
-        status.start = true;
+        ClearAllEnv(env);
+        await initGame(player, opp).then((res) => {
+            env = res;
+            opp.userInfo = oppInfo;
+            createHUD(player, opp);
+            status.start = true;
+        });
     }
 }
 

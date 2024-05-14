@@ -10,17 +10,15 @@ export function setBallData(data, env) {
     if (!env.ball)
         return ;
     env.ball.direction.x = data['dirX'];
-    env.ball.direction.y = data['dirY'];
     env.ball.direction.z = data['dirZ'];
-    env.ball.mesh.position.y = data['posY'];
     env.ball.mesh.position.x = data['posX'];
     env.ball.mesh.position.z = data['posZ'];
 }
 
 export function handlerScore(data, env, player, opp) {
     actualizeScoreOnline(data, env);
-    player.paddle.mesh.position.copy(initialP1Pos);
-    opp.paddle.mesh.position.copy(initialP2Pos);
+    player.paddle.mesh.position.set(-8.5, 0, 0);
+    opp.paddle.mesh.position.set(8.5, 0, 0);
 }
 
 function handlerStopGame(webSocket, env, start) {

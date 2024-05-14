@@ -4,6 +4,8 @@ import { winWidth, winHeight } from './varGlobal.js';
 import { isFullScreen } from './resize.js';
 import { loadScene } from './loadModels.js';
 
+const map = await loadScene('maps/map1/map1');
+
 function getSize() {
 	var width = winWidth;
 	var height = winHeight;
@@ -18,8 +20,7 @@ function getSize() {
 	};
 }
 
-async function createMap(env) {
-	const map = await loadScene('maps/map1/map1');
+function createMap(env) {
 	const model = map.scene;
 	const light = new THREE.AmbientLight(0xffffff, 1);
 
@@ -39,7 +40,6 @@ async function createMap(env) {
 	topSide.getWorldPosition(topSidePosition);
 	botSide.getWorldPosition(botSidePosition);
 
-	console.log("Top : ", topSidePosition);
 	const borderDown = createBorder(topSidePosition, env);
 	const borderUp = createBorder(botSidePosition, env);
 	return {

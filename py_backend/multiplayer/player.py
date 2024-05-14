@@ -1,9 +1,9 @@
 class Player:
     user = None
-    posZ = 0
     is_ready = False
     score = 0
     move = 0
+    posZ = 0
 
     def __init__(self, name, character, lobby_id, posX):
         self.name = name
@@ -21,9 +21,3 @@ class Player:
             return True
         else:
             return False
-
-    def movePlayer(self, move):
-        if self.checkCollisionBorder() == False:
-            self.posZ += move
-
-    

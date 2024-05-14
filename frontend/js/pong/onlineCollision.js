@@ -32,7 +32,7 @@ function sendIfScored(ball, player, webSocket, env) {
     }
     if (!isScored)
         return ;
-    ball.mesh.position.set(0, 0, -18.2);
+    ball.mesh.position.set(0, 0, 0);
     webSocket.send(JSON.stringify({
         'type': 'score',
         'score': player.score + 1,
@@ -48,8 +48,8 @@ function sendIfScored(ball, player, webSocket, env) {
 }
 
 function translateBall(ball) {
-    ball.mesh.translateX(ball.direction.x);
-    ball.mesh.translateZ(ball.direction.z);
+    ball.mesh.position.x += ball.direction.x;
+    ball.mesh.position.z += ball.direction.z;
 }
 
 export { translateBall, sendIfScored, actualizeScoreOnline}

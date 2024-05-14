@@ -190,7 +190,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         if self.player.checkCollisionBorder() == True:
             self.player.move = 0
         await self.channel_layer.group_send(
-        self.lobby_group_name, { 
+        self.lobby_group_name, {
             'type': 'pong.player_pos',
             'name': self.player.name, 
             'move': move,
@@ -251,8 +251,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                       player1_score=player1.score, 
                       player2_score=player2.score)
         await match.asave()
-        
-
 
     async def gameLoop(self):
         if self.player.checkCollisionBorder() == True:
@@ -266,7 +264,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             })
 
         self.player.posZ += self.player.move
-        
+
         await self.checkAllCollisions()
         if self.ball.checkIfScored(self.player) or self.ball.checkIfScored(self.opp):
             await self.isScored()
@@ -308,12 +306,12 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def pong_player_pos(self, event):
         move = event["move"]
         name = event["name"]
-        posY = event["posY"]
+        posZ = event["posZ"]
 
         if self.opp.name == name:
             self.opp.move = move
             self.opp.posZ = posZ
-        await self.send(text_data=json.dumps({ "type": "player_pos", "move": move, "name": name, "posY": posY}))
+        await self.send(text_data=json.dumps({ "type": "player_pos", "move": move, "name": name, "posZ": posZ}))
 
     async def pong_ball_data(self, event):
         posX = event["posX"]

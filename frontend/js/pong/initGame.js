@@ -62,7 +62,7 @@ async function initGame(player1, player2) {
 	environment.scene.add(ball.mesh);
 	const font = await loadFont();
 	actualizeScore(player1, player2, environment, font);
-	const map = await createMap(environment);
+	const map = createMap(environment);
 
 	return { 
 		"spotlight": spotlight,

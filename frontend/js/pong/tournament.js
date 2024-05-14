@@ -1,3 +1,6 @@
+import { get_csrf_token } from "../ApiUtils.js";
+import { returnToMenu } from "./createEndScreen.js";
+
 export function connectToTournament(tournament) {
     const websocket = new WebSocket(`ws://127.0.0.1:8080/ws/tournament/${tournament.id}/`);
 
@@ -31,7 +34,7 @@ export function createWaitingScreenTournament(tournament) {
     const unsubscribeBtn = document.createElement("button");
     unsubscribeBtn.textContent = "Unsubscribe";
     unsubscribeBtn.onclick = () => {
-        console.log("unsubscribe");
+        unsubscribeFromTournament(tournament);
     }
     unsubscribeBtn.className = "unsubscribe-btn form-btn";
     tournamentDiv.appendChild(unsubscribeBtn);
@@ -47,4 +50,22 @@ function insertPlayer(player) {
     const playerList = document.getElementById("player-list");
 	div.textContent = player;
     playerList.appendChild(div);
+}
+
+async function unsubscribeFromTournament(tournament) {
+    fetch(`https://127.0.0.1:8000/api/tournament/${tournament.id}/quit/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": await get_csrf_token(),
+        },
+    })
+    .then((response) => {
+        if (!response.ok)
+            throw new Error("Error while unsubscribing from tournament");
+        returnToMenu();
+    })
+    .catch((error) => {
+        console.error(error);
+    });
 }

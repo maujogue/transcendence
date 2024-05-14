@@ -5,8 +5,8 @@ from django.http import JsonResponse
 
 from users.models import CustomUser
 from users.tokens import account_activation_token
-from django.http import HttpResponse
 from django.contrib.auth import get_user_model
+from django.shortcuts import redirect
 
 
 def verification_email_confirm(request, uidb64, token):
@@ -17,12 +17,8 @@ def verification_email_confirm(request, uidb64, token):
     except(TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
-        user.email_is_verified = True
+        # user.email_is_verified = True
         user.save()
-        # messages.success(request, 'Your email has been verified !')
-        # return JsonResponse({'status': "success"}, status=200)
-        return HttpResponse('Thank you for your email confirmation. Now you can login your account.')  
-    else:
-        messages.warning(request, 'The link is invalid.')
-    # return JsonResponse({'status': "error"}, status=400)
-    return HttpResponse('Activation link is invalid!') 
+        # return redirect('https://127.0.0.1:8000')
+        return JsonResponse({'status': "success"}, status=200)
+    return JsonResponse({'status': "error"}, status=400)

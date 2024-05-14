@@ -14,6 +14,7 @@ def get_user_data(request):
     user_datas = {
         'username': user.username,
         'email': user.email,
+        'email_is_verified': user.email_is_verified,
         'avatar': convert_image_to_base64(user.avatar),
         'bio': user.bio,
         'title': user.title,

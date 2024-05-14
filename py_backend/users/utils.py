@@ -93,6 +93,12 @@ def extension_is_valid(image_name):
 	return False
 
 
+def convert_image_to_base64(image_field):
+    with open(image_field.path, "rb") as image_file:
+        encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+    return encoded_string
+
+
 def send_confirmation_email(user, request):
 	if user.is_authenticated:
 		if user.email_is_verified != True:
@@ -113,9 +119,3 @@ def send_confirmation_email(user, request):
 			return email.send()
 		return False
 	return False
-
-
-def convert_image_to_base64(image_field):
-    with open(image_field.path, "rb") as image_file:
-        encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
-    return encoded_string

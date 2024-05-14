@@ -173,8 +173,8 @@ USE_I18N = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = "/staticfiles/"
-STATIC_ROOT = "/staticfiles/"
+STATIC_URL = "/static/"
+STATIC_ROOT = "/static/"
 # STATICFILES_DIRS = [
 #     BASE_DIR / "frontend/static",  # Path to your "frontend" folder
 # ]

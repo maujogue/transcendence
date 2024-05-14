@@ -26,6 +26,6 @@ export function createWaitingScreenTournament(tournament) {
 function insertPlayer(player) {
     const parent = document.getElementById("player-list");
 	const div = document.createElement("div");
-	div.textContent = player.name;
+	div.textContent = player;
     parent.appendChild(div);
 }

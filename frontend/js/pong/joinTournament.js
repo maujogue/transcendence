@@ -1,11 +1,12 @@
 import { createDivMenu } from "./menu.js";
 import { createWaitingScreenTournament } from "./tournament.js";
+import { get_csrf_token } from "../ApiUtils.js";
 
 async function getAllTournaments() {
     try {
         const response = await fetch('https://127.0.0.1:8000/api/tournament/list/');
         if (!response.ok) {
-            throw new Error('Erreur de chargement du fichier JSON');
+            throw new Error('Erreur HTTP: ' + response.status);
         }
         return await response.json();
     } catch (error) {
@@ -44,17 +45,37 @@ function createDivJoinTournament(parent) {
     parent.appendChild(listTournament);
 }
 
-function joinTournament(event, allTournaments) {
-    if (event.target.className == "tournament-info" || event.target.parentNode.className == "tournament-info")
-        var tournamentName = event.target.id;
-        if (event.target.parentNode.className == "tournament-info")
-            tournamentName = event.target.parentNode.id
-        allTournaments.find((tournament) => {
-            if (tournament.name == tournamentName)
-                createWaitingScreenTournament(tournament);
-        });
+function findTournament(event, allTournaments) {
+    if (!(event.target.className == "tournament-info" || event.target.parentNode.className == "tournament-info"))
+        return;
+    var tournamentName = event.target.id;
+    if (event.target.parentNode.className == "tournament-info")
+        tournamentName = event.target.parentNode.id
+    allTournaments.find((tournament) => {
+        if (tournament.name == tournamentName)
+            joinTournament(tournament);
+    });
 }
 
+async function joinTournament(tournament) {
+    fetch(`https://127.0.0.1:8000/api/tournament/join/${tournament.id}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            "X-CSRFToken": await get_csrf_token(),
+        }
+    })
+    .then((response) => {
+        if (!response.ok) {
+            throw new Error('Erreur HTTP, statut ' + response.status);
+        }
+        createWaitingScreenTournament(tournament);
+    })
+    .catch((error) => {
+        console.error("join Tournament", error);
+    })
+}
+    
 async function createListTournament(parent) {
     var allTournaments
 
@@ -63,7 +84,6 @@ async function createListTournament(parent) {
         const data = await getAllTournaments();
         allTournaments = data.tournaments;
         data.tournaments.map((tournament) => {
-            console.log(tournament);
             createTournamentInfo(tournament.name, tournament.participants.length, tournament.max_players);
         });
     } catch (error) {
@@ -71,7 +91,7 @@ async function createListTournament(parent) {
     }
 
 	listTournament.addEventListener("click", (e) => {
-        joinTournament(e, allTournaments);
+        findTournament(e, allTournaments);
 	});
 
 }

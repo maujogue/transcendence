@@ -71,6 +71,17 @@ def list_tournaments(request):
 					for t in tournaments]
 	return JsonResponse({"tournaments": tournaments},
 					status=200)
+
+@require_http_methods(["GET"])
+def list_participants(request, tournament_id):
+	try:
+		tournament = Tournament.objects.get(pk=tournament_id)
+	except Tournament.DoesNotExist:
+		return JsonResponse({"errors": "Tournament not found."},
+					status=404)
+	participants = [p.username for p in tournament.participants.all()]
+	return JsonResponse({"participants": participants},
+					status=200)
 	
 @login_required
 @require_http_methods(["POST"])

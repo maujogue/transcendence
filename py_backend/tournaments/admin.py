@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import Tournament
 from multiplayer.models import Lobby
-from history.models import Match
+from stats.models import Match
 
 # Register your models here.
 admin.site.register(Tournament)

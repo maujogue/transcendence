@@ -28,7 +28,19 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         pass
 
     async def disconnect(self, close_code):
-        pass
+        participants = await self.get_tournament_participants()
+        await self.channel_layer.group_send(
+            self.tournament.name,
+            {
+                'type': 'tournament.participants',
+                'participants': participants
+            }
+        )
+        await self.channel_layer.group_discard(
+            self.tournament.name,
+            self.channel_name
+        )
+        
 
     @database_sync_to_async
     def get_tournament(self):

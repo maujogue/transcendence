@@ -1,8 +1,10 @@
 import { get_csrf_token } from "../ApiUtils.js";
 import { returnToMenu } from "./createEndScreen.js";
 
+let websocket
+
 export function connectToTournament(tournament) {
-    const websocket = new WebSocket(`ws://127.0.0.1:8080/ws/tournament/${tournament.id}/`);
+    websocket = new WebSocket(`ws://127.0.0.1:8080/ws/tournament/${tournament.id}/`);
 
     websocket.onopen = () => {
         createWaitingScreenTournament(tournament);
@@ -10,13 +12,11 @@ export function connectToTournament(tournament) {
     websocket.onmessage = (event) => {
         const data = JSON.parse(event.data);
         if (data.type == "participants") {
-            console.log(data);
+            document.getElementById("player-list").innerHTML = "";
             data.participants.map((participant) => {
-                document.getElementById("player-list").innerHTML = "";
                 insertPlayer(participant);
             });
         }
-        
     }
 }
 
@@ -46,6 +46,8 @@ export function createWaitingScreenTournament(tournament) {
 }
 
 function insertPlayer(player) {
+    console.log("insert player");
+
 	const div = document.createElement("div");
     const playerList = document.getElementById("player-list");
 	div.textContent = player;
@@ -64,6 +66,7 @@ async function unsubscribeFromTournament(tournament) {
         if (!response.ok)
             throw new Error("Error while unsubscribing from tournament");
         returnToMenu();
+        websocket.close();
     })
     .catch((error) => {
         console.error(error);

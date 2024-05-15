@@ -1,7 +1,7 @@
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { Character } from "./Class/Character.js";
 import { charactersNames } from "./varGlobal.js";
-import { characters, displayMainMenu } from './main.js';
+import { characters, displayMainMenu } from '../pages/Game.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
 
@@ -60,7 +60,7 @@ export async function loadAllModel(loadIsOver) {
         });
 
         await Promise.all(loadingPromises);
-            // displayMainMenu();
+            displayMainMenu();
     } catch (error) {
         console.error('Error loading models:', error);
     }

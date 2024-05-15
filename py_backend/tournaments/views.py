@@ -29,12 +29,6 @@ def create_tournament(request):
 		max_players = int(data.get('max_players'))
 	except ValueError:
 		return JsonResponse({"errors": "Invalid number of players."}, status=400)
-	is_private = data.get('is_private')
-	password = data.get('password')
-
-	if is_private and not password:
-		return JsonResponse({"errors": "A private tournament must have a password."},
-					status=400)
 	
 	if not name:
 		return JsonResponse({"errors": "Name is required."},
@@ -43,24 +37,19 @@ def create_tournament(request):
 	if not max_players in range(2, 33):
 		return JsonResponse({"errors": "Invalid number of players."}, status=400)
 
-
 	try:
 		tournament = Tournament.objects.create(
 			name=name,
-			max_players=max_players,
-			is_private=is_private,
-			password=password if is_private else None,
-			host=request.user
+			max_players=max_players
 		)
 		tournament.participants.add(request.user)
 	except IntegrityError as e:
 		if 'unique constraint' in str(e).lower():
 			return JsonResponse({"errors": "This name is already taken."},
 					status=400)
-		return JsonResponse({"errors": "Tournament could not be created.", "id": tournament.id},
+		return JsonResponse({"errors": "Tournament could not be created."},
 					status=400)
 	tournamentJSON = {"id": tournament.id, "name": tournament.name, "max_players": tournament.max_players,
-					"is_private": tournament.is_private, "host": tournament.host.username,
 					"participants": [p.username for p in tournament.participants.all()]}
 	return JsonResponse({"message": "Tournament created successfully.", "tournament": tournamentJSON},
 					status=201)
@@ -69,7 +58,6 @@ def create_tournament(request):
 def list_tournaments(request):
 	tournaments = Tournament.objects.all()
 	tournaments = [{"id": t.id, "name": t.name, "max_players": t.max_players,
-					"is_private": t.is_private, "host": t.host.username,
 					"participants": [p.username for p in t.participants.all()]}
 					for t in tournaments]
 	return JsonResponse({"tournaments": tournaments},
@@ -98,18 +86,6 @@ def join_tournament(request, tournament_id):
 	if tournament.participants.filter(pk=request.user.pk).exists():
 		return JsonResponse({"errors": "User has already joined the tournament."},
 					status=400)
-
-	if tournament.is_private:
-		try:
-			data = json.loads(request.body.decode("utf-8"))
-		except json.JSONDecodeError:
-			return JsonResponse(data = {"errors": "Invalid JSON format"},
-					status=406)
-		password = data.get("password", None)
-		if password != tournament.password:
-			return JsonResponse({"errors": "Invalid password."},
-					status=403)
-
 	if tournament.participants.count() >= tournament.max_players:
 		return JsonResponse({"errors": "The tournament is already full."},
 					status=400)
@@ -143,10 +119,6 @@ def delete_tournament(request, tournament_id):
 	except Tournament.DoesNotExist:
 		return JsonResponse({"errors": "Tournament not found."},
 					status=404)
-	
-	if tournament.host != request.user:
-		return JsonResponse({"errors": "You are not the host of the tournament.", "id": tournament.id},
-					status=400)
 	tournament.delete()
 	return JsonResponse({"message": "Tournament deleted successfully."},
 					status=200)
@@ -164,6 +136,5 @@ def check_if_tournament_joined(request, username):
 		return JsonResponse({"message": "User has not joined any tournament.", "joined": False},
 					status=200)
 	tournamentJSON = {"id": tournament.id, "name": tournament.name, "max_players": tournament.max_players,
-					"is_private": tournament.is_private, "host": tournament.host.username,
 					"participants": [p.username for p in tournament.participants.all()]}
 	return JsonResponse({"message": "User has joined a tournament.", "joined": True, "tournament": tournamentJSON}, status=200)

@@ -12,8 +12,9 @@ import { createOnlineSelectMenu} from "./online.js";
 import { ClearAllEnv, getSize } from "./createEnvironment.js";
 import { loadAllModel } from "./loadModels.js"
 import { loadScene } from "./loadModels.js";
-import * as THREE from 'three';
 import { sendTournamentForm } from "./createTournament.js";
+import { getUserData } from "../User.js";
+import * as THREE from 'three';
 
 let start = false;
 let divMenu = document.getElementById("menu");
@@ -25,6 +26,7 @@ let keysPressed = {};
 let isOnline = false;
 let localLoop = true;
 let form;
+let userData
 const gameDiv = document.getElementById('game');
 const field = await createField();
 export const lobby = await loadScene('lobbyTest');
@@ -32,6 +34,10 @@ export const clock = new THREE.Clock();
 export const characters = new Map();
 
 loadAllModel();
+
+getUserData().then((data) => {
+	userData = data;
+});
 
 async function goToLocalSelectMenu() {
 	divMenu = document.getElementById("menu");
@@ -71,6 +77,9 @@ gameDiv.addEventListener('click', function () {
 });
 
 document.body.addEventListener("click", function(event) {
+	getUserData().then((data) => {
+		userData = data;
+	});
 	if (event.target.id == 'restart' && !isOnline) {
 		document.getElementById("endscreen").remove();
 		actualizeScore(player1, player2, environment, environment.font);

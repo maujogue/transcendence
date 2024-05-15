@@ -1,15 +1,15 @@
-import { get_csrf_token } from "../ApiUtils.js";
+import { get_csrf_token} from "../ApiUtils.js";
 import { returnToMenu } from "./createEndScreen.js";
 
-let websocket
+export let wsTournament
 
-export function connectToTournament(tournament) {
-    websocket = new WebSocket(`ws://127.0.0.1:8080/ws/tournament/${tournament.id}/`);
+export async function connectToTournament(tournament) {
+    wsTournament = new WebSocket(`ws://127.0.0.1:8080/ws/tournament/${tournament.id}`);
 
-    websocket.onopen = () => {
+    wsTournament.onopen = () => {
         createWaitingScreenTournament(tournament);
     }
-    websocket.onmessage = (event) => {
+    wsTournament.onmessage = (event) => {
         const data = JSON.parse(event.data);
         if (data.type == "participants") {
             document.getElementById("player-list").innerHTML = "";
@@ -66,7 +66,7 @@ async function unsubscribeFromTournament(tournament) {
         if (!response.ok)
             throw new Error("Error while unsubscribing from tournament");
         returnToMenu();
-        websocket.close();
+        wsTournament.close();
     })
     .catch((error) => {
         console.error(error);

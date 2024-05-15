@@ -97,7 +97,7 @@ async function createListTournament(parent) {
 }
 
 export function createJoinTournamentMenu() {
-	document.getElementById("onlineMenu").remove();
+	document.getElementsByClassName("menu")[0].remove();
 	createDivMenu("joinTournamentMenu");
 	const parent = document.getElementById("joinTournamentMenu");
 	parent.innerHTML = '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>';

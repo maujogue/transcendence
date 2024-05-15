@@ -147,3 +147,20 @@ def delete_tournament(request, tournament_id):
 	tournament.delete()
 	return JsonResponse({"message": "Tournament deleted successfully."},
 					status=200)
+
+@login_required
+@require_http_methods(["GET"])
+def check_if_tournament_joined(request, username):
+	try:
+		user = CustomUser.objects.get(username=username)
+	except CustomUser.DoesNotExist:
+		return JsonResponse({"errors": "User not found."},
+					status=404)
+	tournament = Tournament.objects.filter(participants=user).first()
+	if not tournament:
+		return JsonResponse({"message": "User has not joined any tournament.", "joined": False},
+					status=200)
+	tournamentJSON = {"id": tournament.id, "name": tournament.name, "max_players": tournament.max_players,
+					"is_private": tournament.is_private, "host": tournament.host.username,
+					"participants": [p.username for p in tournament.participants.all()]}
+	return JsonResponse({"message": "User has joined a tournament.", "joined": True, "tournament": tournamentJSON}, status=200)

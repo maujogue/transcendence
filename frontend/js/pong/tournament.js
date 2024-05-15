@@ -1,10 +1,12 @@
 import { get_csrf_token} from "../ApiUtils.js";
 import { returnToMenu } from "./createEndScreen.js";
+import { createJoinTournamentMenu } from "./joinTournament.js";
+import { createTournamentDiv } from "./menu.js";
 
 export let wsTournament
 
 export async function connectToTournament(tournament) {
-    wsTournament = new WebSocket(`ws://127.0.0.1:8080/ws/tournament/${tournament.id}`);
+    wsTournament = new WebSocket(`ws://127.0.0.1:8080/ws/tournament/${tournament.id}/`);
 
     wsTournament.onopen = () => {
         createWaitingScreenTournament(tournament);
@@ -21,9 +23,12 @@ export async function connectToTournament(tournament) {
 }
 
 export function createWaitingScreenTournament(tournament) {
-    const tournamentName = tournament.name;
+    if (!tournament)
+        return;
+    if (!document.getElementsByClassName("tournament")[0])
+        createTournamentDiv();
     const tournamentDiv = document.getElementsByClassName("tournament")[0];
-    tournamentDiv.innerHTML = `<h1>${tournamentName}</h1>`;
+    tournamentDiv.innerHTML = `<h1>${tournament.name}</h1>`;
     tournamentDiv.id = "PlayerList";
 	const header = document.createElement("div");
 	header.className = "list-header";
@@ -70,5 +75,24 @@ async function unsubscribeFromTournament(tournament) {
     })
     .catch((error) => {
         console.error(error);
+    });
+}
+
+export async function checkIfUserIsInTournament(user) {
+    return fetch(`https://127.0.0.1:8000/api/tournament/check-subscribed/${user.username}/`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": await get_csrf_token(),
+        },
+    })
+    .then((response) => {
+        if (!response.ok)
+            throw new Error("Error while checking if user is in tournament");
+        return response.json();
+    })
+    .catch((error) => {
+        console.error(error);
+        return false;
     });
 }

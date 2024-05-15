@@ -14,6 +14,7 @@ import { loadAllModel } from "./loadModels.js"
 import { loadScene } from "./loadModels.js";
 import { sendTournamentForm } from "./createTournament.js";
 import { getUserData } from "../User.js";
+import { checkIfUserIsInTournament, connectToTournament } from "./tournament.js";
 import * as THREE from 'three';
 
 let start = false;
@@ -37,6 +38,12 @@ loadAllModel();
 
 getUserData().then((data) => {
 	userData = data;
+	checkIfUserIsInTournament(userData).then((response) => {
+		if (response && response['joined']) {
+			console.log("joined: ", response['joined'])
+			connectToTournament(response['tournament']);
+		}
+	});
 });
 
 async function goToLocalSelectMenu() {

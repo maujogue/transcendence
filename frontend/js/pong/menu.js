@@ -297,6 +297,15 @@ export function createHUD(player, opp) {
 	`
 }
 
+export function createTournamentDiv() {
+    document.getElementsByClassName("menu")[0].remove();
+	createDivMenu("tournamentMenu");
+    const tournamentDiv = document.createElement("div");
+	tournamentDiv.className = "tournament";
+    document.getElementById("tournamentMenu").appendChild(tournamentDiv);
+}
+
+
 
 
 export { displayMainMenu, createSelectMenu, moveCursor, createDivMenu,

@@ -1,4 +1,4 @@
-import { createDivMenu } from "./menu.js";
+import { createTournamentDiv} from "./menu.js";
 import { connectToTournament } from "./tournament.js";
 import { get_csrf_token } from "../ApiUtils.js";
 
@@ -29,7 +29,7 @@ function createTournamentInfo(name, currentParticipants, maxParticipants) {
 }
 
 function createDivJoinTournament(parent) {
-    const listTournament = document.createElement("div");
+    const listTournament = document.getElementsByClassName("tournament")[0];
     const header = document.createElement("div");
     header.className = "list-header";
     const div = document.createElement("div");
@@ -97,9 +97,7 @@ async function createListTournament(parent) {
 }
 
 export function createJoinTournamentMenu() {
-	document.getElementsByClassName("menu")[0].remove();
-	createDivMenu("joinTournamentMenu");
-	const parent = document.getElementById("joinTournamentMenu");
-	parent.innerHTML = '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>';
+	createTournamentDiv()
+    const parent = document.getElementById("tournamentMenu");
 	createListTournament(parent);
 }

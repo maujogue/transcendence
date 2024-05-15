@@ -38,12 +38,14 @@ loadAllModel();
 
 getUserData().then((data) => {
 	userData = data;
-	checkIfUserIsInTournament(userData).then((response) => {
-		if (response && response['joined']) {
-			console.log("joined: ", response['joined'])
-			connectToTournament(response['tournament']);
-		}
-	});
+	if (userData) {
+		checkIfUserIsInTournament(userData).then((response) => {
+			if (response && response['joined']) {
+				console.log("joined: ", response['joined'])
+				connectToTournament(response['tournament']);
+			}
+		});
+	}
 });
 
 async function goToLocalSelectMenu() {

@@ -1,7 +1,6 @@
 import { get_csrf_token } from "./ApiCalls.js";
 import { isLoggedIn } from "./Utils.js";
 
-//fill pages with user infos
 async function injectUserData() {
 	if (isLoggedIn())
 	{

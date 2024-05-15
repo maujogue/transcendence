@@ -1,4 +1,4 @@
-import { navigateTo, logIn } from "./Router.js";
+import { navigateTo } from "./Router.js";
 import { showAlert } from "./Utils.js";
 import { getUserData } from "./User.js";
 import { get_csrf_token, runEndPoint, updateInfo } from "./ApiUtils.js"
@@ -38,7 +38,6 @@ async function login(loginForm) {
 
 	if (response.statusCode === 200) {
 		Cookies.set("isLoggedIn", "true");
-		document.dispatchEvent(logIn);
 		bootstrap.Modal.getInstance(document.getElementById("login")).hide();
 		navigateTo("/dash");
 	} else {
@@ -71,7 +70,8 @@ async function updatePassword(updatePasswordForm) {
 		};
 		updateInfo(
 			"users/update_password/",
-			JSON.stringify(fetchBody)
+			JSON.stringify(fetchBody),
+			"updatePasswordModal"
 		);
 	} else {
 		showAlert("Password Incorrect, try again.");
@@ -94,7 +94,6 @@ async function updateUsername(updateUsernameForm) {
 		const fetchBody = {
 			username: userData.get("username"),
 		};
-		console.log(userData.get("username"));
 		updateInfo(
 			"users/update_username/",
 			JSON.stringify(fetchBody),

@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { createTexturedMaterial } from './loadTextures.js';
-import { lobby } from './main.js';
+import { lobby } from '../pages/Game.js';
 
 function createBorder(position, env) {
     const geometry = new THREE.BoxGeometry(21, .45, .5);

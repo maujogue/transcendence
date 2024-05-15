@@ -1,15 +1,8 @@
-import { createWaitingScreenTournament } from "./tournament.js";
+import { connectToTournament } from "./tournament.js";
 import { get_csrf_token } from "../ApiUtils.js";
 import { createTournamentDiv } from "./menu.js";
 
 export async function sendTournamentForm(form) {
-    console.log("sendTournamentForm")
-	fetchCreateTournament(form).then(() => {;
-		console.log("fetchCreateTournament");
-	});
-}
-
-async function fetchCreateTournament(form){
 	const formData = new FormData(form);
 	const fetchBody = {
 		name: formData.get("name"),
@@ -17,28 +10,22 @@ async function fetchCreateTournament(form){
 		is_private: false,
 		password: formData.get("tournamentPassword"),
 	}
-	console.log('Envoi du formulaire :', JSON.stringify(fetchBody));
 	
 	fetch('https://127.0.0.1:8000/api/tournament/create/', {
-	    method: 'POST',
-	    headers: {
+		method: 'POST',
+		headers: {
 		'Content-Type': 'application/x-www-form-urlencoded',
 		"X-CSRFToken": await get_csrf_token(),
-	    },
-	    credentials: "include",
-	    body: JSON.stringify(fetchBody),
+		},
+		credentials: "include",
+		body: JSON.stringify(fetchBody),
 	})
 	.then((response) => response.json())
 	.then((data) => {
-		if (data.error) {
-			alert(data.error);
-		}
-		else {
-			alert("Tournament created");
-		}
-	})
-	.catch((error) => {
-		console.error("create Tournament", error);
+		if (data.error)
+			throw new Error(data.error);
+		else
+			connectToTournament(data.tournament);
 	})
 	.catch((error) => {
 		console.error("create Tournament", error);

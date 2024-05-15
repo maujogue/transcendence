@@ -52,14 +52,17 @@ def create_tournament(request):
 			password=password if is_private else None,
 			host=request.user
 		)
+		tournament.participants.add(request.user)
 	except IntegrityError as e:
 		if 'unique constraint' in str(e).lower():
 			return JsonResponse({"errors": "This name is already taken."},
 					status=400)
 		return JsonResponse({"errors": "Tournament could not be created.", "id": tournament.id},
 					status=400)
-
-	return JsonResponse({"message": "Tournament created successfully.", "id": tournament.id},
+	tournamentJSON = {"id": tournament.id, "name": tournament.name, "max_players": tournament.max_players,
+					"is_private": tournament.is_private, "host": tournament.host.username,
+					"participants": [p.username for p in tournament.participants.all()]}
+	return JsonResponse({"message": "Tournament created successfully.", "tournament": tournamentJSON},
 					status=201)
 
 @require_http_methods(["GET"])

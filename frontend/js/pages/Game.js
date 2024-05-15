@@ -94,6 +94,16 @@ export async function init() {
 	});
 
 	document.body.addEventListener("click", function (event) {
+		getUserData().then((data) => {
+			userData = data;
+			if (userData) {
+				checkIfUserIsInTournament(userData).then((response) => {
+					if (response && response['joined'])
+						connectToTournament(response['tournament']);
+				});
+			}
+		})
+
 		if (event.target.id == 'restart' && !isOnline) {
 			document.getElementById("endscreen").remove();
 			actualizeScore(player1, player2, environment, environment.font);
@@ -109,7 +119,7 @@ export async function init() {
 			localGameLoop();
 			goToLocalSelectMenu();
 		}
-		if (event.target.id == 'onlineGame') {
+		if (event.target.id == 'onlineGame' && userData) {
 			isOnline = true;
 			createOnlineMenu(field);
 		}

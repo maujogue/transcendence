@@ -14,5 +14,6 @@ urlpatterns = [
     path('get_user_data/', get_user_data, name='get_user_data'),
     path('username_available/', username_available, name='username_available'),
     path('email_available/', email_available, name='email_available'),
-    path('confirm_email/<uidb64>/<token>/', verification_email_confirm, name='verification_email_confirm'),
+    # path('confirm_email/<uidb64>/<token>/', verification_email_confirm, name='verification_email_confirm'),
+    path('confirm_email/(P<uidb64>[0-9A-Za-z_\-]+)/(P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/', verification_email_confirm, name='verification_email_confirm'),
 ]

@@ -298,7 +298,8 @@ export function createHUD(player, opp) {
 }
 
 export function createTournamentDiv() {
-    document.getElementsByClassName("menu")[0].remove();
+	if (document.getElementsByClassName("menu")[0])
+    	document.getElementsByClassName("menu")[0].remove();
 	createDivMenu("tournamentMenu");
     const tournamentDiv = document.createElement("div");
 	tournamentDiv.className = "tournament";

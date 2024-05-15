@@ -29,6 +29,7 @@ function createTournamentInfo(name, currentParticipants, maxParticipants) {
 }
 
 function createDivJoinTournament(parent) {
+    parent.innerHTML += '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>';
     const listTournament = document.getElementsByClassName("tournament")[0];
     const header = document.createElement("div");
     header.className = "list-header";

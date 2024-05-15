@@ -266,12 +266,6 @@ function createOnlineMenu() {
 	createSubmode('1v1', "Private Game");
 }
 
-export function createMenuCreateTournament() {
-	document.getElementById("onlineMenu").remove();
-	createDivMenu("createTournament");
-	const parent = document.getElementById("createTournament");
-	createFormTournament(parent);
-}
 
 export function createSubmode(listName, text) {
 	const firstWord = text.split(' ')[0].toLowerCase();
@@ -282,7 +276,7 @@ export function createSubmode(listName, text) {
 export function createHUD(player, opp) {
 	var player1Avatar = player.userInfo.avatar;
 	var player2Avatar = opp.userInfo.avatar;
-
+	
 	if (document.getElementById("hud"))
 		return ;
 	if (player.name == "player2") {
@@ -305,9 +299,6 @@ export function createTournamentDiv() {
 	tournamentDiv.className = "tournament";
     document.getElementById("tournamentMenu").appendChild(tournamentDiv);
 }
-
-
-
 
 export { displayMainMenu, createSelectMenu, moveCursor, createDivMenu,
 		displayLobby, createWaitingScreen, createInterfaceSelectMenu, 

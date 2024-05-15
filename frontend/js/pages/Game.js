@@ -1,6 +1,6 @@
 import { resize, isFullScreen } from "../pong/resize.js";
 import { checkCollision } from "../pong/collision.js";
-import { displayMainMenu, createSelectMenu, createOnlineMenu, createMenuCreateTournament } from '../pong/menu.js';
+import { displayMainMenu, createSelectMenu, createOnlineMenu } from '../pong/menu.js';
 import { handleKeyPress, handleMenuKeyPress } from '../pong/handleKeyPress.js';
 import { displayCharacter, updateMixers } from '../pong/displayCharacter.js';
 import { initGame } from "../pong/initGame.js";
@@ -12,7 +12,7 @@ import { ClearAllEnv, getSize } from "../pong/createEnvironment.js";
 import { loadAllModel } from "../pong/loadModels.js"
 import { loadScene } from "../pong/loadModels.js";
 import { getUserData } from "../User.js";
-import { sendTournamentForm } from "../pong/createTournament.js";
+import { sendTournamentForm, createFormTournament} from "../pong/createTournament.js";
 import { createJoinTournamentMenu } from "../pong/joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "../pong/tournament.js";
 import * as THREE from 'three';
@@ -117,7 +117,7 @@ export async function init() {
 			createOnlineSelectMenu(field);
 		}
 		if (event.target.id == 'create') {
-			createMenuCreateTournament();
+			createFormTournament();
 			form = document.getElementById("tournamentForm");
 			form.addEventListener('submit', function (event) {
 				event.preventDefault();

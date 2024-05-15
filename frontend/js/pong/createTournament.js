@@ -1,5 +1,6 @@
 import { createWaitingScreenTournament } from "./tournament.js";
 import { get_csrf_token } from "../ApiUtils.js";
+import { createTournamentDiv } from "./menu.js";
 
 export async function sendTournamentForm(form) {
     console.log("sendTournamentForm")
@@ -44,10 +45,11 @@ async function fetchCreateTournament(form){
 	});
 }
 
-export function createFormTournament(parent) {
-	parent.innerHTML = '\
-	<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>\
-	<div id="createTournamentForm" class="tournament">\
+export function createFormTournament() {
+	createTournamentDiv();
+	document.getElementsByClassName("menu")[0].innerHTML += '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>';
+	const parent = document.getElementsByClassName("tournament")[0];
+	parent.innerHTML += '\
 	<h1 class="form-header glitched">Create Tournament</h1>\
 	<form id="tournamentForm" method="post">\
 	<div class="form-field">\

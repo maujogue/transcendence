@@ -26,6 +26,7 @@ function createMap(env) {
 
 	env.camera.position.set(0, 13, 10);
 	env.camera.lookAt(0, 0, 0);
+	model.rotation.set(0, 0, 0);
 	model.scale.set(.45, .45, .45);
     model.rotateY(Math.PI / 2);
     model.position.set(2.2, -.3, 0);

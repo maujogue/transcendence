@@ -108,6 +108,10 @@ def quit_tournament(request, tournament_id):
 					status=400)
 
 	tournament.participants.remove(request.user)
+	if tournament.participants.count() == 0:
+		tournament.delete()
+		return JsonResponse({"message": "Successfully quit the tournament and deleted it.", "id": tournament.id},
+					status=200)
 	return JsonResponse({"message": "Successfully quit the tournament.", "id": tournament.id},
 					status=200)
 

@@ -63,6 +63,8 @@ function clickHandler(event) {
         sendIsReady(webSocket);
     }
     if (event.target.id == 'backMenu') {
+        if (document.getElementById("endscreen"))
+            document.getElementById("endscreen").remove();
         if (webSocket)
             webSocket.close();
     }

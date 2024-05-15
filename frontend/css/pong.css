@@ -154,6 +154,8 @@ h1 {
 
 #tournamentForm {
 	height: auto;
+	width: 65%;
+	padding: 5% 0;
 }
 
 #avatar_player1 {
@@ -173,12 +175,14 @@ h1 {
 
 
 .unsubscribe-btn {
+	color: white;
+	border: none;
 	position: absolute !important;
 	bottom: 0;
 	right: 0;
 	margin: 4.5%;
 	background-color: rgb(120, 2, 2) !important;
-	padding: 5px!important;
+	padding: 2%;
 }
 
 .unsubscribe-btn:hover {
@@ -215,6 +219,7 @@ h1 {
 	top: -5%;
 	height: 85%;
 	justify-content: start;
+	padding: 3%;
 }
 
 #avatar_pong {
@@ -229,9 +234,13 @@ h1 {
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	width: 100%;
 	transform: perspective(600px) rotateX(25deg);
 	perspective: 10px;
+}
+
+.form-field > label {
+	font-size: xx-large;
+	align-items: center;
 }
 
 .glitched {
@@ -328,6 +337,7 @@ h1 {
 	color: white;
 }
 
+
 .form-field > input:focus {
 	background-color: var(--form-color);
 	box-shadow: 2px 2px 25px 2px var(--form-color);
@@ -366,8 +376,8 @@ h1 {
 	background-color: var(--form-input-bg-color);
 	font-family: 'baumansregular', sans-serif;
 	font-size: 1em;
-	margin: 0.5em;
-	padding: 15px;
+	margin: 10% 0;
+	padding: 5%;
 	position: relative;
 	overflow: hidden;
 	transform: perspective(600px) rotateX(25deg);

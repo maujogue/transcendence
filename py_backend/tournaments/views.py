@@ -50,7 +50,7 @@ def create_tournament(request):
 		return JsonResponse({"errors": "Tournament could not be created."},
 					status=400)
 	tournamentJSON = {"id": tournament.id, "name": tournament.name, "max_players": tournament.max_players,
-					"participants": [p.username for p in tournament.participants.all()]}
+					"participants": [p.tournament_username for p in tournament.participants.all()]}
 	return JsonResponse({"message": "Tournament created successfully.", "tournament": tournamentJSON},
 					status=201)
 
@@ -58,7 +58,7 @@ def create_tournament(request):
 def list_tournaments(request):
 	tournaments = Tournament.objects.all()
 	tournaments = [{"id": t.id, "name": t.name, "max_players": t.max_players,
-					"participants": [p.username for p in t.participants.all()]}
+					"participants": [p.tournament_username for p in t.participants.all()]}
 					for t in tournaments]
 	return JsonResponse({"tournaments": tournaments},
 					status=200)
@@ -70,7 +70,7 @@ def list_participants(request, tournament_id):
 	except Tournament.DoesNotExist:
 		return JsonResponse({"errors": "Tournament not found."},
 					status=404)
-	participants = [p.username for p in tournament.participants.all()]
+	participants = [p.tournament_username for p in tournament.participants.all()]
 	return JsonResponse({"participants": participants},
 					status=200)
 	

@@ -6,11 +6,12 @@ import { createTournamentDiv } from "./menu.js";
 export let wsTournament
 
 export async function connectToTournament(tournament) {
-    wsTournament = new WebSocket(`ws://127.0.0.1:8080/ws/tournament/${tournament.id}/`);
+    wsTournament = new WebSocket(`wss://127.0.0.1:8000/ws/tournament/${tournament.id}/`);
 
     wsTournament.onopen = () => {
         createWaitingScreenTournament(tournament);
     }
+    
     wsTournament.onmessage = (event) => {
         const data = JSON.parse(event.data);
         if (data.type == "participants") {
@@ -41,7 +42,7 @@ export function createWaitingScreenTournament(tournament) {
     unsubscribeBtn.onclick = () => {
         unsubscribeFromTournament(tournament);
     }
-    unsubscribeBtn.className = "unsubscribe-btn form-btn";
+    unsubscribeBtn.className = "unsubscribe-btn";
     tournamentDiv.appendChild(unsubscribeBtn);
 	tournamentDiv.appendChild(header);
     tournamentDiv.appendChild(playerList);
@@ -51,8 +52,6 @@ export function createWaitingScreenTournament(tournament) {
 }
 
 function insertPlayer(player) {
-    console.log("insert player");
-
 	const div = document.createElement("div");
     const playerList = document.getElementById("player-list");
 	div.textContent = player;

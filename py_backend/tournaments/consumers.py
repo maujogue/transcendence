@@ -51,7 +51,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_tournament_participants(self):
-        return [p.username for p in self.tournament.participants.all()]
+        return [p.tournament_username for p in self.tournament.participants.all()]
 
     async def tournament_participants(self, event):
         await self.send(

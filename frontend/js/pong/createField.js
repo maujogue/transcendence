@@ -2,17 +2,21 @@ import * as THREE from 'three'
 import { createTexturedMaterial } from './loadTextures.js';
 import { lobby } from '../pages/Game.js';
 
-async function createBorder(position, camera) {
-    const geometry = new THREE.BoxGeometry( 100, 2, 1 );
-    const material = new THREE.MeshPhysicalMaterial( { color: 0xffffff } );
-    material.metalness = 1;
+function createBorder(position, env) {
+    const geometry = new THREE.BoxGeometry(21, .45, .5);
+    const material = new THREE.MeshBasicMaterial( { color: 0xffffff, opacity: 0, transparent: true} );
     const cube = new THREE.Mesh( geometry, material );
-    cube.position.set(position.x, position.y, position.z).unproject(camera);
+
+    cube.position.copy(position);
+    cube.position.y -= .1;
+    cube.position.x -= 3.3;
+    cube.rotateX(Math.PI / 2);
+
     const box = new THREE.Box3().setFromObject(cube);
-    return {
-        "mesh": cube,
-        "box": box
-    };
+
+    env.scene.add(cube);
+
+    return {cube, box};
 }
 
 export function createLobbyLights(environment) {

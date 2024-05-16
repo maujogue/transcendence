@@ -4,11 +4,11 @@
 	<!-- HEADER -->
 	<a class="navbar-brand d-flex align-items-center" href="/" navlink>
 		<img src="/assets/img/Pong_The_Next_Level_cover.jpg" alt="Logo" width="40" height="40" />
-		<h3 class="ms-5 mt-2 section-name">Pong!</h3>
+		<h3 id="title" class="ms-3 mt-2 section-name">Pong!</h3>
 	</a>
-	<div class="mt-3 pb-2 mb-4 text-danger border-bottom border-2 border-warning"></div>
+	<hr />
 	<!-- NAVLIST -->
-	<ul id="navList" class="nav nav-pills flex-column">
+	<ul id="navList" class="nav nav-pills flex-column mb-auto">
 		<li class="nav-item text-white">
 			<a href="/dash" class="nav-link active" navlink>
 				<i class="bi bi-house me-2"></i>
@@ -28,43 +28,35 @@
 			</a>
 		</li>
 	</ul>
-	<div class="mt-2 pb-2 mb-4 text-danger border-bottom border-2 border-warning"></div>
-	<div class="friendList">
-
-	</div>
-	<div class="mt-3 pb-2 mb-4 text-danger border-bottom border-2 border-warning logInContent"></div>
-
 	<!-- LOGIN BUTTON / REGISTER BUTTON -->
-	<footer class="mt-auto">
-		<div class="logOutContent">
-			<button class="btn btn-outline-secondary mb-2" data-bs-toggle="modal" data-bs-target="#login">
-				Log In
-			</button>
-			<button class="btn btn-outline-info mb-2" data-bs-toggle="modal" data-bs-target="#register">
-				Sign up
-			</button>
-		</div>
-		<!-- DROPUP -->
-		<div class="logInContent">
-			<a id="collapseButton" class="nav-link text-white ms-3">
-				<i class="bi bi-arrows-collapse-vertical text-white me-2"></i>
-				<span class="section-name">Collapse</span>
+	<div class="logOutContent">
+		<button class="btn btn-outline-secondary mb-2" data-bs-toggle="modal" data-bs-target="#login">
+			Log In
+		</button>
+		<button class="btn btn-outline-info mb-2" data-bs-toggle="modal" data-bs-target="#register">
+			Sign up
+		</button>
+	</div>
+	<!-- DROPUP -->
+	<div class="logInContent">
+		<a id="collapseButton" class="nav-link text-white ms-2">
+			<i class="bi bi-arrows-collapse-vertical text-white me-2"></i>
+			<span class="section-name">Collapse</span>
+		</a>
+		<hr />
+		<div class="dropup d-flex align-items-center">
+			<ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+				<li><a class="dropdown-item" href="/about" navlink>About</a></li>
+				<div class="dropdown-divider"></div>
+				<li><a id="logoutButton" class="dropdown-item">Sign out</a></li>
+			</ul>
+			<a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1"
+				data-bs-toggle="dropdown" navlink>
+				<img width="30" height="30" class="rounded-circle me-2 avatarDynamic" />
 			</a>
-			<hr />
-			<div class="dropup d-flex align-items-center">
-				<ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-					<li><a class="dropdown-item" href="/about" navlink>About</a></li>
-					<div class="dropdown-divider"></div>
-					<li><a id="logoutButton" class="dropdown-item">Sign out</a></li>
-				</ul>
-				<a class="ms-2 d-flex align-items-center text-white text-decoration-none" id="dropdownUser1"
-					data-bs-toggle="dropdown" navlink>
-					<img width="30" height="30" class="rounded-circle me-2 avatarDynamic" />
-					<span class="section-name ms-2 usernameDynamic dropdown-toggle" style="position: relative"></span>
-				</a>
-			</div>
+			<span class="section-name ms-2 usernameDynamic" style="position: relative">Boula</span>
 		</div>
-	</footer>
+	</div>
 </nav>
 <!-- LOGIN MODAL -->
 <div class="modal fade" id="login" tabindex="-1">
@@ -125,13 +117,13 @@
 			<div id="registerComment" class="d-none text-white mx-3 mt-3 p-2 rounded-1"></div>
 			<!-- USERNAME INPUT -->
 			<div class="modal-body">
-				<!-- USERNAME INPUT -->
-				<div class="mb-3 usernameInputModule">
+					<!-- USERNAME INPUT -->
+					<div class="mb-3 usernameInputModule">
 
-				</div>
-				<!-- EMAIL INPUT -->
-				<div class="mb-3 emailInputModule">
-				</div>
+					</div>
+					<!-- EMAIL INPUT -->
+					<div class="mb-3 emailInputModule">
+					</div>
 				<!-- PASSWORD INPUT -->
 				<div class="mb-3">
 					<label for="registerPassword" class="col-form-label">Password</label>

@@ -16,7 +16,6 @@ class Module {
 const modules = [
 	new Module("usernameInputModule"),
 	new Module("emailInputModule"),
-	new Module("friendList"),
 ];
 
 initArray(modules);

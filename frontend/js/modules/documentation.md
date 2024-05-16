@@ -20,8 +20,6 @@ At this point, your `exampleModule.html` file should look like this :
 ```
 and your `exampleModule.js` file :
 ```
-import { getModuleDiv } from "../Modules.js";
-
 function init () {
 	var module = getModuleDiv("exampleModule");
 	if (!module)

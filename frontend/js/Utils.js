@@ -17,32 +17,18 @@ function toggleContentOnLogState() {
 	disableCollapsedSidebar();
 }
 
-function disableCollapsedSidebar(forceDisable) {
+function disableCollapsedSidebar() {
 	const sidebar = document.getElementById("sidebar");
 	const content = document.getElementById("content-container");
-	if (!isLoggedIn() || forceDisable) {
+	if (!isLoggedIn()) {
 		sidebar.classList.remove("collapsed");
 		content.classList.remove("collapsed");
-
-		toggleSearchBar();
 		var sectionNames = document.querySelectorAll(".section-name");
 		sectionNames.forEach(function (name) {
 			name.classList.remove("section-name-collapsed");
 		});
 	}
 }
-
-function toggleSearchBar() {
-	const searchButton = document.querySelector("#searchButton");
-
-	if (searchButton.classList.contains('hidden'))
-		setTimeout(() => {
-			searchButton.classList.remove('hidden');
-		}, 200);
-	else
-		searchButton.classList.add('hidden');
-}
-
 
 function showAlert(message, success) {
 	var alertDiv = document.createElement("div");
@@ -120,6 +106,4 @@ export {
 	isLoggedIn,
 	togglePasswordVisibility,
 	checkPassword,
-	disableCollapsedSidebar,
-	toggleSearchBar,
 };

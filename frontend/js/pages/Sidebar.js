@@ -1,5 +1,5 @@
 import { register, login, logout } from "../ApiCalls.js";
-import { togglePasswordVisibility, checkPassword } from "../Utils.js";
+import { togglePasswordVisibility, checkPassword, toggleSearchBar } from "../Utils.js";
 
 export function init() {
 	const collapseButton = document.getElementById("collapseButton");
@@ -35,6 +35,7 @@ function toggleSidebarCollapse() {
 	const content = document.getElementById("content-container");
 	var sectionNames = document.querySelectorAll(".section-name");
 
+	toggleSearchBar();
 	sidebar.classList.toggle("collapsed");
 	content.classList.toggle("collapsed");
 	sectionNames.forEach(function (name) {

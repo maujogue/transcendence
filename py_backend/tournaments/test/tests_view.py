@@ -5,6 +5,8 @@ from django.test import Client
 from users.models import CustomUser
 from tournaments.models import Tournament
 
+from django.core.exceptions import ObjectDoesNotExist
+
 import json
 
 
@@ -325,9 +327,8 @@ class TournamentModeTest(TestCase):
 
 		response = self.client.post(reverse("quit_tournament", args=[id]))
 		self.assertEqual(response.status_code, 200)
-
-		tournament = Tournament.objects.get(pk=id)
-		self.assertFalse(tournament.participants.filter(username='testuser1').exists())
+		with self.assertRaises(ObjectDoesNotExist):
+			Tournament.objects.get(pk=id)
 
 # user not in the tournament
 	def test_quit_was_not_in_it(self):
@@ -368,6 +369,11 @@ class TournamentModeTest(TestCase):
 		response = self.client.get(reverse("check_if_tournament_joined", args=['testuser1']))
 		self.assertEqual(response.status_code, 200)
 		self.assertEqual(json.loads(response.content).get('joined'), True)
+
+		self.client.logout()
+		self.client.login(username='testuser2', password='Password2+')
+		response = self.client.post(reverse("join_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)
 
 		response = self.client.post(reverse("quit_tournament", args=[id]))
 		self.assertEqual(response.status_code, 200)

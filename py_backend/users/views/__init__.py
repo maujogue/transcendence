@@ -10,4 +10,4 @@ from .get_csrf_token import *
 from .get_user_datas import *
 from .username_availaible import *
 from .email_available import *
-from .verification_email_confirm import *
+from .confirm_email import *

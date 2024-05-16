@@ -1,7 +1,15 @@
-from django.test import TestCase
+from django.test import TestCase, Client
 from users.models import CustomUser
 from django.urls import reverse
 from django.core import mail
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from users.tokens import account_activation_token
+from django.test import TestCase, RequestFactory
+from django.urls import reverse
+from django.contrib.auth.models import AnonymousUser
+from django.core.exceptions import ValidationError
+from users.views import confirm_email
 import json
 
 class VerificationEmail(TestCase):
@@ -49,7 +57,7 @@ class VerificationEmail(TestCase):
         self.assertEqual(len(mail.outbox), 1)
 
         email = mail.outbox[0]
-        self.assertEqual(email.subject, 'Verify Email')
+        self.assertEqual(email.subject, 'Activate your user account.')
 
     def test_verif(self):
         newUser = {
@@ -69,5 +77,3 @@ class VerificationEmail(TestCase):
         response = self.client.post(reverse('get_user_data'))
         response_data = response.json()
         self.assertEqual(response_data.get('user').get('email_is_verified'), False)
-
-

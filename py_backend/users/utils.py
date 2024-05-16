@@ -99,36 +99,15 @@ def convert_image_to_base64(image_field):
     return encoded_string
 
 
-# def send_confirmation_email(user, request):
-# 	if user.is_authenticated:
-# 		if user.email_is_verified != True:
-# 			current_site = get_current_site(request)
-# 			email = user.email
-# 			subject = "Verify Email"
-# 			message = render_to_string('../templates/verification_email_message.html', {
-# 				'request': request,
-# 				'username': user.username,
-# 				'domain': current_site.domain,
-# 				'uid':urlsafe_base64_encode(force_bytes(user.pk)),
-# 				'token':account_activation_token.make_token(user),
-# 			})
-# 			email = EmailMessage(
-# 				subject, message, to=[email]
-# 			)
-# 			email.content_subtype = 'html'
-# 			return email.send()
-# 		return False
-# 	return False
-
 def send_confirmation_email(user, request):
     mail_subject = "Activate your user account."
-    email = user.email
+    to_email = user.email
     message = (
         f"Hi {user.username},\n\n"
         f"Please go to the following link to activate your account:\n\n"
-        f"{request.scheme}://127.0.0.1:8000/activate/"
+        f"{request.scheme}://127.0.0.1:8000/confirm_email/"
         f"{urlsafe_base64_encode(force_bytes(user.pk))}/{account_activation_token.make_token(user)}/\n\n"
         "Thanks for registering!"
     )
-    email = EmailMessage(mail_subject, message, to=[email])
+    email = EmailMessage(mail_subject, message, to=[to_email])
     return email.send()

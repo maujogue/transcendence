@@ -18,6 +18,18 @@ class LoginTests(TestCase):
         self.assertEqual(user.email, 'lboulatr@gmail.com')
         self.assertEqual(CustomUser.objects.count(), 1)
 
+    def test_wrong_password(self):
+        user = {
+            'username': 'lboulatr',
+            'password': 'IncorrectPassword'
+        }
+        response = self.client.post(
+            reverse('login'),
+            data=user,
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 400)
+
     def test_basic_login(self):
         user = {
             'username': 'lboulatr',

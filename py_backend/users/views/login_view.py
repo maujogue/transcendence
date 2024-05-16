@@ -7,7 +7,7 @@ from users import forms
 
 
 @require_http_methods(["POST"])
-def login(request):
+def login_view(request):
     data = decode_json_body(request)
     if isinstance(data, JsonResponse):
         return data

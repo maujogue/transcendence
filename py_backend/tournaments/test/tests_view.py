@@ -385,7 +385,7 @@ class TournamentModeTest(TestCase):
 		self.assertEqual(response.status_code, 200)
 
 		tournament = Tournament.objects.get(pk=id)
-		self.assertFalse(tournament.participants.filter(username='testuser1').exists())
+		self.assertFalse(tournament.participants.filter(username='testuser2').exists())
 
 # non logged user quit
 	def test_quit_non_logged_quit(self):

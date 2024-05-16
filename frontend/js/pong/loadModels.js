@@ -38,7 +38,7 @@ export async function loadScene(fileName) {
                 resolve(gltf);
             },
             (xhr) => {
-                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                //console.log((xhr.loaded / xhr.total * 100) + '% loaded');
             },
             (error) => {
                 console.error('An error happened', error);

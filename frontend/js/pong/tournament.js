@@ -15,7 +15,8 @@ export async function connectToTournament(tournament) {
     wsTournament.onmessage = (event) => {
         const data = JSON.parse(event.data);
         if (data.type == "participants") {
-            document.getElementById("player-list").innerHTML = "";
+            if (document.getElementById("player-list"))
+                document.getElementById("player-list").innerHTML = "";
             data.participants.map((participant) => {
                 insertPlayer(participant);
             });

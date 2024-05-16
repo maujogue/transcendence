@@ -20,6 +20,7 @@ export async function sendTournamentForm(form) {
 	})
 	.then((response) => response.json())
 	.then((data) => {
+		console.log(data);
 		if (data.error)
 			throw new Error(data.error);
 		else

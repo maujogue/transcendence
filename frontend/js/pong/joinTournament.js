@@ -15,7 +15,7 @@ async function getAllTournaments() {
 }
 
 function createTournamentInfo(name, currentParticipants, maxParticipants) {
-	const parent = document.getElementById("listTournament");
+	const parent = document.getElementById("tournamentsInfo");
 	const tournament = document.createElement("div");
 	tournament.className = "tournament-info";
     tournament.id = name;
@@ -37,15 +37,54 @@ function createDivJoinTournament(parent) {
     div.textContent = "Tournaments name";
     const div2 = document.createElement("div");
     div2.textContent = "Nb";
+    const tournamentsInfo = document.createElement("div");
+    tournamentsInfo.id = "tournamentsInfo";
     header.appendChild(div);
     header.appendChild(div2);
     listTournament.appendChild(header);
+    listTournament.appendChild(tournamentsInfo);
     listTournament.id = "listTournament";
     listTournament.classList.add("tournament")
     
     parent.appendChild(listTournament);
 }
 
+function displayErrorPopUp (message) {
+    console.error("displayErrorPopUp", message);
+    const parent = document.getElementsByClassName("tournament")[0];
+    const errorPopUp = document.createElement("div");
+    errorPopUp.className = "error-pop-up";
+    errorPopUp.innerHTML = ` \
+    <i id="PopUpCloseIcon" class="fa-solid fa-xmark close-icon"></i> \
+    <p>${message}</p> `;
+    parent.appendChild(errorPopUp);
+    document.getElementById("PopUpCloseIcon").addEventListener("click", () => {
+        errorPopUp.remove();
+        displayAllTournaments();
+    });
+}
+
+
+async function joinTournament(tournament) {
+    fetch(`https://127.0.0.1:8000/api/tournament/join/${tournament.id}/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            "X-CSRFToken": await get_csrf_token(),
+        }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        if (data.errors) {
+            throw new Error(data.errors);
+        }
+        connectToTournament(tournament);
+    })
+    .catch((error) => {
+        displayErrorPopUp(error);
+    })
+}
+    
 function findTournament(event, allTournaments) {
     if (!(event.target.className == "tournament-info" || event.target.parentNode.className == "tournament-info"))
         return;
@@ -58,43 +97,28 @@ function findTournament(event, allTournaments) {
     });
 }
 
-async function joinTournament(tournament) {
-    fetch(`https://127.0.0.1:8000/api/tournament/join/${tournament.id}/`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            "X-CSRFToken": await get_csrf_token(),
-        }
-    })
-    .then((response) => {
-        if (!response.ok) {
-            throw new Error('Erreur HTTP, statut ' + response.status);
-        }
-        connectToTournament(tournament);
-    })
-    .catch((error) => {
-        console.error("join Tournament", error);
-    })
-}
-    
-async function createListTournament(parent) {
-    var allTournaments
+async function displayAllTournaments() {
+    var allTournaments;
 
-    createDivJoinTournament(parent);
+    document.getElementById("tournamentsInfo").innerHTML = "";
     try {
         const data = await getAllTournaments();
         allTournaments = data.tournaments;
+        console.log(data.tournaments);
         data.tournaments.map((tournament) => {
             createTournamentInfo(tournament.name, tournament.participants.length, tournament.max_players);
         });
     } catch (error) {
         console.error('Erreur:', error);
     }
-
 	listTournament.addEventListener("click", (e) => {
         findTournament(e, allTournaments);
 	});
+}
 
+async function createListTournament(parent) {
+    createDivJoinTournament(parent);
+    displayAllTournaments();
 }
 
 export function createJoinTournamentMenu() {

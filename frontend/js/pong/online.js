@@ -63,8 +63,6 @@ function clickHandler(event) {
         sendIsReady(webSocket);
     }
     if (event.target.id == 'backMenu') {
-        if (document.getElementById("endscreen"))
-            document.getElementById("endscreen").remove();
         if (webSocket)
             webSocket.close();
     }
@@ -152,7 +150,7 @@ async function connectToLobby(username) {
             document.getElementById("waitingScreen")?.remove();
         }
         if (data['type'] == 'player_pos') {
-            //env.scene.getObjectByName("paddle_" + data['name']).position.y = data['posZ'];
+            env.scene.getObjectByName("paddle_" + data['name']).position.y = data['posY'];
             playersMove.set("paddle_" + data['name'], data['move']);
         }
         if (data['type'] == 'score')
@@ -233,10 +231,10 @@ function movePlayers() {
         if (!paddle)
             return ;
         const playerBox = new THREE.Box3().setFromObject(paddle);
-        if (value > 0 && !env.border.down.box.intersectsBox(playerBox))
-            paddle.position.z += value;
-        if (value < 0 && !env.border.up.box.intersectsBox(playerBox))
-            paddle.position.z += value;
+        if (value > 0 && !env.border.up.box.intersectsBox(playerBox))
+            paddle.translateY(value);
+        if (value < 0 && !env.border.down.box.intersectsBox(playerBox))
+            paddle.translateY(value);
     });
 }
 
@@ -252,14 +250,12 @@ async function sendIsReady(webSocket) {
 
 async function setGameIsStart() {
     if (player && opp && oppInfo) {
-        status.gameIsInit = false;
+        opp.userInfo = oppInfo;
         ClearAllEnv(env);
-        await initGame(player, opp).then((res) => {
-            env = res;
-            opp.userInfo = oppInfo;
-            createHUD(player, opp);
-            status.start = true;
-        });
+        env = await initGame(player, opp);
+        createHUD(player, opp);
+        status.gameIsInit = false;
+        status.start = true;
     }
 }
 

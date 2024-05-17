@@ -3,6 +3,7 @@ import { togglePasswordVisibility, checkPassword } from "../Utils.js";
 import { enableDisableSaveButtonOnInput, resetForm } from "../DashboardUtils.js"
 import { getUserData } from "../User.js";
 import { friendsWebsocket } from "../Friends.js"
+import { getFriendName } from "../SearchBar.js";
 
 export async function init() {
 	friendsWebsocket();
@@ -23,6 +24,11 @@ export async function init() {
 	discardChangesButton.addEventListener("click", () => resetForm());
 	saveChangesButton.addEventListener("click", () => updateProfile());
 	confirmPasswordButton.addEventListener("click", () => updateProfileWithPassword());
+
+	document.getElementById("search-form").addEventListener('submit', (event) => {
+		event.preventDefault(); // Prevent the form from reloading the page
+		getFriendName(event);
+	});
 	
 	password1.addEventListener("input", () => checkPassword("update", password1, password2));
 	password2.addEventListener("input", () => checkPassword("update", password1, password2));

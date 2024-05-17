@@ -12,6 +12,9 @@ class FriendsConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         if text_data_json.get('type') == 'auth':
-            username = text_data_json['username']
-            await self.send(text_data=json.dumps({'type': 'auth', 'username': username }))
+            friendslist = text_data_json['friendslist']
+            if friendslist != False:
+                await self.send(text_data=json.dumps({'type': 'list', 'friendslist': friendslist.count()}))
+            else:
+                await self.send(text_data=json.dumps({'type': 'message', 'message': 'You have no friends.'}))
             

@@ -38,7 +38,7 @@ def create_tournament(request):
 		return JsonResponse({"errors": "Name is too long."},
 				status=400)
 
-	if not max_players in range(2, 33):
+	if not max_players in range(2, 16):
 		return JsonResponse({"errors": "Invalid number of players."}, status=400)
 
 	try:

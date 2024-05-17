@@ -17,6 +17,12 @@ h1 {
 	text-align: center;
 }
 
+#testBracket {
+	position: absolute;
+	top: 25%;
+	height: 55%!important;
+}
+
  #game {
 	width: 960px;
 	height: 540px;

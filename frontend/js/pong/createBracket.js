@@ -19,7 +19,10 @@ function createBracket(data) {
         console.log(round);
         const roundDiv = document.createElement("div");
         roundDiv.className = "round";
-        roundDiv.textContent = round.round;
+        const roundName = document.createElement("div");
+        roundName.className = "round-name";
+        roundName.textContent = round.name;
+        roundDiv.appendChild(roundName);
         round.matches.map((match) => {
             const matchDiv = document.createElement("div");
             matchDiv.className = "match";

@@ -34,6 +34,13 @@ h1 {
 	margin: 5%;
 }
 
+.round-name {
+	color: white;
+	position: absolute;
+	align-self: center;
+	top: 5%;
+}
+
 .match {
 	display: flex;
 	flex-direction: column;
@@ -41,13 +48,16 @@ h1 {
 	background-color: white;
 	margin: 5%;
 	padding: 2%;
+	height: 20%;
 
 }
 
 .bracket-player {
+	font-size: large;
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
+	height: auto;
 
 }
 

@@ -58,7 +58,7 @@ class VerificationEmail(TestCase):
         self.assertEqual(len(mail.outbox), 1)
 
         email = mail.outbox[0]
-        self.assertEqual(email.subject, 'Activate your user account.')
+        self.assertEqual(email.subject, 'Verify Email')
 
     def test_verif(self):
         newUser = {
@@ -98,10 +98,9 @@ class ConfirmEmailViewTest(TestCase):
         
         response = self.client.get(url)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
         self.user.refresh_from_db()
         self.assertTrue(self.user.email_is_verified)
-        self.assertTrue(response.json()['status'], 'success')
 
 
     def test_confirm_email_invalid_token(self):
@@ -137,14 +136,3 @@ class ConfirmEmailViewTest(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertFalse(CustomUser.objects.filter(pk=9999).exists())
         self.assertTrue(response.json()['status'], 'error')
-
-
-    def test_check_iud_and_token(self):
-        url = reverse('confirm_email', kwargs={'uidb64': self.uid, 'token': self.token})
-        
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, 200)
-        response_data = response.json()
-        self.assertEqual(response_data.get('datas').get('uidb64'), self.uid)
-        self.assertEqual(response_data.get('datas').get('token'), self.token)

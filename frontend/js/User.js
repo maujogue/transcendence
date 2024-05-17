@@ -31,9 +31,13 @@ async function getUserData(dataElement) {
     )
     .then(({ statusCode, data }) => {
       if (statusCode === 200) {
-        if (dataElement) return data.user[dataElement];
-        else return data.user;
-      } else console.log("User not Logged in:", data.error);
+        if (dataElement) 
+          return data.user[dataElement];
+        else 
+          return data.user;
+      } else 
+        console.log("User not Logged in:", data.error);
+        return null;
     })
     .catch((error) => {});
 }

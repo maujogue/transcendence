@@ -38,7 +38,7 @@ export async function loadScene(fileName) {
                 resolve(gltf);
             },
             (xhr) => {
-                //console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
             },
             (error) => {
                 console.error('An error happened', error);
@@ -58,8 +58,8 @@ export async function loadAllModel(loadIsOver) {
                 console.error('Error loading model:', error);
             }
         });
-
         await Promise.all(loadingPromises);
+        if (!document.getElementsByClassName("menu")[0])
             displayMainMenu();
     } catch (error) {
         console.error('Error loading models:', error);

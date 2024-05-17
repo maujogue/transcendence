@@ -19,6 +19,9 @@ def login_view(request):
         password = form.cleaned_data['password']
         user = authenticate(username=username, password=password)
 
+        if user.email_is_verified == False:
+            return JsonResponse({'error': "Your email is not verified yet."}, status=400)
+
         if user is not None:
             auth_login(request, user)
             user_info = {

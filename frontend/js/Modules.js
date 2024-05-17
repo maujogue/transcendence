@@ -27,12 +27,15 @@ async function initArray(array) {
 }
 
 async function injectModule() {
+	const regex = /^[ \n\t]*$/;
 	await initArray(modules);
 	modules.forEach((moduleType) => {
 		var moduleDivs = document.querySelectorAll("." + moduleType.name);
 		moduleDivs.forEach(async (div) => {
-			div.innerHTML = moduleType.html;
-			moduleType.init();
+			if (regex.test(div.innerHTML)) {
+				div.innerHTML = moduleType.html;
+				moduleType.init();
+			}
 		});
 	});
 }

@@ -1,6 +1,9 @@
 import { createTournamentDiv} from "./menu.js";
 import { connectToTournament } from "./tournament.js";
 import { get_csrf_token } from "../ApiUtils.js";
+import { displayErrorPopUp } from "./tournament.js";
+
+let allTournaments;
 
 async function getAllTournaments() {
     try {
@@ -14,22 +17,26 @@ async function getAllTournaments() {
     }
 }
 
-function createTournamentInfo(name, currentParticipants, maxParticipants) {
+function createTournamentInfo(tournament, currentParticipants, maxParticipants) {
 	const parent = document.getElementById("tournamentsInfo");
-	const tournament = document.createElement("div");
-	tournament.className = "tournament-info";
-    tournament.id = name;
+	const tournamentDiv = document.createElement("div");
+	tournamentDiv.className = "tournament-info";
+    tournamentDiv.id = tournament.name;
 	const div = document.createElement("div");
-	div.textContent = name;
+	div.textContent = tournament.name;
 	const div2 = document.createElement("div");
 	div2.textContent = currentParticipants + "/" + maxParticipants;
-	tournament.appendChild(div);
-	tournament.appendChild(div2);
-	parent.appendChild(tournament);
+	tournamentDiv.appendChild(div);
+	tournamentDiv.appendChild(div2);
+	parent.appendChild(tournamentDiv);
+    tournamentDiv.addEventListener("click", () => {
+        joinTournament(tournament)
+    });
 }
 
 function createDivJoinTournament(parent) {
-    parent.innerHTML += '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>';
+    parent.innerHTML += '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i> \
+    <i class="fa-solid fa-rotate-right actualize-icon icon" id="actualizeIcon"></i>';
     const listTournament = document.getElementsByClassName("tournament")[0];
     const header = document.createElement("div");
     header.className = "list-header";
@@ -47,23 +54,10 @@ function createDivJoinTournament(parent) {
     listTournament.classList.add("tournament")
     
     parent.appendChild(listTournament);
-}
-
-function displayErrorPopUp (message) {
-    console.error("displayErrorPopUp", message);
-    const parent = document.getElementsByClassName("tournament")[0];
-    const errorPopUp = document.createElement("div");
-    errorPopUp.className = "error-pop-up";
-    errorPopUp.innerHTML = ` \
-    <i id="PopUpCloseIcon" class="fa-solid fa-xmark close-icon"></i> \
-    <p>${message}</p> `;
-    parent.appendChild(errorPopUp);
-    document.getElementById("PopUpCloseIcon").addEventListener("click", () => {
-        errorPopUp.remove();
+    document.getElementById("actualizeIcon").addEventListener("click", () => {
         displayAllTournaments();
     });
 }
-
 
 async function joinTournament(tournament) {
     fetch(`https://127.0.0.1:8000/api/tournament/join/${tournament.id}/`, {
@@ -82,38 +76,24 @@ async function joinTournament(tournament) {
     })
     .catch((error) => {
         displayErrorPopUp(error);
+        document.getElementById("PopUpCloseIcon")?.addEventListener("click", () => {
+            displayAllTournaments();
+        });
     })
 }
     
-function findTournament(event, allTournaments) {
-    if (!(event.target.className == "tournament-info" || event.target.parentNode.className == "tournament-info"))
-        return;
-    var tournamentName = event.target.id;
-    if (event.target.parentNode.className == "tournament-info")
-        tournamentName = event.target.parentNode.id
-    allTournaments.find((tournament) => {
-        if (tournament.name == tournamentName)
-            joinTournament(tournament);
-    });
-}
 
 async function displayAllTournaments() {
-    var allTournaments;
-
     document.getElementById("tournamentsInfo").innerHTML = "";
     try {
         const data = await getAllTournaments();
         allTournaments = data.tournaments;
-        console.log(data.tournaments);
         data.tournaments.map((tournament) => {
-            createTournamentInfo(tournament.name, tournament.participants.length, tournament.max_players);
+            createTournamentInfo(tournament, tournament.participants.length, tournament.max_players);
         });
     } catch (error) {
         console.error('Erreur:', error);
     }
-	listTournament.addEventListener("click", (e) => {
-        findTournament(e, allTournaments);
-	});
 }
 
 async function createListTournament(parent) {

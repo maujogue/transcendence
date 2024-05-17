@@ -96,3 +96,18 @@ export async function checkIfUserIsInTournament(user) {
         return false;
     });
 }
+
+export function displayErrorPopUp (message) {
+    console.error("displayErrorPopUp", message);
+    const parent = document.getElementsByClassName("tournament")[0];
+    const errorPopUp = document.createElement("div");
+    errorPopUp.className = "error-pop-up";
+    errorPopUp.innerHTML = ` \
+    <i id="PopUpCloseIcon" class="fa-solid fa-xmark close-icon"></i> \
+    <p>${message}</p> `;
+    parent.appendChild(errorPopUp);
+    document.getElementById("PopUpCloseIcon").addEventListener("click", () => {
+        document.getElementById("PopUpCloseIcon").removeEventListener("click", () => {});
+        errorPopUp.remove();
+    });
+}

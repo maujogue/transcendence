@@ -1,6 +1,7 @@
 import { connectToTournament } from "./tournament.js";
 import { get_csrf_token } from "../ApiUtils.js";
 import { createTournamentDiv } from "./menu.js";
+import { displayErrorPopUp } from "./tournament.js";
 
 export async function sendTournamentForm(form) {
 	const formData = new FormData(form);
@@ -20,13 +21,12 @@ export async function sendTournamentForm(form) {
 	})
 	.then((response) => response.json())
 	.then((data) => {
-		if (data.error)
-			throw new Error(data.error);
-		else
-			connectToTournament(data.tournament);
+		if (data.errors)
+			throw new Error(data.errors);
+		connectToTournament(data.tournament);
 	})
 	.catch((error) => {
-		console.error("create Tournament", error);
+		displayErrorPopUp(error);
 	});
 }
 

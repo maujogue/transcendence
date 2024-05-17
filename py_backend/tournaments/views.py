@@ -24,7 +24,7 @@ def create_tournament(request):
 		return JsonResponse(data = {"errors": "Invalid JSON format"},
 					status=406)
 
-	name = data.get('name')
+	name = str(data.get('name'))
 	try:
 		max_players = int(data.get('max_players'))
 	except ValueError:
@@ -32,6 +32,10 @@ def create_tournament(request):
 	
 	if not name:
 		return JsonResponse({"errors": "Name is required."},
+				status=400)
+	
+	if len(name) > 15:
+		return JsonResponse({"errors": "Name is too long."},
 				status=400)
 
 	if not max_players in range(2, 33):

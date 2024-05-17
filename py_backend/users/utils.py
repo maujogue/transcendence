@@ -105,7 +105,7 @@ def send_confirmation_email(user, request):
     message = (
         f"Hi {user.username},\n\n"
         f"Please go to the following link to activate your account:\n\n"
-        f"{request.scheme}://127.0.0.1:8000/confirm_email/"
+        f"{request.scheme}://127.0.0.1:8000/api/users/confirm_email/"
         f"{urlsafe_base64_encode(force_bytes(user.pk))}/{account_activation_token.make_token(user)}/\n\n"
         "Thanks for registering!"
     )

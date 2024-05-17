@@ -3,6 +3,7 @@ from django.utils.http import urlsafe_base64_decode
 from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth import get_user_model
+from django.shortcuts import redirect
 
 from users.tokens import account_activation_token
 
@@ -19,5 +20,5 @@ def confirm_email(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.email_is_verified = True
         user.save()
-        return JsonResponse({'status': "success"}, status=200)
+        return redirect('/dash')
     return JsonResponse({'status': "error"}, status=400)

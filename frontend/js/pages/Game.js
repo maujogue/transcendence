@@ -15,6 +15,7 @@ import { getUserData } from "../User.js";
 import { sendTournamentForm, createFormTournament} from "../pong/createTournament.js";
 import { createJoinTournamentMenu } from "../pong/joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "../pong/tournament.js";
+import { getTournamentBracket } from "../pong/createBracket.js";
 import * as THREE from 'three';
 
 export var lobby;
@@ -46,7 +47,8 @@ export async function init() {
 	const field = await createField();
 
 	loadAllModel();
-
+	
+	getTournamentBracket();
 	getUserData().then((data) => {
 		userData = data;
 		if (userData) {

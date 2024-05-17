@@ -17,6 +17,40 @@ h1 {
 	text-align: center;
 }
 
+.bracket {
+	overflow-y: auto;
+	overflow-x: auto;
+	display: flex;
+	width: 95%;
+	height: 95%;
+}
+
+.round {
+	font-size: xx-large;
+	display: flex;
+	width: 24%;
+	flex-direction: column;
+	justify-content: center;
+	margin: 5%;
+}
+
+.match {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	background-color: white;
+	margin: 5%;
+	padding: 2%;
+
+}
+
+.bracket-player {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+
+}
+
 #testBracket {
 	position: absolute;
 	top: 25%;
@@ -363,17 +397,17 @@ h1 {
 	}
 }
 
-.tournament::-webkit-scrollbar {
+.tournament::-webkit-scrollbar, .bracket::-webkit-scrollbar {
 	height: 123px;
 	border-radius: 20px;            /* width of the entire scrollbar */
 }
   
-.tournament::-webkit-scrollbar-track {
+.tournament::-webkit-scrollbar-track, .bracket::-webkit-scrollbar-track {
 	background: orange;
 	border-radius: 20px;          /* color of the tracking area */
 }
 
-.tournament::-webkit-scrollbar-thumb {
+.tournament::-webkit-scrollbar-thumb, .bracket::-webkit-scrollbar-thumb {
 background-color: rgb(0, 0, 19);    /* color of the scroll thumb */
 border-radius: 20px;       /* roundness of the scroll thumb */
 border: 3px solid orange;  /* creates padding around scroll thumb */

@@ -3,12 +3,12 @@ from py_backend import settings
 from django.http import JsonResponse
 import base64
 
+
 import json
 import os
 
 SPECIAL_CHARS = "+/*.,!#%^&\{}[]=:;\'\"`~"
 SPECIAL_CHARS_EMAIL = "+/*,!#%^&\{}[]=:;\'\"`~"
-
 
 def email_is_valid(email):
 	if not email or email == '':

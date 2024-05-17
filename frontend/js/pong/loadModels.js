@@ -58,8 +58,8 @@ export async function loadAllModel(loadIsOver) {
                 console.error('Error loading model:', error);
             }
         });
-
         await Promise.all(loadingPromises);
+        if (!document.getElementsByClassName("menu")[0])
             displayMainMenu();
     } catch (error) {
         console.error('Error loading models:', error);

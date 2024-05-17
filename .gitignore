@@ -8,6 +8,8 @@ py_backend/py_backend/users/migrations
 py_backend/py_backend/multiplayer/migrations
 .nfs*
 
+frontend/js/pong/dev
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

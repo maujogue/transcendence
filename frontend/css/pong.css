@@ -17,7 +17,7 @@ h1 {
 	text-align: center;
 }
 
-.bracket {
+/* .bracket {
 	overflow-y: auto;
 	overflow-x: auto;
 	display: flex;
@@ -59,13 +59,12 @@ h1 {
 	justify-content: space-between;
 	height: auto;
 
-}
-
-#testBracket {
+} */
+/* 
+#bracketCanvas {
 	position: absolute;
 	top: 25%;
-	height: 55%!important;
-}
+} */
 
  #game {
 	width: 960px;

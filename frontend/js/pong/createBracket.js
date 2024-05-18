@@ -1,3 +1,14 @@
+let canvas;
+let ctx;
+
+// Constants for layout
+const startX = 50;
+const startY = 50;
+const boxWidth = 150;
+const boxHeight = 40;
+const verticalSpacing = 20;
+const horizontalSpacing = 200;
+
 export function getTournamentBracket() {
     console.log("getTournamentBracket");
     const url = `./js/pong/dev/bracket.json`;
@@ -5,45 +16,60 @@ export function getTournamentBracket() {
     fetch(url)
         .then(response => response.json())
         .then(data => {
-            createBracket(data);
+            drawBracket(data);
         });
 }
 
-function createBracket(data) {
-    console.log(data);
-    const tournament = data.tournament;
-    const bracket = document.createElement("div");
-    bracket.className = "bracket";
-    const rounds = tournament.rounds;
-    rounds.map((round) => {
-        console.log(round);
-        const roundDiv = document.createElement("div");
-        roundDiv.className = "round";
-        const roundName = document.createElement("div");
-        roundName.className = "round-name";
-        roundName.textContent = round.name;
-        roundDiv.appendChild(roundName);
-        round.matches.map((match) => {
-            const matchDiv = document.createElement("div");
-            matchDiv.className = "match";
-            
-            createPlayerDiv(matchDiv, match.player1, match.player1_score, match.winner === match.player1);
-            createPlayerDiv(matchDiv, match.player2, match.player2_score, match.winner === match.player2);
-            roundDiv.appendChild(matchDiv);
+function drawMatchBox(x, y, match) {
+    ctx.strokeRect(x, y, boxWidth, boxHeight);
+    
+    writePlayerName(x + 5, y + 15, match.player1, match.player1_score, match.winner);
+    writePlayerName(x + 5, y + 35, match.player2, match.player2_score, match.winner);
+}
+
+function writePlayerName(x, y, playerName, score, winner) {
+    if (winner === playerName)
+        ctx.fillStyle = 'green';
+    ctx.fillText(`${playerName}:  ${score}`, x, y);
+    ctx.fillStyle = 'black';
+}
+
+function drawConnectingLine(x1, y1, x2, y2) {
+    ctx.beginPath();
+    ctx.moveTo(x1, y1);
+    const midX = (x1 + x2) / 2;
+    ctx.lineTo(midX, y1);
+    ctx.lineTo(midX, y2);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+}
+
+function drawBracket(data) {
+    canvas = document.getElementById('tournamentCanvas');
+    ctx = canvas.getContext('2d');
+    ctx.font = '12px Arial';
+
+    const rounds = data.tournament.rounds;
+
+    const roundHeights = rounds.map(round => round.matches.length * (boxHeight + verticalSpacing));
+    const maxRoundHeight = Math.max(...roundHeights);
+
+    rounds.forEach((round, roundIndex) => {
+        const roundX = startX + roundIndex * horizontalSpacing;
+        const roundY = startY + (maxRoundHeight - roundHeights[roundIndex]) / 2;
+
+        round.matches.forEach((match, matchIndex) => {
+            const matchY = roundY + matchIndex * (boxHeight + verticalSpacing);
+            drawMatchBox(roundX, matchY, match);
+
+            if (roundIndex < rounds.length - 1) {
+                const nextMatchIndex = Math.floor(matchIndex / 2);
+                const nextMatchY = startY + (maxRoundHeight - roundHeights[roundIndex + 1]) / 2 + nextMatchIndex * (boxHeight + verticalSpacing); // Align the next round vertically
+                const nextMatchYCenter = nextMatchY + boxHeight / 2;
+                const matchYCenter = matchY + boxHeight / 2;
+
+                drawConnectingLine(roundX + boxWidth, matchYCenter, roundX + horizontalSpacing, nextMatchYCenter);
+            }
         });
-        bracket.appendChild(roundDiv);
     });
-    document.getElementById("testBracket").appendChild(bracket);
-}
-
-function createPlayerDiv(parent, playerName, score, isWinner) {
-    const playerDiv = document.createElement("div");
-    playerDiv.className = "bracket-player";
-    playerDiv.textContent = playerName;
-    const scoreDiv = document.createElement("div");
-    scoreDiv.textContent = score;
-    if (isWinner)
-        playerDiv.style.fontWeight = "bold";
-    parent.appendChild(playerDiv);
-    playerDiv.appendChild(scoreDiv);
 }

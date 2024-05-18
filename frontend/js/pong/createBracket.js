@@ -5,7 +5,7 @@ let ctx;
 const startX = 50;
 const startY = 50;
 const boxWidth = 150;
-const boxHeight = 40;
+const boxHeight = 45;
 const verticalSpacing = 20;
 const horizontalSpacing = 200;
 
@@ -21,16 +21,25 @@ export function getTournamentBracket() {
 }
 
 function drawMatchBox(x, y, match) {
+    // Draw match background
+    ctx.fillStyle = 'white'; // Set background color to white
+    ctx.fillRect(x, y, boxWidth, boxHeight);
+
+    // Draw match border
+    // Draw match border
     ctx.strokeRect(x, y, boxWidth, boxHeight);
-    
-    writePlayerName(x + 5, y + 15, match.player1, match.player1_score, match.winner);
-    writePlayerName(x + 5, y + 35, match.player2, match.player2_score, match.winner);
+    // Draw player names and scores
+    ctx.font = '16px Arial'; // Increase font size
+    ctx.fillStyle = 'black'; // Set text color to black
+    writePlayerName(x + 10, y + 20, match.player1, match.player1_score, match.winner);
+    writePlayerName(x + 10, y + 40, match.player2, match.player2_score, match.winner);
 }
 
 function writePlayerName(x, y, playerName, score, winner) {
     if (winner === playerName)
         ctx.fillStyle = 'green';
-    ctx.fillText(`${playerName}:  ${score}`, x, y);
+    ctx.fillText(`${playerName}`, x, y);
+    ctx.fillText(`${score}`, x + boxWidth - 25, y);
     ctx.fillStyle = 'black';
 }
 
@@ -63,6 +72,7 @@ function drawBracket(data) {
             drawMatchBox(roundX, matchY, match);
 
             if (roundIndex < rounds.length - 1) {
+                const nextRound = rounds[roundIndex + 1];
                 const nextMatchIndex = Math.floor(matchIndex / 2);
                 const nextMatchY = startY + (maxRoundHeight - roundHeights[roundIndex + 1]) / 2 + nextMatchIndex * (boxHeight + verticalSpacing); // Align the next round vertically
                 const nextMatchYCenter = nextMatchY + boxHeight / 2;

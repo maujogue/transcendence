@@ -14,13 +14,8 @@ let scale = 1, // device pixel ratio
     height;
 
 let stars = [];
-
-let pointerX,
-    pointerY;
-
 let velocity = { x: 0, y: 0, tx: 0, ty: 0, z: 0.0005 };
-
-let touchInput = false;
+let req
 
 export function initSpaceBackground() {
     recreateCanvas("canvas");
@@ -123,8 +118,13 @@ function step() {
   update();
   render();
 
-  requestAnimationFrame( step );
+  req = requestAnimationFrame( step );
 
+}
+
+export function stopStep() {
+    cancelAnimationFrame(req);
+    stars = [];
 }
 
 function update() {
@@ -178,47 +178,5 @@ function render() {
     context.stroke();
 
   } );
-
-}
-
-function movePointer( x, y ) {
-
-  if( typeof pointerX === 'number' && typeof pointerY === 'number' ) {
-
-    let ox = x - pointerX,
-        oy = y - pointerY;
-
-    velocity.tx = velocity.tx + ( ox / 8*scale ) * ( touchInput ? 1 : -1 );
-    velocity.ty = velocity.ty + ( oy / 8*scale ) * ( touchInput ? 1 : -1 );
-
-  }
-
-  pointerX = x;
-  pointerY = y;
-
-}
-
-function onMouseMove( event ) {
-
-  touchInput = false;
-
-  movePointer( event.clientX, event.clientY );
-
-}
-
-function onTouchMove( event ) {
-
-  touchInput = true;
-
-  movePointer( event.touches[0].clientX, event.touches[0].clientY, true );
-
-  event.preventDefault();
-
-}
-
-function onMouseLeave() {
-
-  pointerX = null;
-  pointerY = null;
 
 }

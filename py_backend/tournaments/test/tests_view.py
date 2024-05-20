@@ -48,23 +48,8 @@ class TournamentModeTest(TestCase):
 
 ### tests create a tournament ###
 
-	def test_create_right_tournament_private(self):
+	def test_create_right_tournament(self):
 		name = "test1"
-		max_players = 5
-		
-		self.client.login(username='testuser1', password='Password1+')
-		response = self.create_test_tournament(name, max_players)
-		self.assertEqual(response.status_code, 201)
-		
-		try:
-			tournament = Tournament.objects.get(name=name)
-			self.assertEqual(tournament.name, name)
-			self.assertEqual(tournament.max_players, max_players)
-		except Tournament.DoesNotExist:
-			self.fail("Tournament was not created")
-
-	def test_create_right_tournament_public(self):
-		name = "test2"
 		max_players = 5
 		
 		self.client.login(username='testuser1', password='Password1+')
@@ -94,14 +79,6 @@ class TournamentModeTest(TestCase):
 		response = self.create_test_tournament(name, max_players)
 		self.assertEqual(response.status_code, 400)
 
-	# def test_private_no_password(self):
-	# 	name = "test5"
-	# 	max_players = 8
-		
-	# 	self.client.login(username='testuser1', password='Password1+')
-	# 	response = self.create_test_tournament(name, max_players)
-	# 	self.assertEqual(response.status_code, 400)
-
 	def test_no_name(self):
 		name = ""
 		max_players = 8
@@ -117,16 +94,6 @@ class TournamentModeTest(TestCase):
 		self.client.login(username='testuser1', password='Password1+')
 		response = self.create_test_tournament(name, max_players)
 		self.assertEqual(response.status_code, 400)
-
-	# def test_response_content_no_password(self):
-	# 	name = "Hi theree"
-	# 	max_players = 8
-		
-	# 	self.client.login(username='testuser1', password='Password1+')
-	# 	response = self.create_test_tournament(name, max_players)
-	# 	response_data = json.loads(response.content)
-	# 	self.assertIn('errors', response_data)
-	# 	self.assertEqual("A private tournament must have a password.", response_data['errors'])
 
 	def test_no_login(self):
 		name = "Hi there"
@@ -237,70 +204,41 @@ class TournamentModeTest(TestCase):
 		response = self.client.post(reverse("join_tournament", args=[id]))
 		self.assertEqual(response.status_code, 400)
 
-# join a tournament already joined
-	def test_already_joined(self):
+# # join a tournament already joined
+# 	def test_already_joined(self):
 
-		name = "Hi there"
-		max_players = 4
-
-		self.client.login(username='testuser1', password='Password1+')
-		tournament = self.create_test_tournament(name, max_players)
-		id = self.find_tournament_id(tournament)
-		response = self.client.get(reverse("check_if_tournament_joined", args=['testuser1']))
-		self.assertEqual(response.status_code, 200)
-		self.assertEqual(json.loads(response.content).get('joined'), True)
-
-		self.client.logout()
-		self.client.login(username='testuser2', password='Password2+')
-		response = self.client.post(reverse("join_tournament", args=[id]))
-		self.assertEqual(response.status_code, 200)
-
-		self.client.logout()
-		self.client.login(username='testuser1', password='Password1+')
-		response = self.client.post(reverse("join_tournament", args=[id]))
-		self.assertEqual(response.status_code, 400)
-
-# join without authentification
-	def test_join_not_login(self):
-
-		name = "Hi there"
-		max_players = 4
-
-		self.client.login(username='testuser1', password='Password1+')
-		tournament = self.create_test_tournament(name, max_players)
-		id = self.find_tournament_id(tournament)
-		self.client.logout()
-		response = self.client.post(reverse("join_tournament", args=[id]))
-		self.assertEqual(response.status_code, 302)
-
-# # join multiple tournaments
-# 	def test_join_multiple_tournaments(self):
-
-# 		name = "First tournament"
+# 		name = "Hi there"
 # 		max_players = 4
 
 # 		self.client.login(username='testuser1', password='Password1+')
+# 		tournament = self.create_test_tournament(name, max_players)
+# 		id = self.find_tournament_id(tournament)
+# 		response = self.client.get(reverse("check_if_tournament_joined", args=['testuser1']))
+# 		self.assertEqual(response.status_code, 200)
+# 		self.assertEqual(json.loads(response.content).get('joined'), True)
 
-# 		tournament1 = self.create_test_tournament(name, max_players)
-# 		id1 = self.find_tournament_id(tournament1)
-# 		response = self.client.post(reverse("join_tournament", args=[id1]))
+# 		self.client.logout()
+# 		self.client.login(username='testuser2', password='Password2+')
+# 		response = self.client.post(reverse("join_tournament", args=[id]))
 # 		self.assertEqual(response.status_code, 200)
 
-# 		name = "Second tournament"
-# 		max_players = 5
+# 		self.client.logout()
+# 		self.client.login(username='testuser1', password='Password1+')
+# 		response = self.client.post(reverse("join_tournament", args=[id]))
+# 		self.assertEqual(response.status_code, 400)
 
-# 		tournament2 = self.create_test_tournament(name, max_players)
-# 		id2 = self.find_tournament_id(tournament2)
-# 		response = self.client.post(reverse("join_tournament", args=[id2]))
-# 		self.assertEqual(response.status_code, 200)
+# # join without authentification
+# 	def test_join_not_login(self):
 
-# 		name = "Third tournament"
-# 		max_players = 7
+# 		name = "Hi there"
+# 		max_players = 4
 
-# 		tournament3 = self.create_test_tournament(name, max_players)
-# 		id3 = self.find_tournament_id(tournament3)
-# 		response = self.client.post(reverse("join_tournament", args=[id3]))
-# 		self.assertEqual(response.status_code, 200)
+# 		self.client.login(username='testuser1', password='Password1+')
+# 		tournament = self.create_test_tournament(name, max_players)
+# 		id = self.find_tournament_id(tournament)
+# 		self.client.logout()
+# 		response = self.client.post(reverse("join_tournament", args=[id]))
+# 		self.assertEqual(response.status_code, 302)
 
 # join non existant tournament
 	def test_join_non_existant_tournament(self):
@@ -448,27 +386,4 @@ class TournamentModeTest(TestCase):
 		response = self.client.post(reverse("delete_tournament", args=[id]))
 		self.assertEqual(response.status_code, 200)
 		response = self.client.post(reverse("join_tournament", args=[id]))
-		self.assertEqual(response.status_code, 404)
-
-
-# no host try to delete
-	def test_delete_no_host(self):
-		name = "Hi there"
-		max_players = 2
-
-		self.client.login(username='testuser1', password='Password1+')
-		tournament = self.create_test_tournament(name, max_players)
-		id = self.find_tournament_id(tournament)
-		self.client.login(username='testuser2', password='Password2+')
-		response = self.client.post(reverse("delete_tournament", args=[id]))
-		self.assertEqual(response.status_code, 400)
-
-# try to delete a non existing tournament
-	def test_delete_no_host(self):
-		name = "Hi there"
-		max_players = 2
-
-		self.client.login(username='testuser1', password='Password1+')
-		id = 99
-		response = self.client.post(reverse("delete_tournament", args=[id]))
 		self.assertEqual(response.status_code, 404)

@@ -28,18 +28,20 @@ def create_tournament(request):
 	try:
 		max_players = int(data.get('max_players'))
 	except ValueError:
-		return JsonResponse({"errors": "Invalid number of players."}, status=400)
+		return JsonResponse({"errors": "Invalid number of players."},
+					status=400)
 	
 	if not name:
 		return JsonResponse({"errors": "Name is required."},
-				status=400)
+					status=400)
 	
 	if len(name) > 15:
 		return JsonResponse({"errors": "Name is too long."},
-				status=400)
+					status=400)
 
 	if not max_players in range(2, 33):
-		return JsonResponse({"errors": "Invalid number of players."}, status=400)
+		return JsonResponse({"errors": "Invalid number of players."},
+					status=400)
 
 	try:
 		tournament = Tournament.objects.create(
@@ -53,8 +55,13 @@ def create_tournament(request):
 					status=400)
 		return JsonResponse({"errors": "Tournament could not be created."},
 					status=400)
-	tournamentJSON = {"id": tournament.id, "name": tournament.name, "max_players": tournament.max_players,
-					"participants": [p.tournament_username for p in tournament.participants.all()]}
+
+	tournamentJSON = {
+		"id": tournament.id,
+		"name": tournament.name,
+		"max_players": tournament.max_players,
+		"participants": [p.tournament_username for p in tournament.participants.all()]
+	}
 	return JsonResponse({"message": "Tournament created successfully.", "tournament": tournamentJSON},
 					status=201)
 
@@ -97,6 +104,12 @@ def join_tournament(request, tournament_id):
 	tournament.participants.add(request.user)
 	return JsonResponse({"message": "Tournament joined successfully.", "id": tournament.id},
 					status=200)
+
+	if tournament.participants.count() == tournament.max_players:
+		pass
+	# 	generate_bracket(tournament)
+	# 	tournament.status = 'started'
+	# 	tournament.save()
 
 @login_required
 @require_http_methods(["POST"])

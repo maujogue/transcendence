@@ -35,7 +35,16 @@ async function createMap(environment) {
 	};
 }
 
+export function recreateCanvas(id) {
+	const canvas = document.getElementById(id);
+	canvas.remove();
+	const newCanvas = document.createElement("canvas");
+	newCanvas.id = id;
+	document.getElementById("game").appendChild(newCanvas);
+}
+
 function createEnvironment(id) {
+	recreateCanvas(id);
 	const div = document.getElementById(id);
 	const divSize = getSize();
 	

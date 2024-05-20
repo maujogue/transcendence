@@ -4,6 +4,7 @@ import { createLobbyLights, createLobbyScene } from './createField.js';
 import { isFullScreen } from './resize.js';
 import { winWidth, winHeight, charactersNames } from './varGlobal.js';
 import { createFormTournament } from "./createTournament.js";
+import { initSpaceBackground } from "./spaceBackground.js";
 
 let width = winWidth;
 let height = winHeight;
@@ -240,6 +241,7 @@ function displayMainMenu() {
 	fullScreenIcon.innerHTML = '<i class="fa-solid fa-expand fullScreenIcon icon" id="fullScreen"></i>';
 
 	divMenu.appendChild(fullScreenIcon);
+	initSpaceBackground();
 }
 
 function createGamemodeDiv(text, parent) {

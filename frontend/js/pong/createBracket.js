@@ -1,11 +1,11 @@
 let canvas;
 let ctx;
-const startX = 50;
+const startX = 150;
 const startY = 50;
 const boxWidth = 150;
-const boxHeight = 45;
-let verticalSpacing = 20;
-const horizontalSpacing = 200;
+const boxHeight = 44;
+const horizontalSpacing = 175;
+let verticalSpacing = 8;
 
 export function getTournamentBracket() {
     const url = `./js/pong/dev/bracket16.json`;
@@ -53,17 +53,14 @@ function drawBracket(data) {
     let prevRoundMatchesPosY = [];
     
     const rounds = data.tournament.rounds;
-    
-    const roundHeights = rounds.map(round => round.matches.length * (boxHeight + verticalSpacing));
-    const maxRoundHeight = Math.max(...roundHeights);
-    
+
     rounds.forEach((round, roundIndex) => {
         let matchesPosY = [];
         let indexMatchesPosY = 0;
         const roundX = startX + roundIndex * horizontalSpacing;
+        const prevRoundX = (startX + (roundIndex - 1) * horizontalSpacing) + boxWidth;
 
         round.matches.forEach((match, matchIndex) => {
-            console.log("roundIndex: ", roundIndex, "matchIndex: ", matchIndex);
             let matchY;
 
 
@@ -73,22 +70,20 @@ function drawBracket(data) {
                 verticalSpacing = prevRoundMatchesPosY[indexMatchesPosY + 1] - (prevRoundMatchesPosY[indexMatchesPosY] + boxHeight);
                 const twoBoxHeight = (boxHeight * 2) + (verticalSpacing / 2);
                 matchY = prevRoundMatchesPosY[indexMatchesPosY]  + (twoBoxHeight / 2);
-                indexMatchesPosY += 2;
             }
             matchesPosY.push(matchY);
 
             drawMatchBox(roundX, matchY, match);
-
-            if (roundIndex < rounds.length - 1) {
-                const nextMatchIndex = Math.floor(matchIndex / 2);
-                const nextMatchY = startY + (maxRoundHeight - roundHeights[roundIndex + 1]) / 2 + nextMatchIndex * (boxHeight + verticalSpacing); // Align the next round vertically
-                const nextMatchYCenter = nextMatchY + boxHeight / 2;
+            
+            if (roundIndex != 0) {
+                const prevMatchYCenter1 = prevRoundMatchesPosY[indexMatchesPosY] + (boxHeight / 2);
+                const prevMatchYCenter2 = prevRoundMatchesPosY[indexMatchesPosY + 1] + (boxHeight / 2);
                 const matchYCenter = matchY + boxHeight / 2;
-
-                drawConnectingLine(roundX + boxWidth, matchYCenter, roundX + horizontalSpacing, nextMatchYCenter);
+                drawConnectingLine(roundX, matchYCenter, prevRoundX, prevMatchYCenter1);
+                drawConnectingLine(roundX, matchYCenter, prevRoundX, prevMatchYCenter2);
             }
+            indexMatchesPosY += 2;
         });
-        console.log("matchesPosY: ", matchesPosY);
         prevRoundMatchesPosY = matchesPosY;
     });
 } 

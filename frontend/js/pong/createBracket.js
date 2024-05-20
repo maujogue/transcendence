@@ -1,14 +1,14 @@
 let canvas;
 let ctx;
-const startX = 150;
-const startY = 50;
-const boxWidth = 150;
+const startX = 75;
+const startY = 0;
+const boxWidth = 125;
 const boxHeight = 44;
 const horizontalSpacing = 175;
 let verticalSpacing = 8;
 
 export function getTournamentBracket() {
-    const url = `./js/pong/dev/bracket16.json`;
+    const url = `./js/pong/dev/bracketNotOver.json`;
 
     fetch(url)
         .then(response => response.json())
@@ -22,15 +22,22 @@ function drawMatchBox(x, y, match) {
     ctx.fillRect(x, y, boxWidth, boxHeight);
 
     ctx.strokeRect(x, y, boxWidth, boxHeight);
-    ctx.font = '16px Arial';
-    ctx.fillStyle = 'black';
+    ctx.font = '14px Arial';
     writePlayerName(x + 10, y + 20, match.player1, match.player1_score, match.winner);
     writePlayerName(x + 10, y + 40, match.player2, match.player2_score, match.winner);
 }
 
 function writePlayerName(x, y, playerName, score, winner) {
     if (winner === playerName)
-        ctx.fillStyle = 'green';
+    ctx.fillStyle = 'green';
+    else if (winner === "")
+    ctx.fillStyle = 'black';
+    else
+    ctx.fillStyle = 'red';
+    if (playerName == "") {
+        score = "-";
+        ctx.fillStyle = "black";
+    }
     ctx.fillText(`${playerName}`, x, y);
     ctx.fillText(`${score}`, x + boxWidth - 25, y);
     ctx.fillStyle = 'black';
@@ -69,7 +76,7 @@ function drawBracket(data) {
             else {
                 verticalSpacing = prevRoundMatchesPosY[indexMatchesPosY + 1] - (prevRoundMatchesPosY[indexMatchesPosY] + boxHeight);
                 const twoBoxHeight = (boxHeight * 2) + (verticalSpacing / 2);
-                matchY = prevRoundMatchesPosY[indexMatchesPosY]  + (twoBoxHeight / 2);
+                matchY = (prevRoundMatchesPosY[indexMatchesPosY]  + (twoBoxHeight / 2)) - (boxHeight / 2);
             }
             matchesPosY.push(matchY);
 
@@ -79,8 +86,8 @@ function drawBracket(data) {
                 const prevMatchYCenter1 = prevRoundMatchesPosY[indexMatchesPosY] + (boxHeight / 2);
                 const prevMatchYCenter2 = prevRoundMatchesPosY[indexMatchesPosY + 1] + (boxHeight / 2);
                 const matchYCenter = matchY + boxHeight / 2;
-                drawConnectingLine(roundX, matchYCenter, prevRoundX, prevMatchYCenter1);
-                drawConnectingLine(roundX, matchYCenter, prevRoundX, prevMatchYCenter2);
+                drawConnectingLine(roundX - 5, matchYCenter, prevRoundX + 5, prevMatchYCenter1);
+                drawConnectingLine(roundX - 5, matchYCenter, prevRoundX + 5, prevMatchYCenter2);
             }
             indexMatchesPosY += 2;
         });

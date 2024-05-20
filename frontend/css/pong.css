@@ -648,6 +648,7 @@ border: 3px solid orange;  /* creates padding around scroll thumb */
 
 #game .logo {
 	width: 100%;
+	z-index: 1;
 }
 
 #game .fullScreenIcon {

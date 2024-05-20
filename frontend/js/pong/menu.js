@@ -27,7 +27,6 @@ function createIcon(parent, character) {
 	img.setAttribute("alt", character);
 	img.style.width = "100%";
 	img.style.height = "100%";
-	// img.style.border = "1px solid black";
 	parent.appendChild(img);
 }
 
@@ -102,26 +101,6 @@ async function moveCursor(keyPressed, player, className, env) {
 	let swatch = document.getElementsByClassName("swatch")[parentNumber];
 	swatch.appendChild(cursor);
 	player = displayCharacter(player, env, charactersNames[parentNumber], player.name);
-}
-
-function createDivText() {
-	const divText = document.createElement("div");
-	divText.id = "selectText";
-	divText.style.position = 'relative';
-	divText.style.zIndex = '100';
-	divText.style.margin = '5%';
-	divText.style.color = 'white';
-	const textPress = document.createTextNode("Start with");
-	
-	divText.appendChild(textPress);
-	const spaceSheet = document.createElement("div");
-	spaceSheet.id = "spaceSheet";
-	if (isFullScreen())
-		spaceSheet.style.backgroundImage = "url('assets/img/sprite/spaceFullScreen.png')";
-	else
-		spaceSheet.style.backgroundImage = "url('assets/img/sprite/space.png')";
-	divText.appendChild(spaceSheet);
-	document.getElementById("selectMenu").appendChild(divText);
 }
 
 function createTitle(div) {

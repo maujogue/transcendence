@@ -1,23 +1,41 @@
 import { recreateCanvas } from "./createEnvironment.js";
 import { winWidth, winHeight } from "./varGlobal.js";
+import { isFullScreen } from "./resize.js";
+
 const STAR_COLOR = '#fff';
 const STAR_SIZE = 3;
 const STAR_MIN_SCALE = 0.2;
 const OVERFLOW_THRESHOLD = 50;
-const STAR_COUNT = ( winWidth + winHeight ) / 8;
 
 let canvas;
 let context;
 
-let scale = 1, // device pixel ratio
-    width,
-    height;
+let scale = 1;
+let width;
+let height;
 
 let stars = [];
 let velocity = { x: 0, y: 0, tx: 0, ty: 0, z: 0.0005 };
 let req
+let STAR_COUNT;
+
+function getSize() {
+	if (isFullScreen()) {
+		width = window.screen.width;
+		height = window.screen.height;
+	} else {
+		width = winWidth;
+		height = winHeight;
+	}
+}
 
 export function initSpaceBackground() {
+    getSize();
+    console.log(
+        "initSpaceBackground",
+    )
+    console.log(width, height);
+    STAR_COUNT = ( width + height ) / 8
     recreateCanvas("canvas");
     canvas = document.getElementById( 'canvas' );
     context = canvas.getContext( '2d' );
@@ -99,16 +117,10 @@ function recycleStar( star ) {
 
 function resize() {
 
-  scale = window.devicePixelRatio || 1;
-
-  width =  winWidth;
-  height = winHeight;
-
-  canvas.width = width;
-  canvas.height = height;
-
-  stars.forEach( placeStar );
-
+    scale = window.devicePixelRatio || 1;
+    canvas.width = width;
+    canvas.height = height;
+    stars.forEach( placeStar );
 }
 
 function step() {
@@ -143,8 +155,7 @@ function update() {
     star.x += ( star.x - width/2 ) * velocity.z * star.z;
     star.y += ( star.y - height/2 ) * velocity.z * star.z;
     star.z += velocity.z;
-  
-    // recycle when out of bounds
+
     if( star.x < -OVERFLOW_THRESHOLD || star.x > width + OVERFLOW_THRESHOLD || star.y < -OVERFLOW_THRESHOLD || star.y > height + OVERFLOW_THRESHOLD ) {
       recycleStar( star );
     }

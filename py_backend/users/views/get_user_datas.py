@@ -2,8 +2,10 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import requires_csrf_token
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from stats.views import *
 
 from users.utils import convert_image_to_base64
+
 
 
 @require_http_methods(["POST"])
@@ -19,6 +21,6 @@ def get_user_data(request):
         'title': user.title,
         'winrate': user.winrate,
         'rank': user.rank,
-        'n_games_played': user.n_games_played
+        'n_games_played': user.n_games_played,
     }
     return JsonResponse({'status': 'success', 'user': user_datas}, status=200)

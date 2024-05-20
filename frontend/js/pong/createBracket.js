@@ -4,12 +4,11 @@ const startX = 50;
 const startY = 50;
 const boxWidth = 150;
 const boxHeight = 45;
-const verticalSpacing = 20;
+let verticalSpacing = 20;
 const horizontalSpacing = 200;
 
 export function getTournamentBracket() {
-    console.log("getTournamentBracket");
-    const url = `./js/pong/dev/bracket.json`;
+    const url = `./js/pong/dev/bracket16.json`;
 
     fetch(url)
         .then(response => response.json())
@@ -19,16 +18,12 @@ export function getTournamentBracket() {
 }
 
 function drawMatchBox(x, y, match) {
-    // Draw match background
-    ctx.fillStyle = 'white'; // Set background color to white
+    ctx.fillStyle = 'white';
     ctx.fillRect(x, y, boxWidth, boxHeight);
 
-    // Draw match border
-    // Draw match border
     ctx.strokeRect(x, y, boxWidth, boxHeight);
-    // Draw player names and scores
-    ctx.font = '16px Arial'; // Increase font size
-    ctx.fillStyle = 'black'; // Set text color to black
+    ctx.font = '16px Arial';
+    ctx.fillStyle = 'black';
     writePlayerName(x + 10, y + 20, match.player1, match.player1_score, match.winner);
     writePlayerName(x + 10, y + 40, match.player2, match.player2_score, match.winner);
 }
@@ -55,22 +50,36 @@ function drawBracket(data) {
     canvas = document.getElementById('tournamentCanvas');
     ctx = canvas.getContext('2d');
     ctx.font = '12px Arial';
-
+    let prevRoundMatchesPosY = [];
+    
     const rounds = data.tournament.rounds;
-
+    
     const roundHeights = rounds.map(round => round.matches.length * (boxHeight + verticalSpacing));
     const maxRoundHeight = Math.max(...roundHeights);
-
+    
     rounds.forEach((round, roundIndex) => {
+        let matchesPosY = [];
+        let indexMatchesPosY = 0;
         const roundX = startX + roundIndex * horizontalSpacing;
-        const roundY = startY + (maxRoundHeight - roundHeights[roundIndex]) / 2;
 
         round.matches.forEach((match, matchIndex) => {
-            const matchY = roundY + matchIndex * (boxHeight + verticalSpacing);
+            console.log("roundIndex: ", roundIndex, "matchIndex: ", matchIndex);
+            let matchY;
+
+
+            if (roundIndex === 0)
+                matchY = startY + matchIndex * (boxHeight + verticalSpacing);
+            else {
+                verticalSpacing = prevRoundMatchesPosY[indexMatchesPosY + 1] - (prevRoundMatchesPosY[indexMatchesPosY] + boxHeight);
+                const twoBoxHeight = (boxHeight * 2) + (verticalSpacing / 2);
+                matchY = prevRoundMatchesPosY[indexMatchesPosY]  + (twoBoxHeight / 2);
+                indexMatchesPosY += 2;
+            }
+            matchesPosY.push(matchY);
+
             drawMatchBox(roundX, matchY, match);
 
             if (roundIndex < rounds.length - 1) {
-                const nextRound = rounds[roundIndex + 1];
                 const nextMatchIndex = Math.floor(matchIndex / 2);
                 const nextMatchY = startY + (maxRoundHeight - roundHeights[roundIndex + 1]) / 2 + nextMatchIndex * (boxHeight + verticalSpacing); // Align the next round vertically
                 const nextMatchYCenter = nextMatchY + boxHeight / 2;
@@ -79,5 +88,7 @@ function drawBracket(data) {
                 drawConnectingLine(roundX + boxWidth, matchYCenter, roundX + horizontalSpacing, nextMatchYCenter);
             }
         });
+        console.log("matchesPosY: ", matchesPosY);
+        prevRoundMatchesPosY = matchesPosY;
     });
 } 

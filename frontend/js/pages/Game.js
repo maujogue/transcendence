@@ -111,6 +111,7 @@ export async function init() {
 		}
 		if (event.target.id == 'backMenu' || event.target.id == 'backIcon') {
 			localLoop = false;
+			isOnline = false;
 			ClearAllEnv(environment);
 			returnToMenu();
 		}

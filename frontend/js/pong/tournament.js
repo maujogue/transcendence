@@ -29,6 +29,8 @@ export function createWaitingScreenTournament(tournament) {
         return;
     if (!document.getElementsByClassName("tournament")[0])
         createTournamentDiv();
+    document.getElementById("backIcon")?.remove();
+    document.getElementById("actualizeIcon")?.remove();
     const tournamentDiv = document.getElementsByClassName("tournament")[0];
     tournamentDiv.innerHTML = `<h1>${tournament.name}</h1>`;
     tournamentDiv.id = "PlayerList";

@@ -517,7 +517,7 @@ border: 3px solid orange;  /* creates padding around scroll thumb */
 }
 
 .submode:hover, #game .btn:hover {
-	transform: scale(1.1) skew(-7deg);
+	transform: scale(1.1) skew(-10deg);
 	color: black;
 }
 

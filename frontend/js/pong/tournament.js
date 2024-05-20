@@ -58,7 +58,7 @@ function insertPlayer(player) {
 	const div = document.createElement("div");
     const playerList = document.getElementById("player-list");
 	div.textContent = player;
-    playerList.appendChild(div);
+    playerList?.appendChild(div);
 }
 
 async function unsubscribeFromTournament(tournament) {

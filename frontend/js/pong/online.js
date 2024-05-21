@@ -58,11 +58,11 @@ document.addEventListener("keyup", function(event) {
 
 function clickHandler(event) {
     if (event.target.id == 'restart') {
-        if (document.getElementById("endscreen"))
-            document.getElementById("endscreen").remove();
+        document.getElementById("endscreen")?.remove();
         sendIsReady(webSocket);
     }
     if (event.target.id == 'backMenu') {
+        document.getElementById("endscreen")?.remove();
         if (webSocket)
             webSocket.close();
     }
@@ -80,7 +80,6 @@ function clickHandler(event) {
 }
 
 async function goToOnlineSelectMenu(field) {
-    document.getElementsByClassName("menu")[0].remove();
     env = createSelectMenu(field, characters);
     document.getElementById("cursorP2").remove();
     document.getElementsByClassName("inputP2")[0].remove();
@@ -89,6 +88,7 @@ async function goToOnlineSelectMenu(field) {
 
 
 async function createOnlineSelectMenu(field) {
+    document.getElementById("onlineMenu").remove();
     status.exit = false;
     goToOnlineSelectMenu(field);
     displayCharacter(player, env, "chupacabra", "player").then((res) => {

@@ -27,7 +27,6 @@ export async function init() {
 	if (isGameLoaded)
 		return;
 
-	
 	lobby = await loadScene('lobbyTest');
 	clock = new THREE.Clock();
 	characters = new Map();
@@ -39,7 +38,7 @@ export async function init() {
 	let keyPress = false;
 	let keysPressed = {};
 	let isOnline = false;
-	let localLoop = true;
+	let localLoop = false;
 	let userData;
 	let form;
 	const gameDiv = document.getElementById('game');
@@ -94,15 +93,17 @@ export async function init() {
 	});
 
 	document.body.addEventListener("click", function (event) {
-		getUserData().then((data) => {
-			userData = data;
-			if (userData) {
-				checkIfUserIsInTournament(userData).then((response) => {
-					if (response && response['joined'])
-						connectToTournament(response['tournament']);
-				});
-			}
-		})
+		if (event.target.classList.contains('tournament-info')) {
+			getUserData().then((data) => {
+				userData = data;
+				if (userData) {
+					checkIfUserIsInTournament(userData).then((response) => {
+						if (response && response['joined'])
+							connectToTournament(response['tournament']);
+					});
+				}
+			})
+		}
 
 		if (event.target.id == 'restart' && !isOnline) {
 			document.getElementById("endscreen").remove();
@@ -111,6 +112,7 @@ export async function init() {
 		}
 		if (event.target.id == 'backMenu' || event.target.id == 'backIcon') {
 			localLoop = false;
+			isOnline = false;
 			ClearAllEnv(environment);
 			returnToMenu();
 		}
@@ -153,7 +155,8 @@ export async function init() {
 	});
 
 	document.addEventListener('fullscreenchange', function () {
-		resize(environment);
+		if (isFullScreen())
+			resize(environment);
 	});
 
 	function setIfGameIsEnd() {

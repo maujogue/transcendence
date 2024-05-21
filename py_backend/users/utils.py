@@ -6,7 +6,7 @@ from django.utils.encoding import force_bytes
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
 
-from users.tokens import account_activation_token
+from users.tokens import account_activation_token, email_update_token
 from py_backend import settings
 import base64
 
@@ -119,3 +119,20 @@ def send_confirmation_email(user, request):
 			return email.send()
 		return False
 	return False
+
+
+def send_update_email(request, new_email):
+	current_site = get_current_site(request)
+	subject = "Update your email"
+	message = render_to_string('../templates/update_email.html', {
+		'request': request,
+		'username': request.user.username,
+		'domain': current_site.domain,
+		'uid':urlsafe_base64_encode(force_bytes(request.user.pk)),
+		'token':email_update_token.make_token(request.user),
+	})
+	email = EmailMessage(
+		subject, message, to=[new_email]
+	)
+	email.content_subtype = 'html'
+	return email.send()

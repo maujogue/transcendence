@@ -8,3 +8,10 @@ class TokenGenerator(PasswordResetTokenGenerator):
             text_type(user.email_is_verified)
         )
 account_activation_token = TokenGenerator()
+
+class EmailUpdateTokenGenerator(PasswordResetTokenGenerator):
+    def _make_hash_value(self, user, timestamp):
+        return (
+            text_type(user.pk) + text_type(timestamp)
+        )
+email_update_token = EmailUpdateTokenGenerator()

@@ -11,3 +11,4 @@ from .get_user_datas import *
 from .username_availaible import *
 from .email_available import *
 from .confirm_email import *
+from .confirm_new_email import *

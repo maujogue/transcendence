@@ -2,6 +2,9 @@ from django.test import TestCase
 from users.models import CustomUser
 from django.urls import reverse
 from django.test import Client
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from users.tokens import email_update_token
 import json
 
 class ProfileUpdate(TestCase):
@@ -21,6 +24,8 @@ class ProfileUpdate(TestCase):
             bio="Bonjours a tous, c'est Ochoa")
         
         self.client.login(username='osterga', password='UserPassword9+')
+        self.uid = urlsafe_base64_encode(force_bytes(self.user.pk))
+        self.token = email_update_token.make_token(self.user)
 
     def test_user_is_not_login(self):
         self.client.logout()
@@ -221,6 +226,11 @@ class ProfileUpdate(TestCase):
         )
         self.user.refresh_from_db()
         self.assertEqual(response.status_code, 200)
+
+        url = reverse('confirm_new_email', kwargs={'uidb64': self.uid, 'token': self.token})
+        response_confirm = self.client.get(url)
+        self.assertEqual(response_confirm.status_code, 302)
+        self.assertEqual(self.user.email, 'damian-cooper@gmail.com')
 
 
     def test_update_email_already_used(self):

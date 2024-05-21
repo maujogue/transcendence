@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 
 from django.http import JsonResponse
 
-from users.utils import decode_json_body, email_is_valid, email_is_unique
+from users.utils import decode_json_body, email_is_valid, email_is_unique, send_update_email
 
 
 
@@ -28,5 +28,6 @@ def update_email(request):
     if email or email == '':
         request.user.email = email
         request.user.save()
+        send_update_email(request, email)
         return JsonResponse({'status': "Your email has been correctly updated !"}, status=200)
     return JsonResponse({'status': "Missing email."}, status=400)

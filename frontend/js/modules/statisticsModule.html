@@ -1,5 +1,5 @@
-<div class="container mt-4">
-	<div class="card">
+
+	<div class="mt-4 card p-0">
 		<div class="card-header">
 			<h2>Statistics</h2>
 		</div>
@@ -38,22 +38,49 @@
 					</div>
 				</div>
 			</div>
-			<h3>Match History</h3>
-			<div class="table-responsive">
-				<table class="table table-striped" id="match-history">
-					<thead>
-						<tr>
-							<th>Opponent</th>
-							<th>Score</th>
-						</tr>
-					</thead>
-					<tbody>
-						<!-- Match history rows will be added here dynamically -->
-					</tbody>
-				</table>
+			<div class="row">
+				<div class="col-md-6">
+
+					<h3>Match History</h3>
+					<div class="table-responsive">
+						<table class="table table-striped" id="match-history">
+							<thead>
+								<tr>
+									<th>Date</th>
+									<th>Score</th>
+									<th>Result</th>
+								</tr>
+							</thead>
+							<tbody>
+								<!-- Match history rows will be added here dynamically -->
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<h3>Win/Loss Chart</h3>
+					<canvas class="chart-container" id="winLossChart" height="100px"></canvas>
+				</div>
 			</div>
-			<h3>Win/Loss Chart</h3>
-			<canvas id="winLossChart" width="400" height="200"></canvas>
 		</div>
 	</div>
-</div>
+
+<style>
+	.win-row {
+		background-color: #d4edda;
+	}
+
+	.loss-row {
+		background-color: #f8d7da;
+	}
+
+	.result-icon {
+		font-size: 1.5em;
+	}
+	.chart-container {
+      position: relative;
+      max-height: 500px;
+      /* margin-left: auto;
+      margin-right: auto; */
+    }
+</style>

@@ -245,7 +245,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         winner = player1.user.username if player1.score > player2.score else player2.user.username
         loser = player1.user.username if player1.score < player2.score else player2.user.username
         match = Match(player1=player1.user.username, 
-                      player2=player2.user.username, 
+                      player2=player2.user.username,
                       winner=winner,
                       loser=loser,
                       player1_score=player1.score, 

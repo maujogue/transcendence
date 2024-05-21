@@ -1,58 +1,59 @@
 <div class="container mt-4">
 	<div class="card">
-	  <div class="card-header">
-		<h2>Statistics</h2>
-	  </div>
-	  <div class="card-body">
-		<div class="row mb-3">
-		  <div class="col-sm-6 col-md-3">
-			<div class="stat-item card">
-			  <div class="card-body">
-				<h5 class="card-title">Win Rate</h5>
-				<p class="card-text" id="winrate">0%</p>
-			  </div>
-			</div>
-		  </div>
-		  <div class="col-sm-6 col-md-3">
-			<div class="stat-item card">
-			  <div class="card-body">
-				<h5 class="card-title">Wins</h5>
-				<p class="card-text" id="wins">0</p>
-			  </div>
-			</div>
-		  </div>
-		  <div class="col-sm-6 col-md-3">
-			<div class="stat-item card">
-			  <div class="card-body">
-				<h5 class="card-title">Losses</h5>
-				<p class="card-text" id="losses">0</p>
-			  </div>
-			</div>
-		  </div>
-		  <div class="col-sm-6 col-md-3">
-			<div class="stat-item card">
-			  <div class="card-body">
-				<h5 class="card-title">Win Streak</h5>
-				<p class="card-text" id="winstreak">0</p>
-			  </div>
-			</div>
-		  </div>
+		<div class="card-header">
+			<h2>Statistics</h2>
 		</div>
-		<h3>Match History</h3>
-		<div class="table-responsive">
-		  <table class="table table-striped" id="match-history">
-			<thead>
-			  <tr>
-				<th>Opponent</th>
-				<th>Score</th>
-			  </tr>
-			</thead>
-			<tbody>
-			  <!-- Match history rows will be added here dynamically -->
-			</tbody>
-		  </table>
+		<div class="card-body">
+			<div class="row mb-3">
+				<div class="col-sm-6 col-md-3">
+					<div class="stat-item card">
+						<div class="card-body">
+							<h5 class="card-title">Win Rate</h5>
+							<p class="card-text" id="winrate">0%</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6 col-md-3">
+					<div class="stat-item card">
+						<div class="card-body">
+							<h5 class="card-title">Wins</h5>
+							<p class="card-text" id="wins">0</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6 col-md-3">
+					<div class="stat-item card">
+						<div class="card-body">
+							<h5 class="card-title">Losses</h5>
+							<p class="card-text" id="losses">0</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6 col-md-3">
+					<div class="stat-item card">
+						<div class="card-body">
+							<h5 class="card-title">Win Streak</h5>
+							<p class="card-text" id="winstreak">0</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<h3>Match History</h3>
+			<div class="table-responsive">
+				<table class="table table-striped" id="match-history">
+					<thead>
+						<tr>
+							<th>Opponent</th>
+							<th>Score</th>
+						</tr>
+					</thead>
+					<tbody>
+						<!-- Match history rows will be added here dynamically -->
+					</tbody>
+				</table>
+			</div>
+			<h3>Win/Loss Chart</h3>
+			<canvas id="winLossChart" width="400" height="200"></canvas>
 		</div>
-	  </div>
 	</div>
-  </div>
-  
+</div>

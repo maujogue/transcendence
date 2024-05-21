@@ -15,6 +15,7 @@ async function register(registerForm) {
 
 	var response = await runEndPoint(
 		"users/register/",
+		"POST",
 		JSON.stringify(fetchBody)
 	);
 	var data = response.data;
@@ -34,7 +35,7 @@ async function login(loginForm) {
 		password: userData.get("password"),
 	};
 
-	var response = await runEndPoint("users/login/", JSON.stringify(fetchBody));
+	var response = await runEndPoint("users/login/","POST",JSON.stringify(fetchBody));
 
 	if (response.statusCode === 200) {
 		Cookies.set("isLoggedIn", "true");
@@ -46,7 +47,7 @@ async function login(loginForm) {
 }
 
 async function logout() {
-	var response = await runEndPoint("users/logout/");
+	var response = await runEndPoint("users/logout/","POST",);
 	if (response.statusCode === 200) {
 		Cookies.remove("isLoggedIn");
 		navigateTo("/dash");
@@ -61,7 +62,7 @@ async function updatePassword(updatePasswordForm) {
 		password: userData.get("password"),
 	};
 
-	var response = await runEndPoint("users/login/", JSON.stringify(fetchBody));
+	var response = await runEndPoint("users/login/", "POST", JSON.stringify(fetchBody));
 
 	if (response.statusCode === 200) {
 		const fetchBody = {
@@ -88,7 +89,7 @@ async function updateUsername(updateUsernameForm) {
 		password: userData.get("password"),
 	};
 
-	var response = await runEndPoint("users/login/", JSON.stringify(fetchBody));
+	var response = await runEndPoint("users/login/", "POST", JSON.stringify(fetchBody));
 
 	if (response.statusCode === 200) {
 		const fetchBody = {
@@ -142,9 +143,9 @@ async function checkInputAvailable(input, type) {
 		username: input,
 	};
 	if (type === "username")
-		response = await runEndPoint("users/username_available/", JSON.stringify(fetchBody));
+		response = await runEndPoint("users/username_available/", "POST", JSON.stringify(fetchBody));
 	else if (type === "email")
-		response = await runEndPoint("users/email_available/", JSON.stringify(fetchBody));
+		response = await runEndPoint("users/email_available/", "POST", JSON.stringify(fetchBody));
 	if (response.statusCode === 200) {
 		return (true)
 	} else {

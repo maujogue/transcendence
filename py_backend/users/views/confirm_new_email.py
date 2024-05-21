@@ -9,7 +9,7 @@ from users.tokens import email_update_token
 
 
 @require_http_methods(["GET"])
-def confirm_new_email(request, uidb64, token):
+def confirm_new_email(request, uidb64, token, new_email):
     CustomUser = get_user_model()
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
@@ -18,7 +18,8 @@ def confirm_new_email(request, uidb64, token):
         user = None
     
     if user is not None and email_update_token.check_token(user, token):
-        user.email = request.user.email
+        user.email = new_email
         user.save()
+        user.refresh_from_db()
         return redirect('/dash')
     return JsonResponse({'status': "error"}, status=400)

@@ -218,6 +218,7 @@ class ProfileUpdate(TestCase):
         update_datas = {
             'email': 'damian-cooper@gmail.com'
         }
+        new_email = 'damian-cooper@gmail.com'
 
         response = self.client.post(
             reverse('update_email'), 
@@ -227,10 +228,11 @@ class ProfileUpdate(TestCase):
         self.user.refresh_from_db()
         self.assertEqual(response.status_code, 200)
 
-        url = reverse('confirm_new_email', kwargs={'uidb64': self.uid, 'token': self.token})
+        url = reverse('confirm_new_email', kwargs={'uidb64': self.uid, 'token': self.token, 'new_email': new_email})
         response_confirm = self.client.get(url)
         self.assertEqual(response_confirm.status_code, 302)
-        self.assertEqual(self.user.email, 'damian-cooper@gmail.com')
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.email, new_email)
 
 
     def test_update_email_already_used(self):

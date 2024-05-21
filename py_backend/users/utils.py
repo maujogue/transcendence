@@ -128,8 +128,9 @@ def send_update_email(request, new_email):
 		'request': request,
 		'username': request.user.username,
 		'domain': current_site.domain,
-		'uid':urlsafe_base64_encode(force_bytes(request.user.pk)),
-		'token':email_update_token.make_token(request.user),
+		'uid': urlsafe_base64_encode(force_bytes(request.user.pk)),
+		'token': email_update_token.make_token(request.user),
+		'new_email': new_email,
 	})
 	email = EmailMessage(
 		subject, message, to=[new_email]

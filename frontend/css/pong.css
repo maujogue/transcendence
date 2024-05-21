@@ -115,6 +115,7 @@ h1 {
 	margin: 0 1.5%;
 	font-size: smaller;
 	border-radius: 0.5em;
+	z-index: 1;
 }
 
 #spriteStart {

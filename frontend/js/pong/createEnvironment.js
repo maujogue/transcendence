@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { createField, createBorder } from './createField.js';
 import { winWidth, winHeight } from './varGlobal.js';
 import { isFullScreen } from './resize.js';
+import { stopStep } from './spaceBackground.js';
 
 function getSize() {
 	var width = winWidth;
@@ -35,7 +36,17 @@ async function createMap(environment) {
 	};
 }
 
+export function recreateCanvas(id) {
+	stopStep();	
+	const canvas = document.getElementById(id);
+	canvas.remove();
+	const newCanvas = document.createElement("canvas");
+	newCanvas.id = id;
+	document.getElementById("game").appendChild(newCanvas);
+}
+
 function createEnvironment(id) {
+	recreateCanvas(id);
 	const div = document.getElementById(id);
 	const divSize = getSize();
 	

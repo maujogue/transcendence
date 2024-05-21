@@ -47,15 +47,15 @@ class PongConsumer(AsyncWebsocketConsumer):
                 }
         )
 
-    # def deleteAll(self):
-    #     Lobby.objects.all().delete()
 
     async def connect(self):
-        # await sync_to_async(self.deleteAll)()
         print('connect')
         self.is_connected = False
         self.is_ready = False
         
+        self.exchangeBeforePointsP1 = []
+        self.exchangeBeforePointsP2 = []
+        self.countExchange = 0
         self.lobby = await self.join_lobby()
         print('lobby ID:', self.lobby.uuid, 'connected_user:', self.lobby.connected_user)
         self.lobby_name = self.lobby.uuid
@@ -198,8 +198,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         })
 
     async def sendScore(self):
-        self.opp.score += 1
-
         await self.channel_layer.group_send (
             self.lobby_group_name, { 'type': 'pong.score', 'score': self.opp.score, 'name': self.opp.name}
         )
@@ -216,6 +214,12 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
     
     async def isScored(self):
+        if self.ball.checkIfScored(self.player):
+            self.player.score += 1
+            self.exchangeBeforePointsP1.append(self.countExchange)
+        if self.ball.checkIfScored(self.opp):
+            self.exchangeBeforePointsP2.append(self.countExchange)
+            self.opp.score += 1
         await self.sendScore()
         self.ball.reset()
         await self.sendBallData()
@@ -225,9 +229,11 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.ball.collisionBorder()
             await self.sendBallData()
         elif self.ball.checkCollisionPaddle(self.player):
+            self.countExchange += 1
             self.ball.collisionPaddle(self.player)
             await self.sendBallData()
         elif self.ball.checkCollisionPaddle(self.opp):
+            self.countExchange += 1
             self.ball.collisionPaddle(self.opp)
             await self.sendBallData()
 
@@ -245,7 +251,9 @@ class PongConsumer(AsyncWebsocketConsumer):
         winner = player1.user.username if player1.score > player2.score else player2.user.username
         loser = player1.user.username if player1.score < player2.score else player2.user.username
         match = Match(player1=player1.user.username, 
-                      player2=player2.user.username,
+                      player2=player2.user.username, 
+                      player1_average_exchange=sum(self.exchangeBeforePointsP1) / len(self.exchangeBeforePointsP1),
+                      player2_average_exchange=sum(self.exchangeBeforePointsP2) / len(self.exchangeBeforePointsP2),
                       winner=winner,
                       loser=loser,
                       player1_score=player1.score, 
@@ -270,7 +278,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.checkAllCollisions()
         if self.ball.checkIfScored(self.player) or self.ball.checkIfScored(self.opp):
             await self.isScored()
-        if (self.player.score == 1 or self.opp.score == 1):
+        if (self.player.score == 5 or self.opp.score == 5):
             await self.setGameOver()
         self.ball.translate()
 

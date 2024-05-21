@@ -45,66 +45,78 @@ export async function init() {
 
 		updateMatchHistory(userStats.matchHistory);
 
-		// Initialize the Chart.js chart
+	}
+
+	let currentChartType = 'pie';
+
+	function initializeChart(type) {
 		const ctx = document.getElementById('winLossChart').getContext('2d');
-		new Chart(ctx, {
-		  type: 'pie',
-		  data: {
-			labels: ['Wins', 'Losses'],
-			datasets: [{
-			  label: 'Match Results',
-			  data: [userStats.wins, userStats.losses],
-			  backgroundColor: [
-				'rgba(75, 192, 192, 0.2)',
-				'rgba(255, 99, 132, 0.2)'
-			  ],
-			  borderColor: [
-				'rgba(75, 192, 192, 1)',
-				'rgba(255, 99, 132, 1)'
-			  ],
-			  borderWidth: 1
-			}]
-		  },
-		  options: {
-			responsive: true,
-			plugins: {
-			  legend: {
-				position: 'left',
-			  },
-			  tooltip: {
-				callbacks: {
-				  label: function(tooltipItem) {
-					return tooltipItem.label + ': ' + tooltipItem.raw;
-				  }
+		return new Chart(ctx, {
+			type: type,
+			data: {
+				labels: ['Wins', 'Losses'],
+				datasets: [{
+					label: 'Match Results',
+					data: [userStats.wins, userStats.losses],
+					backgroundColor: [
+						'rgba(75, 192, 192, 0.2)',
+						'rgba(255, 99, 132, 0.2)'
+					],
+					borderColor: [
+						'rgba(75, 192, 192, 1)',
+						'rgba(255, 99, 132, 1)'
+					],
+					borderWidth: 1
+				}]
+			},
+			options: {
+				responsive: true,
+				maintainAspectRatio: false,
+				plugins: {
+					legend: {
+						position: 'top',
+					},
+					tooltip: {
+						callbacks: {
+							label: function (tooltipItem) {
+								return tooltipItem.label + ': ' + tooltipItem.raw;
+							}
+						}
+					}
 				}
-			  }
 			}
-		  }
 		});
-	  }
-	  
+	}
+	let chart = initializeChart(currentChartType);
+
+	document.getElementById('chartToggle').addEventListener('change', function () {
+		currentChartType = this.checked ? 'bar' : 'pie';
+		chart.destroy();
+		chart = initializeChart(currentChartType);
+	});
+
 	function updateMatchHistory(matches) {
 		const matchHistoryTable = document.getElementById('match-history').getElementsByTagName('tbody')[0];
 		matchHistoryTable.innerHTML = '';
-	  
-		matches.forEach(match => {
-		  const row = matchHistoryTable.insertRow();
-		  row.className = match.player1 === match.winner ? 'win-row' : 'loss-row';
-	  
-		  const cellDate = row.insertCell(0);
-		  const cellScore = row.insertCell(1);
-		  const cellResult = row.insertCell(2);
-	  
-			cellResult.innerHTML = username === match.winner
-			  ? '<i class="fas fa-trophy result-icon" style="color: #28a745;"></i>'
-			  : '<i class="fas fa-times result-icon" style="color: #dc3545;"></i>';
-			  if (username == match.player1)
-				cellScore.innerHTML = '<span class="fs-5" >' + match.player1 + " " + match.player1_score + " - " + match.player2_score + " " + match.player2 + '</span>';
-			  else
-			  cellScore.innerHTML = '<span class="fs-5" >' + match.player2 + " " + match.player2_score + " - " + match.player1_score + " " + match.player1 + '</span>';
 
-			  cellDate.innerHTML = '<span class="fs-6" >' + new Date(match.date).toLocaleString() + '</span>';
+		matches.forEach(match => {
+			const row = matchHistoryTable.insertRow();
+			row.className = match.player1 === match.winner ? 'win-row' : 'loss-row';
+
+			const cellDate = row.insertCell(0);
+			const cellScore = row.insertCell(1);
+			const cellResult = row.insertCell(2);
+
+			cellResult.innerHTML = username === match.winner
+				? '<i class="fas fa-trophy result-icon" style="color: #28a745;"></i>'
+				: '<i class="fas fa-times result-icon" style="color: #dc3545;"></i>';
+			if (username == match.player1)
+				cellScore.innerHTML = '<span class="fs-5" >' + match.player1 + " " + match.player1_score + " - " + match.player2_score + " " + match.player2 + '</span>';
+			else
+				cellScore.innerHTML = '<span class="fs-5" >' + match.player2 + " " + match.player2_score + " - " + match.player1_score + " " + match.player1 + '</span>';
+
+			cellDate.innerHTML = '<span class="fs-6" >' + new Date(match.date).toLocaleString() + '</span>';
 		});
-	  }
-	  
+	}
+
 }

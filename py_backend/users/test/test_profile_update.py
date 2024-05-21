@@ -271,3 +271,4 @@ class ProfileUpdate(TestCase):
         )
         self.user.refresh_from_db()
         self.assertEqual(response.status_code, 400)
+        

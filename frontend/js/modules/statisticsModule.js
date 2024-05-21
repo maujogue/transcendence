@@ -9,6 +9,8 @@ export async function init() {
 
 	// Example data, replace this with actual data from your backend
 	var username = await getUserData("username");
+	if (!username)
+		return ;
 	const userStats = {
 		winrate: await runEndPoint("stats/" + username + "/winrate", "GET"),
 		wins: await runEndPoint("stats/" + username + "/matchs/win", "GET"),

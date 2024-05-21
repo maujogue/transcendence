@@ -26,8 +26,6 @@ def update_email(request):
         return JsonResponse({'status': error_unique}, status=400)
     
     if email or email == '':
-        request.user.email = email
-        request.user.save()
         send_update_email(request, email)
         return JsonResponse({'status': "Your email has been correctly updated !"}, status=200)
     return JsonResponse({'status': "Missing email."}, status=400)

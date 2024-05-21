@@ -20,22 +20,14 @@ function setSize() {
 	}
 }
 
-function resize(environment) {
-	setSize();
-	stopStep();
+function resizeSpaceBackground() {
+	if (!stopStep())
+		return;
 	recreateCanvas("canvas");
 	initSpaceBackground();
-	const div = document.getElementsByClassName("menu")[0];
-	if (div) {
-		div.style.width = width + "px";
-		div.style.height = height + "px";
-		div.style.fontSize = width / 25 + "px";
-	}
-	if (!environment)
-		return ;
-	environment.camera.updateProjectionMatrix();
-	environment.renderer.setSize(width, height);
-	environment.renderer.render(environment.scene, environment.camera);
+}
+
+function resizeImages() {
 	if (document.getElementById("spriteStart")) {
 		if (isFullScreen()) {
 			document.getElementById("spriteStart").style.backgroundImage = "url('assets/img/sprite/StartSheet.png')";
@@ -56,6 +48,28 @@ function resize(environment) {
 				spriteP2.style.backgroundImage = "url('assets/img/sprite/P2SheetSmall.png')";
 		}
 	}
+}
+
+function resizeGame(environment) {
+	environment.camera.updateProjectionMatrix();
+	environment.renderer.setSize(width, height);
+	environment.renderer.render(environment.scene, environment.camera);
+}
+
+function resize(environment) {
+	console.log("resize: ", width, height);
+	setSize();
+	resizeSpaceBackground();
+	const div = document.getElementsByClassName("menu")[0];
+	if (div) {
+		div.style.width = width + "px";
+		div.style.height = height + "px";
+		div.style.fontSize = width / 25 + "px";
+	}
+	if (!environment)
+		return ;
+	resizeImages();
+	resizeGame(environment);
 }
 
 export {resize, isFullScreen }

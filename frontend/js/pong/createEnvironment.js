@@ -37,7 +37,7 @@ async function createMap(environment) {
 }
 
 export function recreateCanvas(id) {
-	stopStep();
+	stopStep();	
 	const canvas = document.getElementById(id);
 	canvas.remove();
 	const newCanvas = document.createElement("canvas");

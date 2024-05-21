@@ -31,14 +31,10 @@ function getSize() {
 
 export function initSpaceBackground() {
     getSize();
-    console.log(
-        "initSpaceBackground",
-    )
-    console.log(width, height);
-    STAR_COUNT = ( width + height ) / 8
     recreateCanvas("canvas");
     canvas = document.getElementById( 'canvas' );
     context = canvas.getContext( '2d' );
+    STAR_COUNT = ( width + height ) / 8
     generate();
     resize();
     step();
@@ -135,8 +131,12 @@ function step() {
 }
 
 export function stopStep() {
+    if (!req)
+        return false
     cancelAnimationFrame(req);
     stars = [];
+    req = undefined;
+    return true;
 }
 
 function update() {

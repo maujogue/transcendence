@@ -27,7 +27,6 @@ export async function init() {
 	if (isGameLoaded)
 		return;
 
-	
 	lobby = await loadScene('lobbyTest');
 	clock = new THREE.Clock();
 	characters = new Map();
@@ -39,7 +38,7 @@ export async function init() {
 	let keyPress = false;
 	let keysPressed = {};
 	let isOnline = false;
-	let localLoop = true;
+	let localLoop = false;
 	let userData;
 	let form;
 	const gameDiv = document.getElementById('game');
@@ -154,7 +153,8 @@ export async function init() {
 	});
 
 	document.addEventListener('fullscreenchange', function () {
-		resize(environment);
+		if (isFullScreen())
+			resize(environment);
 	});
 
 	function setIfGameIsEnd() {

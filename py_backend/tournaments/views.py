@@ -102,14 +102,15 @@ def join_tournament(request, tournament_id):
 					status=400)
 
 	tournament.participants.add(request.user)
+	if tournament.participants.count() == tournament.max_players and tournament.started == False:
+		tournament.started = True
+		generate_bracket(tournament)
+
 	return JsonResponse({"message": "Tournament joined successfully.", "id": tournament.id},
 					status=200)
 
-	if tournament.participants.count() == tournament.max_players:
-		pass
-	# 	generate_bracket(tournament)
-	# 	tournament.status = 'started'
-	# 	tournament.save()
+
+# How to know 
 
 @login_required
 @require_http_methods(["POST"])

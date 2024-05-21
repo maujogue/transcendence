@@ -183,7 +183,8 @@ h1 {
 
 .avatar-in-game {
 	position: absolute;
-	width: 50px
+	width: 50px;
+	z-index: 1;
 }
 
 .error-pop-up {

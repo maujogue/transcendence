@@ -93,15 +93,17 @@ export async function init() {
 	});
 
 	document.body.addEventListener("click", function (event) {
-		getUserData().then((data) => {
-			userData = data;
-			if (userData) {
-				checkIfUserIsInTournament(userData).then((response) => {
-					if (response && response['joined'])
-						connectToTournament(response['tournament']);
-				});
-			}
-		})
+		if (event.target.classList.contains('tournament-info')) {
+			getUserData().then((data) => {
+				userData = data;
+				if (userData) {
+					checkIfUserIsInTournament(userData).then((response) => {
+						if (response && response['joined'])
+							connectToTournament(response['tournament']);
+					});
+				}
+			})
+		}
 
 		if (event.target.id == 'restart' && !isOnline) {
 			document.getElementById("endscreen").remove();

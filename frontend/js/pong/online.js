@@ -103,7 +103,7 @@ async function connectToLobby(username) {
     console.log("username: ", username);
     if (username == null)
         return ;
-    webSocket = new WebSocket('ws://127.0.0.1:8080/ws/lobby/');
+    webSocket = new WebSocket('wss://127.0.0.1:8000/ws/lobby/');
     
     webSocket.onopen = function() {
         console.log('Connection established');
@@ -174,6 +174,7 @@ async function connectToLobby(username) {
         console.log('Connection closed', e.code, e.reason);
         webSocket = null;
         status.isReady = false;
+        // status.exit = true;
     }
 
     webSocket.onerror = function(e) {
@@ -251,10 +252,7 @@ async function setGameIsStart() {
     if (player && opp && oppInfo) {
         opp.userInfo = oppInfo;
         ClearAllEnv(env);
-        if (player.name == "player1")
-            env = await initGame(player, opp);
-        else
-            env = await initGame(opp, player);
+        env = await initGame(player, opp);
         createHUD(player, opp);
         status.gameIsInit = false;
         status.start = true;

@@ -205,6 +205,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def sendScore(self, player):
         player.score += 1
+        print(self.player.name, " = ", player.name, ": ", player.score)
         await self.channel_layer.group_send (
             self.lobby_group_name, { 'type': 'pong.score', 'score': player.score, 'name': player.name}
         )
@@ -283,7 +284,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.player.posY += self.player.move
         
         await self.checkAllCollisions()
-        if self.ball.checkIfScored(self.player) or self.ball.checkIfScored(self.opp):
+        if (self.ball.checkIfScored(self.player) or self.ball.checkIfScored(self.opp)) and self.player.name == 'player1':
             await self.isScored()
         if self.player.score == 5 or self.opp.score == 5:
             await self.setGameOver()
@@ -348,8 +349,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         score = event["score"]
 
         self.player.resetPaddlePos()
-        if self.player.name == name:
-            self.player.score = score
         await self.send(text_data=json.dumps({ "type": "score", "score": score, "name": name}))
 
     async def pong_ask_character(self, event):

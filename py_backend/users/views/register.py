@@ -2,7 +2,7 @@ from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
 
 from users.forms import CustomUserCreationForm
-from users.utils import validation_register, decode_json_body
+from users.utils import validation_register, decode_json_body, send_confirmation_email
 
 
 @require_http_methods(["POST"])
@@ -17,7 +17,9 @@ def register(request):
 
     form = CustomUserCreationForm(data)
     if form.is_valid():
-        form.save()
+        user = form.save()
+        if send_confirmation_email(user, request) == False:
+            return JsonResponse({'error': "Error during the email send."}, status=400)
         return JsonResponse({'status': "You are now register !"}, status=200)
     else:
         return JsonResponse({'error': form.errors}, status=400)

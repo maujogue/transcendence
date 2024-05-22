@@ -88,6 +88,7 @@ TEMPLATES = [
 		'BACKEND': 'django.template.backends.django.DjangoTemplates',
 		'DIRS': [],
 		# 'DIRS': [os.path.join(BASE_DIR, 'frontend', 'templates')],
+  		'DIRS': [BASE_DIR / 'users/templates'], 
 		'APP_DIRS': True,
 		'OPTIONS': {
 			'context_processors': [
@@ -216,3 +217,9 @@ CORS_ORIGIN_WHITELIST = [
 	"https://localhost:8000",
 ]
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'backend.amos@gmail.com'
+EMAIL_HOST_PASSWORD = 'hvqzjctapjxiijjf'
+EMAIL_USE_TLS = True

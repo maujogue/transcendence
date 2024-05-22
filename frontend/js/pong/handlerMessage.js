@@ -18,6 +18,7 @@ export function handlerScore(data, env, player, opp) {
     actualizeScoreOnline(data, env);
     player.paddle.mesh.position.y = 0;
     opp.paddle.mesh.position.y = 0;
+    playersMove.clear();
 }
 
 function handlerStopGame(webSocket, env, start) {

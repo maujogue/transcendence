@@ -49,7 +49,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def connect(self):
-        print('connect')
         self.is_connected = False
         self.is_ready = False
         
@@ -57,7 +56,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.exchangeBeforePointsP2 = []
         self.countExchange = 0
         self.lobby = await self.join_lobby()
-        print('lobby ID:', self.lobby.uuid, 'connected_user:', self.lobby.connected_user)
         self.lobby_name = self.lobby.uuid
         if self.lobby.connected_user >= 2:
             return await self.close()
@@ -71,11 +69,8 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.lobby_group_name,
             self.channel_name
         )
-        print('connected')
-        print(self.lobby.connected_user)
         self.is_connected = True
         await self.accept()
-        print('connection accepted')
         await self.send_player_data()
         if self.lobby.connected_user == 2:
             await self.channel_layer.group_send(
@@ -86,7 +81,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             )
             await self.startGame()
             
-    
     async def authenticate_user_with_username(self, username):
         try:
             user = await CustomUser.objects.aget(username=username)
@@ -117,7 +111,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             }
         )
 
-
     async def receive(self, text_data):
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
         text_data_json = json.loads(text_data)
@@ -143,9 +136,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
         if self.is_connected == False:
             return
-        
-        print(self.player.name, "is disconnected")
-        print('player_connected:', self.lobby.connected_user)
+
         await self.lobby.disconnectUser(self.player)
         await self.channel_layer.group_send(
             self.lobby_group_name, { 'type': 'pong.status', 'message': 'disconnected', 'name': self.player.name}
@@ -205,7 +196,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def sendScore(self, player):
         player.score += 1
-        print(self.player.name, " = ", player.name, ": ", player.score)
         await self.channel_layer.group_send (
             self.lobby_group_name, { 'type': 'pong.score', 'score': player.score, 'name': player.name}
         )
@@ -222,6 +212,11 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
     
     async def isScored(self):
+        self.player.resetPaddlePos()
+        self.opp.resetPaddlePos()
+
+        if not self.player.name == 'player1':
+            return 
         if self.ball.checkIfScored(self.player):
             await self.sendScore(self.player)
             self.exchangeBeforePointsP1.append(self.countExchange)
@@ -284,7 +279,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.player.posY += self.player.move
         
         await self.checkAllCollisions()
-        if (self.ball.checkIfScored(self.player) or self.ball.checkIfScored(self.opp)) and self.player.name == 'player1':
+        if (self.ball.checkIfScored(self.player) or self.ball.checkIfScored(self.opp)):
             await self.isScored()
         if self.player.score == 5 or self.opp.score == 5:
             await self.setGameOver()

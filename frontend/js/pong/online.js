@@ -26,6 +26,7 @@ let status = {
 let keyUp = false;
 let webSocket;
 let oppInfo;
+export const playersMove = new Map();
 
 document.addEventListener('fullscreenchange', function() {
 	resize(env);
@@ -39,7 +40,6 @@ function setUserInfo(data) {
     return user;
 }
 
-export const playersMove = new Map();
 
 document.addEventListener('keypress', function(event) {
     keysPressed[event.key] = true;

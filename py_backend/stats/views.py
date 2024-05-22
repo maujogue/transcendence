@@ -22,6 +22,24 @@ def get_all_user_matchs(request, user):
 
 @require_http_methods(["GET"])
 @user_exists
+def get_point_scored_per_match(request, user):
+    matchs = Match.objects.filter(player1=user) | Match.objects.filter(player2=user)
+    total_score = 0
+    total_score_against = 0
+    for match in matchs:
+        if match.player1 == user:
+            total_score += match.player1_score
+            total_score_against += match.player2_score
+        else:
+            total_score += match.player2_score
+            total_score_against += match.player1_score
+    return JsonResponse({
+        "average_scored_per_match": total_score / matchs.count(),
+        "average_conceded_per_match": total_score_against / matchs.count(),
+        }, status=200)
+
+@require_http_methods(["GET"])
+@user_exists
 def get_user_winrate(request, user):
     matchsWin = Match.objects.filter(winner=user).count()
     matchsLoose = Match.objects.filter(loser=user).count()
@@ -36,6 +54,18 @@ def get_user_winrate(request, user):
 def get_user_win_matchs(request, user):
     matchs = Match.objects.filter(winner=user)
     return JsonResponse({"matchs": list(matchs.values())}, status=200)
+
+@require_http_methods(["GET"])
+@user_exists
+def get_average_exchange_before_goal(request, user):
+    matchs = Match.objects.filter(player1=user) | Match.objects.filter(player2=user)
+    total_exchange = 0
+    for match in matchs:
+        if match.player1 == user:
+            total_exchange += match.player1_average_exchange
+        else:
+            total_exchange += match.player2_average_exchange
+    return JsonResponse({"average_exchange_before_goal": total_exchange / matchs.count()}, status=200)
 
 @require_http_methods(["GET"])
 @user_exists
@@ -59,6 +89,11 @@ def get_user_win_streak(request, user):
 @user_exists
 def get_user_loose_matchs(request, user):
     matchs = Match.objects.filter(loser=user)
+    return JsonResponse({"matchs": list(matchs.values())}, status=200)
+
+@require_http_methods(["GET"])
+def get_all_matchs(request):
+    matchs = Match.objects.all()
     return JsonResponse({"matchs": list(matchs.values())}, status=200)
 
 @require_http_methods(["GET"])

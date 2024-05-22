@@ -38,8 +38,6 @@ function handlerStopGame(webSocket, env, start, message) {
 function handlerEndGame(data, status) {
     if (!document.getElementById("endscreen"))
         createEndScreen(data['name']);
-    status.isReady = false;
-    status.start = false;
     playersMove.clear();
 }
 

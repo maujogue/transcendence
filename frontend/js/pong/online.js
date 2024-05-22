@@ -18,10 +18,9 @@ let opp;
 let keysPressed = {};
 let keyPress = false;
 let status = {
-    'ready': false,
     'start': false,
-    'isReady': false,
     'exit': false,
+    'is_connected': false,
 }
 let keyUp = false;
 let webSocket;
@@ -47,9 +46,7 @@ function clearVariables() {
     keysPressed = {};
     keyPress = false;
     status = {
-        'ready': false,
         'start': false,
-        'isReady': false,
         'exit': false,
     }
     keyUp = false;
@@ -74,6 +71,19 @@ document.addEventListener("keyup", function(event) {
     event.stopPropagation();
 });
 
+
+function leaveMatchmaking() {
+    if (webSocket)
+        webSocket.close();
+    document.getElementById("waitingScreen")?.remove();
+    createInterfaceSelectMenu();
+    removeP2Cursor();
+    const paddle = env.scene.getObjectByName("paddle_" + player.name);
+    player.name = "player";
+    paddle.name = "paddle_player";
+}
+
+
 function clickHandler(event) {
     if (event.target.id == 'restart') {
         document.getElementById("endscreen")?.remove();
@@ -84,24 +94,19 @@ function clickHandler(event) {
         if (webSocket)
             webSocket.close();
     }
-    if (event.target.id == 'closeMatchmaking') {
-        if (webSocket)
-            webSocket.close();
-        document.getElementById("waitingScreen")?.remove();
-        createInterfaceSelectMenu();
-        document.getElementById("cursorP2").remove();
-        document.getElementsByClassName("inputP2")[0].remove();
-        const paddle = env.scene.getObjectByName("paddle_" + player.name);
-        player.name = "player";
-        paddle.name = "paddle_player";
-    }
+    if (event.target.id == 'closeMatchmaking')
+        leaveMatchmaking();
 }
+
+function removeP2Cursor() {
+    document.getElementById("cursorP2").remove();
+    document.getElementsByClassName("inputP2")[0].remove();
+}
+
 
 async function goToOnlineSelectMenu(field) {
     env = createSelectMenu(field, characters);
-    document.getElementById("cursorP2").remove();
-    document.getElementsByClassName("inputP2")[0].remove();
-    env.renderer.render(env.scene, env.camera);
+    removeP2Cursor();
 }
 
 
@@ -118,13 +123,13 @@ async function createOnlineSelectMenu(field) {
 }
 
 async function connectToLobby(username) {
-    console.log("username: ", username);
     if (username == null)
         return ;
     webSocket = new WebSocket('ws://127.0.0.1:8080/ws/lobby/');
     
     webSocket.onopen = function() {
         console.log('Connection established');
+        status.is_connected = true;
         document.getElementById("selectMenu").remove();
         webSocket.send(JSON.stringify({
             'type': 'auth',
@@ -186,32 +191,20 @@ async function connectToLobby(username) {
 
     webSocket.onclose = function(e) {
         console.log('Connection closed', e.code, e.reason);
-        clearVariables();
+        status.is_connected = false;
+        if (status.start)
+            clearVariables();
     }
 
     webSocket.onerror = function(e) {
+        status.is_connected = false;
         const selectMenu = document.getElementById("selectMenu");
         const div = document.createElement("div");
         div.id = "error";
         div.innerHTML = "Error while connecting to the server";
         selectMenu.appendChild(div);
         webSocket = null;
-        status.isReady = false;
     }
-}
-
-function setIsReady() {
-    let ready;
-
-    if (status.isReady) {
-        status.isReady = false;
-        ready = 'false';
-    } else {
-        status.isReady = true;
-        ready = 'true';
-    }
-    keysPressed[' '] = false;
-    return (ready);
 }
 
 function sendMove(webSocket) { 
@@ -251,12 +244,9 @@ function movePlayers() {
 }
 
 async function sendIsReady(webSocket) {
-    const status = setIsReady();
-    keysPressed[' '] = false;
-    keyPress = false;
     await sendCharacter(webSocket);
     webSocket.send(JSON.stringify({
-        'ready': status
+        'ready': 'true'
     }));
 }
 
@@ -282,12 +272,11 @@ async function onlineGameLoop(webSocket) {
         status.exit = true;
         document.removeEventListener('click', clickHandler);
     }
-    if (!status.isReady && !status.start && keysPressed[' '] && !webSocket) {
-        console.log('ready');
+    if (keysPressed[' '] && !status.is_connected) {
+        console.log("connectToLobby: ", webSocket);
         keysPressed[' '] = false;
         getUserData('username').then((res) => {
-            connectToLobby(res);
-            status.isReady = true;
+            connectToLobby(res)
         })
         .catch((err) => {
             console.log(err);

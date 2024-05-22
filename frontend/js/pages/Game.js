@@ -1,6 +1,6 @@
 import { resize, isFullScreen } from "../pong/resize.js";
 import { checkCollision } from "../pong/collision.js";
-import { displayMainMenu, createSelectMenu, createOnlineMenu } from '../pong/menu.js';
+import { displayMainMenu, createSelectMenu, createOnlineMenu, createLocalMenu} from '../pong/menu.js';
 import { handleKeyPress, handleMenuKeyPress } from '../pong/handleKeyPress.js';
 import { displayCharacter, updateMixers } from '../pong/displayCharacter.js';
 import { initGame } from "../pong/initGame.js";
@@ -56,9 +56,19 @@ export async function init() {
 		}
 	})
 	async function goToLocalSelectMenu() {
-		divMenu = document.getElementById("menu");
+		divMenu = document.getElementById("localMenu");
 		divMenu.remove();
 		environment = createSelectMenu(field, characters);
+		player1 = await displayCharacter(player1, environment, "chupacabra", "player1");
+		player2 = await displayCharacter(player2, environment, "elvis", "player2");
+	}
+
+	async function createAISelectMenu(field) {
+		document.getElementById("localMenu").remove();
+		environment = createSelectMenu(field, characters);
+		document.getElementById("cursorP2").remove();
+		document.getElementsByClassName("inputP2")[0].remove();
+		environment.renderer.render(environment.scene, environment.camera);
 		player1 = await displayCharacter(player1, environment, "chupacabra", "player1");
 		player2 = await displayCharacter(player2, environment, "elvis", "player2");
 	}
@@ -117,9 +127,17 @@ export async function init() {
 			returnToMenu();
 		}
 		if (event.target.id == 'localGame') {
+			createLocalMenu(field);
+		}
+		if (event.target.id == '1v1') {
 			localLoop = true;
 			localGameLoop();
 			goToLocalSelectMenu();
+		}
+		if (event.target.id == 'easy') {
+			localLoop = true;
+			localGameLoop();
+			createAISelectMenu(field);
 		}
 		if (event.target.id == 'onlineGame' && userData) {
 			isOnline = true;

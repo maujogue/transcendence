@@ -50,10 +50,8 @@ class Ball:
     
     def checkIfScored(self, player):
         if player.name == "player1" and self.posX <= -12:
-            player.score += 1
             return True
         if player.name == "player2" and self.posX >= 12:
-            player.score += 1
             return True
         return False
     

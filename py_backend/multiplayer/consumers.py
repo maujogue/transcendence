@@ -203,9 +203,10 @@ class PongConsumer(AsyncWebsocketConsumer):
             'posY': self.player.posY
         })
 
-    async def sendScore(self):
+    async def sendScore(self, player):
+        player.score += 1
         await self.channel_layer.group_send (
-            self.lobby_group_name, { 'type': 'pong.score', 'score': self.opp.score, 'name': self.opp.name}
+            self.lobby_group_name, { 'type': 'pong.score', 'score': player.score, 'name': player.name}
         )
     
     async def sendBallData(self):
@@ -221,13 +222,17 @@ class PongConsumer(AsyncWebsocketConsumer):
     
     async def isScored(self):
         if self.ball.checkIfScored(self.player):
-            self.player.score += 1
+            await self.sendScore(self.player)
             self.exchangeBeforePointsP1.append(self.countExchange)
         if self.ball.checkIfScored(self.opp):
+            await self.sendScore(self.opp)
             self.exchangeBeforePointsP2.append(self.countExchange)
-            self.opp.score += 1
-        await self.sendScore()
         self.ball.reset()
+        await self.sendBallData()
+
+    async def collision(self, player):
+        self.countExchange += 1
+        self.ball.collisionPaddle(player)
         await self.sendBallData()
 
     async def checkAllCollisions(self):
@@ -235,13 +240,9 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.ball.collisionBorder()
             await self.sendBallData()
         elif self.ball.checkCollisionPaddle(self.player):
-            self.countExchange += 1
-            self.ball.collisionPaddle(self.player)
-            await self.sendBallData()
+            await self.collision(self.player)
         elif self.ball.checkCollisionPaddle(self.opp):
-            self.countExchange += 1
-            self.ball.collisionPaddle(self.opp)
-            await self.sendBallData()
+            await self.collision(self.opp)
 
     async def setGameOver(self):
         await self.lobby.stopGame()

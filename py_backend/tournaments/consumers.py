@@ -22,7 +22,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 'type': 'tournament.participants',
                 'participants': participants
             }
-        )
+        ) 
 
     async def receive(self, text_data):
         pass

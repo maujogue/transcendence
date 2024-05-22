@@ -112,9 +112,6 @@ def join_tournament(request, tournament_id):
 	return JsonResponse({"message": "Tournament joined successfully.", "id": tournament.id},
 					status=200)
 
-
-# How to know 
-
 @login_required
 @require_http_methods(["POST"])
 def quit_tournament(request, tournament_id):

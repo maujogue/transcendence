@@ -50,8 +50,11 @@ export async function init() {
 	let currentChartType = 'pie';
 
 	function initializeChart(type) {
-		const ctx = document.getElementById('winLossChart').getContext('2d');
-		return new Chart(ctx, {
+		const ctx = module.querySelector("#winLossChart");
+		if (!ctx)
+			return ;
+		else
+			return new Chart(ctx.getContext('2d'), {
 			type: type,
 			data: {
 				labels: ['Wins', 'Losses'],
@@ -89,16 +92,21 @@ export async function init() {
 	}
 	let chart = initializeChart(currentChartType);
 
-	document.getElementById('chartToggle').addEventListener('change', function () {
+	module.querySelector('#chartToggle')?.addEventListener('change', function () {
 		currentChartType = this.checked ? 'bar' : 'pie';
 		chart.destroy();
 		chart = initializeChart(currentChartType);
 	});
 
 	function updateMatchHistory(matches) {
-		const matchHistoryTable = document.getElementById('match-history').getElementsByTagName('tbody')[0];
+		const matchHistoryTable = module.querySelector('#match-history').getElementsByTagName('tbody')[0];
 		matchHistoryTable.innerHTML = '';
 
+		if (matches.length == 0)
+		{
+			module.querySelector("#gamesPlayedRow").innerHTML = '<span class="fs-5">Play a match to see your history here! </span>';
+			return ;
+		}
 		matches.forEach(match => {
 			const row = matchHistoryTable.insertRow();
 			row.className = match.player1 === match.winner ? 'win-row' : 'loss-row';

@@ -26,7 +26,7 @@ def send_request(request, user_id):
 
 @login_required
 @require_http_methods(["POST"])
-def accept_friend(request, request_id):
+def accept(request, request_id):
     try:
         friend_request = InteractionRequest.objects.get(id=request_id)
     except InteractionRequest.DoesNotExist:
@@ -48,7 +48,7 @@ def accept_friend(request, request_id):
 
 @login_required
 @require_http_methods(["POST"])
-def remove_friend(request, request_id):
+def remove(request, request_id):
     try:
         remove_request = InteractionRequest.objects.get(id=request_id)
     except InteractionRequest.DoesNotExist:

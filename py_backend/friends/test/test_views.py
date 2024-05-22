@@ -44,7 +44,7 @@ class FriendsInteractions(TestCase):
 		friend_request_id = response_request.json()['id']
 
 		self.client.post(
-			reverse('accept_friend',
+			reverse('accept',
 			args=[friend_request_id]),
 			follow=True)
 
@@ -94,7 +94,7 @@ class FriendsInteractions(TestCase):
 		self.assertEqual(response_request.status_code, 200)
 
 		response_accept = self.client.post(
-		    reverse('accept_friend',
+		    reverse('accept',
 			args=[friend_request_id]),
 			follow=True)
 
@@ -114,7 +114,7 @@ class FriendsInteractions(TestCase):
 		self.assertEqual(response_request.status_code, 200)
 
 		response_accept = self.client.post(
-		    reverse('accept_friend',
+		    reverse('accept',
 			args=[friend_request_id]),
 			follow=True)
 
@@ -136,7 +136,7 @@ class FriendsInteractions(TestCase):
 		self.assertEqual(response_request.status_code, 200)
 
 		response_remove = self.client.post(
-		    reverse('remove_friend',
+		    reverse('remove',
 			args=[remove_request_id]),
 			follow=True)
 
@@ -158,7 +158,7 @@ class FriendsInteractions(TestCase):
 		self.assertEqual(response_request.status_code, 200)
 
 		response_remove = self.client.post(
-		    reverse('remove_friend',
+		    reverse('remove',
 			args=[remove_request_id]),
 			follow=True)
 
@@ -226,7 +226,7 @@ class MultipleCases(TestCase):
 		
 		friend_request_id = friend_request.json()['id']
 		response_accept = self.client1.post(
-		    reverse('accept_friend',
+		    reverse('accept',
 			args=[friend_request_id]),
 			content_type='application/json',
 			follow=True)
@@ -244,7 +244,7 @@ class MultipleCases(TestCase):
 		remove_request_id = remove_request.json()['id']
 
 		response_remove = self.client1.post(
-		    reverse('remove_friend',
+		    reverse('remove',
 			args=[remove_request_id]),
 			content_type='application/json',
 			follow=True)
@@ -252,15 +252,3 @@ class MultipleCases(TestCase):
 		self.assertEqual(response_remove.status_code, 200)
 		self.assertEqual(self.user1.friends.count(), 0)
 		self.assertEqual(self.user2.friends.count(), 0)
-	
-	# def test_add_multiple_friends(self):
-    #     # Create a Friend instance for the user
-	# 	user_friend = Friend.objects.create(user=self.user)
-    #     # Add multiple friends to the user
-	# 	for friend in self.friends:
-	# 		user_friend.friends.add(friend)
-        
-    #     # Verify that the friends were added correctly
-	# 	self.assertEqual(user_friend.friends.count(), len(self.friends))
-	# 	for friend in self.friends:
-	# 		self.assertTrue(user_friend.friends.filter(id=friend.id).exists())

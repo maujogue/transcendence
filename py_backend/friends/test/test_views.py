@@ -195,6 +195,31 @@ class FriendsInteractions(TestCase):
 		self.assertEqual(data.get('status'), 'User have 0 friends')
 
 
+	def test_count_request(self):
+
+		count_request = InteractionRequest.objects.count()
+		self.assertEqual(count_request, 0)
+
+		response_request = self.client.post(
+			reverse('send_request',
+			args=[self.user3.id]),
+			follow=True)
+		
+		count_request = InteractionRequest.objects.count()
+		self.assertEqual(count_request, 1)
+		
+		friend_request_id = response_request.json()['id']
+		self.assertEqual(response_request.status_code, 200)
+
+		response_accept = self.client.post(
+		    reverse('accept',
+			args=[friend_request_id]),
+			follow=True)
+		
+		count_request = InteractionRequest.objects.count()
+		self.assertEqual(count_request, 0)
+
+
 class MultipleCases(TestCase):
 
 	def setUp(self):
@@ -211,7 +236,6 @@ class MultipleCases(TestCase):
 			password='User2Password+')
 		self.client1.login(username='user1', password='User1Password+')
 		self.client2.login(username='user2', password='User2Password+')
-		# self.friends = [CustomUser.objects.create_user(username=f'friend{i}', password='friendpassword') for i in range(5)]
 
 
 	def test_multiple_cases(self):

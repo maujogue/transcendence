@@ -140,12 +140,12 @@ class PongConsumer(AsyncWebsocketConsumer):
 
         await self.lobby.disconnectUser(self.player)
         await self.channel_layer.group_send(
-            self.lobby_group_name, { 'type': 'pong.status', 'message': 'disconnected', 'name': self.player.name}
+            self.lobby_group_name, {  'type': 'pong.status', 'status': 'disconnected', 'message': f"{self.scope['user']} is disconnected", 'name': self.player.name}
         )
         if (self.lobby.game_started == True):
             await self.lobby.stopGame()
             await self.channel_layer.group_send(
-                self.lobby_group_name, { 'type': 'pong.status', 'message': 'stopGame', 'name': self.player.name}
+                self.lobby_group_name, { 'type': 'pong.status', 'status': 'stop', 'message': f"Connection lost with {self.scope['user']}", 'name': self.player.name}
             )
         await self.channel_layer.group_discard(
             self.lobby_group_name,
@@ -159,8 +159,9 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def startGame(self):
         await self.channel_layer.group_send(
         self.lobby_group_name, { 
-            'type': 'pong.status', 
-            'message': 'start', 
+            'type': 'pong.status',
+            'status': 'start',
+            'message': 'Game is starting!',
             'name': self.player.name
             }
         )
@@ -246,7 +247,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         if self.player.name == 'player1':
             await self.createHistoryMatch()
         await self.channel_layer.group_send(
-            self.lobby_group_name, { 'type': 'pong.status', 'message': 'endGame', 'name': self.player.name}
+            self.lobby_group_name, { 'type': 'pong.status', 'status': 'endGame', 'message': 'The game is over', 'name': self.player.name}
         )
 
     def calculateAverageExchange(self, exchangeBeforePoint):
@@ -304,10 +305,11 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def pong_status(self, event):
         message = event["message"]
         name = event["name"]
+        status = event["status"]   
 
         if message == "endGame":
             self.resetGame()
-        await self.send(text_data=json.dumps({"type": 'status', "message": message, "name": name}))
+        await self.send(text_data=json.dumps({"type": 'status', 'status': status ,"message": message, "name": name}))
 
     async def pong_character_data(self, event): 
         if (self.player.name == event["name"]):

@@ -40,6 +40,24 @@ function setUserInfo(data) {
     return user;
 }
 
+function clearVariables() {
+    webSocket = null;
+    player = null;
+    opp = null;
+    keysPressed = {};
+    keyPress = false;
+    status = {
+        'ready': false,
+        'start': false,
+        'isReady': false,
+        'exit': false,
+    }
+    keyUp = false;
+    webSocket = null;
+    oppInfo = null;
+    playersMove.clear();
+}
+
 
 document.addEventListener('keypress', function(event) {
     keysPressed[event.key] = true;
@@ -127,7 +145,7 @@ async function connectToLobby(username) {
             paddle.name = "paddle_" + data['name'];
         }
         if (data['type'] && data['type'] == 'status')
-            handlerStatusMessage(data, webSocket, env, status, player);
+            handlerStatusMessage(data, webSocket, env, status);
         if (data['type'] == 'ball_data')
             setBallData(data, env);
         if (data['type'] == 'auth' && data['status'] == 'failed') 
@@ -144,10 +162,6 @@ async function connectToLobby(username) {
                 player.userInfo = setUserInfo(data);
             else 
                 oppInfo = setUserInfo(data);
-        }
-        if (data['message'] == 'start') {
-            status.gameIsInit = true;
-            document.getElementById("waitingScreen")?.remove();
         }
         if (data['type'] == 'player_pos') {
             env.scene.getObjectByName("paddle_" + data['name']).position.y = data['posY'];
@@ -172,12 +186,7 @@ async function connectToLobby(username) {
 
     webSocket.onclose = function(e) {
         console.log('Connection closed', e.code, e.reason);
-        webSocket = null;
-        status.isReady = false;
-        status.exit = true;
-        player = null;
-        opp = null;
-        oppInfo = null;
+        clearVariables();
     }
 
     webSocket.onerror = function(e) {

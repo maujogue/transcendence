@@ -4,6 +4,8 @@ import { ClearAllEnv } from './createEnvironment.js';
 import { createEndScreen } from './createEndScreen.js';
 import { sendColor } from './sendMessage.js';
 import { playersMove } from './online.js';
+import { displayErrorPopUp } from './tournament.js';
+
 
 export function setBallData(data, env) {
     if (!env.ball)
@@ -21,10 +23,15 @@ export function handlerScore(data, env, player, opp) {
     playersMove.clear();
 }
 
-function handlerStopGame(webSocket, env) {
+function handlerStopGame(webSocket, env, start, message) {
+    console.log("handlerStopGame: ", message);
     start = false;
-    ClearAllEnv(env);
-    displayMainMenu();
+    displayErrorPopUp(message, document.getElementById("hud"));
+    document.getElementById("errorPopUp").classList.add("match-error");
+    document.getElementById("PopUpCloseIcon").addEventListener("click", () => {
+        ClearAllEnv(env);
+        displayMainMenu();
+    });
     webSocket.close();
 }
 
@@ -42,11 +49,16 @@ function handlerPlayerDisconnect(data, env) {
 }
 
 export function handlerStatusMessage(data, webSocket, env, status) {
-    if (data['message'] == 'disconnected')
+    console.log(data);
+    if (data['status'] == 'disconnected')
         handlerPlayerDisconnect(data, env);
-    if (data['message'] == 'stopGame')
-        handlerStopGame(webSocket, env, status.start);
-    if (data['message'] == 'endGame') {
+    if (data['status'] == 'stop')
+        handlerStopGame(webSocket, env, status.start, data.message);
+    if (data['status'] == 'endGame') {
         handlerEndGame(data, status);
+    }
+    if (data['status'] == 'start') {
+        status.gameIsInit = true;
+        document.getElementById("waitingScreen")?.remove();
     }
 }

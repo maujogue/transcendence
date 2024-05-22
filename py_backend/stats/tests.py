@@ -96,3 +96,10 @@ class MatchsTest(TestCase):
         response = client.get(reverse('all_matchs'))
         self.assertEqual(response.status_code, 200)
         self.assertIn('matchs', response.json())
+
+    def test_get_average_exchange_before_goal(self):
+        client = Client()
+
+        response = client.get(reverse('average_exchange_before_goal', kwargs={'user': self.user1.username}))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('average_exchange_before_goal', response.json())

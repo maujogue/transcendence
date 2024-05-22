@@ -10,4 +10,5 @@ pillow==10.2.0
 websocket
 requests-toolbelt
 mimetypes-magic
+six
 # channels-redis==4.2.0

@@ -1,5 +1,3 @@
-from django.contrib.postgres.fields import ArrayField
-
 from django.db import models
 from django.conf import settings
 
@@ -14,7 +12,6 @@ class Tournament(models.Model):
 	max_players = models.IntegerField(validators=[MinValueValidator(2), MaxValueValidator(32)])
 	participants = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='joined_tournaments', blank=True)
 	started = models.BooleanField(default=False)
-	matchups = ArrayField(models.fields.CharField(max_length=10, null=True), size=max_players)
 
 	def __str__(self):
 		return f'{self.name}'

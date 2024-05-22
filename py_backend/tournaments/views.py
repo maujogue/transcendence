@@ -10,6 +10,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
 from .models import Tournament
+from .bracket import generate_bracket
 
 CustomUser = get_user_model()
 
@@ -102,8 +103,10 @@ def join_tournament(request, tournament_id):
 					status=400)
 
 	tournament.participants.add(request.user)
+
 	if tournament.participants.count() == tournament.max_players and tournament.started == False:
 		tournament.started = True
+		tournament.save()
 		generate_bracket(tournament)
 
 	return JsonResponse({"message": "Tournament joined successfully.", "id": tournament.id},

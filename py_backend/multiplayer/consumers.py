@@ -49,6 +49,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def connect(self):
+        self.max_points = 1
         self.is_connected = False
         self.is_ready = False
         
@@ -247,6 +248,11 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_send(
             self.lobby_group_name, { 'type': 'pong.status', 'message': 'endGame', 'name': self.player.name}
         )
+
+    def calculateAverageExchange(self, exchangeBeforePoint):
+        if len(exchangeBeforePoint) == 0 or sum(exchangeBeforePoint) == 0:
+            return 0
+        return sum(exchangeBeforePoint) / len(exchangeBeforePoint)
     
     async def createHistoryMatch(self):
         player1 = self.player if self.player.name == 'player1' else self.opp
@@ -255,8 +261,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         loser = player1.user.username if player1.score < player2.score else player2.user.username
         match = Match(player1=player1.user.username, 
                       player2=player2.user.username, 
-                      player1_average_exchange=sum(self.exchangeBeforePointsP1) / len(self.exchangeBeforePointsP1),
-                      player2_average_exchange=sum(self.exchangeBeforePointsP2) / len(self.exchangeBeforePointsP2),
+                      player1_average_exchange=self.calculateAverageExchange(self.exchangeBeforePointsP1),
+                      player2_average_exchange=self.calculateAverageExchange(self.exchangeBeforePointsP2),
                       winner=winner,
                       loser=loser,
                       player1_score=player1.score, 
@@ -281,7 +287,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.checkAllCollisions()
         if (self.ball.checkIfScored(self.player) or self.ball.checkIfScored(self.opp)):
             await self.isScored()
-        if self.player.score == 5 or self.opp.score == 5:
+        if self.player.score == self.max_points or self.opp.score == self.max_points:
             await self.setGameOver()
         self.ball.translate()
 

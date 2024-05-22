@@ -174,7 +174,10 @@ async function connectToLobby(username) {
         console.log('Connection closed', e.code, e.reason);
         webSocket = null;
         status.isReady = false;
-        // status.exit = true;
+        status.exit = true;
+        player = null;
+        opp = null;
+        oppInfo = null;
     }
 
     webSocket.onerror = function(e) {

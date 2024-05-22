@@ -21,7 +21,7 @@ export function handlerScore(data, env, player, opp) {
     playersMove.clear();
 }
 
-function handlerStopGame(webSocket, env, start) {
+function handlerStopGame(webSocket, env) {
     start = false;
     ClearAllEnv(env);
     displayMainMenu();
@@ -41,7 +41,7 @@ function handlerPlayerDisconnect(data, env) {
     env.renderer.render(env.scene, env.camera);
 }
 
-export function handlerStatusMessage(data, webSocket, env, status, player) {
+export function handlerStatusMessage(data, webSocket, env, status) {
     if (data['message'] == 'disconnected')
         handlerPlayerDisconnect(data, env);
     if (data['message'] == 'stopGame')

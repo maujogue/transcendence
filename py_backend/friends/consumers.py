@@ -4,21 +4,12 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 class FriendsConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
-        self.accept()
-        self.send({
-            'type': "websocket.accept",
-        })
+        await self.accept()
+        print("CONNECT")
 
-    async def disconnect(self):
+    async def disconnect(self, exit_code):
         pass
 
     async def receive(self, event):
-        self.send({
-            "type": "websocket.send",
-            "text": event["text"],
-        })
-        # text_data_json = json.loads(text_data)
-        # message = text_data_json['message']
-        # self.send(text_data=json.dumps({
-        #     'message': message
-        # }))
+        print("RECEIVE")
+        pass

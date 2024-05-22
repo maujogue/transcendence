@@ -1,9 +1,6 @@
-from channels.routing import ProtocolTypeRouter, URLRouter
-from django.urls import path
-from .consumers import FriendsConsumer
+from django.urls import re_path
+from . import consumers
 
-application = ProtocolTypeRouter({
-    'websocket': URLRouter([
-        path('ws/friends/', FriendsConsumer.as_asgi()),
-    ])
-})
+websocket_urlpatterns = [
+    re_path(r'ws/friends/$', consumers.FriendsConsumer.as_asgi())
+]

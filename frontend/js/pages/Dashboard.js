@@ -2,8 +2,10 @@ import { updatePassword, updateProfile, updateProfileWithPassword } from "../Api
 import { togglePasswordVisibility, checkPassword } from "../Utils.js";
 import { enableDisableSaveButtonOnInput, resetForm } from "../DashboardUtils.js"
 import { getUserData } from "../User.js";
+import { friendsWebsocket } from "../Friends.js"
 
 export async function init() {
+	friendsWebsocket();
 	var modal = document.getElementById("updateProfileModal");
 	var formInputs = modal.querySelectorAll(".formInputs");
 	var userData = await getUserData();

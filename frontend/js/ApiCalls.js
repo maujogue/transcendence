@@ -104,6 +104,29 @@ async function updateUsername(updateUsernameForm) {
 	}
 }
 
+async function updateEmail(updateEmailForm) {
+	const userData = new FormData(updateEmailForm);
+	const fetchBody = {
+		username: await getUserData("username"),
+		password: userData.get("password"),
+	};
+
+	var response = await runEndPoint("users/login/", JSON.stringify(fetchBody));
+
+	if (response.statusCode === 200) {
+		const fetchBody = {
+			email: userData.get("email"),
+		};
+		updateInfo(
+			"users/update_email/",
+			JSON.stringify(fetchBody),
+			"confirmPasswordModal"
+		);
+	} else {
+		showAlert("Password Incorrect, try again.");
+	}
+}
+
 function updateProfile() {
 	var updateProfileForm = document.getElementById("updateProfileForm");
 	var inputName = getSubmittedInput().getAttribute("name");
@@ -129,9 +152,11 @@ function updateProfileWithPassword() {
 	var updateProfileForm = document.getElementById("updateProfileForm");
 
 	var inputName = getSubmittedInput().getAttribute("name");
-
+	
 	if (inputName == "username")
 		updateUsername(updateProfileForm);
+	if (inputName == "email")
+		updateEmail(updateProfileForm);
 	document.getElementById("confirmPasswordPassword").value = "";
 }
 

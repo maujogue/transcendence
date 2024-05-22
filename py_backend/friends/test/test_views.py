@@ -216,6 +216,7 @@ class FriendsInteractions(TestCase):
 			args=[friend_request_id]),
 			follow=True)
 		
+		self.assertEqual(response_accept.status_code, 200)
 		count_request = InteractionRequest.objects.count()
 		self.assertEqual(count_request, 0)
 

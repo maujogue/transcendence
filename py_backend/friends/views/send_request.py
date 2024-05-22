@@ -16,6 +16,6 @@ def send_request(request, user_id):
         from_user=from_user,
         to_user=to_user,)
     if created:
-        response_data = {'id': friend_request.id, 'status': 'success'}
+        response_data = {'id': friend_request.id, 'from_user_username': request.user.username, 'status': 'success'}
         return JsonResponse(response_data, status=200)
     return JsonResponse({'status': 'error'}, status=400)

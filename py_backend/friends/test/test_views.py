@@ -1,7 +1,10 @@
 from django.test import TestCase
 from django.urls import reverse
-from users.models import CustomUser
 from django.test import Client
+
+from users.models import CustomUser
+from friends.models import InteractionRequest
+
 import json
 
 

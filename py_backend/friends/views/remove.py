@@ -16,6 +16,7 @@ def remove(request, request_id):
     if remove_request.isFriend():
         remove_request.from_user.friends.remove(remove_request.to_user)
         remove_request.to_user.friends.remove(remove_request.from_user)
+        remove_request.delete()
         return JsonResponse({'status': 'success'}, status=200)
     else:
         return JsonResponse({'status': 'Users are not friends'}, status=400)

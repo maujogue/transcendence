@@ -39,6 +39,7 @@ export async function init() {
 	let keysPressed = {};
 	let isOnline = false;
 	let localLoop = false;
+	let soloMode = false;
 	let userData;
 	let form;
 	const gameDiv = document.getElementById('game');
@@ -136,6 +137,7 @@ export async function init() {
 		}
 		if (event.target.id == 'easy') {
 			localLoop = true;
+			soloMode = true;
 			localGameLoop();
 			createAISelectMenu(field);
 		}
@@ -197,7 +199,10 @@ export async function init() {
 		if (keysPressed[" "] && document.getElementById("selectMenu") && player1 && player2 && !start) {
 			start = true;
 			ClearAllEnv(environment);
-			divMenu.remove();
+			if (!soloMode)
+				divMenu.remove();
+			else
+				
 			environment = await initGame(player1, player2);
 		}
 		if (start) {

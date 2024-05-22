@@ -93,44 +93,50 @@ class PongConsumer(AsyncWebsocketConsumer):
             return user
         except CustomUser.DoesNotExist:
             return None
+        
+    async def authenticate_user(self, text_data_json):
+        username = text_data_json['username']
+        user = await self.authenticate_user_with_username(username)
+        if user is not None:
+            self.scope['user'] = user
+            await self.send(text_data=json.dumps({ "type": "auth", "status": "success"}))
+        else:
+            await self.send(text_data=json.dumps({ "type": "auth", "status": "failed"}))
+        await self.channel_layer.group_send(
+            self.lobby_group_name, { 'type': 'pong.user_info', 'user': self.scope['user'], 'name': self.player.name}
+        )
+
+    async def set_character(self, text_data_json):
+        self.player.character = text_data_json.get("character")
+        await self.channel_layer.group_send(
+            self.lobby_group_name, {
+                'type': 'pong.character_data',
+                'character': self.player.character,
+                'sender': self.channel_name,
+                'name': self.player.name
+            }
+        )
+
 
     async def receive(self, text_data):
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
         text_data_json = json.loads(text_data)
-        
         if text_data_json.get("type") == 'auth':
-            username = text_data_json['username']
-            user = await self.authenticate_user_with_username(username)
-            if user is not None:
-                self.scope['user'] = user
-                await self.send(text_data=json.dumps({ "type": "auth", "status": "success"}))
-            else:
-                await self.send(text_data=json.dumps({ "type": "auth", "status": "failed"}))
-            await self.channel_layer.group_send(
-                self.lobby_group_name, { 'type': 'pong.user_info', 'user': self.scope['user'], 'name': self.player.name}
-            )
-        if text_data_json.get("ready") != None:
+            await self.authenticate_user(text_data_json)
+        if text_data_json.get("ready"):
             await self.lobby.setPlayerReady(text_data_json.get("ready"), self.player)
-        if text_data_json.get("character") != None:
-            self.player.character = text_data_json.get("character")
-            await self.channel_layer.group_send(
-                self.lobby_group_name, {
-                    'type': 'pong.character_data',
-                    'character': self.player.character,
-                    'sender': self.channel_name,
-                    'name': self.player.name
-                }
-            )
-        if self.lobby.player_ready == 2 and self.lobby.game_started == False:
+        if text_data_json.get("character"):
+            await self.set_character(text_data_json)
+        if self.lobby.player_ready == 2 and not self.lobby.game_started:
             await self.startGame()
         if text_data_json.get("type") == "user_info":
             await self.channel_layer.group_send(
                 self.lobby_group_name, { 'type': 'pong.user_data', 'username': text_data_json.get('username'), 'avatar': text_data_json.get('avatar'), 'name': text_data_json.get('name')}
             )
-        if self.lobby.game_started == True:
+        if self.lobby.game_started:
             if text_data_json.get("type") == "player_pos":
                 await self.movePlayer(text_data_json)
-            if text_data_json.get("type") == "frame" and self.lobby.game_started == True:
+            if text_data_json.get("type") == "frame" and self.lobby.game_started:
                 await self.gameLoop()
 
     async def disconnect(self, close_code):
@@ -263,7 +269,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def gameLoop(self):
-        if self.player.checkCollisionBorder() == True:
+        if self.player.checkCollisionBorder():
             self.player.move = 0
             await self.channel_layer.group_send(
             self.lobby_group_name, { 
@@ -278,7 +284,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.checkAllCollisions()
         if self.ball.checkIfScored(self.player) or self.ball.checkIfScored(self.opp):
             await self.isScored()
-        if (self.player.score == 5 or self.opp.score == 5):
+        if self.player.score == 5 or self.opp.score == 5:
             await self.setGameOver()
         self.ball.translate()
 

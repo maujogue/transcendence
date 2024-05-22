@@ -12,8 +12,8 @@ class Tournament(models.Model):
 	max_players = models.IntegerField(validators=[MinValueValidator(2), MaxValueValidator(32)])
 	participants = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='joined_tournaments', blank=True)
 	started = models.BooleanField(default=False)
-# TODO 
-
+	matchups = models.ManyToManyField(TournamentMatch)
+#TODO why doesn't work
 	def __str__(self):
 		return f'{self.name}'
 

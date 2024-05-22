@@ -25,7 +25,11 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         ) 
 
     async def receive(self, text_data):
-        pass
+        print("receive")
+        text_data_json = json.loads(text_data)
+        if text_data_json.get('type') == 'auth':
+            await self.send(text_data=json.dumps({ "type": "auth", "status": "success"}))
+        print(text_data_json)
 
     async def disconnect(self, close_code):
         print('disconnected')

@@ -2,14 +2,21 @@ import { get_csrf_token} from "../ApiUtils.js";
 import { returnToMenu } from "./createEndScreen.js";
 import { createJoinTournamentMenu } from "./joinTournament.js";
 import { createTournamentDiv } from "./menu.js";
+import { getUserData } from "../User.js";
 
 export let wsTournament
 
 export async function connectToTournament(tournament) {
-    wsTournament = new WebSocket(`wss://127.0.0.1:8000/ws/tournament/${tournament.id}/`);
+    wsTournament = new WebSocket(`ws://127.0.0.1:8080/ws/tournament/${tournament.id}/`);
 
     wsTournament.onopen = () => {
         createWaitingScreenTournament(tournament);
+        getUserData('username').then((res) => {
+            wsTournament.send(JSON.stringify({
+                'type': 'auth',
+                'username': res,
+            }));
+        })
     }
     
     wsTournament.onmessage = (event) => {
@@ -21,6 +28,8 @@ export async function connectToTournament(tournament) {
                 insertPlayer(participant);
             });
         }
+        if (data.type == "auth")
+            alert(data.status);
     }
 }
 

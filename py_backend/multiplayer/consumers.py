@@ -36,16 +36,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.opp = Player(oppName, character='chupacabra', lobby_id=self.lobby.uuid, posX=oppPosX)
         await self.lobby.asave()
     
-    async def sendCharacter(self, text_data_json):
-        character = text_data_json["character"]
-        await self.channel_layer.group_send(
-            self.lobby_group_name, {
-                'type': 'pong.data', 
-                'character': character, 
-                'sender': self.channel_name, 
-                'name': self.player.name
-                }
-        )
 
 
     async def connect(self):
@@ -110,6 +100,17 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'sender': self.channel_name,
                 'name': self.player.name
             }
+        )
+
+    async def sendCharacter(self, text_data_json):
+        character = text_data_json["character"]
+        await self.channel_layer.group_send(
+            self.lobby_group_name, {
+                'type': 'pong.data', 
+                'character': character, 
+                'sender': self.channel_name, 
+                'name': self.player.name
+                }
         )
 
     async def receive(self, text_data):
@@ -220,10 +221,10 @@ class PongConsumer(AsyncWebsocketConsumer):
         if not self.player.name == 'player1':
             return 
         if self.ball.checkIfScored(self.player):
-            await self.sendScore(self.player)
+            await self.sendScore(self.opp)
             self.exchangeBeforePointsP1.append(self.countExchange)
         if self.ball.checkIfScored(self.opp):
-            await self.sendScore(self.opp)
+            await self.sendScore(self.player)
             self.exchangeBeforePointsP2.append(self.countExchange)
         self.ball.reset()
         await self.sendBallData()

@@ -1,13 +1,21 @@
-function isLoggedIn() {
-	if (Cookies.get("isLoggedIn") === "true") return true;
-	else return false;
+import { runEndPoint } from "./ApiUtils.js"
+import { getUserData } from "./User.js";
+
+async function isLoggedIn() {
+	var username = await getUserData("username");
+	if (username) {
+		var response = await runEndPoint("users/check_user_logged_in/" + username + "/", "POST");
+		console.log(response.data["is_logged_in"])
+		return response.data["is_logged_in"];
+	}
+	return false
 }
 
-function toggleContentOnLogState() {
+async function toggleContentOnLogState() {
 	const logInContent = document.querySelectorAll(".logInContent");
 	const logOutContent = document.querySelectorAll(".logOutContent");
 
-	if (isLoggedIn()) {
+	if (await isLoggedIn()) {
 		logInContent.forEach((e) => (e.style.display = "block"));
 		logOutContent.forEach((e) => (e.style.display = "none"));
 	} else {
@@ -17,10 +25,10 @@ function toggleContentOnLogState() {
 	disableCollapsedSidebar();
 }
 
-function disableCollapsedSidebar() {
+async function disableCollapsedSidebar() {
 	const sidebar = document.getElementById("sidebar");
 	const content = document.getElementById("content-container");
-	if (!isLoggedIn()) {
+	if (!(await isLoggedIn())) {
 		sidebar.classList.remove("collapsed");
 		content.classList.remove("collapsed");
 		var sectionNames = document.querySelectorAll(".section-name");

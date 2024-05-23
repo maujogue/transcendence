@@ -49,7 +49,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def connect(self):
-        self.max_points = 1
+        self.max_points = 3
         self.is_connected = False
         self.is_ready = False
         

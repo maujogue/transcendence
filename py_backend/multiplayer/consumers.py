@@ -129,8 +129,8 @@ class PongConsumer(AsyncWebsocketConsumer):
             )
         if self.lobby.game_started:
             if text_data_json.get("type") == "player_pos":
-                await self.movePlayer(text_data_json)
-            if text_data_json.get("type") == "frame" and self.lobby.game_started:
+                await self.getPlayerMove(text_data_json)
+            if text_data_json.get("type") == "frame":
                 await self.gameLoop()
 
     async def disconnect(self, close_code):
@@ -176,7 +176,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
         await self.lobby.startGame()
 
-    async def movePlayer(self, data):
+    async def getPlayerMove(self, data):
         move = data.get("move")
 
         if move != 0 and move != 1 and move != -1:
@@ -270,9 +270,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                       player2_score=player2.score)
         await match.asave()
         
-
-
-    async def gameLoop(self):
+    async def movePlayer(self):
         if self.player.checkCollisionBorder():
             self.player.move = 0
             await self.channel_layer.group_send(
@@ -282,15 +280,18 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'move': self.player.move,
                 'posY': self.player.posY
             })
-
         self.player.posY += self.player.move
-        
+
+
+    async def gameLoop(self):
         await self.checkAllCollisions()
         if (self.ball.checkIfScored(self.player) or self.ball.checkIfScored(self.opp)):
             await self.isScored()
         if self.player.score == self.max_points or self.opp.score == self.max_points:
             await self.setGameOver()
         self.ball.translate()
+        await self.movePlayer()
+
 
     def resetGame(self):
         self.player.score = 0

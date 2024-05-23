@@ -35,10 +35,14 @@ function handlerStopGame(webSocket, env, start, message) {
     });
 }
 
-function handlerEndGame(data, status) {
+function handlerEndGame(data, env) {
     if (!document.getElementById("endscreen"))
         createEndScreen(data['name']);
     playersMove.clear();
+    env.ball.direction.x = 0;
+    env.ball.direction.y = 0;
+    env.ball.mesh.position.x = 0;
+    env.ball.mesh.position.y = 0;
 }
 
 function handlerPlayerDisconnect(data, env) {
@@ -47,13 +51,12 @@ function handlerPlayerDisconnect(data, env) {
 }
 
 export function handlerStatusMessage(data, webSocket, env, status) {
-    console.log(data);
     if (data['status'] == 'disconnected')
         handlerPlayerDisconnect(data, env);
     if (data['status'] == 'stop')
         handlerStopGame(webSocket, env, status.start, data.message);
     if (data['status'] == 'endGame') {
-        handlerEndGame(data, status);
+        handlerEndGame(data, env);
     }
     if (data['status'] == 'start') {
         status.gameIsInit = true;

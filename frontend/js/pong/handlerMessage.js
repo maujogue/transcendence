@@ -25,14 +25,14 @@ export function handlerScore(data, env, player, opp) {
 
 function handlerStopGame(webSocket, env, start, message) {
     console.log("handlerStopGame: ", message);
-    start = false;
     displayErrorPopUp(message, document.getElementById("hud"));
     document.getElementById("errorPopUp").classList.add("match-error");
     document.getElementById("PopUpCloseIcon").addEventListener("click", () => {
         ClearAllEnv(env);
         displayMainMenu();
+        document.getElementById("hud").remove();
+        webSocket.close();
     });
-    webSocket.close();
 }
 
 function handlerEndGame(data, status) {

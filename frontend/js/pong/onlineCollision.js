@@ -4,7 +4,6 @@ import { removeObject } from "./removeObject.js";
 import * as THREE from 'three';
 
 function actualizeScoreOnline(data, env) {
-    console.log("actualizeScoreOnline: ", data);
     let name = data['name'].charAt(0).toUpperCase() + data['name'].slice(1);
     createTextMesh(data['score'] + '', env.font, env, 'score' + name).then((res) => {                
         removeObject('score' + name, env);

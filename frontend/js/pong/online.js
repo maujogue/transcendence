@@ -273,7 +273,6 @@ async function onlineGameLoop(webSocket) {
         document.removeEventListener('click', clickHandler);
     }
     if (keysPressed[' '] && !status.is_connected) {
-        console.log("connectToLobby: ", webSocket);
         keysPressed[' '] = false;
         getUserData('username').then((res) => {
             connectToLobby(res)

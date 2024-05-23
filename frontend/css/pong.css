@@ -17,54 +17,10 @@ h1 {
 	text-align: center;
 }
 
-/* .bracket {
+#bracket {
 	overflow-y: auto;
 	overflow-x: auto;
-	display: flex;
-	width: 95%;
-	height: 95%;
 }
-
-.round {
-	font-size: xx-large;
-	display: flex;
-	width: 24%;
-	flex-direction: column;
-	justify-content: center;
-	margin: 5%;
-}
-
-.round-name {
-	color: white;
-	position: absolute;
-	align-self: center;
-	top: 5%;
-}
-
-.match {
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-	background-color: white;
-	margin: 5%;
-	padding: 2%;
-	height: 20%;
-
-}
-
-.bracket-player {
-	font-size: large;
-	display: flex;
-	flex-direction: row;
-	justify-content: space-between;
-	height: auto;
-
-} */
-/* 
-#bracketCanvas {
-	position: absolute;
-	top: 25%;
-} */
 
  #game {
 	width: 960px;
@@ -407,7 +363,6 @@ h1 {
 }
 
 .tournament::-webkit-scrollbar, .bracket::-webkit-scrollbar {
-	height: 123px;
 	border-radius: 20px;            /* width of the entire scrollbar */
 }
   

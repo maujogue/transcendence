@@ -231,6 +231,7 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def collision(self, player):
         self.countExchange += 1
         self.ball.collisionPaddle(player)
+        await self.sendPlayerMove()
         await self.sendBallData()
 
     async def checkAllCollisions(self):
@@ -269,18 +270,21 @@ class PongConsumer(AsyncWebsocketConsumer):
                       player1_score=player1.score, 
                       player2_score=player2.score)
         await match.asave()
-        
-    async def movePlayer(self):
-        if self.player.checkCollisionBorder():
-            self.player.move = 0
-            await self.channel_layer.group_send(
+    
+    async def sendPlayerMove(self):
+        await self.channel_layer.group_send(
             self.lobby_group_name, { 
                 'type': 'pong.player_pos',
                 'name': self.player.name, 
                 'move': self.player.move,
                 'posY': self.player.posY
             })
+        
+    async def movePlayer(self):
+        if self.player.checkCollisionBorder():
+            self.player.move = 0
         self.player.posY += self.player.move
+        await self.sendPlayerMove()
 
 
     async def gameLoop(self):

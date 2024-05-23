@@ -20,10 +20,10 @@ async function register(registerForm) {
 	var data = response.data;
 
 	if (response.statusCode === 200) {
-		showAlert("Registered, you can now Login", "success");
+		showAlert(response.data.status, "success");
 	} else {
 		if (data.error && data.error.length > 0) showAlert(data.error[0]);
-		else showAlert("Register Error");
+		else showAlert(response.data.error);
 	}
 }
 

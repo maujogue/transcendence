@@ -21,5 +21,5 @@ def confirm_new_email(request, uidb64, token, new_email):
         user.email = new_email
         user.save()
         user.refresh_from_db()
-        return redirect('/dash')
+        return redirect('/emailVerified')
     return JsonResponse({'status': "error"}, status=400)

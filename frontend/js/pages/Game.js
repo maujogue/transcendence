@@ -159,7 +159,7 @@ export async function init() {
 	});
 
 	function setIfGameIsEnd() {
-		if (player1.score < 1 && player2.score < 1)
+		if (player1.score < 5 && player2.score < 5)
 			return;
 		let winner = player1.name;
 		if (player2.score > player1.score)

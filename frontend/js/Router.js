@@ -78,7 +78,6 @@ function getCurrentPage() {
 async function injectPageHtml() {
 	const mainPageDiv = document.getElementById("content");
 	var page = getCurrentPage();
-	console.log(page.name);
 	if (page && page.name == "Game") {
 		mainPageDiv.innerHTML = "";
 		document.getElementById("game").removeAttribute('hidden');

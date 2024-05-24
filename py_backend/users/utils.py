@@ -137,3 +137,13 @@ def send_update_email(request, new_email):
 	)
 	email.content_subtype = 'html'
 	return email.send()
+
+
+def get_friendslist_data(user):
+	friendslist = []
+	friendslist = user.friends.all()
+	friends_count = len(friendslist)
+	friends_list_data = [{'username': friend.username, 'avatar': convert_image_to_base64(friend.avatar)} for friend in friendslist]
+	if friends_count > 0:
+		return False
+	return friends_list_data

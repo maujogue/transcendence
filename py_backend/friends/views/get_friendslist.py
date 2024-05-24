@@ -8,6 +8,7 @@ from users.utils import convert_image_to_base64
 @login_required
 @require_http_methods(["POST"])
 def get_friendslist(request):
+    friendslist = []
     try:
         friendslist = request.user.friends.all()
         friends_count = len(friendslist)

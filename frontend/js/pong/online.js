@@ -125,7 +125,7 @@ async function createOnlineSelectMenu(field) {
 async function connectToLobby(username) {
     if (username == null)
         return ;
-    webSocket = new WebSocket('wss://127.0.0.1:8000/ws/lobby/');
+    webSocket = new WebSocket('ws://127.0.0.1:8080/ws/lobby/');
     
     webSocket.onopen = function() {
         console.log('Connection established');
@@ -168,10 +168,8 @@ async function connectToLobby(username) {
             else 
                 oppInfo = setUserInfo(data);
         }
-        if (data['type'] == 'player_pos') {
+        if (data['type'] == 'player_pos')
             env.scene.getObjectByName("paddle_" + data['name']).position.y = data['posY'];
-            playersMove.set("paddle_" + data['name'], data['move']);
-        }
         if (data['type'] == 'score')
             handlerScore(data, env, player, opp);
         if (data['type'] == 'ask_character') {
@@ -230,19 +228,6 @@ function sendMove(webSocket) {
     }
 }
 
-function movePlayers() {
-    playersMove.forEach((value, key) => {
-        const paddle = env.scene.getObjectByName(key);
-        if (!paddle)
-            return ;
-        const playerBox = new THREE.Box3().setFromObject(paddle);
-        if (value > 0 && !env.border.up.box.intersectsBox(playerBox))
-            paddle.translateY(value);
-        if (value < 0 && !env.border.down.box.intersectsBox(playerBox))
-            paddle.translateY(value);
-    });
-}
-
 async function sendIsReady(webSocket) {
     await sendCharacter(webSocket);
     webSocket.send(JSON.stringify({
@@ -285,15 +270,10 @@ async function onlineGameLoop(webSocket) {
         handleMenuKeyPress(keysPressed, player, null, env);
         keyPress = false;
     }
-    if (status.gameIsInit) {
+    if (status.gameIsInit)
         await setGameIsStart();
-    }
-    if (status.start && webSocket) {
+    if (status.start && webSocket)
         sendMove(webSocket);
-        movePlayers();
-        translateBall(env.ball);
-        webSocket.send(JSON.stringify({ 'type': 'frame' }));
-    }
     env.renderer.render(env.scene, env.camera);
     updateMixers(player, opp);
     if (!status.exit)

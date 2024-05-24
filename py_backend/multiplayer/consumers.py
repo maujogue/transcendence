@@ -1,5 +1,6 @@
 import json
 import base64
+import asyncio
 from channels.generic.websocket import AsyncWebsocketConsumer
 from .models import Lobby
 from multiplayer.ball import Ball
@@ -39,7 +40,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
 
     async def connect(self):
-        self.max_points = 3
+        self.max_points = 1
         self.is_connected = False
         self.is_ready = False
         
@@ -131,8 +132,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         if self.lobby.game_started:
             if text_data_json.get("type") == "player_pos":
                 await self.getPlayerMove(text_data_json)
-            if text_data_json.get("type") == "frame":
-                await self.gameLoop()
 
     async def disconnect(self, close_code):
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
@@ -177,6 +176,21 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
         await self.lobby.startGame()
 
+    async def gameLoop(self):
+        self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
+        while self.lobby.game_started:
+            await self.checkAllCollisions()
+            if (self.ball.checkIfScored(self.player) or self.ball.checkIfScored(self.opp)):
+                await self.isScored()
+            if self.player.score == self.max_points or self.opp.score == self.max_points:
+                await self.setGameOver()
+                break
+            self.ball.translate()
+            if self.player.name == 'player1':
+                await self.sendBallData()
+            await self.movePlayer()
+            await asyncio.sleep(1 / 60)
+
     async def getPlayerMove(self, data):
         move = data.get("move")
 
@@ -189,13 +203,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.player.move = move
         if self.player.checkCollisionBorder() == True:
             self.player.move = 0
-        await self.channel_layer.group_send(
-        self.lobby_group_name, { 
-            'type': 'pong.player_pos',
-            'name': self.player.name, 
-            'move': move,
-            'posY': self.player.posY
-        })
 
     async def sendScore(self, player):
         player.score += 1
@@ -276,8 +283,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_send(
             self.lobby_group_name, { 
                 'type': 'pong.player_pos',
-                'name': self.player.name, 
                 'move': self.player.move,
+                'name': self.player.name,
                 'posY': self.player.posY
             })
         
@@ -286,17 +293,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.player.move = 0
         self.player.posY += self.player.move
         await self.sendPlayerMove()
-
-
-    async def gameLoop(self):
-        await self.checkAllCollisions()
-        if (self.ball.checkIfScored(self.player) or self.ball.checkIfScored(self.opp)):
-            await self.isScored()
-        if self.player.score == self.max_points or self.opp.score == self.max_points:
-            await self.setGameOver()
-        self.ball.translate()
-        await self.movePlayer()
-
 
     def resetGame(self):
         self.player.score = 0
@@ -316,6 +312,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         if status == "endGame":
             self.resetGame()
         await self.send(text_data=json.dumps({"type": 'status', 'status': status ,"message": message, "name": name}))
+        if status == 'start':
+            asyncio.create_task(self.gameLoop())
 
     async def pong_character_data(self, event): 
         if (self.player.name == event["name"]):

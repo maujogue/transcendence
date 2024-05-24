@@ -280,3 +280,57 @@ class MultipleCases(TestCase):
 		self.assertEqual(response_remove.status_code, 200)
 		self.assertEqual(self.user1.friends.count(), 0)
 		self.assertEqual(self.user2.friends.count(), 0)
+
+
+class GetUserDataCases(TestCase):
+	def setUp(self):
+		self.user1 = CustomUser.objects.create_user(
+            username="lboulatr",
+            email="lboulatr@gmail.com",
+            password="ClassicPassword9+")
+		self.user2 = CustomUser.objects.create_user(
+            username="osterga",
+            email="osterga@gmail.com",
+            password="ClassicPassword9+")
+		self.user3 = CustomUser.objects.create_user(
+			username="oxford-mate",
+			email="oxford@gmail.com",
+			password="ClassicPassword9+")
+		
+		self.user1.email_is_verified = True
+		self.user1.save()
+		self.user2.email_is_verified = True
+		self.user2.save()
+		self.user3.email_is_verified = True
+		self.user3.save()
+		
+		user1 = {
+			'username': 'lboulatr',
+			'password': 'ClassicPassword9+'
+		}
+
+		self.client.post(
+		    reverse('login'), 
+		    data=json.dumps(user1), 
+		    content_type='application/json')
+		
+		response_request = self.client.post(
+			reverse('send_request',
+			args=[self.user2.id]),
+			follow=True)
+		friend_request_id = response_request.json()['id']
+
+		self.client.post(
+			reverse('accept',
+			args=[friend_request_id]),
+			follow=True)
+		
+
+	def test_friendslist_from_get_user_data(self):
+		response = self.client.post(reverse('get_user_data'))
+		data = response.json()
+		self.assertEqual(data.get('status'), 'success')
+		self.assertEqual(response.status_code, 200)
+
+		friendslist = data.get('user').get('friendslist')
+		self.assertEqual(len(friendslist), self.user1.friends.count())

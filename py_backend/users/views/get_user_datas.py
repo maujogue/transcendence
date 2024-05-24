@@ -3,7 +3,7 @@ from django.views.decorators.csrf import requires_csrf_token
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 
-from users.utils import convert_image_to_base64, get_friendslist_data
+from users.utils import convert_image_to_base64, utils_get_friendslist_data
 
 
 @require_http_methods(["POST"])
@@ -21,6 +21,7 @@ def get_user_data(request):
         'winrate': user.winrate,
         'rank': user.rank,
         'n_games_played': user.n_games_played,
-        'friendslist': get_friendslist_data(user)
+        'friendslist': utils_get_friendslist_data(user)
     }
     return JsonResponse({'status': 'success', 'user': user_datas}, status=200)
+

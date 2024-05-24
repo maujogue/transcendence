@@ -44,7 +44,6 @@ async function disable42LoginElements() {
 	const headers = document.querySelectorAll(".auth-42-disable-header");
 	if (check_user_42()) {
 		elements.forEach(e => {
-			console.log(e);
 			e.classList.add("disabled");
 		});
 		headers.forEach(e => {

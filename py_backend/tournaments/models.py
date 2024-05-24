@@ -7,20 +7,6 @@ from django.core.exceptions import ValidationError
 from users.models import CustomUser
 from multiplayer.models import Lobby
 
-class Tournament(models.Model):
-	name = models.fields.CharField(max_length=15, unique=True)
-	max_players = models.IntegerField(validators=[MinValueValidator(2), MaxValueValidator(32)])
-	participants = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='joined_tournaments', blank=True)
-	started = models.BooleanField(default=False)
-	matchups = models.ManyToManyField(TournamentMatch)
-#TODO why doesn't work
-	def __str__(self):
-		return f'{self.name}'
-
-	def clean(self):
-		super().clean()
-
-
 class TournamentMatch(models.Model):
 	round = models.fields.CharField(max_length=15)
 	player_1 = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='player1_match')
@@ -32,3 +18,16 @@ class TournamentMatch(models.Model):
 
 	def __str__(self):
 		return f"{self.round}: {self.player_1} vs {self.player_2}"
+
+class Tournament(models.Model):
+	name = models.fields.CharField(max_length=15, unique=True)
+	max_players = models.IntegerField(validators=[MinValueValidator(2), MaxValueValidator(32)])
+	participants = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='joined_tournaments', blank=True)
+	started = models.BooleanField(default=False)
+	matchups = models.ManyToManyField(TournamentMatch)
+
+	def __str__(self):
+		return f'{self.name}'
+
+	def clean(self):
+		super().clean()

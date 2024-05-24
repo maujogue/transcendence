@@ -1,8 +1,8 @@
 import json
 import base64
 from channels.generic.websocket import AsyncWebsocketConsumer
-from asgiref.sync import sync_to_async
 from .models import Tournament
+from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
 
 class TournamentConsumer(AsyncWebsocketConsumer):

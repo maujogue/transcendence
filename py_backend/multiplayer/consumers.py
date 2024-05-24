@@ -179,7 +179,8 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def gameLoop(self):
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
         while self.lobby.game_started:
-            await self.checkAllCollisions()
+            if self.player.name == 'player1':
+                await self.checkAllCollisions()
             if (self.ball.checkIfScored(self.player) or self.ball.checkIfScored(self.opp)):
                 await self.isScored()
             if self.player.score == self.max_points or self.opp.score == self.max_points:

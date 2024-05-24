@@ -5,10 +5,13 @@ async function isLoggedIn() {
 	var username = await getUserData("username");
 	if (username) {
 		var response = await runEndPoint("users/check_user_logged_in/" + username + "/", "POST");
-		console.log(response.data["is_logged_in"])
 		return response.data["is_logged_in"];
 	}
 	return false
+}
+
+async function check_user_42() {
+	return await getUserData("is_42auth");
 }
 
 function printQueryParamsMessage(queryParams) {
@@ -28,6 +31,35 @@ async function toggleContentOnLogState() {
 		logOutContent.forEach((e) => (e.style.display = "block"));
 	}
 	disableCollapsedSidebar();
+	disable42LoginElements();
+	resetAllForm();
+}
+
+function resetAllForm() {
+	document.querySelectorAll('form')?.forEach(form => { form.reset() });
+}
+
+async function disable42LoginElements() {
+	const elements = document.querySelectorAll(".auth-42-disable");
+	const headers = document.querySelectorAll(".auth-42-disable-header");
+	if (check_user_42()) {
+		elements.forEach(e => {
+			console.log(e);
+			e.classList.add("disabled");
+		});
+		headers.forEach(e => {
+			e.innerHTML = "<btn class='btn w-100 bg-warning mb-3 '>You can't modify your username, email or password because you logged in with 42</span>";
+		});
+	}
+	else {
+		elements.forEach(e => {
+			if (e.classList.contains("disabled"))
+				e.classList.remove("disabled");
+		});
+		headers.forEach(e => {
+			e.innerHTML = "";
+		});
+	}
 }
 
 async function disableCollapsedSidebar() {
@@ -118,6 +150,7 @@ export {
 	toggleContentOnLogState,
 	showAlert,
 	isLoggedIn,
+	check_user_42,
 	togglePasswordVisibility,
 	checkPassword,
 	printQueryParamsMessage,

@@ -1,5 +1,4 @@
 import { register, login, logout } from "../ApiCalls.js";
-import { navigateTo } from "../Router.js";
 import { togglePasswordVisibility, checkPassword, showAlert, printQueryParamsMessage } from "../Utils.js";
 
 export function init(queryParams) {

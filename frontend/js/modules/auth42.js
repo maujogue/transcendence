@@ -10,6 +10,5 @@ export async function init() {
 	authButton.addEventListener("click", (e) => {
 		e.preventDefault();
 		window.location.href = "/api/auth42/login_with_42/";
-		// var response = runEndPoint("api/auth42/login_with_42/", "GET");
 	})
 }

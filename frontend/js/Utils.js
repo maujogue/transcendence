@@ -11,6 +11,11 @@ async function isLoggedIn() {
 	return false
 }
 
+function printQueryParamsMessage(queryParams) {
+	if (queryParams && queryParams.get("message"))
+		showAlert(queryParams.get("message"), queryParams.get("success"));
+}
+
 async function toggleContentOnLogState() {
 	const logInContent = document.querySelectorAll(".logInContent");
 	const logOutContent = document.querySelectorAll(".logOutContent");
@@ -40,6 +45,7 @@ async function disableCollapsedSidebar() {
 
 function showAlert(message, success) {
 	var alertDiv = document.createElement("div");
+	success = success === true || success === 'true';
 	var bgColor = success ? "alert-success" : "alert-danger";
 	alertDiv.className = "alert d-flex align-items-center";
 	alertDiv.classList.add(bgColor);
@@ -114,4 +120,5 @@ export {
 	isLoggedIn,
 	togglePasswordVisibility,
 	checkPassword,
+	printQueryParamsMessage,
 };

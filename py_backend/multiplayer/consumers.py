@@ -40,9 +40,9 @@ class PongConsumer(AsyncWebsocketConsumer):
         character = text_data_json["character"]
         await self.channel_layer.group_send(
             self.lobby_group_name, {
-                'type': 'pong.data', 
-                'character': character, 
-                'sender': self.channel_name, 
+                'type': 'pong.data',
+                'character': character,
+                'sender': self.channel_name,
                 'name': self.player.name
                 }
         )

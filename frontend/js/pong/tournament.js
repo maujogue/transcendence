@@ -18,7 +18,7 @@ export async function connectToTournament(tournament) {
             }));
         })
     }
-    
+
     wsTournament.onmessage = (event) => {
         const data = JSON.parse(event.data);
         if (data.type == "participants") {

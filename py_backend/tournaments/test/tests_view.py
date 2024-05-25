@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.test import Client
 
 from users.models import CustomUser
-from tournaments.models import Tournament
+from tournaments.models import Tournament, TournamentMatch
 
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -120,20 +120,6 @@ class TournamentModeTest(TestCase):
 		response = self.create_test_tournament(name, max_players)
 		self.assertEqual(response.status_code, 400)
 
-### tests join a tournament ###
-		
-# # join public with host working fine
-# 	def test_join_with_host(self):
-# 		self.client.login(username='testuser1', password='Password1+')
-
-# 		name = "Hi there"
-# 		max_players = 8
-		
-# 		tournament = self.create_test_tournament(name, max_players)
-# 		id = self.find_tournament_id(tournament)
-# 		response = self.client.post(reverse("join_tournament", args=[id]))
-# 		self.assertEqual(response.status_code, 200)
-
 # join public with other account working fine
 	def test_join_with_other(self):
 		self.client.login(username='testuser1', password='Password1+')
@@ -204,41 +190,41 @@ class TournamentModeTest(TestCase):
 		response = self.client.post(reverse("join_tournament", args=[id]))
 		self.assertEqual(response.status_code, 400)
 
-# # join a tournament already joined
-# 	def test_already_joined(self):
+# join a tournament already joined
+	def test_already_joined(self):
 
-# 		name = "Hi there"
-# 		max_players = 4
+		name = "Hi there"
+		max_players = 4
 
-# 		self.client.login(username='testuser1', password='Password1+')
-# 		tournament = self.create_test_tournament(name, max_players)
-# 		id = self.find_tournament_id(tournament)
-# 		response = self.client.get(reverse("check_if_tournament_joined", args=['testuser1']))
-# 		self.assertEqual(response.status_code, 200)
-# 		self.assertEqual(json.loads(response.content).get('joined'), True)
+		self.client.login(username='testuser1', password='Password1+')
+		tournament = self.create_test_tournament(name, max_players)
+		id = self.find_tournament_id(tournament)
+		response = self.client.get(reverse("check_if_tournament_joined", args=['testuser1']))
+		self.assertEqual(response.status_code, 200)
+		self.assertEqual(json.loads(response.content).get('joined'), True)
 
-# 		self.client.logout()
-# 		self.client.login(username='testuser2', password='Password2+')
-# 		response = self.client.post(reverse("join_tournament", args=[id]))
-# 		self.assertEqual(response.status_code, 200)
+		self.client.logout()
+		self.client.login(username='testuser2', password='Password2+')
+		response = self.client.post(reverse("join_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)
 
-# 		self.client.logout()
-# 		self.client.login(username='testuser1', password='Password1+')
-# 		response = self.client.post(reverse("join_tournament", args=[id]))
-# 		self.assertEqual(response.status_code, 400)
+		self.client.logout()
+		self.client.login(username='testuser1', password='Password1+')
+		response = self.client.post(reverse("join_tournament", args=[id]))
+		self.assertEqual(response.status_code, 400)
 
-# # join without authentification
-# 	def test_join_not_login(self):
+# join without authentification
+	def test_join_not_login(self):
 
-# 		name = "Hi there"
-# 		max_players = 4
+		name = "Hi there"
+		max_players = 4
 
-# 		self.client.login(username='testuser1', password='Password1+')
-# 		tournament = self.create_test_tournament(name, max_players)
-# 		id = self.find_tournament_id(tournament)
-# 		self.client.logout()
-# 		response = self.client.post(reverse("join_tournament", args=[id]))
-# 		self.assertEqual(response.status_code, 302)
+		self.client.login(username='testuser1', password='Password1+')
+		tournament = self.create_test_tournament(name, max_players)
+		id = self.find_tournament_id(tournament)
+		self.client.logout()
+		response = self.client.post(reverse("join_tournament", args=[id]))
+		self.assertEqual(response.status_code, 302)
 
 # join non existant tournament
 	def test_join_non_existant_tournament(self):
@@ -387,3 +373,85 @@ class TournamentModeTest(TestCase):
 		self.assertEqual(response.status_code, 200)
 		response = self.client.post(reverse("join_tournament", args=[id]))
 		self.assertEqual(response.status_code, 404)
+
+### tests to launch tournament
+
+	def test_tournament_launch_and_matchups(self):
+		name = "Hi there"
+		max_players = 4
+
+		self.client.login(username='testuser1', password='Password1+')
+		tournament = self.create_test_tournament(name, max_players)
+		id = self.find_tournament_id(tournament)
+
+		self.client.logout()
+		self.client.login(username='testuser2', password='Password2+')
+		response = self.client.post(reverse("join_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)
+
+		self.client.logout()
+		self.client.login(username='testuser3', password='Password3+')
+		response = self.client.post(reverse("join_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)
+
+		self.client.login(username='testuser4', password='Password4+')
+		response = self.client.post(reverse("join_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)
+
+		tournament = Tournament.objects.get(pk=id)
+		self.assertTrue(tournament.started)
+
+		matchups = tournament.matchups.all()
+		self.assertEqual(matchups.count(), 2)
+
+		for match in matchups:
+			self.assertIsInstance(match, TournamentMatch)
+			self.assertIn(match.player_1, [self.user_host, self.user2, self.user3, self.user4])
+			self.assertIn(match.player_2, [self.user_host, self.user2, self.user3, self.user4])
+
+	def test_odd_number_of_participants(self):
+		name = "Hi there"
+		max_players = 5
+
+		self.client.login(username='testuser1', password='Password1+')
+		tournament = self.create_test_tournament(name, max_players)
+		id = self.find_tournament_id(tournament)
+
+		self.client.logout()
+		self.client.login(username='testuser2', password='Password2+')
+		response = self.client.post(reverse("join_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)
+
+		self.client.logout()
+		self.client.login(username='testuser3', password='Password3+')
+		response = self.client.post(reverse("join_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)
+
+		self.client.logout()
+		self.client.login(username='testuser4', password='Password4+')
+		response = self.client.post(reverse("join_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)
+
+		self.client.logout()
+		self.client.login(username='testuser5', password='Password5+')
+		response = self.client.post(reverse("join_tournament", args=[id]))
+		self.assertEqual(response.status_code, 200)
+
+		tournament = Tournament.objects.get(pk=id)
+		self.assertTrue(tournament.started)
+
+		matchups = tournament.matchups.all()
+		self.assertEqual(matchups.count(), 3)
+
+		all_players = {self.user_host, self.user2, self.user3, self.user4, self.user5}
+		matched_players = set()
+		for match in matchups:
+			self.assertIsInstance(match, TournamentMatch)
+			matched_players.add(match.player_1)
+			if match.player_2 is not None:
+				matched_players.add(match.player_2)
+			self.assertIn(match.player_1, [self.user_host, self.user2, self.user3, self.user4, self.user5])
+			if match.player_2 is not None:
+				self.assertIn(match.player_2, [self.user_host, self.user2, self.user3, self.user4, self.user5])
+
+		self.assertEqual(all_players, matched_players)

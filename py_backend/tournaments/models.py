@@ -24,7 +24,7 @@ class Tournament(models.Model):
 	max_players = models.IntegerField(validators=[MinValueValidator(2), MaxValueValidator(32)])
 	participants = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='joined_tournaments', blank=True)
 	started = models.BooleanField(default=False)
-	matchups = models.ManyToManyField(TournamentMatch)
+	matchups = models.ManyToManyField(TournamentMatch, blank=True)
 
 	def __str__(self):
 		return f'{self.name}'

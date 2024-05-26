@@ -1,1 +1,0 @@
--Change create tournament view so the creator join the tournament when created

@@ -1,9 +1,13 @@
 import json
 import base64
+
 from channels.generic.websocket import AsyncWebsocketConsumer
-from .models import Tournament
-from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
+
+from asgiref.sync import sync_to_async
+
+from .models import Tournament, TournamentMatch
+from .signals import tournament_started
 
 class TournamentConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -23,6 +27,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 'participants': participants
             }
         )
+        tournament_started.connect(self.tournament_started_handler)
+
 
     async def receive(self, text_data):
         print("receive")
@@ -30,6 +36,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if text_data_json.get('type') == 'auth':
             await self.send(text_data=json.dumps({ "type": "auth", "status": "success"}))
         print(text_data_json)
+
 
     async def disconnect(self, close_code):
         print('disconnected')
@@ -45,6 +52,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.tournament.name,
             self.channel_name
         )
+        tournament_started.disconnect(self.tournament_started_handler)
 
     @database_sync_to_async
     def get_tournament(self):
@@ -60,3 +68,23 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def tournament_participants(self, event):
         await self.send(
             text_data=json.dumps({'type': 'participants', 'participants': event['participants']}))
+    
+    @database_sync_to_async
+    def get_player_match(self, user):
+        return TournamentMatch.objects.filter(player_1=user).first()
+
+    async def tournament_started_handler(self, sender, **kwargs):
+        tournament = kwargs['tournament']
+        if tournament.id == self.tournament.id:
+            match = await self.get_player_match(self.scope['user'])
+            if match:
+                match_infos = {
+                    'match_id': match.id,
+                    'player_1': match.player_1.username,
+                    'player_2': match.player_2.username if match.player_2 else None,
+                    'round': match.round
+                }
+                await self.send(text_data=json.dumps({
+                    'type': 'match_start',
+                    'match': match_infos
+                }))

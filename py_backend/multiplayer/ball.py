@@ -19,9 +19,9 @@ class Ball:
     
     def collisionBorder(self):
         if self.dirX > 0:
-            self.dirY += 0.02
+            self.dirX += 0.02
         else:
-            self.dirY -= 0.02 
+            self.dirX -= 0.02
         self.dirY *= -1
 
     def checkCollisionPaddle(self, player):

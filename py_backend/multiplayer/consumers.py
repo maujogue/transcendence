@@ -199,7 +199,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         if move != 0 and move != 1 and move != -1:
             return
         if move != 0:
-            move = 0.095 if move == 1 else -0.095
+            move = 0.125 if move == 1 else -0.125
         if self.player.move == move:
             return
         self.player.move = move

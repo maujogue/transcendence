@@ -1,9 +1,10 @@
+import random
 
 class Ball:
     posX = 0
     posY = 0
-    dirX = 0.055
-    dirY = 0
+    dirX = random.choice([-0.080, 0.080])
+    dirY = random.uniform(-0.025, 0.025)
 
     def translate(self):
         self.posX += self.dirX
@@ -43,7 +44,7 @@ class Ball:
         elif self.dirX < 0 and self.dirX > -0.55:
             self.dirX -= 0.009
         center = player.posY
-        self.dirY = 0.08 * (self.posY - center)
+        self.dirY += 0.08 * (self.posY - center)
     
     def checkIfScored(self, player):
         if player.name == "player1" and self.posX <= -12:
@@ -55,6 +56,6 @@ class Ball:
     def reset(self):
         self.posX = 0
         self.posY = 0
-        self.dirX = 0.055
-        self.dirY = 0
+        self.dirX = random.choice([-0.080, 0.080])
+        self.dirY = random.uniform(-0.025, 0.025)
 

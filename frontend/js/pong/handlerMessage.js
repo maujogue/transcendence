@@ -13,6 +13,8 @@ export function setBallData(data, env) {
     env.ball.direction.x = data['dirX'];
     env.ball.direction.y = data['dirY'];
     if (env.ball.mesh.position.x != data['posX'] || env.ball.mesh.position.y != data['posY']) {
+        env.ball.mesh.translateX(data['posX'] - env.ball.mesh.position.x);
+        env.ball.mesh.translateY(data['posY'] - env.ball.mesh.position.y);
         env.ball.mesh.position.y = data['posY'];
         env.ball.mesh.position.x = data['posX'];
     }

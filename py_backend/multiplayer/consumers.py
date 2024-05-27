@@ -36,8 +36,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.player = Player(name, character='chupacabra', lobby_id=self.lobby.uuid, posX=posX)
         self.opp = Player(oppName, character='chupacabra', lobby_id=self.lobby.uuid, posX=oppPosX)
         await self.lobby.asave()
-    
-
 
     async def connect(self):
         self.max_points = 3
@@ -230,16 +228,20 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def isScored(self):
         self.player.resetPaddlePos()
         self.opp.resetPaddlePos()
+        ballDirX = self.ball.dirX
 
         if not self.player.name == 'player1':
             return 
         if self.ball.checkIfScored(self.player):
             await self.sendScore(self.opp)
+            ballDirX = -0.080
             self.exchangeBeforePointsP1.append(self.countExchange)
         if self.ball.checkIfScored(self.opp):
             await self.sendScore(self.player)
+            ballDirX = 0.080
             self.exchangeBeforePointsP2.append(self.countExchange)
         self.ball.reset()
+        self.ball.dirX = ballDirX
         await self.sendBallData()
 
     async def collision(self, player):

@@ -108,8 +108,6 @@ def join_tournament(request, tournament_id):
 		tournament.started = True
 		tournament.save()
 		generate_bracket(tournament)
-		return JsonResponse({"message": "Tournament joined successfully and start.", "id": tournament.id},
-					status=200)
 
 	return JsonResponse({"message": "Tournament joined successfully.", "id": tournament.id},
 					status=200)

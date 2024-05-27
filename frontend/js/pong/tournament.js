@@ -7,33 +7,49 @@ import { getUserData } from "../User.js";
 export let wsTournament
 
 export async function connectToTournament(tournament) {
-    wsTournament = new WebSocket(`ws://127.0.0.1:8080/ws/tournament/${tournament.id}/`);
-
-    wsTournament.onopen = () => {
-        createWaitingScreenTournament(tournament);
-        getUserData('username').then((res) => {
-            wsTournament.send(JSON.stringify({
-                'type': 'auth',
-                'username': res,
-            }));
-        })
-    }
-
-    wsTournament.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        if (data.type == "participants") {
-            if (document.getElementById("player-list"))
-                document.getElementById("player-list").innerHTML = "";
-            data.participants.map((participant) => {
-                insertPlayer(participant);
+    try {
+        wsTournament = new WebSocket(`ws://127.0.0.1:8080/ws/tournament/${tournament.id}/`);
+    
+        wsTournament.onopen = () => {
+            console.log("WebSocket connection opened.");
+            createWaitingScreenTournament(tournament);
+            getUserData('username').then((res) => {
+                console.log("Sending auth message with username:", res);
+                wsTournament.send(JSON.stringify({
+                    'type': 'auth',
+                    'username': res,
+                }));
+            }).catch(err => {
+                console.error("Error fetching user data:", err);
             });
-        }
-        // if (data.type == "auth")
-        //     alert(data.status);
+        };
+    
+        wsTournament.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.type == "participants") {
+                if (document.getElementById("player-list"))
+                    document.getElementById("player-list").innerHTML = "";
+                data.participants.map((participant) => {
+                    insertPlayer(participant);
+                });
+            }
+            // if (data.type == "auth")
+            //     alert(data.status);
+    
+            if (data.type == "match_start") {
+                console.log("Match start data:", data.match);
+            }
+        };
 
-        if (data.type == "match_start") {
-            console.log(data.match);
-        }
+        wsTournament.onerror = (error) => {
+            console.error("Websocket error observed:", error);
+        };
+
+        wsTournament.onclose = (event) => {
+            console.log("Websocket connection closed:", event);
+        };
+    } catch(err) {
+        console.error("Failed to connect to WebSocket:", err);
     }
 }
 

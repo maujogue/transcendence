@@ -15,6 +15,7 @@ class TournamentMatch(models.Model):
 	score_player_1 = models.IntegerField(default=0)
 	score_player_2 = models.IntegerField(default=0)
 	lobby = models.ForeignKey(Lobby, on_delete=models.CASCADE)
+	finished = models.BooleanField(default=False)
 
 	def __str__(self):
 		return f"{self.round}: {self.player_1} vs {self.player_2}"

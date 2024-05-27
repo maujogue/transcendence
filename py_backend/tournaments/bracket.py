@@ -1,5 +1,4 @@
 from django.dispatch import receiver
-from .signals import tournament_started
 
 import random
 from .models import Tournament, TournamentMatch, Lobby
@@ -7,6 +6,7 @@ from .models import Tournament, TournamentMatch, Lobby
 
 
 def generate_bracket(tournament):
+    print("test")
     participants = list(tournament.participants.all())
     random.shuffle(participants)
 
@@ -28,4 +28,5 @@ def generate_bracket(tournament):
             lobby=match_lobby
         )
         tournament.matchups.add(match)
-    tournament_started.send(sender=tournament.__class__, tournament=tournament)
+
+    tournament.save()

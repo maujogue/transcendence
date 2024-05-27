@@ -59,16 +59,29 @@ def oauth_callback(request):
     token_json = token_response.json()
     access_token = token_json.get('access_token')
     
+    if not access_token:
+        return redirect('/dash?success=false&message=Failed to obtain access token from 42 API.')
+    
     user_info_url = 'https://api.intra.42.fr/v2/me'
     headers = {'Authorization': f'Bearer {access_token}'}
     user_info_response = requests.get(user_info_url, headers=headers)
+    
+    if user_info_response.status_code != 200:
+        return redirect('/dash?success=false&message=Failed to obtain user information from 42 API.')
+
     user_info = user_info_response.json()
+    
+    if not all(k in user_info for k in ('login', 'email', 'image')):
+        return redirect('/dash?success=false&message=User information is incomplete from 42 API.')
     
     username = user_info.get('login')
     email = user_info.get('email')
-    img_url = user_info['image']['versions']['medium']
-    
-    avatarMedium = download_image(img_url, username)
+
+    if 'image' in user_info and 'versions' in user_info['image'] and 'medium' in user_info['image']['versions']:
+        img_url = user_info['image']['versions']['medium']
+        avatarMedium = download_image(img_url, username)
+    else:
+        return redirect('/dash?success=false&message=Failed to obtain user image from 42 API.')
     
     try:
         curr_user = CustomUser.objects.get(email=email, username=username, is_42auth=True)

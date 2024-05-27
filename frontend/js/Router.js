@@ -25,7 +25,7 @@ const routes = [
 	new Page("Sidebar", "", "html/Sidebar.html", true),
 	new Page("About", "/about", "html/About.html"),
 	new Page("Game", "/game", "html/Game.html", true),
-	new Page("EmailVerified", "/emailVerified", "html/EmailVerified.html"),
+	new Page("EmailVerified", "/emailVerified", "html/EmailVerified.html", true),
 ];
 
 window.addEventListener("popstate", () => router(routes));

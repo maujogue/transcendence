@@ -139,7 +139,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         try:
             await self.lobby.disconnectUser(self.player)
             await self.channel_layer.group_send(
-                self.lobby_group_name, {  'type': 'pong.status', 'status': 'disconnected', 'message': f"{self.scope['user']} is disconnected", 'name': self.player.name}
+                self.lobby_group_name, {  'type': 'pong.status', 'status': 'disconnected', 'message': f"{self.scope['user']} leave the game", 'name': self.player.name}
             )
             if (self.lobby.game_started == True):
                 await self.lobby.stopGame()

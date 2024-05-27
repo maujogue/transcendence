@@ -27,8 +27,7 @@ export function handlerScore(data, env, player, opp) {
     playersMove.clear();
 }
 
-function handlerStopGame(webSocket, env, start, message) {
-    console.log("handlerStopGame: ", message);
+function handlerStopGame(webSocket, env, message) {
     displayErrorPopUp(message, document.getElementById("hud"));
     document.getElementById("errorPopUp").classList.add("match-error");
     document.getElementById("PopUpCloseIcon").addEventListener("click", () => {
@@ -49,16 +48,16 @@ function handlerEndGame(data, env) {
     env.ball.mesh.position.y = 0;
 }
 
-function handlerPlayerDisconnect(data, env) {
-    env.scene.remove(env.scene.getObjectByName(data['name']));
-    env.renderer.render(env.scene, env.camera);
+function handlerPlayerDisconnect(data, env, webSocket) {
+    document.getElementById("endscreen")?.remove();
+    handlerStopGame(webSocket, env, data.message);
 }
 
 export function handlerStatusMessage(data, webSocket, env, status) {
     if (data['status'] == 'disconnected')
-        handlerPlayerDisconnect(data, env);
+        handlerPlayerDisconnect(data, env, webSocket);
     if (data['status'] == 'stop')
-        handlerStopGame(webSocket, env, status.start, data.message);
+        handlerStopGame(webSocket, env, data.message);
     if (data['status'] == 'endGame') {
         handlerEndGame(data, env);
     }

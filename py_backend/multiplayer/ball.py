@@ -33,7 +33,7 @@ class Ball:
             isOnPaddle = True
         if player.name == "player1" and self.posX <= player.posX and self.posX >= player.posX - 0.5:
             isOnPaddle = True
-        if (isOnPaddle and self.posY >= player.posY - 1 and self.posY <= player.posY + 1):
+        if (isOnPaddle and self.posY >= player.posY - 1.1 and self.posY <= player.posY + 1.1):
             return True
         return False
     

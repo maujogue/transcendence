@@ -14,6 +14,7 @@ urlpatterns = [
     path('get_user_data/', get_user_data, name='get_user_data'),
     path('username_available/', username_available, name='username_available'),
     path('email_available/', email_available, name='email_available'),
+	path('trainAI/', trainAI, name='trainAI'),
     path('confirm_email/<uidb64>/<token>/', confirm_email, name='confirm_email'),
     path('confirm_new_email/<uidb64>/<token>/<new_email>/', confirm_new_email, name='confirm_new_email'),
 ]

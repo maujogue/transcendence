@@ -12,3 +12,4 @@ from .username_availaible import *
 from .email_available import *
 from .confirm_email import *
 from .confirm_new_email import *
+from .trainAI import *

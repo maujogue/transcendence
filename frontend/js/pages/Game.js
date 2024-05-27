@@ -20,6 +20,7 @@ import * as THREE from 'three';
 export var lobby;
 export var clock;
 export var characters;
+export var soloMode;
 
 var isGameLoaded = false;
 
@@ -39,11 +40,11 @@ export async function init() {
 	let keysPressed = {};
 	let isOnline = false;
 	let localLoop = false;
-	let soloMode = false;
 	let userData;
 	let form;
 	const gameDiv = document.getElementById('game');
 	const field = await createField();
+	soloMode = false;
 
 	loadAllModel();
 
@@ -132,6 +133,7 @@ export async function init() {
 		}
 		if (event.target.id == '1v1') {
 			localLoop = true;
+			soloMode = false;
 			localGameLoop();
 			goToLocalSelectMenu();
 		}
@@ -201,8 +203,6 @@ export async function init() {
 			ClearAllEnv(environment);
 			if (!soloMode)
 				divMenu.remove();
-			else
-				
 			environment = await initGame(player1, player2);
 		}
 		if (start) {

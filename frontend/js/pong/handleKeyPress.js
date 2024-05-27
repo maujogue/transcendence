@@ -1,5 +1,6 @@
 import { movePaddle } from "./movePaddle.js";
 import { displayCharacter } from "./displayCharacter.js";
+import { soloMode } from "../pages/Game.js";
 import { moveCursor } from "./menu.js";
 import * as THREE from 'three';
 
@@ -38,7 +39,7 @@ function handleKeyPress(keysPressed, player1, player2, environment) {
 		player1.light.position.y -= 0.15;
 	}
 
-	if (!player2)
+	if (!player2 || soloMode)
 		return;
 	playerBox2 = new THREE.Box3().setFromObject(player2.paddle.mesh);
 	if (keysPressed["ArrowUp"] && !environment.border.up.box.intersectsBox(playerBox2)) {

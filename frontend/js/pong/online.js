@@ -125,7 +125,7 @@ async function createOnlineSelectMenu(field) {
 async function connectToLobby(username) {
     if (username == null)
         return ;
-    webSocket = new WebSocket('ws://127.0.0.1:8080/ws/lobby/');
+    webSocket = new WebSocket('wss://127.0.0.1:8000/ws/lobby/');
     
     webSocket.onopen = function() {
         console.log('Connection established');
@@ -172,7 +172,7 @@ async function connectToLobby(username) {
         if (data['type'] == 'player_pos')
             movePaddle(data);
         if (data['type'] == 'score')
-        handlerScore(data, env, player, opp);
+            handlerScore(data, env, player, opp);
         if (data['type'] == 'ask_character') {
             webSocket.send(JSON.stringify({
                 "character": player.character.name

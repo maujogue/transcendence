@@ -13,6 +13,7 @@ py_backend/multiplayer/migrations
 py_backend/users/migrations
 py_backend/stats/migrations
 py_backend/tournaments/migrations
+py_backend/auth42/migrations
 
 
 # Byte-compiled / optimized / DLL files

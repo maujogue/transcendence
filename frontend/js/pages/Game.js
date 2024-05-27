@@ -15,6 +15,7 @@ import { getUserData } from "../User.js";
 import { sendTournamentForm, createFormTournament} from "../pong/createTournament.js";
 import { createJoinTournamentMenu } from "../pong/joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "../pong/tournament.js";
+import { showAlert } from "../Utils.js";
 import * as THREE from 'three';
 
 export var lobby;
@@ -23,7 +24,9 @@ export var characters;
 
 var isGameLoaded = false;
 
-export async function init() {
+export async function init(queryParams) {
+	if (queryParams && queryParams.get("message"))
+		showAlert(queryParams.get("message"), queryParams.get("success"));
 	if (isGameLoaded)
 		return;
 

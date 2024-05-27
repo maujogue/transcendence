@@ -1,3 +1,3 @@
 from django.dispatch import Signal
 
-tournament_started = Signal(providing_args=["tournament"])
+tournament_started = Signal("tournament")

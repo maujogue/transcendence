@@ -27,6 +27,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 'participants': participants
             }
         )
+        print("in connect")
         tournament_started.connect(self.tournament_started_handler)
 
 
@@ -74,10 +75,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         return TournamentMatch.objects.filter(player_1=user).first()
 
     async def tournament_started_handler(self, sender, **kwargs):
+        print("beginning of function")
         tournament = kwargs['tournament']
         if tournament.id == self.tournament.id:
             match = await self.get_player_match(self.scope['user'])
             if match:
+                print("is in the match if")
                 match_infos = {
                     'match_id': match.id,
                     'player_1': match.player_1.username,

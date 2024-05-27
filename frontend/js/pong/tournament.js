@@ -28,8 +28,12 @@ export async function connectToTournament(tournament) {
                 insertPlayer(participant);
             });
         }
-        if (data.type == "auth")
-            alert(data.status);
+        // if (data.type == "auth")
+        //     alert(data.status);
+
+        if (data.type == "match_start") {
+            console.log(data.match);
+        }
     }
 }
 

@@ -396,6 +396,7 @@ class TournamentModeTest(TestCase):
 
 		self.client.login(username='testuser4', password='Password4+')
 		response = self.client.post(reverse("join_tournament", args=[id]))
+		print(response)
 		self.assertEqual(response.status_code, 200)
 
 		tournament = Tournament.objects.get(pk=id)

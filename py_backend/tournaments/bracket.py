@@ -28,5 +28,4 @@ def generate_bracket(tournament):
             lobby=match_lobby
         )
         tournament.matchups.add(match)
-
     tournament_started.send(sender=tournament.__class__, tournament=tournament)

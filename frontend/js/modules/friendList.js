@@ -1,6 +1,7 @@
 import { getModuleDiv } from "../Modules.js";
 import { runEndPoint } from "../ApiUtils.js"
 import { showAlert, disableCollapsedSidebar } from "../Utils.js";
+import { checkInputAvailable } from "../ApiCalls.js";
 
 export async function init() {
 	var module = getModuleDiv("friendList");
@@ -18,7 +19,7 @@ export async function init() {
 	<img width="30" height="30" class="rounded-circle me-3 avatarDynamic" />
 	<span class="mt-1 usernameDynamic section-name"></span>
 	</a>`;
-	for (var i = 0; i < 50; i++)
+	for (var i = 0; i < 5; i++)
 		friendScroll.innerHTML += friendListHtml;
 	var response = await runEndPoint("friends/get_friendslist/");
 	console.log(response);
@@ -30,7 +31,6 @@ export async function init() {
 		};
 		console.log(searchFriendForm, fetchBody["username"]);
 	
-		showAlert("User does not exist!")
 		// var response = await runEndPoint("friends/send_request/" + userData.get("username") + "/");
 		// if (response.statusCode === 200) {
 		// 	showAlert(response.data.success);
@@ -38,5 +38,20 @@ export async function init() {
 		// 	showAlert(response.data.error);
 		// }
 		// console.log(response);
+
+		await getFriendName(fetchBody.username);
+	}
+
+	async function getFriendName(username){
+	
+		var usernameAvailable = await checkInputAvailable(username, "username");
+		if (!usernameAvailable)
+			showAlert("exist !", true);
+		else
+			showAlert("does not exist.", false);
 	}
 }
+
+
+
+

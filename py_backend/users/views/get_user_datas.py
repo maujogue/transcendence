@@ -20,6 +20,7 @@ def get_user_data(request):
         'title': user.title,
         'winrate': user.winrate,
         'rank': user.rank,
-        'n_games_played': user.n_games_played
+        'n_games_played': user.n_games_played,
+        'is_42auth': user.is_42auth
     }
     return JsonResponse({'status': 'success', 'user': user_datas}, status=200)

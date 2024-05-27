@@ -15,7 +15,10 @@ def update_email(request):
     data = decode_json_body(request)
     if isinstance(data, JsonResponse):
         return data
-    
+
+    if request.user.is_42auth is True:
+        return JsonResponse({'status': "You cannot update your email because you are authenticated with 42."}, status=400)
+            
     email = data.get('email')
     is_valid, error_valid = email_is_valid(email)
     is_unique, error_unique = email_is_unique(email)

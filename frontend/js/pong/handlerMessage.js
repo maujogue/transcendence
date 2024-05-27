@@ -34,8 +34,8 @@ function handlerStopGame(webSocket, env, message) {
         ClearAllEnv(env);
         displayMainMenu();
         document.getElementById("hud").remove();
-        webSocket.close();
     });
+    webSocket.close();
 }
 
 function handlerEndGame(data, env) {

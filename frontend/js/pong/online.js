@@ -18,14 +18,14 @@ let opp;
 let keysPressed = {};
 let keyPress = false;
 let status = {
-    'ready': false,
     'start': false,
-    'isReady': false,
     'exit': false,
+    'is_connected': false,
 }
 let keyUp = false;
 let webSocket;
 let oppInfo;
+export const playersMove = new Map();
 
 document.addEventListener('fullscreenchange', function() {
 	resize(env);
@@ -39,7 +39,22 @@ function setUserInfo(data) {
     return user;
 }
 
-export const playersMove = new Map();
+function clearVariables() {
+    webSocket = null;
+    player = null;
+    opp = null;
+    keysPressed = {};
+    keyPress = false;
+    status = {
+        'start': false,
+        'exit': false,
+    }
+    keyUp = false;
+    webSocket = null;
+    oppInfo = null;
+    playersMove.clear();
+}
+
 
 document.addEventListener('keypress', function(event) {
     keysPressed[event.key] = true;
@@ -56,6 +71,19 @@ document.addEventListener("keyup", function(event) {
     event.stopPropagation();
 });
 
+
+function leaveMatchmaking() {
+    if (webSocket)
+        webSocket.close();
+    document.getElementById("waitingScreen")?.remove();
+    createInterfaceSelectMenu();
+    removeP2Cursor();
+    const paddle = env.scene.getObjectByName("paddle_" + player.name);
+    player.name = "player";
+    paddle.name = "paddle_player";
+}
+
+
 function clickHandler(event) {
     if (event.target.id == 'restart') {
         document.getElementById("endscreen")?.remove();
@@ -66,24 +94,19 @@ function clickHandler(event) {
         if (webSocket)
             webSocket.close();
     }
-    if (event.target.id == 'closeMatchmaking') {
-        if (webSocket)
-            webSocket.close();
-        document.getElementById("waitingScreen")?.remove();
-        createInterfaceSelectMenu();
-        document.getElementById("cursorP2").remove();
-        document.getElementsByClassName("inputP2")[0].remove();
-        const paddle = env.scene.getObjectByName("paddle_" + player.name);
-        player.name = "player";
-        paddle.name = "paddle_player";
-    }
+    if (event.target.id == 'closeMatchmaking')
+        leaveMatchmaking();
 }
+
+function removeP2Cursor() {
+    document.getElementById("cursorP2").remove();
+    document.getElementsByClassName("inputP2")[0].remove();
+}
+
 
 async function goToOnlineSelectMenu(field) {
     env = createSelectMenu(field, characters);
-    document.getElementById("cursorP2").remove();
-    document.getElementsByClassName("inputP2")[0].remove();
-    env.renderer.render(env.scene, env.camera);
+    removeP2Cursor();
 }
 
 
@@ -100,13 +123,13 @@ async function createOnlineSelectMenu(field) {
 }
 
 async function connectToLobby(username) {
-    console.log("username: ", username);
     if (username == null)
         return ;
     webSocket = new WebSocket('wss://127.0.0.1:8000/ws/lobby/');
     
     webSocket.onopen = function() {
         console.log('Connection established');
+        status.is_connected = true;
         document.getElementById("selectMenu").remove();
         webSocket.send(JSON.stringify({
             'type': 'auth',
@@ -120,6 +143,7 @@ async function connectToLobby(username) {
     
     webSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
+        console.log(data);
 
         if (data['type'] == 'player_data') {
             const paddle = env.scene.getObjectByName("paddle_" + player.name);
@@ -127,7 +151,7 @@ async function connectToLobby(username) {
             paddle.name = "paddle_" + data['name'];
         }
         if (data['type'] && data['type'] == 'status')
-            handlerStatusMessage(data, webSocket, env, status, player);
+            handlerStatusMessage(data, webSocket, env, status);
         if (data['type'] == 'ball_data')
             setBallData(data, env);
         if (data['type'] == 'auth' && data['status'] == 'failed') 
@@ -145,14 +169,8 @@ async function connectToLobby(username) {
             else 
                 oppInfo = setUserInfo(data);
         }
-        if (data['message'] == 'start') {
-            status.gameIsInit = true;
-            document.getElementById("waitingScreen")?.remove();
-        }
-        if (data['type'] == 'player_pos') {
-            env.scene.getObjectByName("paddle_" + data['name']).position.y = data['posY'];
-            playersMove.set("paddle_" + data['name'], data['move']);
-        }
+        if (data['type'] == 'player_pos')
+            movePaddle(data);
         if (data['type'] == 'score')
             handlerScore(data, env, player, opp);
         if (data['type'] == 'ask_character') {
@@ -172,34 +190,29 @@ async function connectToLobby(username) {
 
     webSocket.onclose = function(e) {
         console.log('Connection closed', e.code, e.reason);
-        webSocket = null;
-        status.isReady = false;
-        // status.exit = true;
+        status.is_connected = false;
+        if (status.start)
+            clearVariables();
     }
 
     webSocket.onerror = function(e) {
+        status.is_connected = false;
         const selectMenu = document.getElementById("selectMenu");
         const div = document.createElement("div");
         div.id = "error";
         div.innerHTML = "Error while connecting to the server";
         selectMenu.appendChild(div);
         webSocket = null;
-        status.isReady = false;
     }
 }
 
-function setIsReady() {
-    let ready;
-
-    if (status.isReady) {
-        status.isReady = false;
-        ready = 'false';
-    } else {
-        status.isReady = true;
-        ready = 'true';
-    }
-    keysPressed[' '] = false;
-    return (ready);
+function movePaddle(data) {
+    const paddle = env.scene.getObjectByName("paddle_" + data['name']);
+    if (!paddle)
+        return ;
+    paddle.translateY(data['move']);
+    if (paddle.position.y != data['posY'])
+        paddle.position.y = data['posY'];
 }
 
 function sendMove(webSocket) { 
@@ -225,26 +238,10 @@ function sendMove(webSocket) {
     }
 }
 
-function movePlayers() {
-    playersMove.forEach((value, key) => {
-        const paddle = env.scene.getObjectByName(key);
-        if (!paddle)
-            return ;
-        const playerBox = new THREE.Box3().setFromObject(paddle);
-        if (value > 0 && !env.border.up.box.intersectsBox(playerBox))
-            paddle.translateY(value);
-        if (value < 0 && !env.border.down.box.intersectsBox(playerBox))
-            paddle.translateY(value);
-    });
-}
-
 async function sendIsReady(webSocket) {
-    const status = setIsReady();
-    keysPressed[' '] = false;
-    keyPress = false;
     await sendCharacter(webSocket);
     webSocket.send(JSON.stringify({
-        'ready': status
+        'ready': 'true'
     }));
 }
 
@@ -252,7 +249,10 @@ async function setGameIsStart() {
     if (player && opp && oppInfo) {
         opp.userInfo = oppInfo;
         ClearAllEnv(env);
-        env = await initGame(player, opp);
+        if (player.name == "player1")
+            env = await initGame(player, opp);
+        else
+            env = await initGame(opp, player);
         createHUD(player, opp);
         status.gameIsInit = false;
         status.start = true;
@@ -267,12 +267,10 @@ async function onlineGameLoop(webSocket) {
         status.exit = true;
         document.removeEventListener('click', clickHandler);
     }
-    if (!status.isReady && !status.start && keysPressed[' '] && !webSocket) {
-        console.log('ready');
+    if (keysPressed[' '] && !status.is_connected) {
         keysPressed[' '] = false;
         getUserData('username').then((res) => {
-            connectToLobby(res);
-            status.isReady = true;
+            connectToLobby(res)
         })
         .catch((err) => {
             console.log(err);
@@ -282,14 +280,11 @@ async function onlineGameLoop(webSocket) {
         handleMenuKeyPress(keysPressed, player, null, env);
         keyPress = false;
     }
-    if (status.gameIsInit) {
+    if (status.gameIsInit)
         await setGameIsStart();
-    }
     if (status.start && webSocket) {
-        sendMove(webSocket);
-        movePlayers();
         translateBall(env.ball);
-        webSocket.send(JSON.stringify({ 'type': 'frame' }));
+        sendMove(webSocket);
     }
     env.renderer.render(env.scene, env.camera);
     updateMixers(player, opp);

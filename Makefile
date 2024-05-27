@@ -59,6 +59,7 @@ removecontainers:
 
 
 armageddon:	removecontainers
+		rm py_backend/db.sqlite3
 		docker	network	prune	-f
 		docker	rmi	-f	$$(docker images --filter dangling=true -qa)
 		docker	volume	rm $$(docker volume ls --filter dangling=true -q)

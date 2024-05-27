@@ -168,16 +168,10 @@ async function connectToLobby(username) {
             else 
                 oppInfo = setUserInfo(data);
         }
-        if (data['type'] == 'player_pos') {
-            const paddle = env.scene.getObjectByName("paddle_" + data['name']);
-            paddle.translateY(data['move']);
-            if (paddle.position.y != data['posY']) {
-                console.log("posY: ", data['posY']);
-                paddle.position.y = data['posY'];
-            }
-        }
+        if (data['type'] == 'player_pos')
+            movePaddle(data);
         if (data['type'] == 'score')
-            handlerScore(data, env, player, opp);
+        handlerScore(data, env, player, opp);
         if (data['type'] == 'ask_character') {
             webSocket.send(JSON.stringify({
                 "character": player.character.name
@@ -209,6 +203,15 @@ async function connectToLobby(username) {
         selectMenu.appendChild(div);
         webSocket = null;
     }
+}
+
+function movePaddle(data) {
+    const paddle = env.scene.getObjectByName("paddle_" + data['name']);
+    if (!paddle)
+        return ;
+    paddle.translateY(data['move']);
+    if (paddle.position.y != data['posY'])
+        paddle.position.y = data['posY'];
 }
 
 function sendMove(webSocket) { 

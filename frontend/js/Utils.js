@@ -42,7 +42,7 @@ function resetAllForm() {
 async function disable42LoginElements() {
 	const elements = document.querySelectorAll(".auth-42-disable");
 	const headers = document.querySelectorAll(".auth-42-disable-header");
-	if (check_user_42()) {
+	if (await check_user_42()) {
 		elements.forEach(e => {
 			e.classList.add("disabled");
 		});

@@ -125,7 +125,7 @@ async function createOnlineSelectMenu(field) {
 async function connectToLobby(username) {
     if (username == null)
         return ;
-    webSocket = new WebSocket('wss://127.0.0.1:8000/ws/lobby/');
+    webSocket = new WebSocket('ws://127.0.0.1:8080/ws/lobby/');
     
     webSocket.onopen = function() {
         console.log('Connection established');
@@ -168,8 +168,14 @@ async function connectToLobby(username) {
             else 
                 oppInfo = setUserInfo(data);
         }
-        if (data['type'] == 'player_pos')
-            env.scene.getObjectByName("paddle_" + data['name']).position.y = data['posY'];
+        if (data['type'] == 'player_pos') {
+            const paddle = env.scene.getObjectByName("paddle_" + data['name']);
+            paddle.translateY(data['move']);
+            if (paddle.position.y != data['posY']) {
+                console.log("posY: ", data['posY']);
+                paddle.position.y = data['posY'];
+            }
+        }
         if (data['type'] == 'score')
             handlerScore(data, env, player, opp);
         if (data['type'] == 'ask_character') {
@@ -272,8 +278,10 @@ async function onlineGameLoop(webSocket) {
     }
     if (status.gameIsInit)
         await setGameIsStart();
-    if (status.start && webSocket)
+    if (status.start && webSocket) {
+        translateBall(env.ball);
         sendMove(webSocket);
+    }
     env.renderer.render(env.scene, env.camera);
     updateMixers(player, opp);
     if (!status.exit)

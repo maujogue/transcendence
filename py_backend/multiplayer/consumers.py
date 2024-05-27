@@ -138,22 +138,25 @@ class PongConsumer(AsyncWebsocketConsumer):
         if self.is_connected == False:
             return
 
-        await self.lobby.disconnectUser(self.player)
-        await self.channel_layer.group_send(
-            self.lobby_group_name, {  'type': 'pong.status', 'status': 'disconnected', 'message': f"{self.scope['user']} is disconnected", 'name': self.player.name}
-        )
-        if (self.lobby.game_started == True):
-            await self.lobby.stopGame()
+        try:
+            await self.lobby.disconnectUser(self.player)
             await self.channel_layer.group_send(
-                self.lobby_group_name, { 'type': 'pong.status', 'status': 'stop', 'message': f"Connection lost with {self.scope['user']}", 'name': self.player.name}
+                self.lobby_group_name, {  'type': 'pong.status', 'status': 'disconnected', 'message': f"{self.scope['user']} is disconnected", 'name': self.player.name}
             )
-        await self.channel_layer.group_discard(
-            self.lobby_group_name,
-            self.channel_name
-        )
-        if self.lobby.connected_user == 0:
-            await self.lobby.adelete()
-            await self.channel_layer.close()
+            if (self.lobby.game_started == True):
+                await self.lobby.stopGame()
+                await self.channel_layer.group_send(
+                    self.lobby_group_name, { 'type': 'pong.status', 'status': 'stop', 'message': f"Connection lost with {self.scope['user']}", 'name': self.player.name}
+                )
+            await self.channel_layer.group_discard(
+                self.lobby_group_name,
+                self.channel_name
+            )
+            if self.lobby.connected_user == 0:
+                await self.lobby.adelete()
+                await self.channel_layer.close()
+        except Exception as e:
+            print(e)
     
     
     async def startGame(self):
@@ -180,16 +183,16 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
         while self.lobby.game_started:
             await self.movePlayer()
-            self.ball.translate()
             if self.player.name == 'player1':
                 await self.checkAllCollisions()
+            self.ball.translate()
             if (self.ball.checkIfScored(self.player) or self.ball.checkIfScored(self.opp)):
                 await self.isScored()
             if self.player.score == self.max_points or self.opp.score == self.max_points:
                 await self.setGameOver()
                 break
-            if self.player.name == 'player1':
-                await self.sendBallData()
+            await self.sendBallData()
+            await self.sendPlayerMove()
             await asyncio.sleep(1 / 60)
 
     async def getPlayerMove(self, data):
@@ -212,6 +215,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
     
     async def sendBallData(self):
+        if not self.player.name == 'player1':
+            return
         await self.channel_layer.group_send(
             self.lobby_group_name, { 
                 'type': 'pong.ball_data', 
@@ -290,7 +295,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         if self.player.checkCollisionBorder():
             self.player.move = 0
         self.player.posY += self.player.move
-        await self.sendPlayerMove()
 
     def resetGame(self):
         self.player.score = 0

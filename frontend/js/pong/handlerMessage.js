@@ -12,8 +12,10 @@ export function setBallData(data, env) {
         return ;
     env.ball.direction.x = data['dirX'];
     env.ball.direction.y = data['dirY'];
-    env.ball.mesh.position.y = data['posY'];
-    env.ball.mesh.position.x = data['posX'];
+    if (env.ball.mesh.position.x != data['posX'] || env.ball.mesh.position.y != data['posY']) {
+        env.ball.mesh.position.y = data['posY'];
+        env.ball.mesh.position.x = data['posX'];
+    }
 }
 
 export function handlerScore(data, env, player, opp) {

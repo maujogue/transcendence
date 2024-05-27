@@ -2,7 +2,6 @@
 class Ball:
     posX = 0
     posY = 0
-    posY = 0
     dirX = 0.055
     dirY = 0
 
@@ -11,12 +10,10 @@ class Ball:
         self.posY += self.dirY
 
     def checkCollisionBorder(self):
-        if self.dirY > 0 and self.posY >= 6.25:
+        if self.dirY > 0 and self.posY >= 6.25 and self.posY <= 6.25 + 1:
             return True
-        if self.dirY < 0 and self.posY <= -6.25:
+        if self.dirY < 0 and self.posY <= -6.25 and self.posY >= -6.25 - 1:
             return True
-        # if (self.posY <= -0.9 or self.posY >= 0.9):
-        #     return True
         return False
     
     def collisionBorder(self):

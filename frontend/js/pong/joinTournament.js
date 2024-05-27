@@ -75,7 +75,7 @@ async function joinTournament(tournament) {
         connectToTournament(tournament);
     })
     .catch((error) => {
-        displayErrorPopUp(error);
+        displayErrorPopUp(error, document.getElementsByClassName("tournament")[0]);
         document.getElementById("PopUpCloseIcon")?.addEventListener("click", () => {
             displayAllTournaments();
         });

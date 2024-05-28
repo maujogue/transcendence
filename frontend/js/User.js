@@ -36,7 +36,7 @@ async function getUserData(dataElement) {
 		  else 
 			return data.user;
 		}
-		throw new Error(data.error);
+		throw new Error(data.message);
 	  })
   }
 

@@ -68,17 +68,19 @@ function navigateOnClick(e) {
 }
 
 function getCurrentPage() {
-	let page = routes.find((page) => page.urlPath === location.pathname);
-	if (!page) {
-		page = routes[0];
-		history.pushState({}, "", "/");
-	}
-	return page;
+    let pathname = location.pathname;
+    let queryParams = new URLSearchParams(location.search);
+    let page = routes.find((page) => page.urlPath === pathname);
+    if (!page) {
+        page = routes[0];
+        history.pushState({}, '', '/');
+    }
+    return { page, queryParams };
 }
 
 async function injectPageHtml() {
 	const mainPageDiv = document.getElementById("content");
-	var page = getCurrentPage();
+	var page = getCurrentPage().page;
 	if (page && page.name == "Game") {
 		mainPageDiv.innerHTML = "";
 		document.getElementById("game").removeAttribute('hidden');
@@ -90,9 +92,9 @@ async function injectPageHtml() {
 }
 
 async function injectPageJs() {
-	var page = getCurrentPage();
+	var { page, queryParams } = getCurrentPage();
 	if (page && page.init)
-		page.init();
+		page.init(queryParams);
 }
 
 async function initSidebar() {

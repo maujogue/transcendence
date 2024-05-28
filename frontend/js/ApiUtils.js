@@ -40,7 +40,7 @@ async function updateInfo(endpoint, fetchBody, modalToDismiss) {
 	var data = response.data;
 
 	if (response.statusCode === 200) {
-		showAlert(data.status, "success");
+		showAlert(data.status, true);
 		toggleConfirmPasswordModal(modalToDismiss);
 		resetForm();
 		injectUserData();

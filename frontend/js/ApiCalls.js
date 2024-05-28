@@ -21,10 +21,10 @@ async function register(registerForm) {
 	var data = response.data;
 
 	if (response.statusCode === 200) {
-		showAlert("Registered, you can now Login", "success");
+		showAlert(response.data.status, true);
 	} else {
 		if (data.error && data.error.length > 0) showAlert(data.error[0]);
-		else showAlert("Register Error");
+		else showAlert(data.error);
 	}
 }
 
@@ -42,7 +42,7 @@ async function login(loginForm) {
 		bootstrap.Modal.getInstance(document.getElementById("login")).hide();
 		navigateTo("/dash");
 	} else {
-		showAlert("Username or Password incorrect");
+		showAlert(response.data.error);
 	}
 }
 

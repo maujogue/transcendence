@@ -17,7 +17,8 @@ urlpatterns = [
 	path('users/', include('users.urls')),
     path('friends/', include('friends.urls')),
     path('stats/', include('stats.urls')),
-    path('tournament/', include('tournaments.urls'))
+    path('tournament/', include('tournaments.urls')),
+    path('auth42/', include('auth42.urls'))
 ]
 
 if bool(settings.DEBUG):

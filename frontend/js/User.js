@@ -18,27 +18,26 @@ async function injectUserData() {
 }
 
 async function getUserData(dataElement) {
-  return fetch("https://127.0.0.1:8000/api/users/get_user_data/", {
-    method: "GET",
-    headers: {
-      "X-CSRFToken": await get_csrf_token(),
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    credentials: "include",
-  })
-		.then((response) => {
-			response.json().then((data) => {
-				if (response.status != 200)
-					throw new Error(data.message);
-				if (dataElement)
-					return data.user[dataElement];
-				else 
-					return data.user;
-			})
-		.catch((error) => {
-			console.error(error);
-		});
+	return fetch("https://127.0.0.1:8000/api/users/get_user_data/", {
+	  method: "GET",
+	  headers: {
+		"X-CSRFToken": await get_csrf_token(),
+		"Content-Type": "application/x-www-form-urlencoded",
+	  },
+	  credentials: "include",
 	})
-}
+	  .then((response) =>
+		response.json().then((data) => ({ statusCode: response.status, data }))
+	  )
+	  .then(({ statusCode, data }) => {
+		if (statusCode === 200) {
+		  if (dataElement) 
+			return data.user[dataElement];
+		  else 
+			return data.user;
+		}
+		throw new Error(data.error);
+	  })
+  }
 
 export { getUserData, injectUserData };

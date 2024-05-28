@@ -18,6 +18,7 @@ def is_login(func):
 	def wrapper(request, *args, **kwargs):
 		if not request.user.is_authenticated:
 			return JsonResponse({"errors": "User is not logged in."}, status=401)
+		return func(request, *args, **kwargs)
 	return wrapper
 
 def is_ascii_alphanumeric(s):

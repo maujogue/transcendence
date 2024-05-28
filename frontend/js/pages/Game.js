@@ -121,10 +121,9 @@ export async function init(queryParams) {
 	document.body.addEventListener("click", function (event) {
 		if (checkIfUserIsLoggedIn())
 			fillUserData().then(redirectUserInTournament);
-		else
-			userData = null;
 
-		console.log(userData);
+		if (event.target.classList.contains('tournament-info'))
+			redirectUserInTournament();
 
 		if (event.target.id == 'restart' && !isOnline) {
 			document.getElementById("endscreen").remove();

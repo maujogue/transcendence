@@ -20,10 +20,10 @@ async function register(registerForm) {
 	var data = response.data;
 
 	if (response.statusCode === 200) {
-		showAlert("Registered, you can now Login", "success");
+		showAlert(response.data.status, true);
 	} else {
 		if (data.error && data.error.length > 0) showAlert(data.error[0]);
-		else showAlert("Register Error");
+		else showAlert(data.error);
 	}
 }
 
@@ -41,7 +41,7 @@ async function login(loginForm) {
 		bootstrap.Modal.getInstance(document.getElementById("login")).hide();
 		navigateTo("/dash");
 	} else {
-		showAlert("Username or Password incorrect");
+		showAlert(response.data.error);
 	}
 }
 
@@ -104,6 +104,29 @@ async function updateUsername(updateUsernameForm) {
 	}
 }
 
+async function updateEmail(updateEmailForm) {
+	const userData = new FormData(updateEmailForm);
+	const fetchBody = {
+		username: await getUserData("username"),
+		password: userData.get("password"),
+	};
+
+	var response = await runEndPoint("users/login/", JSON.stringify(fetchBody));
+
+	if (response.statusCode === 200) {
+		const fetchBody = {
+			email: userData.get("email"),
+		};
+		updateInfo(
+			"users/update_email/",
+			JSON.stringify(fetchBody),
+			"confirmPasswordModal"
+		);
+	} else {
+		showAlert("Password Incorrect, try again.");
+	}
+}
+
 function updateProfile() {
 	var updateProfileForm = document.getElementById("updateProfileForm");
 	var inputName = getSubmittedInput().getAttribute("name");
@@ -129,9 +152,11 @@ function updateProfileWithPassword() {
 	var updateProfileForm = document.getElementById("updateProfileForm");
 
 	var inputName = getSubmittedInput().getAttribute("name");
-
+	
 	if (inputName == "username")
 		updateUsername(updateProfileForm);
+	if (inputName == "email")
+		updateEmail(updateProfileForm);
 	document.getElementById("confirmPasswordPassword").value = "";
 }
 

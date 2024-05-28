@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 
 from django.http import JsonResponse
 
-from users.utils import decode_json_body, email_is_valid, email_is_unique
+from users.utils import decode_json_body, email_is_valid, email_is_unique, send_update_email
 
 
 
@@ -15,7 +15,10 @@ def update_email(request):
     data = decode_json_body(request)
     if isinstance(data, JsonResponse):
         return data
-    
+
+    if request.user.is_42auth is True:
+        return JsonResponse({'status': "You cannot update your email because you are authenticated with 42."}, status=400)
+            
     email = data.get('email')
     is_valid, error_valid = email_is_valid(email)
     is_unique, error_unique = email_is_unique(email)
@@ -26,7 +29,6 @@ def update_email(request):
         return JsonResponse({'status': error_unique}, status=400)
     
     if email or email == '':
-        request.user.email = email
-        request.user.save()
+        send_update_email(request, email)
         return JsonResponse({'status': "Your email has been correctly updated !"}, status=200)
     return JsonResponse({'status': "Missing email."}, status=400)

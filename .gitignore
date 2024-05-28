@@ -4,15 +4,17 @@ py_backend/media/
 py_backend/docker/cert.crt
 py_backend/docker/cert.key
 .DS_store
-py_backend/py_backend/users/migrations
-py_backend/py_backend/multiplayer/migrations
-py_backend/py_backend/tournaments/migrations
-py_backend/py_backend/friends/migrations
-py_backend/py_backend/stats/migrations
-
 .nfs*
 
 frontend/js/pong/dev
+py_backend/db.sqlite3
+py_backend/friends/migrations
+py_backend/multiplayer/migrations
+py_backend/users/migrations
+py_backend/stats/migrations
+py_backend/tournaments/migrations
+py_backend/auth42/migrations
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -75,8 +77,8 @@ cover/
 *.log
 local_settings.py
 db.sqlite3
-db.sqlite3-journal
-
+db.sqlite3-journalpy_backend/py_backend/users/migrations
+py_backend/py_backend/multiplayer/migrations
 # Flask stuff:
 instance/
 .webassets-cache

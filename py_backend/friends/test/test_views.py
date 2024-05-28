@@ -20,6 +20,13 @@ class FriendsInteractions(TestCase):
 			email="oxford@gmail.com",
 			password="ClassicPassword9+")
 		
+		self.user1.email_is_verified = True
+		self.user1.save()
+		self.user2.email_is_verified = True
+		self.user2.save()
+		self.user3.email_is_verified = True
+		self.user3.save()
+		
 		user1 = {
 			'username': 'lboulatr',
 			'password': 'ClassicPassword9+'

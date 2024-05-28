@@ -1,6 +1,13 @@
 from users.models import CustomUser
-from py_backend import settings
 from django.http import JsonResponse
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.http import urlsafe_base64_encode 
+from django.utils.encoding import force_bytes
+from django.template.loader import render_to_string
+from django.core.mail import EmailMessage
+
+from users.tokens import account_activation_token, email_update_token
+from py_backend import settings
 import base64
 
 
@@ -90,3 +97,43 @@ def convert_image_to_base64(image_field):
     with open(image_field.path, "rb") as image_file:
         encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
     return encoded_string
+
+
+def send_confirmation_email(user, request):
+	if user.is_authenticated:
+		if user.email_is_verified != True:
+			current_site = get_current_site(request)
+			email = user.email
+			subject = "Verify Email"
+			message = render_to_string('../templates/verification_email_message.html', {
+				'request': request,
+				'username': user.username,
+				'domain': current_site.domain,
+				'uid':urlsafe_base64_encode(force_bytes(user.pk)),
+				'token':account_activation_token.make_token(user),
+			})
+			email = EmailMessage(
+				subject, message, to=[email]
+			)
+			email.content_subtype = 'html'
+			return email.send()
+		return False
+	return False
+
+
+def send_update_email(request, new_email):
+	current_site = get_current_site(request)
+	subject = "Update your email"
+	message = render_to_string('../templates/update_email.html', {
+		'request': request,
+		'username': request.user.username,
+		'domain': current_site.domain,
+		'uid': urlsafe_base64_encode(force_bytes(request.user.pk)),
+		'token': email_update_token.make_token(request.user),
+		'new_email': new_email,
+	})
+	email = EmailMessage(
+		subject, message, to=[new_email]
+	)
+	email.content_subtype = 'html'
+	return email.send()

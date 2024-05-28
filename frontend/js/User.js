@@ -2,7 +2,7 @@ import { get_csrf_token } from "./ApiCalls.js";
 import { isLoggedIn } from "./Utils.js";
 
 async function injectUserData() {
-	if (isLoggedIn())
+	if (await isLoggedIn())
 	{
 		var userInfos = await getUserData();
 		

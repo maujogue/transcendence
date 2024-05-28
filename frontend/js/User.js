@@ -26,18 +26,19 @@ async function getUserData(dataElement) {
     },
     credentials: "include",
   })
-    .then((response) => response.json())
-    .then((data) => {
-		if (data.error) 
-			throw new Error(data.error);
-		if (dataElement)
-			return data.user[dataElement];
-		else 
-			return data.user;
-    })
-	.catch((error) => {
-		console.error("getUserData", error);
-	});
+		.then((response) => {
+			response.json().then((data) => {
+				if (response.status != 200)
+					throw new Error(data.message);
+				if (dataElement)
+					return data.user[dataElement];
+				else 
+					return data.user;
+			})
+		.catch((error) => {
+			console.error(error);
+		});
+	})
 }
 
 export { getUserData, injectUserData };

@@ -25,6 +25,36 @@ let userData;
 
 var isGameLoaded = false;
 
+async function fillUserData() {
+	await getUserData().then((data) => {
+		userData = data;
+	})
+	.catch(() => {
+		userData = null;
+	});
+}
+
+async function redirectUserInTournament() {
+	if (!userData)
+		return;
+
+	checkIfUserIsInTournament(userData).then((response) => {
+		if (response && response['joined'])
+			connectToTournament(response['tournament']);
+	})
+}
+
+function checkIfUserIsLoggedIn() {
+    let cookieArr = document.cookie.split(";");
+    for (let i = 0; i < cookieArr.length; i++) {
+        let cookiePair = cookieArr[i].split("=");
+
+        if (cookiePair[0].trim() == "isLoggedIn" && cookiePair[1].trim() == "true")
+            return true;
+    }
+	return false;
+}
+
 export async function init(queryParams) {
 	if (queryParams && queryParams.get("message"))
 		showAlert(queryParams.get("message"), queryParams.get("success"));
@@ -89,16 +119,12 @@ export async function init(queryParams) {
 	});
 
 	document.body.addEventListener("click", function (event) {
-		getUserData().then((data) => {
-			userData = data;
-		})
-		
-		if (userData) {
-			checkIfUserIsInTournament(userData).then((response) => {
-				if (response && response['joined'])
-					connectToTournament(response['tournament']);
-			});
-		}
+		if (checkIfUserIsLoggedIn())
+			fillUserData().then(redirectUserInTournament);
+		else
+			userData = null;
+
+		console.log(userData);
 
 		if (event.target.id == 'restart' && !isOnline) {
 			document.getElementById("endscreen").remove();

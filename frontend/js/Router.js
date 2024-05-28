@@ -31,7 +31,7 @@ const routes = [
 window.addEventListener("popstate", () => router(routes));
 
 document.addEventListener("DOMContentLoaded", async () => {
-	document.body.addEventListener("click", (e) => navigateOnClick(e));
+	document.body.addEventListener("click", async (e) => await navigateOnClick(e));
 	await initArray(routes);
 	await initGame();
 	await initSidebar();
@@ -47,23 +47,25 @@ async function router() {
 	toggleActiveTab(location.pathname);
 };
 
-function navigateTo(url) {
+async function navigateTo(url) {
 	if (url !== location.pathname) {
 		history.pushState({}, null, url);
 		router(routes);
 	}
+	else
+		await injectModule();
 	toggleActiveTab(location.pathname);
 	injectUserData();
 	toggleContentOnLogState();
 }
 
-function navigateOnClick(e) {
+async function navigateOnClick(e) {
 	let target = e.target;
 	while (target && target.parentNode !== document.body && !target.getAttribute("href"))
 		target = target.parentNode;
 	if (target && target.matches("[navlink]")) {
 		e.preventDefault();
-		navigateTo(target.getAttribute("href"));
+		await navigateTo(target.getAttribute("href"));
 	}
 }
 

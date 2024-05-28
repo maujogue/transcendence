@@ -34,20 +34,18 @@ def get_point_scored_per_match(request, user):
             total_score += match.player2_score
             total_score_against += match.player1_score
     return JsonResponse({
-        "average_scored_per_match": total_score / matchs.count(),
-        "average_conceded_per_match": total_score_against / matchs.count(),
+        "average_scored_per_match": round(total_score / matchs.count(), 2),
+        "average_conceded_per_match": round(total_score_against / matchs.count(), 2),
         }, status=200)
 
 @require_http_methods(["GET"])
 @user_exists
 def get_user_winrate(request, user):
     matchsWin = Match.objects.filter(winner=user).count()
-    matchsLoose = Match.objects.filter(loser=user).count()
-    if matchsLoose == 0:
-        return JsonResponse({"winrate": 100}, status=200)
-    if matchsWin == 0:
+    matchsTotal = Match.objects.count()
+    if (matchsTotal == 0):
         return JsonResponse({"winrate": 0}, status=200)
-    return JsonResponse({"winrate": (matchsWin / matchsLoose) * 100}, status=200)
+    return JsonResponse({"winrate": round(matchsWin / matchsTotal * 100)}, status=200)
 
 @require_http_methods(["GET"])
 @user_exists
@@ -65,7 +63,7 @@ def get_average_exchange_before_goal(request, user):
             total_exchange += match.player1_average_exchange
         else:
             total_exchange += match.player2_average_exchange
-    return JsonResponse({"average_exchange_before_goal": total_exchange / matchs.count()}, status=200)
+    return JsonResponse({"average_exchange_before_goal": round(total_exchange / matchs.count(), 2)}, status=200)
 
 @require_http_methods(["GET"])
 @user_exists

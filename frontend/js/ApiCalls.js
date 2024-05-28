@@ -40,7 +40,7 @@ async function login(loginForm) {
 	if (response.statusCode === 200) {
 		Cookies.set("isLoggedIn", "true");
 		bootstrap.Modal.getInstance(document.getElementById("login")).hide();
-		navigateTo("/dash");
+		await navigateTo("/dash");
 	} else {
 		showAlert(response.data.error);
 	}
@@ -50,7 +50,7 @@ async function logout() {
 	var response = await runEndPoint("users/logout/","POST",);
 	if (response.statusCode === 200) {
 		Cookies.remove("isLoggedIn");
-		navigateTo("/dash");
+		await navigateTo("/dash");
 	}
 }
 

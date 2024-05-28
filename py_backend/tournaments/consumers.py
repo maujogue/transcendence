@@ -4,9 +4,10 @@ import base64
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async
-from .bracket import generate_bracket
 
+from users.models import CustomUser
 from .models import Tournament, TournamentMatch
+from .bracket import generate_bracket
 
 class TournamentConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -32,9 +33,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         print("receive")
         text_data_json = json.loads(text_data)
-        if text_data_json.get('type') == 'auth':
-            self.scope["user"] = text_data_json.username
         print(text_data_json)
+        if text_data_json.get('type') == 'auth':
+            username = text_data_json.get('username')
+            self.scope["user"] = self.authenticate_user_with_username(username)
 
 
     async def disconnect(self, close_code):
@@ -97,3 +99,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_player_match(self, user):
         return TournamentMatch.objects.filter(player_1=user).first()
+    
+    async def authenticate_user_with_username(self, username):
+        try:
+            user = await CustomUser.objects.aget(username=username)
+            return user
+        except CustomUser.DoesNotExist:
+            return None

@@ -30,5 +30,5 @@ def update_email(request):
     
     if email or email == '':
         send_update_email(request, email)
-        return JsonResponse({'status': "Your email has been correctly updated !"}, status=200)
+        return JsonResponse({'status': "Please validate your email by clicking on the link we sent you."}, status=200)
     return JsonResponse({'status': "Missing email."}, status=400)

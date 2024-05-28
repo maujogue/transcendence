@@ -4,6 +4,7 @@ import base64
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async
+from .bracket import generate_bracket
 
 from .models import Tournament, TournamentMatch
 
@@ -32,7 +33,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         print("receive")
         text_data_json = json.loads(text_data)
         if text_data_json.get('type') == 'auth':
-            await self.send(text_data=json.dumps({ "type": "auth", "status": "success"}))
+            self.scope["user"] = text_data_json.username
         print(text_data_json)
 
 
@@ -73,11 +74,11 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await sync_to_async(generate_bracket)(self.tournament)
             await self.notify_participants()
 
-    async def notifiy_participants(self):
+    async def notify_participants(self):
         match = await self.get_player_match(self.scope['user'])
         if match:
             match_infos = {
-                'match_id': match.id,
+                'lobby_id': match.lobby.uuid,
                 'player_1': match.player_1.username,
                 'player_2': match.player_2.username if match.player_2 else None,
                 'round': match.round
@@ -86,6 +87,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             'type': 'match_start',
             'match': match_infos
         }))
+
+    @database_sync_to_async
+    def is_tournament_full(self):
+        if self.tournament.participants.count() == self.tournament.max_players:
+            return True
+        return False
 
     @database_sync_to_async
     def get_player_match(self, user):

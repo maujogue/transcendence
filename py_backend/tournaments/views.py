@@ -104,11 +104,6 @@ def join_tournament(request, tournament_id):
 
 	tournament.participants.add(request.user)
 
-	if tournament.participants.count() == tournament.max_players and tournament.started == False:
-		tournament.started = True
-		tournament.save()
-		generate_bracket(tournament)
-
 	return JsonResponse({"message": "Tournament joined successfully.", "id": tournament.id},
 					status=200)
 

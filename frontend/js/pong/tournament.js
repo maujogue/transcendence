@@ -89,17 +89,16 @@ export async function checkIfUserIsInTournament(user) {
         },
     })
     .then((response) => {
-        if (!response.status != 200)
-            throw new Error("Error while checking if user is in tournament");
+        if (response.status != 200)
+            throw new Error(response.errors);
         return response.json();
     })
     .catch((error) => {
-        return error;
+        console.error(error);
     });
 }
 
 export function displayErrorPopUp (message) {
-    console.error("displayErrorPopUp", message);
     const parent = document.getElementsByClassName("tournament")[0];
     const errorPopUp = document.createElement("div");
     errorPopUp.className = "error-pop-up";

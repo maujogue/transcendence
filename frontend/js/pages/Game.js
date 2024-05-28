@@ -25,24 +25,33 @@ let userData;
 var isGameLoaded = false;
 
 async function fillUserData() {
-	getUserData().then((data) => {
+	await getUserData().then((data) => {
 		userData = data;
 	})
-	.catch((error) => {
+	.catch(() => {
 		userData = null;
 	});
 }
 
 async function redirectUserInTournament() {
-	if (userData) {
-		checkIfUserIsInTournament(userData).then((response) => {
-			if (response && response['joined'])
-				connectToTournament(response['tournament']);
-		})
-		.catch((error) => {
-			console.error(error);
-		});
-	}
+	if (!userData)
+		return;
+
+	checkIfUserIsInTournament(userData).then((response) => {
+		if (response && response['joined'])
+			connectToTournament(response['tournament']);
+	})
+}
+
+function checkIfUserIsLoggedIn() {
+    let cookieArr = document.cookie.split(";");
+    for (let i = 0; i < cookieArr.length; i++) {
+        let cookiePair = cookieArr[i].split("=");
+
+        if (cookiePair[0].trim() == "isLoggedIn" && cookiePair[1].trim() == "true")
+            return true;
+    }
+	return false;
 }
 
 export async function init() {
@@ -66,8 +75,8 @@ export async function init() {
 	const field = await createField();
 
 	loadAllModel();
-	fillUserData(userData);
-	redirectUserInTournament(userData);
+	if (checkIfUserIsLoggedIn())
+		fillUserData().then(redirectUserInTournament);
 	async function goToLocalSelectMenu() {
 		divMenu = document.getElementById("menu");
 		divMenu.remove();
@@ -106,10 +115,11 @@ export async function init() {
 	});
 
 	document.body.addEventListener("click", function (event) {
-		if (event.target.classList.contains('tournament-info')) {
+		if (checkIfUserIsLoggedIn())
 			fillUserData();
+
+		if (event.target.classList.contains('tournament-info'))
 			redirectUserInTournament();
-		}
 
 		if (event.target.id == 'restart' && !isOnline) {
 			document.getElementById("endscreen").remove();

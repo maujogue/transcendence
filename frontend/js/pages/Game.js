@@ -100,6 +100,9 @@ export async function init() {
 					checkIfUserIsInTournament(userData).then((response) => {
 						if (response && response['joined'])
 							connectToTournament(response['tournament']);
+					})
+					.catch((error) => {
+						console.error(error);
 					});
 				}
 			})

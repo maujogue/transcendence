@@ -89,13 +89,12 @@ export async function checkIfUserIsInTournament(user) {
         },
     })
     .then((response) => {
-        if (!response.ok)
+        if (!response.status != 200)
             throw new Error("Error while checking if user is in tournament");
         return response.json();
     })
     .catch((error) => {
-        console.error(error);
-        return false;
+        return error;
     });
 }
 

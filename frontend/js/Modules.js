@@ -3,13 +3,13 @@ class Module {
 		this.name = name;
 		this.init = null;
 		this.html = null;
-		this.filePath = "js/modules/" + name + ".html";
+		this.filePath = "js/modules/" + name + "/" + name + ".html";
 	}
 	async fetchHtml() {
 		this.html = await fetch(this.filePath).then((x) => x.text());
 	}
 	async fetchInit() {
-		this.init = await importFunction("./modules/", this.name, true);
+		this.init = await importFunction("./modules/" + this.name + "/", this.name, true);
 	}
 }
 

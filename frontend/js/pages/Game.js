@@ -20,8 +20,30 @@ import * as THREE from 'three';
 export var lobby;
 export var clock;
 export var characters;
+let userData;
 
 var isGameLoaded = false;
+
+async function fillUserData() {
+	getUserData().then((data) => {
+		userData = data;
+	})
+	.catch((error) => {
+		userData = null;
+	});
+}
+
+async function redirectUserInTournament() {
+	if (userData) {
+		checkIfUserIsInTournament(userData).then((response) => {
+			if (response && response['joined'])
+				connectToTournament(response['tournament']);
+		})
+		.catch((error) => {
+			console.error(error);
+		});
+	}
+}
 
 export async function init() {
 	if (isGameLoaded)
@@ -39,22 +61,13 @@ export async function init() {
 	let keysPressed = {};
 	let isOnline = false;
 	let localLoop = false;
-	let userData;
 	let form;
 	const gameDiv = document.getElementById('game');
 	const field = await createField();
 
 	loadAllModel();
-
-	getUserData().then((data) => {
-		userData = data;
-		if (userData) {
-			checkIfUserIsInTournament(userData).then((response) => {
-				if (response && response['joined'])
-					connectToTournament(response['tournament']);
-			});
-		}
-	})
+	fillUserData(userData);
+	redirectUserInTournament(userData);
 	async function goToLocalSelectMenu() {
 		divMenu = document.getElementById("menu");
 		divMenu.remove();
@@ -94,18 +107,8 @@ export async function init() {
 
 	document.body.addEventListener("click", function (event) {
 		if (event.target.classList.contains('tournament-info')) {
-			getUserData().then((data) => {
-				userData = data;
-				if (userData) {
-					checkIfUserIsInTournament(userData).then((response) => {
-						if (response && response['joined'])
-							connectToTournament(response['tournament']);
-					})
-					.catch((error) => {
-						console.error(error);
-					});
-				}
-			})
+			fillUserData();
+			redirectUserInTournament();
 		}
 
 		if (event.target.id == 'restart' && !isOnline) {

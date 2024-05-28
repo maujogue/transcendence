@@ -6,10 +6,12 @@ from django.http import JsonResponse
 from users.utils import convert_image_to_base64
 
 
-@require_http_methods(["POST"])
-@login_required
+# @login_required
+@require_http_methods(["GET"])
 @requires_csrf_token
 def get_user_data(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'status': 'error', 'message': 'User not found'}, status=404)
     user = request.user
     user_datas = {
         'username': user.username,

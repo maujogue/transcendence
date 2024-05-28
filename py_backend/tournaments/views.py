@@ -15,6 +15,9 @@ CustomUser = get_user_model()
 
 import json
 
+def is_ascii_alphanumeric(s):
+	return s.isascii() and s.isalnum()
+
 @login_required
 @require_http_methods(["POST"])
 def create_tournament(request):
@@ -36,6 +39,10 @@ def create_tournament(request):
 	
 	if len(name) > 15:
 		return JsonResponse({"errors": "Name is too long."},
+				status=400)
+	
+	if not is_ascii_alphanumeric(name):
+		return JsonResponse({"errors": "Name can only contain alphanumeric characters."},
 				status=400)
 
 	if not max_players in range(2, 33):

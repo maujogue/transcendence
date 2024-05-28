@@ -6,6 +6,10 @@ py_backend/docker/cert.key
 .DS_store
 py_backend/py_backend/users/migrations
 py_backend/py_backend/multiplayer/migrations
+py_backend/py_backend/tournaments/migrations
+py_backend/py_backend/friends/migrations
+py_backend/py_backend/stats/migrations
+
 .nfs*
 
 frontend/js/pong/dev

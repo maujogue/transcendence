@@ -3,7 +3,6 @@ import random
 import string
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
 
 from django.core.exceptions import ValidationError
@@ -15,10 +14,16 @@ CustomUser = get_user_model()
 
 import json
 
+def is_login(func):
+	def wrapper(request, *args, **kwargs):
+		if not request.user.is_authenticated:
+			return JsonResponse({"errors": "User is not logged in."}, status=401)
+	return wrapper
+
 def is_ascii_alphanumeric(s):
 	return s.isascii() and s.isalnum()
 
-@login_required
+@is_login
 @require_http_methods(["POST"])
 def create_tournament(request):
 	try:
@@ -85,7 +90,7 @@ def list_participants(request, tournament_id):
 	return JsonResponse({"participants": participants},
 					status=200)
 	
-@login_required
+@is_login
 @require_http_methods(["POST"])
 def join_tournament(request, tournament_id):
 	try:
@@ -105,7 +110,7 @@ def join_tournament(request, tournament_id):
 	return JsonResponse({"message": "Tournament joined successfully.", "id": tournament.id},
 					status=200)
 
-@login_required
+@is_login
 @require_http_methods(["POST"])
 def quit_tournament(request, tournament_id):
 	try:
@@ -126,7 +131,7 @@ def quit_tournament(request, tournament_id):
 	return JsonResponse({"message": "Successfully quit the tournament.", "id": tournament.id},
 					status=200)
 
-@login_required
+@is_login
 @require_http_methods(["POST"])
 def delete_tournament(request, tournament_id):
 	try:
@@ -138,7 +143,7 @@ def delete_tournament(request, tournament_id):
 	return JsonResponse({"message": "Tournament deleted successfully."},
 					status=200)
 
-@login_required
+@is_login
 @require_http_methods(["GET"])
 def check_if_tournament_joined(request, username):
 	try:

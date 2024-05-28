@@ -77,6 +77,7 @@ export async function init() {
 	loadAllModel();
 	if (checkIfUserIsLoggedIn())
 		fillUserData().then(redirectUserInTournament);
+
 	async function goToLocalSelectMenu() {
 		divMenu = document.getElementById("menu");
 		divMenu.remove();
@@ -116,7 +117,7 @@ export async function init() {
 
 	document.body.addEventListener("click", function (event) {
 		if (checkIfUserIsLoggedIn())
-			fillUserData();
+			fillUserData().then(redirectUserInTournament);
 
 		if (event.target.classList.contains('tournament-info'))
 			redirectUserInTournament();

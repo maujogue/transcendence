@@ -1,5 +1,5 @@
 from .register import *
-from .login import *
+from .login_view import *
 from .logout_view import *
 from .update_profile_username import *
 from .update_profile_bio import *
@@ -10,3 +10,5 @@ from .get_csrf_token import *
 from .get_user_datas import *
 from .username_availaible import *
 from .email_available import *
+from .confirm_email import *
+from .confirm_new_email import *

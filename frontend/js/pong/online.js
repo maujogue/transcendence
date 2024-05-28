@@ -58,13 +58,11 @@ document.addEventListener("keyup", function(event) {
 
 function clickHandler(event) {
     if (event.target.id == 'restart') {
-        if (document.getElementById("endscreen"))
-            document.getElementById("endscreen").remove();
+        document.getElementById("endscreen")?.remove();
         sendIsReady(webSocket);
     }
     if (event.target.id == 'backMenu') {
-        if (document.getElementById("endscreen"))
-            document.getElementById("endscreen").remove();
+        document.getElementById("endscreen")?.remove();
         if (webSocket)
             webSocket.close();
     }
@@ -82,7 +80,6 @@ function clickHandler(event) {
 }
 
 async function goToOnlineSelectMenu(field) {
-    document.getElementsByClassName("menu")[0].remove();
     env = createSelectMenu(field, characters);
     document.getElementById("cursorP2").remove();
     document.getElementsByClassName("inputP2")[0].remove();
@@ -91,6 +88,7 @@ async function goToOnlineSelectMenu(field) {
 
 
 async function createOnlineSelectMenu(field) {
+    document.getElementById("onlineMenu").remove();
     status.exit = false;
     goToOnlineSelectMenu(field);
     displayCharacter(player, env, "chupacabra", "player").then((res) => {
@@ -152,7 +150,7 @@ async function connectToLobby(username) {
             document.getElementById("waitingScreen")?.remove();
         }
         if (data['type'] == 'player_pos') {
-            //env.scene.getObjectByName("paddle_" + data['name']).position.y = data['posZ'];
+            env.scene.getObjectByName("paddle_" + data['name']).position.y = data['posY'];
             playersMove.set("paddle_" + data['name'], data['move']);
         }
         if (data['type'] == 'score')
@@ -233,10 +231,10 @@ function movePlayers() {
         if (!paddle)
             return ;
         const playerBox = new THREE.Box3().setFromObject(paddle);
-        if (value > 0 && !env.border.down.box.intersectsBox(playerBox))
-            paddle.position.z += value;
-        if (value < 0 && !env.border.up.box.intersectsBox(playerBox))
-            paddle.position.z += value;
+        if (value > 0 && !env.border.up.box.intersectsBox(playerBox))
+            paddle.translateY(value);
+        if (value < 0 && !env.border.down.box.intersectsBox(playerBox))
+            paddle.translateY(value);
     });
 }
 
@@ -252,14 +250,12 @@ async function sendIsReady(webSocket) {
 
 async function setGameIsStart() {
     if (player && opp && oppInfo) {
-        status.gameIsInit = false;
+        opp.userInfo = oppInfo;
         ClearAllEnv(env);
-        await initGame(player, opp).then((res) => {
-            env = res;
-            opp.userInfo = oppInfo;
-            createHUD(player, opp);
-            status.start = true;
-        });
+        env = await initGame(player, opp);
+        createHUD(player, opp);
+        status.gameIsInit = false;
+        status.start = true;
     }
 }
 

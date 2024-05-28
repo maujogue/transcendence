@@ -7,11 +7,8 @@ from django.core.exceptions import ValidationError
 from users.models import CustomUser
 
 class Tournament(models.Model):
-	name = models.fields.CharField(max_length=100, unique=True)
+	name = models.fields.CharField(max_length=15, unique=True)
 	max_players = models.IntegerField(validators=[MinValueValidator(2), MaxValueValidator(32)])
-	is_private = models.BooleanField()
-	password = models.fields.CharField(max_length=100, blank=True, null=True)
-	host = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 	participants = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='joined_tournaments', blank=True)
 
 	def __str__(self):

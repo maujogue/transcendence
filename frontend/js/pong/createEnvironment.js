@@ -2,9 +2,7 @@ import * as THREE from 'three';
 import { createField, createBorder } from './createField.js';
 import { winWidth, winHeight } from './varGlobal.js';
 import { isFullScreen } from './resize.js';
-import { loadScene } from './loadModels.js';
-
-const map = await loadScene('maps/map1/map1');
+import { stopStep } from './spaceBackground.js';
 
 function getSize() {
 	var width = winWidth;
@@ -20,43 +18,41 @@ function getSize() {
 	};
 }
 
-function createMap(env) {
-	const model = map.scene;
-	const light = new THREE.AmbientLight(0xffffff, 1);
-
-	env.camera.position.set(0, 13, 10);
-	env.camera.lookAt(0, 0, 0);
-	model.rotation.set(0, 0, 0);
-	model.scale.set(.45, .45, .45);
-    model.rotateY(Math.PI / 2);
-    model.position.set(2.2, -.3, 0);
-	env.scene.add(model);
-	env.scene.add(light);
-
-	const topSide = map.scene.getObjectByName("topSide");
-	const botSide = map.scene.getObjectByName("bottomSide");
-	var topSidePosition = new THREE.Vector3();
-	var botSidePosition = new THREE.Vector3();
-
-	topSide.getWorldPosition(topSidePosition);
-	botSide.getWorldPosition(botSidePosition);
-
-	const borderDown = createBorder(topSidePosition, env);
-	const borderUp = createBorder(botSidePosition, env);
+async function createMap(environment) {
+	let borderUp = await createBorder(new THREE.Vector3(0, 1.075, 0.9), environment.camera);
+	let borderDown = await createBorder(new THREE.Vector3(0, -1.075, 0.9), environment.camera);
+	let borderCenter = await createBorder(new THREE.Vector3(0, 0, 0.95), environment.camera);
+	borderCenter.mesh.material.metalness = 0.2;
+	borderCenter.mesh.material.roughness = 0.8;
+	borderCenter.mesh.rotation.set(0, 0, Math.PI / 2);
+	borderCenter.mesh.scale.set(1, 0.3, 1);
+	environment.scene.add(borderDown.mesh);
+	environment.scene.add(borderUp.mesh);
+	environment.scene.add(borderCenter.mesh);
+	environment.scene.add(await createField());
 	return {
 		"borderUp": borderUp,
 		"borderDown": borderDown
 	};
 }
 
+export function recreateCanvas(id) {
+	stopStep();	
+	const canvas = document.getElementById(id);
+	canvas.remove();
+	const newCanvas = document.createElement("canvas");
+	newCanvas.id = id;
+	document.getElementById("game").appendChild(newCanvas);
+}
+
 function createEnvironment(id) {
+	recreateCanvas(id);
 	const div = document.getElementById(id);
 	const divSize = getSize();
 	
 	const scene = new THREE.Scene();
 	scene.background = new THREE.Color( 0x000000 );
 	const camera = new THREE.PerspectiveCamera( 45, divSize.width / divSize.height, 1, 100);
-	camera.position.set(0, 0, -2);
 
 	const renderer = new THREE.WebGLRenderer({ canvas: div, antialias: true });
 	renderer.setPixelRatio(window.devicePixelRatio);

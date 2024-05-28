@@ -152,7 +152,7 @@ function updateProfileWithPassword() {
 	var updateProfileForm = document.getElementById("updateProfileForm");
 
 	var inputName = getSubmittedInput().getAttribute("name");
-
+	
 	if (inputName == "username")
 		updateUsername(updateProfileForm);
 	if (inputName == "email")

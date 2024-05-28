@@ -1,6 +1,6 @@
 import { resize, isFullScreen } from "../pong/resize.js";
 import { checkCollision } from "../pong/collision.js";
-import { displayMainMenu, createSelectMenu, createOnlineMenu, createMenuCreateTournament, createJoinTournamentMenu } from '../pong/menu.js';
+import { displayMainMenu, createSelectMenu, createOnlineMenu } from '../pong/menu.js';
 import { handleKeyPress, handleMenuKeyPress } from '../pong/handleKeyPress.js';
 import { displayCharacter, updateMixers } from '../pong/displayCharacter.js';
 import { initGame } from "../pong/initGame.js";
@@ -11,8 +11,11 @@ import { createOnlineSelectMenu } from "../pong/online.js";
 import { ClearAllEnv, getSize } from "../pong/createEnvironment.js";
 import { loadAllModel } from "../pong/loadModels.js"
 import { loadScene } from "../pong/loadModels.js";
+import { getUserData } from "../User.js";
+import { sendTournamentForm, createFormTournament} from "../pong/createTournament.js";
+import { createJoinTournamentMenu } from "../pong/joinTournament.js";
+import { checkIfUserIsInTournament, connectToTournament } from "../pong/tournament.js";
 import * as THREE from 'three';
-import { sendTournamentForm } from "../pong/createTournament.js";
 
 export var lobby;
 export var clock;
@@ -23,6 +26,7 @@ var isGameLoaded = false;
 export async function init() {
 	if (isGameLoaded)
 		return;
+
 	lobby = await loadScene('lobbyTest');
 	clock = new THREE.Clock();
 	characters = new Map();
@@ -34,13 +38,23 @@ export async function init() {
 	let keyPress = false;
 	let keysPressed = {};
 	let isOnline = false;
-	let localLoop = true;
+	let localLoop = false;
+	let userData;
 	let form;
 	const gameDiv = document.getElementById('game');
 	const field = await createField();
 
 	loadAllModel();
 
+	getUserData().then((data) => {
+		userData = data;
+		if (userData) {
+			checkIfUserIsInTournament(userData).then((response) => {
+				if (response && response['joined'])
+					connectToTournament(response['tournament']);
+			});
+		}
+	})
 	async function goToLocalSelectMenu() {
 		divMenu = document.getElementById("menu");
 		divMenu.remove();
@@ -79,6 +93,18 @@ export async function init() {
 	});
 
 	document.body.addEventListener("click", function (event) {
+		if (event.target.classList.contains('tournament-info')) {
+			getUserData().then((data) => {
+				userData = data;
+				if (userData) {
+					checkIfUserIsInTournament(userData).then((response) => {
+						if (response && response['joined'])
+							connectToTournament(response['tournament']);
+					});
+				}
+			})
+		}
+
 		if (event.target.id == 'restart' && !isOnline) {
 			document.getElementById("endscreen").remove();
 			actualizeScore(player1, player2, environment, environment.font);
@@ -86,6 +112,7 @@ export async function init() {
 		}
 		if (event.target.id == 'backMenu' || event.target.id == 'backIcon') {
 			localLoop = false;
+			isOnline = false;
 			ClearAllEnv(environment);
 			returnToMenu();
 		}
@@ -94,7 +121,7 @@ export async function init() {
 			localGameLoop();
 			goToLocalSelectMenu();
 		}
-		if (event.target.id == 'onlineGame') {
+		if (event.target.id == 'onlineGame' && userData) {
 			isOnline = true;
 			createOnlineMenu(field);
 		}
@@ -102,7 +129,7 @@ export async function init() {
 			createOnlineSelectMenu(field);
 		}
 		if (event.target.id == 'create') {
-			createMenuCreateTournament();
+			createFormTournament();
 			form = document.getElementById("tournamentForm");
 			form.addEventListener('submit', function (event) {
 				event.preventDefault();
@@ -128,7 +155,8 @@ export async function init() {
 	});
 
 	document.addEventListener('fullscreenchange', function () {
-		resize(environment);
+		if (isFullScreen())
+			resize(environment);
 	});
 
 	function setIfGameIsEnd() {
@@ -167,6 +195,7 @@ export async function init() {
 		if (localLoop)
 			requestAnimationFrame(localGameLoop);
 	}
+
 	isGameLoaded = true;
 }
 

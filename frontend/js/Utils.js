@@ -2,12 +2,8 @@ import { runEndPoint } from "./ApiUtils.js"
 import { getUserData } from "./User.js";
 
 async function isLoggedIn() {
-	var username = await getUserData("username");
-	if (username) {
-		var response = await runEndPoint("users/check_user_logged_in/" + username + "/", "POST");
-		return response.data["is_logged_in"];
-	}
-	return false
+	var response = await runEndPoint("users/check_user_logged_in/", "GET");
+	return response.data.is_logged_in;
 }
 
 async function check_user_42() {

@@ -24,6 +24,8 @@ def get_all_user_matchs(request, user):
 @user_exists
 def get_point_scored_per_match(request, user):
     matchs = Match.objects.filter(player1=user) | Match.objects.filter(player2=user)
+    if matchs.count() == 0:
+        return JsonResponse({"average_scored_per_match": 0, "average_conceded_per_match": 0}, status=200)
     total_score = 0
     total_score_against = 0
     for match in matchs:
@@ -57,6 +59,8 @@ def get_user_win_matchs(request, user):
 @user_exists
 def get_average_exchange_before_goal(request, user):
     matchs = Match.objects.filter(player1=user) | Match.objects.filter(player2=user)
+    if matchs.count() == 0:
+        return JsonResponse({"average_exchange_before_goal": 0}, status=200)
     total_exchange = 0
     for match in matchs:
         if match.player1 == user:

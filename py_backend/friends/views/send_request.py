@@ -6,10 +6,10 @@ from django.contrib.auth.decorators import login_required
 
 @login_required
 @require_http_methods(["POST"])
-def send_request(request, user_id):
+def send_request(request, username):
     from_user = request.user
     try:
-        to_user = CustomUser.objects.get(id=user_id)
+        to_user = CustomUser.objects.get(username=username)
     except CustomUser.DoesNotExist:
         return JsonResponse({'status': 'Custom User not found'}, status=404)
     friend_request, created = InteractionRequest.objects.get_or_create(

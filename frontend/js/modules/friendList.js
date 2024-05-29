@@ -45,9 +45,9 @@ export async function init() {
 	async function getFriendName(username){
 		var usernameAvailable = await checkInputAvailable(username, "username");
 		if (!usernameAvailable)
-			showAlert("exist !", true);
+			showAlert("This userexist !", true);
 		else
-			showAlert("does not exist.", false);
+			showAlert("This user does not exist.", false);
 	}
 }
 

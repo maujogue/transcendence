@@ -42,7 +42,7 @@ class FriendsInteractions(TestCase):
 		
 		response_request = self.client.post(
 			reverse('send_request',
-			args=[self.user2.id]),
+			args=[self.user2.username]),
 			follow=True)
 		friend_request_id = response_request.json()['id']
 
@@ -68,17 +68,17 @@ class FriendsInteractions(TestCase):
 	def test_send_request_success(self):
 		response_request = self.client.post(
 			reverse('send_request',
-			args=[self.user3.id]),
+			args=[self.user3.username]),
 			follow=True)
 		self.assertEqual(response_request.status_code, 200)
 
 
 	def test_send_request_bad_id(self):
-		id = 0
+		username = "wrongUsername"
 
 		response_request = self.client.post(
 			reverse('send_request',
-			args=[id]),
+			args=[username]),
 			follow=True)
 		
 		self.assertEqual(response_request.status_code, 404)
@@ -90,7 +90,7 @@ class FriendsInteractions(TestCase):
 
 		response_request = self.client.post(
 			reverse('send_request',
-			args=[self.user3.id]),
+			args=[self.user3.username]),
 			follow=True)
 		
 		friend_request_id = response_request.json()['id']
@@ -110,7 +110,7 @@ class FriendsInteractions(TestCase):
 
 		response_request = self.client.post(
 			reverse('send_request',
-			args=[self.user2.id]),
+			args=[self.user2.username]),
 			follow=True)
 		
 		friend_request_id = response_request.json()['id']
@@ -132,7 +132,7 @@ class FriendsInteractions(TestCase):
 
 		response_request = self.client.post(
 			reverse('send_request',
-			args=[self.user2.id]),
+			args=[self.user2.username]),
 			follow=True)
 		
 		remove_request_id = response_request.json()['id']
@@ -154,7 +154,7 @@ class FriendsInteractions(TestCase):
 
 		response_request = self.client.post(
 			reverse('send_request',
-			args=[self.user3.id]),
+			args=[self.user3.username]),
 			follow=True)
 		
 		remove_request_id = response_request.json()['id']
@@ -202,7 +202,7 @@ class FriendsInteractions(TestCase):
 
 		response_request = self.client.post(
 			reverse('send_request',
-			args=[self.user3.id]),
+			args=[self.user3.username]),
 			follow=True)
 		
 		count_request = InteractionRequest.objects.count()
@@ -247,7 +247,7 @@ class MultipleCases(TestCase):
 
 		friend_request = self.client1.post(
 			reverse('send_request',
-			args=[self.user2.id]),
+			args=[self.user2.username]),
 			content_type='application/json',
 			follow=True)
 		self.assertEqual(friend_request.status_code, 200)
@@ -265,7 +265,7 @@ class MultipleCases(TestCase):
 
 		remove_request = self.client1.post(
 			reverse('send_request',
-			args=[self.user2.id]),
+			args=[self.user2.username]),
 			content_type='application/json',
 			follow=True)
 		self.assertEqual(remove_request.status_code, 200)
@@ -316,7 +316,7 @@ class GetUserDataCases(TestCase):
 		
 		response_request = self.client.post(
 			reverse('send_request',
-			args=[self.user2.id]),
+			args=[self.user2.username]),
 			follow=True)
 		friend_request_id = response_request.json()['id']
 

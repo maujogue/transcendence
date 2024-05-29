@@ -17,6 +17,7 @@ const modules = [
 	new Module("usernameInputModule"),
 	new Module("emailInputModule"),
 	new Module("friendList"),
+	new Module("auth42"),
 ];
 
 initArray(modules);

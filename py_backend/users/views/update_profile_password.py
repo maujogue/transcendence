@@ -17,6 +17,9 @@ def update_profile_password(request):
     if isinstance(data, JsonResponse):
         return data
     
+    if request.user.is_42auth:
+        return JsonResponse({'status': "You cannot update your password because you are authenticated with 42."}, status=400)
+    
     new_password1 = data.get('new_password1')
     new_password2 = data.get('new_password2')
 

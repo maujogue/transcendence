@@ -60,7 +60,7 @@ def create_tournament(request):
 
 @require_http_methods(["GET"])
 def list_tournaments(request):
-	tournaments = Tournament.objects.all()
+	tournaments = Tournament.objects.all() #TODO Return only tournaments that are not full
 	tournaments = [{"id": t.id, "name": t.name, "max_players": t.max_players,
 					"participants": [p.tournament_username for p in t.participants.all()]}
 					for t in tournaments]

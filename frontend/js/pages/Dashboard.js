@@ -1,11 +1,14 @@
 import { updatePassword, updateProfile, updateProfileWithPassword } from "../ApiCalls.js";
-import { togglePasswordVisibility, checkPassword } from "../Utils.js";
+import { togglePasswordVisibility, checkPassword, showAlert, printQueryParamsMessage } from "../Utils.js";
 import { enableDisableSaveButtonOnInput, resetForm } from "../DashboardUtils.js"
 import { getUserData } from "../User.js";
 import { friendsWebsocket } from "../Friends.js"
 
-export async function init() {
+export async function init(queryParams) {
 	friendsWebsocket();
+	printQueryParamsMessage(queryParams);
+	history.pushState({}, null, "/dash");
+
 	var modal = document.getElementById("updateProfileModal");
 	var formInputs = modal.querySelectorAll(".formInputs");
 	var userData = await getUserData();

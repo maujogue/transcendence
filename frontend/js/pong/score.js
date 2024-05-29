@@ -17,7 +17,7 @@ async function createTextMesh(text, font, environment, name) {
 	const geometry = new TextGeometry(text, {
 	  font: font,
 	  size: 1,
-	  height: 0.1
+	  depth: 0.1
 	});
 	const material = new THREE.MeshPhysicalMaterial({ 
 		color : 0xffffff,

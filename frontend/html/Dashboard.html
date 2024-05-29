@@ -31,8 +31,12 @@
 			</div>
 		</div>
 	</div>
-	<div class="logOutContent">Log in to see your profile!</div>
-
+	<section>
+		<div class="logOutContent container text-center p-4 bg-white rounded shadow">
+			<div class="text-primary" style="font-size: 100px;"><i class="fas fa-sign-in-alt"></i></div>
+			<div class="h4 mt-3">Log in to see your profile!</div>
+		</div>
+	</section>
 </section>
 
 <!-- UPDATE PROFILE MODAL-->
@@ -47,11 +51,12 @@
 				</div>
 				<div class="modal-body">
 					<!-- USERNAME INPUT -->
-					<div class="mb-3 usernameInputModule">
+					<div class="auth-42-disable-header"></div>
+					<div class="mb-3 usernameInputModule auth-42-disable">
 
 					</div>
 					<!-- EMAIL INPUT -->
-					<div class="mb-3 emailInputModule">
+					<div class="mb-3 emailInputModule auth-42-disable">
 					</div>
 					<!-- BIO INPUT -->
 					<div class="mb-3">
@@ -69,7 +74,7 @@
 					<!-- SUBMIT FORM -->
 				</div>
 				<div class="modal-footer">
-					<a id="updatePassword" class="btn btn-outline-secondary me-auto" data-bs-toggle="modal"
+					<a id="updatePassword" class="btn btn-outline-secondary me-auto auth-42-disable" data-bs-toggle="modal"
 						data-bs-target="#updatePasswordModal">Update Password</a>
 					<a id="discardChangesButton" type="button" class="btn btn-outline-danger d-none">Discard Changes</a>
 					<a id="saveChangesButton" type="button" class="saveChangesButton btn btn-primary disabled">Save Changes</a>

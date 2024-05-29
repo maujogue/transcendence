@@ -45,13 +45,27 @@ export async function init() {
 	async function getFriendName(username){
 		var friend_username = await checkInputAvailable(username, "username");
 		if (!friend_username)
-			showAlert("This user exist !", true);
+			sendFriendRequest(username);
 		else
 			showAlert("This user does not exist.", false);
 	}
 
 	async function sendFriendRequest(friend_username){
-		
+		var response;
+		const fetchBody = {
+			username: friend_username
+		};
+
+		response = await runEndPoint("friends/send_request/" + friend_username + "/", JSON.stringify(fetchBody));
+		console.log(response.data.message);
+		if (response.statusCode === 200) {
+			showAlert("FRIEND REQUEST SEND.", true);
+		} else if (response.data.message === "Request already send.") {
+			showAlert("FRIEND REQUEST ALREADY SEND.", false);
+		} else {
+			showAlert("FRIEND REQUEST NOT SEND.", false);
+		}
+
 	}
 }
 

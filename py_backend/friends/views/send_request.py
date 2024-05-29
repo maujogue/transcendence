@@ -20,4 +20,4 @@ def send_request(request, username):
     if created:
         response_data = {'id': friend_request.id, 'from_user_username': request.user.username, 'message': 'success'}
         return JsonResponse(response_data, status=200)
-    return JsonResponse({'message': 'error'}, status=400)
+    return JsonResponse({'message': 'Request already send.'}, status=400)

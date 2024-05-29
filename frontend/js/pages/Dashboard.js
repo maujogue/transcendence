@@ -3,7 +3,6 @@ import { togglePasswordVisibility, checkPassword } from "../Utils.js";
 import { enableDisableSaveButtonOnInput, resetForm } from "../DashboardUtils.js"
 import { getUserData } from "../User.js";
 import { friendsWebsocket } from "../Friends.js"
-import { getFriendName } from "../SearchBar.js";
 
 export async function init() {
 	friendsWebsocket();

@@ -36,8 +36,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         print(text_data_json)
         if text_data_json.get('type') == 'auth':
             username = text_data_json.get('username')
-            self.scope["user"] = self.authenticate_user_with_username(username)
-
+            user = await self.authenticate_user_with_username(username)
+            if user:
+                self.scope["user"] = user
+                await self.send(text_data=json.dumps({"type": "auth", "status": "success"}))
+            else:
+                await self.send(text_data=json.dumps({"type":"auth", "status": "failed"}))
 
     async def disconnect(self, close_code):
         print('disconnected')
@@ -77,18 +81,23 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.notify_participants()
 
     async def notify_participants(self):
-        match = await self.get_player_match(self.scope['user'])
-        if match:
-            match_infos = {
-                'lobby_id': match.lobby.uuid,
-                'player_1': match.player_1.username,
-                'player_2': match.player_2.username if match.player_2 else None,
-                'round': match.round
-            }
-        await self.send(text_data=json.dumps({
-            'type': 'match_start',
-            'match': match_infos
-        }))
+        if self.scope["user"].is_authenticated:
+            match = await self.get_player_match(self.scope['user'])
+            if match:
+                match_infos = {
+                    'lobby_id': match.lobby.uuid,
+                    'player_1': match.player_1.username,
+                    'player_2': match.player_2.username if match.player_2 else None,
+                    'round': match.round
+                }
+                await self.send(text_data=json.dumps({
+                    'type': 'match_start',
+                    'match': match_infos
+                }))
+            else:
+                print("No match found for the user")
+        else:
+            print("user not authenticated")
 
     @database_sync_to_async
     def is_tournament_full(self):

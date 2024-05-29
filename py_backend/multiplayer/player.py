@@ -13,6 +13,7 @@ class Player:
 
     def resetPaddlePos(self):
         self.posY = 0
+        self.move = 0
 
     def checkCollisionBorder(self): 
         if self.move > 0 and self.posY + 1 >= 6.25:

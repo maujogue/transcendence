@@ -11,11 +11,13 @@ def send_request(request, username):
     try:
         to_user = CustomUser.objects.get(username=username)
     except CustomUser.DoesNotExist:
-        return JsonResponse({'status': 'Custom User not found'}, status=404)
+        return JsonResponse({'message': 'Custom User not found'}, status=404)
     friend_request, created = InteractionRequest.objects.get_or_create(
         from_user=from_user,
-        to_user=to_user,)
+        to_user=to_user)
+    if friend_request.isFriend():   
+        return JsonResponse({'message': 'Users are already friends'}, status=400)
     if created:
-        response_data = {'id': friend_request.id, 'from_user_username': request.user.username, 'status': 'success'}
+        response_data = {'id': friend_request.id, 'from_user_username': request.user.username, 'message': 'success'}
         return JsonResponse(response_data, status=200)
-    return JsonResponse({'status': 'error'}, status=400)
+    return JsonResponse({'message': 'error'}, status=400)

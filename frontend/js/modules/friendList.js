@@ -43,11 +43,15 @@ export async function init() {
 	}
 
 	async function getFriendName(username){
-		var usernameAvailable = await checkInputAvailable(username, "username");
-		if (!usernameAvailable)
-			showAlert("This userexist !", true);
+		var friend_username = await checkInputAvailable(username, "username");
+		if (!friend_username)
+			showAlert("This user exist !", true);
 		else
 			showAlert("This user does not exist.", false);
+	}
+
+	async function sendFriendRequest(friend_username){
+		
 	}
 }
 

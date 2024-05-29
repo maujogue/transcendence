@@ -1,22 +1,21 @@
 from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
-from friends.models import InteractionRequest
 from django.contrib.auth.decorators import login_required
+
+from users.models import CustomUser
+
 
 @login_required
 @require_http_methods(["POST"])
-def remove(request, request_id):
+def remove(request, friend_username):
     try:
-        remove_request = InteractionRequest.objects.get(id=request_id)
-    except InteractionRequest.DoesNotExist:
-        return JsonResponse({'status': 'Remove request not found'}, status=404)
-
-    if request.user.username != remove_request.from_user.username:
-        return JsonResponse({'status': 'error'}, status=400)
-    if remove_request.isFriend():
-        remove_request.from_user.friends.remove(remove_request.to_user)
-        remove_request.to_user.friends.remove(remove_request.from_user)
-        remove_request.delete()
-        return JsonResponse({'status': 'success'}, status=200)
-    else:
-        return JsonResponse({'status': 'Users are not friends'}, status=400)
+        user1 = CustomUser.objects.get(username=request.user.username)
+        user2 = CustomUser.objects.get(username=friend_username)
+    except CustomUser.DoesNotExist:
+        return JsonResponse({'message': 'Custom User not found'}, status=404)
+    
+    if user1.filter(id=user2.id).exists() and user2.filter(id=user1.id).exists():
+        user1.friends.remove(user2)
+        user2.friends.remove(user1)
+        return JsonResponse({'message': 'success'}, status=200)
+    return JsonResponse({'message': 'Users are not friends'}, status=400)

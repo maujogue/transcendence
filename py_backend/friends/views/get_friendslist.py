@@ -14,8 +14,8 @@ def get_friendslist(request):
         friends_count = len(friendslist)
         friends_list_data = [{'username': friend.username, 'avatar': convert_image_to_base64(friend.avatar)} for friend in friendslist]
         if friends_count > 0:
-            return JsonResponse({'status': 'success', 'friends': friends_list_data}, status=200)
+            return JsonResponse({'message': 'success', 'friends': friends_list_data}, status=200)
         else:
-            return JsonResponse({'status': 'User have 0 friends'}, status=200)
+            return JsonResponse({'message': 'User have 0 friends'}, status=200)
     except CustomUser.DoesNotExist:
-        return JsonResponse({'status': 'User not found'}, status=404)
+        return JsonResponse({'message': 'User not found'}, status=404)

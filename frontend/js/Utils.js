@@ -61,13 +61,12 @@ async function disable42LoginElements() {
 	}
 }
 
-async function disableCollapsedSidebar(forceDisable) {
+async function disableCollapsedSidebar() {
 	const sidebar = document.getElementById("sidebar");
 	const content = document.getElementById("content-container");
-	if (!isLoggedIn()) {
+	if (!(await isLoggedIn())) {
 		sidebar.classList.remove("collapsed");
 		content.classList.remove("collapsed");
-
 		toggleSearchBar();
 		var sectionNames = document.querySelectorAll(".section-name");
 		sectionNames.forEach(function (name) {
@@ -86,7 +85,6 @@ function toggleSearchBar() {
 	else
 		searchButton.classList.add('hidden');
 }
-
 
 function showAlert(message, success) {
 	var alertDiv = document.createElement("div");
@@ -166,4 +164,6 @@ export {
 	check_user_42,
 	togglePasswordVisibility,
 	checkPassword,
+	printQueryParamsMessage,
+	toggleSearchBar,
 };

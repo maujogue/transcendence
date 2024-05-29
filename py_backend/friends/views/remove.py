@@ -14,7 +14,7 @@ def remove(request, friend_username):
     except CustomUser.DoesNotExist:
         return JsonResponse({'message': 'Custom User not found'}, status=404)
     
-    if user1.filter(id=user2.id).exists() and user2.filter(id=user1.id).exists():
+    if user1.friends.filter(id=user2.id).exists() and user2.friends.filter(id=user1.id).exists():
         user1.friends.remove(user2)
         user2.friends.remove(user1)
         return JsonResponse({'message': 'success'}, status=200)

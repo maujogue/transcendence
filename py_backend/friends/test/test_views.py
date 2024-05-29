@@ -113,34 +113,18 @@ class FriendsInteractions(TestCase):
 			args=[self.user2.username]),
 			follow=True)
 		
-		friend_request_id = response_request.json()['id']
-		self.assertEqual(response_request.status_code, 200)
-
-		response_accept = self.client.post(
-		    reverse('accept',
-			args=[friend_request_id]),
-			follow=True)
-
-		self.assertEqual(response_accept.status_code, 400)
-		response_data = response_accept.json()
-		self.assertEqual(response_data.get('status'), 'Users are already friends')
+		self.assertEqual(response_request.status_code, 400)
+		response_data = response_request.json()
+		self.assertEqual(response_data.get('message'), 'Users are already friends')
 
 
 	def test_remove_friend(self):
 		self.assertEqual(self.user1.friends.count(), 1)
 		self.assertEqual(self.user2.friends.count(), 1)
 
-		response_request = self.client.post(
-			reverse('send_request',
-			args=[self.user2.username]),
-			follow=True)
-		
-		remove_request_id = response_request.json()['id']
-		self.assertEqual(response_request.status_code, 200)
-
 		response_remove = self.client.post(
 		    reverse('remove',
-			args=[remove_request_id]),
+			args=[self.user2.username]),
 			follow=True)
 
 		self.assertEqual(response_remove.status_code, 200)
@@ -152,22 +136,14 @@ class FriendsInteractions(TestCase):
 		self.assertEqual(self.user1.friends.count(), 1)
 		self.assertEqual(self.user3.friends.count(), 0)
 
-		response_request = self.client.post(
-			reverse('send_request',
-			args=[self.user3.username]),
-			follow=True)
-		
-		remove_request_id = response_request.json()['id']
-		self.assertEqual(response_request.status_code, 200)
-
 		response_remove = self.client.post(
 		    reverse('remove',
-			args=[remove_request_id]),
+			args=[self.user3.username]),
 			follow=True)
 
 		self.assertEqual(response_remove.status_code, 400)
 		response_data = response_remove.json()
-		self.assertEqual(response_data.get('status'), 'Users are not friends')
+		self.assertEqual(response_data.get('message'), 'Users are not friends')
 		self.assertEqual(self.user1.friends.count(), 1)
 		self.assertEqual(self.user3.friends.count(), 0)
 	
@@ -192,7 +168,7 @@ class FriendsInteractions(TestCase):
 		    content_type='application/json')
 		data = response.json()
 		self.assertEqual(response.status_code, 200)
-		self.assertEqual(data.get('status'), 'User have 0 friends')
+		self.assertEqual(data.get('message'), 'User have 0 friends')
 
 
 	def test_count_request(self):
@@ -263,17 +239,9 @@ class MultipleCases(TestCase):
 		self.assertEqual(self.user1.friends.count(), 1)
 		self.assertEqual(self.user2.friends.count(), 1)
 
-		remove_request = self.client1.post(
-			reverse('send_request',
-			args=[self.user2.username]),
-			content_type='application/json',
-			follow=True)
-		self.assertEqual(remove_request.status_code, 200)
-		remove_request_id = remove_request.json()['id']
-
 		response_remove = self.client1.post(
 		    reverse('remove',
-			args=[remove_request_id]),
+			args=[self.user2.username]),
 			content_type='application/json',
 			follow=True)
 		

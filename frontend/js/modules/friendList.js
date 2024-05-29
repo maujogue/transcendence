@@ -59,13 +59,14 @@ export async function init() {
 		response = await runEndPoint("friends/send_request/" + friend_username + "/", JSON.stringify(fetchBody));
 		console.log(response.data.message);
 		if (response.statusCode === 200) {
-			showAlert("FRIEND REQUEST SEND.", true);
+			showAlert("You just send a friend request to " + friend_username + "  !", true);
 		} else if (response.data.message === "Request already send.") {
 			showAlert("FRIEND REQUEST ALREADY SEND.", false);
+		} else if (response.data.message === "Cannot send a request to himself.") {
+			showAlert("You cannot send a friend request to yourself.", false);
 		} else {
 			showAlert("FRIEND REQUEST NOT SEND.", false);
 		}
-
 	}
 }
 

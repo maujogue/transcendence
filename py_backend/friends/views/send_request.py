@@ -12,6 +12,9 @@ def send_request(request, username):
         to_user = CustomUser.objects.get(username=username)
     except CustomUser.DoesNotExist:
         return JsonResponse({'message': 'Custom User not found'}, status=404)
+    if request.user.username == username:
+        return JsonResponse({'message': 'Cannot send a request to himself.'}, status=400)
+
     friend_request, created = InteractionRequest.objects.get_or_create(
         from_user=from_user,
         to_user=to_user)

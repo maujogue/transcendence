@@ -36,7 +36,7 @@ export async function connectToTournament(tournament) {
             // if (data.type == "auth")
             //     alert(data.status);
     
-            if (data.type == "match_start") {
+            if (data.type == "matchup") {
                 console.log("Match start data:", data.match);
             }
         };

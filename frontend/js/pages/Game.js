@@ -96,12 +96,6 @@ export async function init() {
 		if (event.target.classList.contains('tournament-info')) {
 			getUserData().then((data) => {
 				userData = data;
-				if (userData) {
-					checkIfUserIsInTournament(userData).then((response) => {
-						if (response && response['joined'])
-							connectToTournament(response['tournament']);
-					});
-				}
 			})
 		}
 

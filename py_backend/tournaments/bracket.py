@@ -28,5 +28,4 @@ def generate_bracket(tournament):
             lobby=match_lobby
         )
         tournament.matchups.add(match)
-
     tournament.save()

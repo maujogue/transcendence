@@ -1,6 +1,4 @@
 import json
-import base64
-
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async
@@ -27,8 +25,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 'participants': participants
             }
         )
-        await self.check_tournament_start()
-
 
     async def receive(self, text_data):
         print("receive")
@@ -38,9 +34,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             username = text_data_json.get('username')
             user = await self.authenticate_user_with_username(username)
             if user:
+                print("user authenticated: ", user.username)
                 self.scope["user"] = user
                 await self.send(text_data=json.dumps({"type": "auth", "status": "success"}))
+                await self.check_tournament_start()
             else:
+                print("user not authenticated")
                 await self.send(text_data=json.dumps({"type":"auth", "status": "failed"}))
 
     async def disconnect(self, close_code):
@@ -69,35 +68,23 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     def get_tournament_participants(self):
         return [p.tournament_username for p in self.tournament.participants.all()]
 
-    async def tournament_participants(self, event):
-        await self.send(
-            text_data=json.dumps({'type': 'participants', 'participants': event['participants']}))
-
     async def check_tournament_start(self):
+        print("check_tournament_start")
         if await self.is_tournament_full() and not self.tournament.started:
+            print("Tournament is full and not started")
             self.tournament.started = True
             await sync_to_async(self.tournament.save)()
             await sync_to_async(generate_bracket)(self.tournament)
-            await self.notify_participants()
+            await self.send_matchups()
 
-    async def notify_participants(self):
-        if self.scope["user"].is_authenticated:
-            match = await self.get_player_match(self.scope['user'])
-            if match:
-                match_infos = {
-                    'lobby_id': match.lobby.uuid,
-                    'player_1': match.player_1.username,
-                    'player_2': match.player_2.username if match.player_2 else None,
-                    'round': match.round
-                }
-                await self.send(text_data=json.dumps({
-                    'type': 'match_start',
-                    'match': match_infos
-                }))
-            else:
-                print("No match found for the user")
-        else:
-            print("user not authenticated")
+    
+    async def send_matchups(self):
+        await self.channel_layer.group_send(
+            self.tournament.name,
+            {
+                'type': 'tournament.matchups'
+            }
+        )
 
     @database_sync_to_async
     def is_tournament_full(self):
@@ -107,11 +94,34 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_player_match(self, user):
-        return TournamentMatch.objects.filter(player_1=user).first()
+        match = TournamentMatch.objects.filter(player_1=user.id).first()
+        if match == None:
+            match = TournamentMatch.objects.filter(player_2=user.id).first()
+        print(match)
+        return match
+
+    @database_sync_to_async
+    def get_match_infos(self, match):
+        return {
+            'lobby_id': str(match.lobby.uuid),
+            'player_1': match.player_1.username,
+            'player_2': match.player_2.username if match.player_2 else None,
+            'round': match.round
+        }
     
-    async def authenticate_user_with_username(self, username):
+    @database_sync_to_async
+    def authenticate_user_with_username(self, username):
         try:
-            user = await CustomUser.objects.aget(username=username)
-            return user
+            return CustomUser.objects.get(username=username)
         except CustomUser.DoesNotExist:
             return None
+
+    async def tournament_participants(self, event):
+        await self.send(
+            text_data=json.dumps({'type': 'participants', 'participants': event['participants']}))
+        
+    async def tournament_matchups(self, event):
+        match = await self.get_player_match(self.scope['user'])
+        if match:
+            match_infos = await self.get_match_infos(match)
+            await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos}))

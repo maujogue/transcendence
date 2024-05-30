@@ -18,9 +18,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         }))
 
     async def join_lobby(self):
-        if self.scope['url_route']['kwargs']['lobby_id']:
+        if self.scope['url_route']['kwargs'].get('lobby_id') is not None:
             try:
-                print(self.scope['url_route']['kwargs']['lobby_id'])
                 return await Lobby.objects.aget(uuid=self.scope['url_route']['kwargs']['lobby_id'])
             except Lobby.DoesNotExist:
                 return None
@@ -53,9 +52,8 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'name': self.player.name
                 }
         )
-
-
-    async def connect(self):
+    
+    async def set_environment(self):
         self.max_points = 3
         self.is_connected = False
         self.is_ready = False
@@ -78,15 +76,21 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         self.is_connected = True
+
+    async def ask_opponent(self):
+        await self.channel_layer.group_send(
+            self.lobby_group_name, { 'type': 'pong.ask_character', 'name': self.player.name}
+        )
+        await self.channel_layer.group_send(
+            self.lobby_group_name, { 'type': 'pong.ask_user', 'name': self.player.name}
+        )
+
+    async def connect(self):
+        await self.set_environment()
         await self.accept()
         await self.send_player_data()
         if self.lobby.connected_user == 2:
-            await self.channel_layer.group_send(
-                self.lobby_group_name, { 'type': 'pong.ask_character', 'name': self.player.name}
-            )
-            await self.channel_layer.group_send(
-                self.lobby_group_name, { 'type': 'pong.ask_user', 'name': self.player.name}
-            )
+            await self.ask_opponent()
             await self.startGame()
             
     async def authenticate_user_with_username(self, username):
@@ -325,6 +329,12 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.player.is_ready = False
         self.opp.is_ready = False
 
+    def create_match_info(self):
+        return {
+            'score_player_1': self.player.score,
+            'score_player_2': self.opp.score,
+            'winner': self.player.user.username if self.player.score > self.opp.score else self.opp.user.username,
+        }
                     
     async def pong_status(self, event):
         message = event["message"]
@@ -332,6 +342,10 @@ class PongConsumer(AsyncWebsocketConsumer):
         status = event["status"]   
 
         if status == "endGame":
+            if self.player.name == 'player1':
+                match_info = self.create_match_info()
+                print(match_info)
+                await self.send(text_data=json.dumps({ "type": "match_info", "match_info": match_info}))
             self.resetGame()
         await self.send(text_data=json.dumps({"type": 'status', 'status': status ,"message": message, "name": name}))
         if status == 'start':

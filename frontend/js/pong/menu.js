@@ -175,7 +175,7 @@ function createInterfaceSelectMenu() {
 	createCursor("swatch1", "cursorP2", "P2");
 }
 
-function createSelectMenu(field, characters) {
+function createSelectMenu(characters) {
 	const env = createEnvironment("canvas");
 	env.scene.add(createLobbyScene(env));
 	createLobbyLights(env);

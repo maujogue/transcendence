@@ -3,6 +3,8 @@ import { returnToMenu } from "./createEndScreen.js";
 import { getUserData } from "../User.js";
 import { createOnlineSelectMenu } from "./online.js";
 import { createTournamentDiv } from "./menu.js";
+import { wsMatch } from "./online.js";
+import { drawBracket, getTournamentBracket } from "./createBracket.js";
 
 export let wsTournament
 let userData;
@@ -24,8 +26,12 @@ export async function connectToTournament(tournament) {
             if (data.type == "matchup") {
                 createOnlineSelectMenu(data.match.lobby_id);
             }
-            // if (data.type == "status")
-            //     handlerMessageStatus(data);
+            if (data.type == "status")
+                handlerMessageStatus(data);
+            if (data.type == "bracket") {
+                createTournamentDiv();
+                drawBracket(data.bracket);
+            }
         };
         
         wsTournament.onerror = (error) => {
@@ -42,10 +48,8 @@ export async function connectToTournament(tournament) {
 
 function handlerMessageStatus(data) {
     console.log("Status:", data.status);
-    if (data.status == "start")
-        createOnlineSelectMenu();
-    if (data.status == "end")
-        console.log("Match end");
+    if (data.status == "endGame")
+        wsMatch?.close();
 }
 
 function displayPlayerList(participants) {

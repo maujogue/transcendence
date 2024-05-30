@@ -5,6 +5,7 @@ import { createEndScreen } from './createEndScreen.js';
 import { sendColor } from './sendMessage.js';
 import { playersMove } from './online.js';
 import { displayErrorPopUp } from './tournament.js';
+import { wsTournament } from './tournament.js';
 
 
 export function setBallData(data, env) {
@@ -25,20 +26,30 @@ export function handlerScore(data, env, player, opp) {
     playersMove.clear();
 }
 
+export function removeGameScreen(env) {
+    ClearAllEnv(env);
+    document.getElementById("hud")?.remove();
+}
+    
+
 function handlerStopGame(webSocket, env, message) {
     displayErrorPopUp(message, document.getElementById("hud"));
     document.getElementById("errorPopUp").classList.add("match-error");
     document.getElementById("PopUpCloseIcon").addEventListener("click", () => {
-        ClearAllEnv(env);
+        removeGameScreen(env);
         displayMainMenu();
-        document.getElementById("hud").remove();
     });
     webSocket.close();
 }
 
 function handlerEndGame(data, env) {
-    if (!document.getElementById("endscreen"))
+    if (!document.getElementById("endscreen") && !wsTournament)
         createEndScreen(data['name']);
+    if (wsTournament)
+        wsTournament.send(JSON.stringify({
+            'type': 'status',
+            'status': 'endGame'
+        }));
     playersMove.clear();
     env.ball.direction.x = 0;
     env.ball.direction.y = 0;

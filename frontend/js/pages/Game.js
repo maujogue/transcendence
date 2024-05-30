@@ -50,7 +50,6 @@ export async function init(queryParams) {
 
 	loadAllModel();
 	
-	getTournamentBracket();
 	getUserData().then((data) => {
 		userData = data;
 		if (userData) {
@@ -64,7 +63,7 @@ export async function init(queryParams) {
 	async function goToLocalSelectMenu() {
 		divMenu = document.getElementById("menu");
 		divMenu.remove();
-		environment = createSelectMenu(field, characters);
+		environment = createSelectMenu(characters);
 		player1 = await displayCharacter(player1, environment, "chupacabra", "player1");
 		player2 = await displayCharacter(player2, environment, "elvis", "player2");
 	}

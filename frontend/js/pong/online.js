@@ -104,7 +104,7 @@ function removeP2Cursor() {
 
 
 async function goToOnlineSelectMenu() {
-    env = createSelectMenu(field, characters);
+    env = createSelectMenu(characters);
     removeP2Cursor();
 }
 

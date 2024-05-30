@@ -18,7 +18,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         }))
 
     async def join_lobby(self):
-        if self.scope['url_route']['kwargs']['lobby_id']:
+        if self.scope['url_route']['kwargs'].get('lobby_id') is not None:
             try:
                 return await Lobby.objects.aget(uuid=self.scope['url_route']['kwargs']['lobby_id'])
             except Lobby.DoesNotExist:
@@ -90,7 +90,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.accept()
         await self.send_player_data()
         if self.lobby.connected_user == 2:
-            self.ask_opponent()
+            await self.ask_opponent()
             await self.startGame()
             
     async def authenticate_user_with_username(self, username):

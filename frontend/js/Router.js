@@ -1,6 +1,6 @@
 import { isLoggedIn, toggleContentOnLogState, resetModalFormsInitListeners } from "./Utils.js";
 import { injectUserData } from "./User.js";
-import { injectModule, initArray, importFunction } from "./Modules.js";
+import { initArray, importFunction, injectModule } from "./Modules.js";
 
 class Page {
 	constructor(name, urlPath, filePath, importJs) {
@@ -20,11 +20,11 @@ class Page {
 }
 
 const routes = [
-	new Page("Dashboard", "/dash", "html/Dashboard.html", true),
-	new Page("Sidebar", "", "html/Sidebar.html", true),
-	new Page("About", "/about", "html/About.html"),
-	new Page("Game", "/game", "html/Game.html", true),
-	new Page("EmailVerified", "/emailVerified", "html/EmailVerified.html", true),
+	new Page("dashboard", "/dash", "html/Dashboard.html", true),
+	new Page("sidebar", "", "html/Sidebar.html", true),
+	new Page("about", "/about", "html/About.html"),
+	new Page("game", "/game", "html/Game.html", true),
+	new Page("emailVerified", "/emailVerified", "html/EmailVerified.html", true),
 ];
 
 window.addEventListener("popstate", () => router(routes));
@@ -85,12 +85,13 @@ async function initPages() {
 	var contentContainer = document.getElementById("content-container");
 	let queryParams = new URLSearchParams(location.search);
 	routes.forEach(async page => {
-		if (page.name === "Sidebar")
+		if (page.name === "sidebar")
 			document.getElementById("sidebar-container").innerHTML = page.html;
 		else {
 			contentContainer.innerHTML += `<div id="${page.name}" class="page" hidden></div>`;
 			contentContainer.querySelector(`#${page.name}`).innerHTML = page.html;
 		}
+		await injectModule();
 		if (page.init) {
 			if (page.urlPath === location.pathname)
 				await page.init(queryParams);

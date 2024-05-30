@@ -1,5 +1,5 @@
 import { runEndPoint } from "./ApiUtils.js"
-import { getUserData } from "./User.js";
+import { getUserData, injectUserData } from "./User.js";
 
 async function isLoggedIn() {
 	var response = await runEndPoint("users/check_user_logged_in/", "GET");

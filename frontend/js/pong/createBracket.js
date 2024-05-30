@@ -8,7 +8,7 @@ const horizontalSpacing = 175;
 let verticalSpacing = 8;
 
 export function getTournamentBracket() {
-    const url = `./js/pong/dev/bracketNotOver.json`;
+    const url = `./js/pong/dev/bracket.json`;
 
     fetch(url)
         .then(response => response.json())
@@ -53,8 +53,19 @@ function drawConnectingLine(x1, y1, x2, y2) {
     ctx.stroke();
 }
 
+function createBracketCanvas() {
+    if (document.getElementById('bracketCanvas'))
+        document.getElementById('bracketCanvas').remove();
+    const canvas = document.createElement('canvas');
+    canvas.id = 'bracketCanvas';
+    canvas.width = 800;
+    canvas.height = 600;
+    document.getElementsByClassName('tournament')[0]?.appendChild(canvas);
+}
+
 function drawBracket(data) {
-    canvas = document.getElementById('tournamentCanvas');
+    createBracketCanvas();
+    canvas = document.getElementById('bracketCanvas');
     ctx = canvas.getContext('2d');
     ctx.font = '12px Arial';
     let prevRoundMatchesPosY = [];

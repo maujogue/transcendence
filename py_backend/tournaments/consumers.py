@@ -40,9 +40,16 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         pass
 
 
-    async def handler_status(self, text_data_json):
-        if text_data_json.get('status') == 'endGame':
+    async def handler_status(self, status):
+        if status == 'endGame':
             self.match.finished = True
+            await self.channel_layer.group_send(
+                self.tournament.name,
+                {
+                    'type': 'tournament.status',
+                    'status': 'endGame'
+                }
+            )
             await self.match.asave()
 
     async def set_match_info(self, match_info):
@@ -53,13 +60,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.match.asave()
 
     async def receive(self, text_data):
-        print("receive")
         text_data_json = json.loads(text_data)
-        print(text_data_json)
+        print(self.scope['user'], ": ", text_data_json)
         if text_data_json.get('type') == 'auth':
             await self.auth(text_data_json)
         if text_data_json.get('type') == 'status':
-            await self.handler_status(text_data_json)
+            await self.handler_status(text_data_json.get('status'))
         if text_data_json.get('type') == 'match_info':
             await self.set_match_info(text_data_json.get('match_info'))
 

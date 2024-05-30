@@ -26,13 +26,18 @@ export function handlerScore(data, env, player, opp) {
     playersMove.clear();
 }
 
+export function removeGameScreen(env) {
+    ClearAllEnv(env);
+    document.getElementById("hud")?.remove();
+}
+    
+
 function handlerStopGame(webSocket, env, message) {
     displayErrorPopUp(message, document.getElementById("hud"));
     document.getElementById("errorPopUp").classList.add("match-error");
     document.getElementById("PopUpCloseIcon").addEventListener("click", () => {
-        ClearAllEnv(env);
+        removeGameScreen(env);
         displayMainMenu();
-        document.getElementById("hud").remove();
     });
     webSocket.close();
 }

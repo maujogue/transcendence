@@ -26,7 +26,7 @@ export async function sendTournamentForm(form) {
 		connectToTournament(data.tournament);
 	})
 	.catch((error) => {
-		displayErrorPopUp(error);
+		displayErrorPopUp(error, document.getElementsByClassName("tournament")[0]);
 	});
 }
 

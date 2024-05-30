@@ -11,7 +11,7 @@ class TournamentMatch(models.Model):
 	round = models.fields.CharField(max_length=15)
 	player_1 = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='player1_match')
 	player_2 = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='player2_match', null=True, blank=True)
-	winner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='won_match', null=True, blank=True)
+	winner = models.CharField(max_length=15, null=True, blank=True)
 	score_player_1 = models.IntegerField(default=0)
 	score_player_2 = models.IntegerField(default=0)
 	lobby = models.ForeignKey(Lobby, on_delete=models.CASCADE)

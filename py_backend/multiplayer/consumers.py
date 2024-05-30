@@ -329,6 +329,12 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.player.is_ready = False
         self.opp.is_ready = False
 
+    def create_match_info(self):
+        return {
+            'score_player_1': self.player.score,
+            'score_player_2': self.opp.score,
+            'winner': self.player.name if self.player.score > self.opp.score else self.opp.name,
+        }
                     
     async def pong_status(self, event):
         message = event["message"]
@@ -336,6 +342,10 @@ class PongConsumer(AsyncWebsocketConsumer):
         status = event["status"]   
 
         if status == "endGame":
+            if self.player.name == 'player1':
+                match_info = self.create_match_info()
+                print(match_info)
+                await self.send(text_data=json.dumps({ "type": "match_info", "match_info": match_info}))
             self.resetGame()
         await self.send(text_data=json.dumps({"type": 'status', 'status': status ,"message": message, "name": name}))
         if status == 'start':

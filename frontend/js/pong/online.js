@@ -11,6 +11,7 @@ import { updateMixers } from "./displayCharacter.js";
 import { resize } from "./resize.js";
 import { getUserData } from "../User.js";
 import { field } from "../pages/Game.js";
+import { wsTournament } from "./tournament.js";
 
 let env;
 let player;
@@ -156,6 +157,12 @@ async function connectToLobby(username) {
         }
         if (data['type'] && data['type'] == 'status')
             handlerStatusMessage(data, webSocket, env, status);
+        if (data['type'] == 'match_info') {
+            wsTournament?.send(JSON.stringify({
+                'type': 'match_info',
+                'match_info': data['match_info']
+            }));
+        }
         if (data['type'] == 'ball_data')
             setBallData(data, env);
         if (data['type'] == 'auth' && data['status'] == 'failed') 

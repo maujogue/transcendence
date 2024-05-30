@@ -40,6 +40,11 @@ function handlerStopGame(webSocket, env, message) {
 function handlerEndGame(data, env) {
     if (!document.getElementById("endscreen") && !wsTournament)
         createEndScreen(data['name']);
+    if (wsTournament)
+        wsTournament.send(JSON.stringify({
+            'type': 'status',
+            'status': 'endGame'
+        }));
     playersMove.clear();
     env.ball.direction.x = 0;
     env.ball.direction.y = 0;

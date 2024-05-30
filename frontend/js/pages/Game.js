@@ -15,6 +15,7 @@ import { getUserData } from "../User.js";
 import { sendTournamentForm, createFormTournament} from "../pong/createTournament.js";
 import { createJoinTournamentMenu } from "../pong/joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "../pong/tournament.js";
+import { showAlert } from "../Utils.js";
 import * as THREE from 'three';
 
 export var lobby;
@@ -23,7 +24,9 @@ export var characters;
 
 var isGameLoaded = false;
 
-export async function init() {
+export async function init(queryParams) {
+	if (queryParams && queryParams.get("message"))
+		showAlert(queryParams.get("message"), queryParams.get("success"));
 	if (isGameLoaded)
 		return;
 
@@ -93,10 +96,15 @@ export async function init() {
 	});
 
 	document.body.addEventListener("click", function (event) {
-		if (event.target.classList.contains('tournament-info')) {
-			getUserData().then((data) => {
-				userData = data;
-			})
+		getUserData().then((data) => {
+			userData = data;
+		})
+		
+		if (userData) {
+			checkIfUserIsInTournament(userData).then((response) => {
+				if (response && response['joined'])
+					connectToTournament(response['tournament']);
+			});
 		}
 
 		if (event.target.id == 'restart' && !isOnline) {
@@ -154,7 +162,7 @@ export async function init() {
 	});
 
 	function setIfGameIsEnd() {
-		if (player1.score < 1 && player2.score < 1)
+		if (player1.score < 5 && player2.score < 5)
 			return;
 		let winner = player1.name;
 		if (player2.score > player1.score)
@@ -165,6 +173,7 @@ export async function init() {
 		player2.score = 0;
 	}
 
+	
 	async function localGameLoop() {
 		if (keyPress && !start) {
 			await handleMenuKeyPress(keysPressed, player1, player2, environment);
@@ -179,18 +188,18 @@ export async function init() {
 		if (start) {
 			console.log("start");
 			if (keyPress)
-				handleKeyPress(keysPressed, player1, player2, environment);
-			checkCollision(environment.ball, player1, player2, environment);
-			setIfGameIsEnd();
-		}
-		if (player1 && player2)
-			updateMixers(player1, player2);
-		environment?.renderer.render(environment.scene, environment.camera);
-		if (localLoop)
-			requestAnimationFrame(localGameLoop);
+			handleKeyPress(keysPressed, player1, player2, environment);
+		checkCollision(environment.ball, player1, player2, environment);
+		setIfGameIsEnd();
 	}
-
+	if (player1 && player2)
+	updateMixers(player1, player2);
+	environment?.renderer.render(environment.scene, environment.camera);
+	if (localLoop)
+	requestAnimationFrame(localGameLoop);
+	}
 	isGameLoaded = true;
 }
+
 
 export { displayMainMenu }

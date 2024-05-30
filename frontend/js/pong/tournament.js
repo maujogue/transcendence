@@ -128,10 +128,10 @@ export async function checkIfUserIsInTournament(user) {
     });
 }
 
-export function displayErrorPopUp (message) {
-    console.error("displayErrorPopUp", message);
-    const parent = document.getElementsByClassName("tournament")[0];
+export function displayErrorPopUp (message, parent) {
+    // console.error("displayErrorPopUp", message);
     const errorPopUp = document.createElement("div");
+    errorPopUp.id = "errorPopUp";
     errorPopUp.className = "error-pop-up";
     errorPopUp.innerHTML = ` \
     <i id="PopUpCloseIcon" class="fa-solid fa-xmark close-icon"></i> \

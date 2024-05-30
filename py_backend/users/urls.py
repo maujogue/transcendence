@@ -1,5 +1,6 @@
 from django.urls import path
 from users.views import *
+from users.views.username_available import username_available
 
 urlpatterns = [
     path('register/', register, name='register'),
@@ -16,4 +17,5 @@ urlpatterns = [
     path('email_available/', email_available, name='email_available'),
     path('confirm_email/<uidb64>/<token>/', confirm_email, name='confirm_email'),
     path('confirm_new_email/<uidb64>/<token>/<new_email>/', confirm_new_email, name='confirm_new_email'),
+	path('check_user_logged_in/<str:username>/', check_user_logged_in_view, name='check_user_logged_in'),
 ]

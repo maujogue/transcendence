@@ -1,13 +1,29 @@
-function isLoggedIn() {
-	if (Cookies.get("isLoggedIn") === "true") return true;
-	else return false;
+import { runEndPoint } from "./ApiUtils.js"
+import { getUserData } from "./User.js";
+
+async function isLoggedIn() {
+	var username = await getUserData("username");
+	if (username) {
+		var response = await runEndPoint("users/check_user_logged_in/" + username + "/", "POST");
+		return response.data["is_logged_in"];
+	}
+	return false
 }
 
-function toggleContentOnLogState() {
+async function check_user_42() {
+	return await getUserData("is_42auth");
+}
+
+function printQueryParamsMessage(queryParams) {
+	if (queryParams && queryParams.get("message"))
+		showAlert(queryParams.get("message"), queryParams.get("success"));
+}
+
+async function toggleContentOnLogState() {
 	const logInContent = document.querySelectorAll(".logInContent");
 	const logOutContent = document.querySelectorAll(".logOutContent");
 
-	if (isLoggedIn()) {
+	if (await isLoggedIn()) {
 		logInContent.forEach((e) => (e.style.display = "block"));
 		logOutContent.forEach((e) => (e.style.display = "none"));
 	} else {
@@ -15,12 +31,40 @@ function toggleContentOnLogState() {
 		logOutContent.forEach((e) => (e.style.display = "block"));
 	}
 	disableCollapsedSidebar();
+	disable42LoginElements();
+	resetAllForm();
 }
 
-function disableCollapsedSidebar() {
+function resetAllForm() {
+	document.querySelectorAll('form')?.forEach(form => { form.reset() });
+}
+
+async function disable42LoginElements() {
+	const elements = document.querySelectorAll(".auth-42-disable");
+	const headers = document.querySelectorAll(".auth-42-disable-header");
+	if (await check_user_42()) {
+		elements.forEach(e => {
+			e.classList.add("disabled");
+		});
+		headers.forEach(e => {
+			e.innerHTML = "<btn class='btn w-100 bg-warning mb-3 '>You can't modify your username, email or password because you logged in with 42</span>";
+		});
+	}
+	else {
+		elements.forEach(e => {
+			if (e.classList.contains("disabled"))
+				e.classList.remove("disabled");
+		});
+		headers.forEach(e => {
+			e.innerHTML = "";
+		});
+	}
+}
+
+async function disableCollapsedSidebar() {
 	const sidebar = document.getElementById("sidebar");
 	const content = document.getElementById("content-container");
-	if (!isLoggedIn()) {
+	if (!(await isLoggedIn())) {
 		sidebar.classList.remove("collapsed");
 		content.classList.remove("collapsed");
 		var sectionNames = document.querySelectorAll(".section-name");
@@ -32,6 +76,7 @@ function disableCollapsedSidebar() {
 
 function showAlert(message, success) {
 	var alertDiv = document.createElement("div");
+	success = success === true || success === 'true';
 	var bgColor = success ? "alert-success" : "alert-danger";
 	alertDiv.className = "alert d-flex align-items-center";
 	alertDiv.classList.add(bgColor);
@@ -104,6 +149,8 @@ export {
 	toggleContentOnLogState,
 	showAlert,
 	isLoggedIn,
+	check_user_42,
 	togglePasswordVisibility,
 	checkPassword,
+	printQueryParamsMessage,
 };

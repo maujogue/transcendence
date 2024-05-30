@@ -1,8 +1,8 @@
 import { getUserData} from "./User.js"
-import { test } from "./modules/friendList.js"
+
+let webSocket = new WebSocket("ws://127.0.0.1:8080/ws/friends/");
 
 export function friendsWebsocket() {
-    const webSocket = new WebSocket("ws://127.0.0.1:8080/ws/friends/");
     webSocket.onopen = function() {
         getUserData('friendslist').then((res) => {
             webSocket.send(JSON.stringify({
@@ -12,8 +12,20 @@ export function friendsWebsocket() {
         })
     }
 
-    webSocket.onmessage = (e) => {
-        const data = JSON.parse(e.data);
-        test();
+    webSocket.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === 'receive_friend_request') {
+            showAlert("RECEIVE")
+        }
+    };    
+}
+
+async function sendWebSocketMessage(message) {
+    if (webSocket.readyState === webSocketbSocket.OPEN) {
+        webSocket.send(JSON.stringify(message));
+    } else {
+        console.error('WebSocket is not open');
     }
 }
+
+export { sendWebSocketMessage };

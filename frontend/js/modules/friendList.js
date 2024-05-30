@@ -2,6 +2,7 @@ import { getModuleDiv } from "../Modules.js";
 import { runEndPoint } from "../ApiUtils.js"
 import { showAlert, disableCollapsedSidebar } from "../Utils.js";
 import { checkInputAvailable } from "../ApiCalls.js";
+import { sendWebSocketMessage } from "../Friends.js";
 
 export async function init() {
 	var module = getModuleDiv("friendList");
@@ -30,14 +31,6 @@ export async function init() {
 			username: userData.get("username"),
 		};
 		console.log(searchFriendForm, fetchBody["username"]);
-	
-		// var response = await runEndPoint("friends/send_request/" + userData.get("username") + "/");
-		// if (response.statusCode === 200) {
-		// 	showAlert(response.data.success);
-		// } else {
-		// 	showAlert(response.data.error);
-		// }
-		// console.log(response);
 
 		await getFriendName(fetchBody.username);
 	}
@@ -60,6 +53,11 @@ export async function init() {
 
 		if (response.statusCode === 200) {
 			showAlert("You just send a friend request to " + friend_username + "  !", true);
+			sendWebSocketMessage ({
+				type: 'send_friend_request',
+				from: 'current_user',
+				to: friend_username
+			});
 
 		} else if (response.data.message === "Request already send.") {
 			showAlert("FRIEND REQUEST ALREADY SEND.", false);
@@ -69,17 +67,5 @@ export async function init() {
 			showAlert("FRIEND REQUEST NOT SEND.", false);
 		}
 	}
-
 }
-
-async function test() {
-	console.log("TEST");
-}
-
-export {
-	test,
-};
-
-
-
 

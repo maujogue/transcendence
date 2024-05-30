@@ -1,4 +1,5 @@
 import { getUserData} from "./User.js"
+import { test } from "./modules/friendList.js"
 
 export function friendsWebsocket() {
     const webSocket = new WebSocket("ws://127.0.0.1:8080/ws/friends/");
@@ -13,5 +14,6 @@ export function friendsWebsocket() {
 
     webSocket.onmessage = (e) => {
         const data = JSON.parse(e.data);
+        test();
     }
 }

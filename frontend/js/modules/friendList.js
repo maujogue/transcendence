@@ -57,9 +57,10 @@ export async function init() {
 		};
 
 		response = await runEndPoint("friends/send_request/" + friend_username + "/", JSON.stringify(fetchBody));
-		console.log(response.data.message);
+
 		if (response.statusCode === 200) {
 			showAlert("You just send a friend request to " + friend_username + "  !", true);
+
 		} else if (response.data.message === "Request already send.") {
 			showAlert("FRIEND REQUEST ALREADY SEND.", false);
 		} else if (response.data.message === "Cannot send a request to himself.") {
@@ -68,7 +69,16 @@ export async function init() {
 			showAlert("FRIEND REQUEST NOT SEND.", false);
 		}
 	}
+
 }
+
+async function test() {
+	console.log("TEST");
+}
+
+export {
+	test,
+};
 
 
 

@@ -1,4 +1,4 @@
-import { isLoggedIn, toggleContentOnLogState } from "./Utils.js";
+import { isLoggedIn, toggleContentOnLogState, resetModalFormsInitListeners } from "./Utils.js";
 import { injectUserData } from "./User.js";
 import { injectModule, initArray, importFunction } from "./Modules.js";
 
@@ -20,7 +20,6 @@ class Page {
 }
 
 const routes = [
-	new Page("Dashboard", "/", "html/Dashboard.html", true),
 	new Page("Dashboard", "/dash", "html/Dashboard.html", true),
 	new Page("Sidebar", "", "html/Sidebar.html", true),
 	new Page("About", "/about", "html/About.html"),
@@ -33,30 +32,33 @@ window.addEventListener("popstate", () => router(routes));
 document.addEventListener("DOMContentLoaded", async () => {
 	document.body.addEventListener("click", async (e) => await navigateOnClick(e));
 	await initArray(routes);
-	await initGame();
-	await initSidebar();
+	await initPages();
 	router(routes);
+	resetModalFormsInitListeners();
 });
 
 async function router() {
-	await injectPageHtml();
-	await injectModule();
-	await injectPageJs();
+	var allPages = Array.from(document.querySelectorAll(".page"));
+	let newPage = routes.find((page) => page.urlPath === location.pathname);
+	if (!newPage) {
+		newPage = routes[0];
+		history.pushState({}, '', newPage.urlPath);
+	}
+	var previousPage = allPages.find((x) => x.hidden == false);
+	if (previousPage)
+		previousPage.hidden = true;
+	var newPageDiv = allPages.find(page => page.id === newPage.name);
 	toggleContentOnLogState();
-	await injectUserData();
 	toggleActiveTab(location.pathname);
+	if (newPageDiv)
+		newPageDiv.hidden = false;
 };
 
 async function navigateTo(url) {
 	if (url !== location.pathname) {
 		history.pushState({}, null, url);
-		router(routes);
+		router();
 	}
-	else
-		await injectModule();
-	toggleActiveTab(location.pathname);
-	injectUserData();
-	toggleContentOnLogState();
 }
 
 async function navigateOnClick(e) {
@@ -69,49 +71,6 @@ async function navigateOnClick(e) {
 	}
 }
 
-function getCurrentPage() {
-    let pathname = location.pathname;
-    let queryParams = new URLSearchParams(location.search);
-    let page = routes.find((page) => page.urlPath === pathname);
-    if (!page) {
-        page = routes[0];
-        history.pushState({}, '', '/');
-    }
-    return { page, queryParams };
-}
-
-async function injectPageHtml() {
-	const mainPageDiv = document.getElementById("content");
-	var page = getCurrentPage().page;
-	if (page && page.name == "Game") {
-		mainPageDiv.innerHTML = "";
-		document.getElementById("game").removeAttribute('hidden');
-	}
-	else if (page && page.html) {
-		mainPageDiv.innerHTML = page.html;
-		document.getElementById("game").setAttribute('hidden', '');
-	}
-}
-
-async function injectPageJs() {
-	var { page, queryParams } = getCurrentPage();
-	if (page && page.init)
-		page.init(queryParams);
-}
-
-async function initSidebar() {
-	const sidebarDiv = document.getElementById("sidebar-container");
-	let sidebar = routes.find((elm) => elm.name === "Sidebar");
-	sidebarDiv.innerHTML = sidebar.html;
-	sidebar.init();
-}
-
-async function initGame() {
-	let game = routes.find((elm) => elm.name === "Game");
-	document.getElementById("game").innerHTML = game.html;
-	await game.init();
-}
-
 function toggleActiveTab(target) {
 	var currentActive = document.querySelector(".active");
 	if (currentActive != null)
@@ -120,6 +79,28 @@ function toggleActiveTab(target) {
 		target = "/dash";
 	if (target == "/dash" || target == "/game" || (target == "/about" && !isLoggedIn()))
 		document.querySelector("a[href='" + target + "']").classList.add("active");
+}
+
+async function initPages() {
+	var contentContainer = document.getElementById("content-container");
+	let queryParams = new URLSearchParams(location.search);
+	routes.forEach(async page => {
+		if (page.name === "Sidebar")
+			document.getElementById("sidebar-container").innerHTML = page.html;
+		else {
+			contentContainer.innerHTML += `<div id="${page.name}" class="page" hidden></div>`;
+			contentContainer.querySelector(`#${page.name}`).innerHTML = page.html;
+		}
+		if (page.init) {
+			if (page.urlPath === location.pathname)
+				await page.init(queryParams);
+			else
+				await page.init();
+		}
+	});
+	toggleContentOnLogState();
+	await injectUserData();
+	toggleActiveTab(location.pathname);
 }
 
 export { navigateTo };

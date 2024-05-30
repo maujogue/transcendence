@@ -50,7 +50,7 @@
 			<form id="updateProfileForm" autocomplete="off" class="novalidate">
 				<div class="modal-header">
 					<h3 class="modal-title">Update Profile</h3>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+					<button id="closeButtonUpdateProfile" type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
 					<!-- USERNAME INPUT -->
@@ -158,11 +158,11 @@
 						</div>
 						<div id="updatePasswordHelpBlock" class="form-text">
 							Your password must contain :<br />
-							<span id="updatePassLength">- 8 to 20 characters</span><br />
-							<span id="updatePassLowercase">- Lowercase</span><br />
-							<span id="updatePassUppercase">- Uppercase</span><br />
-							<span id="updatePassNumbers">- Number</span><br />
-							<span id="updatePassSpecial">- Special character</span>
+							<span id="updatePassLength" class="passwordHelpLine">- 8 to 20 characters</span><br />
+							<span id="updatePassLowercase" class="passwordHelpLine">- Lowercase</span><br />
+							<span id="updatePassUppercase" class="passwordHelpLine">- Uppercase</span><br />
+							<span id="updatePassNumbers" class="passwordHelpLine">- Number</span><br />
+							<span id="updatePassSpecial" class="passwordHelpLine">- Special character</span>
 						</div>
 					</div>
 					<div class="mb-3">

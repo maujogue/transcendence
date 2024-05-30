@@ -5,7 +5,6 @@ import { getUserData } from "../User.js";
 
 export async function init(queryParams) {
 	printQueryParamsMessage(queryParams);
-	history.pushState({}, null, "/dash");
 
 	var modal = document.getElementById("updateProfileModal");
 	var formInputs = modal.querySelectorAll(".formInputs");

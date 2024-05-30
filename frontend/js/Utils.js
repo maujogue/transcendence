@@ -28,11 +28,20 @@ async function toggleContentOnLogState() {
 	}
 	disableCollapsedSidebar();
 	disable42LoginElements();
-	resetAllForm();
 }
 
-function resetAllForm() {
-	document.querySelectorAll('form')?.forEach(form => { form.reset() });
+function resetModalFormsInitListeners() {
+	var modals = document.querySelectorAll('.modal');
+    modals.forEach(function (modal) {
+      var form = modal.querySelector('form');
+      modal.addEventListener('hidden.bs.modal', function () {
+        form.reset();
+		injectUserData();
+		form.querySelectorAll('.is-valid').forEach((e) => e.classList.remove('is-valid'));
+		form.querySelectorAll('.is-invalid').forEach((e) => e.classList.remove('is-invalid'));
+		resetCheckPassword();
+      });
+	});
 }
 
 async function disable42LoginElements() {
@@ -141,6 +150,11 @@ function checkPassword(category, password1, password2) {
 	else helpTextAgain.classList.add("d-none");
 }
 
+function resetCheckPassword() {
+	var checkPasswordLines = document.querySelectorAll(".passwordHelpLine");
+	checkPasswordLines.forEach((e) => (e.style.color = "black"));
+}
+
 export {
 	toggleContentOnLogState,
 	showAlert,
@@ -149,4 +163,6 @@ export {
 	togglePasswordVisibility,
 	checkPassword,
 	printQueryParamsMessage,
+	resetCheckPassword,
+	resetModalFormsInitListeners,
 };

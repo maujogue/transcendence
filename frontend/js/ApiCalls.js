@@ -1,8 +1,9 @@
 import { navigateTo } from "./Router.js";
 import { showAlert } from "./Utils.js";
-import { getUserData } from "./User.js";
+import { getUserData, injectUserData } from "./User.js";
 import { get_csrf_token, runEndPoint, updateInfo } from "./ApiUtils.js"
 import { getSubmittedInput, toggleConfirmPasswordModal } from "./DashboardUtils.js";
+import { toggleContentOnLogState } from "./Utils.js";
 
 async function register(registerForm) {
 	const userData = new FormData(registerForm);
@@ -38,8 +39,9 @@ async function login(loginForm) {
 	var response = await runEndPoint("users/login/","POST",JSON.stringify(fetchBody));
 
 	if (response.statusCode === 200) {
-		Cookies.set("isLoggedIn", "true");
 		bootstrap.Modal.getInstance(document.getElementById("login")).hide();
+		toggleContentOnLogState();
+		await injectUserData();
 		await navigateTo("/dash");
 	} else {
 		showAlert(response.data.error);
@@ -49,7 +51,7 @@ async function login(loginForm) {
 async function logout() {
 	var response = await runEndPoint("users/logout/","POST",);
 	if (response.statusCode === 200) {
-		Cookies.remove("isLoggedIn");
+		toggleContentOnLogState();
 		await navigateTo("/dash");
 	}
 }

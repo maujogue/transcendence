@@ -12,15 +12,19 @@ export async function init() {
 	var username = await getUserData("username");
 	if (!username)
 		return;
+	response = await runEndPoint("stats/" + username + "/matchs", "GET");
+	if (response.statusCode == 200)
+		var matchs = response.data.matchs;
+	if (matchs.length == 0) {
+		module.querySelector("#gamesPlayedRow").innerHTML = '<span class="fs-5">Play your first match to see your statistics here! </span>';
+		return;
+	}
 	var response = await runEndPoint("stats/" + username + "/winrate", "GET");
 	if (response.statusCode == 200)
 		var winrate = response.data.winrate;
 	response = await runEndPoint("stats/" + username + "/matchs/win", "GET");
 	if (response.statusCode == 200)
 		var wins = response.data.matchs;
-	response = await runEndPoint("stats/" + username + "/matchs", "GET");
-	if (response.statusCode == 200)
-		var matchs = response.data.matchs;
 	response = await runEndPoint("stats/" + username + "/matchs/loose", "GET");
 	if (response.statusCode == 200)
 		var losses = response.data.matchs;
@@ -48,10 +52,6 @@ export async function init() {
 		averageConceded: averageConceded,
 		averageExchanged: averageExchanged,
 	};
-	if (userStats.matchHistoryAll.length == 0) {
-		module.querySelector("#gamesPlayedRow").innerHTML = '<span class="fs-5">Play your first match to see your statistics here! </span>';
-		return;
-	}
 
 	module.querySelector('#winrate').innerText = `${userStats.winrate}%`;
 	module.querySelector('#wins').innerText = userStats.wins;

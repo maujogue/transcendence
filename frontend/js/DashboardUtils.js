@@ -14,6 +14,7 @@ function resetForm(input) {
 	var saveChangesButton = document.querySelector(".saveChangesButton");
 	var discardChangesButton = document.getElementById("discardChangesButton");
 	var updatePasswordButton = document.getElementById("updatePassword");
+	var closeButton = document.getElementById("closeButtonUpdateProfile");
 
 	injectUserData();
 	formInputs.forEach((elm) => {
@@ -27,6 +28,8 @@ function resetForm(input) {
 	discardChangesButton.classList.add("d-none");
 	updatePasswordButton.classList.remove("d-none");
 	saveChangesButton.classList.add("disabled");
+	closeButton.classList.remove("d-none");
+
 }
 
 function disableSaveChangesButton(input) {
@@ -45,6 +48,7 @@ function disableFormInputs(input) {
 	var formInputs = document.querySelectorAll(".formInputs");
 	var discardChangesButton = document.getElementById("discardChangesButton");
 	var updatePasswordButton = document.getElementById("updatePassword");
+	var closeButton = document.getElementById("closeButtonUpdateProfile");
 
 	formInputs.forEach((elm) => {
 		if (elm != input)
@@ -52,6 +56,8 @@ function disableFormInputs(input) {
 	});
 	discardChangesButton.classList.remove("d-none");
 	updatePasswordButton.classList.add("d-none");
+	closeButton.classList.add("d-none");
+
 }
 
 

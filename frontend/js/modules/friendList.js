@@ -54,8 +54,7 @@ export async function init() {
 		if (response.statusCode === 200) {
 			showAlert("You just send a friend request to " + friend_username + "  !", true);
 			sendWebSocketMessage ({
-				type: 'send_friend_request',
-				from: 'current_user',
+				type: 'friend_request',
 				to: friend_username
 			});
 

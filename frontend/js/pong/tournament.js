@@ -4,7 +4,7 @@ import { getUserData } from "../User.js";
 import { createOnlineSelectMenu } from "./online.js";
 import { createTournamentDiv } from "./menu.js";
 import { wsMatch } from "./online.js";
-import { getTournamentBracket } from "./createBracket.js";
+import { drawBracket, getTournamentBracket } from "./createBracket.js";
 
 export let wsTournament
 let userData;
@@ -20,7 +20,6 @@ export async function connectToTournament(tournament) {
     
         wsTournament.onmessage = (event) => {
             const data = JSON.parse(event.data);
-            console.log("wsMatch: ", wsMatch);
             console.log("Received data:", data);
             if (data.type == "participants")
                 displayPlayerList(data.participants);
@@ -29,6 +28,10 @@ export async function connectToTournament(tournament) {
             }
             if (data.type == "status")
                 handlerMessageStatus(data);
+            if (data.type == "bracket") {
+                createTournamentDiv();
+                drawBracket(data.bracket);
+            }
         };
         
         wsTournament.onerror = (error) => {
@@ -45,11 +48,8 @@ export async function connectToTournament(tournament) {
 
 function handlerMessageStatus(data) {
     console.log("Status:", data.status);
-    if (data.status == "endGame") {
+    if (data.status == "endGame")
         wsMatch?.close();
-        createTournamentDiv();
-        getTournamentBracket();
-    }
 }
 
 function displayPlayerList(participants) {

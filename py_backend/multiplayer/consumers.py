@@ -333,7 +333,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         return {
             'score_player_1': self.player.score,
             'score_player_2': self.opp.score,
-            'winner': self.player.name if self.player.score > self.opp.score else self.opp.name,
+            'winner': self.player.user.username if self.player.score > self.opp.score else self.opp.user.username,
         }
                     
     async def pong_status(self, event):

@@ -37,20 +37,24 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({"type":"auth", "status": "failed"}))
 
     async def match_is_over(self):
-        pass
+        self.match.finished = True
+        await self.channel_layer.group_send(
+            self.tournament.name,
+            {
+                'type': 'tournament.status',
+                'status': 'endGame'
+            }
+        )
+        await self.match.asave()
 
+    async def send_bracket(self):
+        bracket = await sync_to_async(self.tournament.get_tournament_bracket)()
+        await self.send(text_data=json.dumps({'type': 'bracket', 'bracket': bracket}))
 
     async def handler_status(self, status):
         if status == 'endGame':
-            self.match.finished = True
-            await self.channel_layer.group_send(
-                self.tournament.name,
-                {
-                    'type': 'tournament.status',
-                    'status': 'endGame'
-                }
-            )
-            await self.match.asave()
+            await self.match_is_over()
+            await self.send_bracket()
 
     async def set_match_info(self, match_info):
         if self.match:

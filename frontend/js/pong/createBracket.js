@@ -29,11 +29,11 @@ function drawMatchBox(x, y, match) {
 
 function writePlayerName(x, y, playerName, score, winner) {
     if (winner === playerName)
-    ctx.fillStyle = 'green';
+        ctx.fillStyle = 'green';
     else if (winner === "")
-    ctx.fillStyle = 'black';
+        ctx.fillStyle = 'black';
     else
-    ctx.fillStyle = 'red';
+        ctx.fillStyle = 'red';
     if (playerName == "") {
         score = "-";
         ctx.fillStyle = "black";
@@ -63,7 +63,7 @@ function createBracketCanvas() {
     document.getElementsByClassName('tournament')[0]?.appendChild(canvas);
 }
 
-function drawBracket(data) {
+export function drawBracket(data) {
     createBracketCanvas();
     canvas = document.getElementById('bracketCanvas');
     ctx = canvas.getContext('2d');

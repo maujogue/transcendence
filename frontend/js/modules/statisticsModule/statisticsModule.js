@@ -12,14 +12,14 @@ export async function init() {
 	var username = await getUserData("username");
 	if (!username)
 		return;
-	response = await runEndPoint("stats/" + username + "/matchs", "GET");
+	var response = await runEndPoint("stats/" + username + "/matchs", "GET");
 	if (response.statusCode == 200)
 		var matchs = response.data.matchs;
 	if (matchs.length == 0) {
 		module.querySelector("#gamesPlayedRow").innerHTML = '<span class="fs-5">Play your first match to see your statistics here! </span>';
 		return;
 	}
-	var response = await runEndPoint("stats/" + username + "/winrate", "GET");
+	response = await runEndPoint("stats/" + username + "/winrate", "GET");
 	if (response.statusCode == 200)
 		var winrate = response.data.winrate;
 	response = await runEndPoint("stats/" + username + "/matchs/win", "GET");

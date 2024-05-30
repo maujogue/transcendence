@@ -20,25 +20,24 @@ const modules = [
 	new Module("auth42"),
 ];
 
-initArray(modules);
-
 async function initArray(array) {
 	await Promise.all(array.map(module => module.fetchInit()));
 	await Promise.all(array.map(module => module.fetchHtml()));
 }
 
 async function injectModule() {
-	const regex = /^[ \n\t]*$/;
-	await initArray(modules);
-	modules.forEach((moduleType) => {
-		var moduleDivs = document.querySelectorAll("." + moduleType.name);
-		moduleDivs.forEach(async (div) => {
-			if (regex.test(div.innerHTML)) {
-				div.innerHTML = moduleType.html;
-				moduleType.init();
-			}
-		});
-	});
+    const regex = /^[ \n\t]*$/;
+    await initArray(modules);
+
+    for (const moduleType of modules) {
+        const moduleDivs = document.querySelectorAll("." + moduleType.name);
+        for (const div of moduleDivs) {
+            if (regex.test(div.innerHTML)) {
+                div.innerHTML = moduleType.html;
+                await moduleType.init();
+            }
+        }
+    }
 }
 
 async function importFunction(modulePath, moduleName, run) {

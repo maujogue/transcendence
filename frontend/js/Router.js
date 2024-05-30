@@ -33,7 +33,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 	document.body.addEventListener("click", async (e) => await navigateOnClick(e));
 	await initArray(routes);
 	await initPages();
-	router(routes);
 	resetModalFormsInitListeners();
 });
 
@@ -48,17 +47,14 @@ async function router() {
 	if (previousPage)
 		previousPage.hidden = true;
 	var newPageDiv = allPages.find(page => page.id === newPage.name);
-	toggleContentOnLogState();
 	toggleActiveTab(location.pathname);
 	if (newPageDiv)
 		newPageDiv.hidden = false;
 };
 
 async function navigateTo(url) {
-	if (url !== location.pathname) {
-		history.pushState({}, null, url);
-		router();
-	}
+	history.pushState({}, null, url);
+	router();
 }
 
 async function navigateOnClick(e) {
@@ -81,27 +77,61 @@ function toggleActiveTab(target) {
 		document.querySelector("a[href='" + target + "']").classList.add("active");
 }
 
-async function initPages() {
+async function initPages(createHtmlDivs = true) {
 	var contentContainer = document.getElementById("content-container");
-	let queryParams = new URLSearchParams(location.search);
+	setLoading(true);
 	routes.forEach(async page => {
 		if (page.name === "sidebar")
 			document.getElementById("sidebar-container").innerHTML = page.html;
 		else {
-			contentContainer.innerHTML += `<div id="${page.name}" class="page" hidden></div>`;
-			contentContainer.querySelector(`#${page.name}`).innerHTML = page.html;
+			if (createHtmlDivs) {
+				contentContainer.innerHTML += `<div id="${page.name}" class="page" hidden></div>`;
+				contentContainer.querySelector(`#${page.name}`).innerHTML = page.html;
+			}
 		}
 		await injectModule();
-		if (page.init) {
-			if (page.urlPath === location.pathname)
-				await page.init(queryParams);
-			else
-				await page.init();
-		}
+		await execPageJavascript(page.name);
 	});
-	toggleContentOnLogState();
+	await toggleContentOnLogState();
 	await injectUserData();
 	toggleActiveTab(location.pathname);
+	router();
+	setLoading(false);
 }
 
-export { navigateTo };
+function setLoading(state) {
+	var allPages = Array.from(document.querySelectorAll(".page"));
+	var contentContainer = document.getElementById("content-container");
+	var currentPage = allPages.find((x) => x.hidden == false);
+	if (state) {
+		if (currentPage)
+			currentPage.hidden = true;
+		contentContainer.innerHTML += `<div id="loadingScreen" id="loadingScreen">
+		<div class="text-center">
+			<div class="spinner-border" role="status">
+				<span class="visually-hidden">Loading...</span>
+			</div>
+			<p class="mt-3">Loading</p>
+		</div>
+	</div>`;
+	} else {
+		document.getElementById("loadingScreen")?.remove();
+		if (currentPage)
+			currentPage.hidden = false;
+	}
+}
+
+async function execPageJavascript(pageName) {
+	let queryParams = new URLSearchParams(location.search);
+
+	var page = routes.find((e) => e.name === pageName);
+	if (page.init) {
+		if (page.urlPath === location.pathname)
+			await page.init(queryParams);
+		else
+			await page.init();
+		console.log("executed page javascript");
+	}
+}
+
+export { navigateTo, execPageJavascript, routes, initArray, initPages };

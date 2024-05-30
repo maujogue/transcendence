@@ -1,6 +1,6 @@
-import { navigateTo } from "./Router.js";
+import { navigateTo, initPages } from "./Router.js";
 import { showAlert } from "./Utils.js";
-import { getUserData, injectUserData } from "./User.js";
+import { getUserData,  } from "./User.js";
 import { get_csrf_token, runEndPoint, updateInfo } from "./ApiUtils.js"
 import { getSubmittedInput, toggleConfirmPasswordModal } from "./DashboardUtils.js";
 import { toggleContentOnLogState } from "./Utils.js";
@@ -36,20 +36,18 @@ async function login(loginForm) {
 		password: userData.get("password"),
 	};
 
-	var response = await runEndPoint("users/login/","POST",JSON.stringify(fetchBody));
+	var response = await runEndPoint("users/login/", "POST", JSON.stringify(fetchBody));
 
 	if (response.statusCode === 200) {
 		bootstrap.Modal.getInstance(document.getElementById("login")).hide();
-		toggleContentOnLogState();
-		await injectUserData();
-		await navigateTo("/dash");
+		await initPages(false);
 	} else {
 		showAlert(response.data.error);
 	}
 }
 
 async function logout() {
-	var response = await runEndPoint("users/logout/","POST",);
+	var response = await runEndPoint("users/logout/", "POST",);
 	if (response.statusCode === 200) {
 		toggleContentOnLogState();
 		await navigateTo("/dash");
@@ -154,7 +152,7 @@ function updateProfileWithPassword() {
 	var updateProfileForm = document.getElementById("updateProfileForm");
 
 	var inputName = getSubmittedInput().getAttribute("name");
-	
+
 	if (inputName == "username")
 		updateUsername(updateProfileForm);
 	if (inputName == "email")

@@ -84,7 +84,8 @@ async function joinTournament(tournament) {
     
 
 async function displayAllTournaments() {
-    document.getElementById("tournamentsInfo").innerHTML = "";
+    if (document.getElementById("tournamentsInfo"))
+        document.getElementById("tournamentsInfo").innerHTML = "";
     try {
         const data = await getAllTournaments();
         allTournaments = data.tournaments;

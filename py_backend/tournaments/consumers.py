@@ -34,12 +34,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             username = text_data_json.get('username')
             user = await self.authenticate_user_with_username(username)
             if user:
-                print("user authenticated: ", user.username)
                 self.scope["user"] = user
                 await self.send(text_data=json.dumps({"type": "auth", "status": "success"}))
                 await self.check_tournament_start()
             else:
-                print("user not authenticated")
                 await self.send(text_data=json.dumps({"type":"auth", "status": "failed"}))
 
     async def disconnect(self, close_code):
@@ -69,9 +67,14 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         return [p.tournament_username for p in self.tournament.participants.all()]
 
     async def check_tournament_start(self):
-        print("check_tournament_start")
         if await self.is_tournament_full() and not self.tournament.started:
-            print("Tournament is full and not started")
+            await self.channel_layer.group_send(
+                self.tournament.name,
+                {
+                    'type': 'tournament.status',
+                    'status': 'start'
+                }
+            )
             self.tournament.started = True
             await sync_to_async(self.tournament.save)()
             await sync_to_async(generate_bracket)(self.tournament)
@@ -125,3 +128,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if match:
             match_infos = await self.get_match_infos(match)
             await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos}))
+
+    async def tournament_status(self, event):
+        await self.send(text_data=json.dumps({'type': 'status', 'status': event['status']}))

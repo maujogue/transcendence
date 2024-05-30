@@ -1,50 +1,35 @@
 import { get_csrf_token} from "../ApiUtils.js";
 import { returnToMenu } from "./createEndScreen.js";
-import { createJoinTournamentMenu } from "./joinTournament.js";
-import { createTournamentDiv } from "./menu.js";
 import { getUserData } from "../User.js";
+import { createOnlineSelectMenu } from "./online.js";
+import { createTournamentDiv } from "./menu.js";
 
 export let wsTournament
+let userData;
 
 export async function connectToTournament(tournament) {
     try {
         wsTournament = new WebSocket(`ws://127.0.0.1:8080/ws/tournament/${tournament.id}/`);
     
         wsTournament.onopen = () => {
-            console.log("WebSocket connection opened.");
             createWaitingScreenTournament(tournament);
-            getUserData('username').then((res) => {
-                console.log("Sending auth message with username:", res);
-                wsTournament.send(JSON.stringify({
-                    'type': 'auth',
-                    'username': res,
-                }));
-            }).catch(err => {
-                console.error("Error fetching user data:", err);
-            });
+            fillUserData().then(sendUsername);
         };
     
         wsTournament.onmessage = (event) => {
             const data = JSON.parse(event.data);
-            if (data.type == "participants") {
-                if (document.getElementById("player-list"))
-                    document.getElementById("player-list").innerHTML = "";
-                data.participants.map((participant) => {
-                    insertPlayer(participant);
-                });
-            }
-            // if (data.type == "auth")
-            //     alert(data.status);
-    
-            if (data.type == "matchup") {
-                console.log("Match start data:", data.match);
-            }
+            if (data.type == "participants")
+                displayPlayerList(data.participants);
+            if (data.type == "matchup")
+                createOnlineSelectMenu(data.match.lobby_id);
+            // if (data.type == "status")
+            //     handlerMessageStatus(data);
         };
-
+        
         wsTournament.onerror = (error) => {
             console.error("Websocket error observed:", error);
         };
-
+        
         wsTournament.onclose = (event) => {
             console.log("Websocket connection closed:", event);
         };
@@ -53,44 +38,37 @@ export async function connectToTournament(tournament) {
     }
 }
 
-export function createWaitingScreenTournament(tournament) {
-    if (!tournament)
-        return;
-    if (!document.getElementsByClassName("tournament")[0])
-        createTournamentDiv();
-    document.getElementById("backIcon")?.remove();
-    document.getElementById("actualizeIcon")?.remove();
-    const tournamentDiv = document.getElementsByClassName("tournament")[0];
-    tournamentDiv.innerHTML = `<h1>${tournament.name}</h1>`;
-    tournamentDiv.id = "PlayerList";
-	const header = document.createElement("div");
-	header.className = "list-header";
-	header.textContent = "Players";
-    const playerList = document.createElement("div");
-    playerList.className = "player-list";
-    playerList.id = "player-list";
-    const unsubscribeBtn = document.createElement("button");
-    unsubscribeBtn.textContent = "Unsubscribe";
-    unsubscribeBtn.onclick = () => {
-        unsubscribeFromTournament(tournament);
-    }
-    unsubscribeBtn.className = "unsubscribe-btn";
-    tournamentDiv.appendChild(unsubscribeBtn);
-	tournamentDiv.appendChild(header);
-    tournamentDiv.appendChild(playerList);
-    tournament.participants.map((participant) => { 
-        insertPlayer(participant);
+function handlerMessageStatus(data) {
+    console.log("Status:", data.status);
+    if (data.status == "start")
+        createOnlineSelectMenu();
+    if (data.status == "end")
+        console.log("Match end");
+}
+
+function displayPlayerList(participants) {
+    console.log("displayPlayerList");
+    if (document.getElementById("player-list"))
+        document.getElementById("player-list").innerHTML = "";
+    participants.map((participant) => insertPlayer(participant));
+}
+
+async function fillUserData() {
+    await getUserData().then((data) => {
+        userData = data;
     });
 }
 
-function insertPlayer(player) {
-	const div = document.createElement("div");
-    const playerList = document.getElementById("player-list");
-	div.textContent = player;
-    playerList?.appendChild(div);
+async function sendUsername() {
+    wsTournament.send(JSON.stringify({
+        'type': 'auth',
+        'username': userData.username,
+    }));
 }
 
-async function unsubscribeFromTournament(tournament) {
+
+
+export async function unsubscribeFromTournament(tournament) {
     fetch(`https://127.0.0.1:8000/api/tournament/${tournament.id}/quit/`, {
         method: "POST",
         headers: {
@@ -141,4 +119,41 @@ export function displayErrorPopUp (message, parent) {
         document.getElementById("PopUpCloseIcon").removeEventListener("click", () => {});
         errorPopUp.remove();
     });
+}
+
+export function createWaitingScreenTournament(tournament) {
+    if (!tournament)
+        return;
+    if (!document.getElementsByClassName("tournament")[0])
+        createTournamentDiv();
+    document.getElementById("backIcon")?.remove();
+    document.getElementById("actualizeIcon")?.remove();
+    const tournamentDiv = document.getElementsByClassName("tournament")[0];
+    tournamentDiv.innerHTML = `<h1>${tournament.name}</h1>`;
+    tournamentDiv.id = "PlayerList";
+	const header = document.createElement("div");
+	header.className = "list-header";
+	header.textContent = "Players";
+    const playerList = document.createElement("div");
+    playerList.className = "player-list";
+    playerList.id = "player-list";
+    const unsubscribeBtn = document.createElement("button");
+    unsubscribeBtn.textContent = "Unsubscribe";
+    unsubscribeBtn.onclick = () => {
+        unsubscribeFromTournament(tournament);
+    }
+    unsubscribeBtn.className = "unsubscribe-btn";
+    tournamentDiv.appendChild(unsubscribeBtn);
+	tournamentDiv.appendChild(header);
+    tournamentDiv.appendChild(playerList);
+    tournament.participants.map((participant) => { 
+        insertPlayer(participant);
+    });
+}
+
+export function insertPlayer(player) {
+	const div = document.createElement("div");
+    const playerList = document.getElementById("player-list");
+	div.textContent = player;
+    playerList?.appendChild(div);
 }

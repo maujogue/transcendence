@@ -10,7 +10,7 @@ import { characters } from "../pages/Game.js";
 import { updateMixers } from "./displayCharacter.js";
 import { resize } from "./resize.js";
 import { getUserData } from "../User.js";
-import * as THREE from 'three';
+import { field } from "../pages/Game.js";
 
 let env;
 let player;
@@ -25,11 +25,10 @@ let status = {
 let keyUp = false;
 let webSocket;
 let oppInfo;
+let lobbyId = null;
 export const playersMove = new Map();
 
-document.addEventListener('fullscreenchange', function() {
-	resize(env);
-});
+document.addEventListener('fullscreenchange', resize(env));
 
 function setUserInfo(data) {
     let user = {
@@ -104,14 +103,16 @@ function removeP2Cursor() {
 }
 
 
-async function goToOnlineSelectMenu(field) {
+async function goToOnlineSelectMenu() {
     env = createSelectMenu(field, characters);
     removeP2Cursor();
 }
 
 
-async function createOnlineSelectMenu(field) {
-    document.getElementById("onlineMenu").remove();
+async function createOnlineSelectMenu(id) {
+    if (lobbyId)
+        lobbyId = id;
+    document.getElementsByClassName("menu")[0]?.remove();
     status.exit = false;
     goToOnlineSelectMenu(field);
     displayCharacter(player, env, "chupacabra", "player").then((res) => {
@@ -125,10 +126,12 @@ async function createOnlineSelectMenu(field) {
 async function connectToLobby(username) {
     if (username == null)
         return ;
-    webSocket = new WebSocket('wss://127.0.0.1:8000/ws/lobby/');
-    
+    if (!lobbyId)
+        webSocket = new WebSocket('wss://127.0.0.1:8000/ws/lobby/');
+    else
+        webSocket = new WebSocket(`wss://127.0.0.1:8000/ws/lobby/${lobbyId}/`);
+
     webSocket.onopen = function() {
-        console.log('Connection established');
         status.is_connected = true;
         document.getElementById("selectMenu").remove();
         webSocket.send(JSON.stringify({
@@ -143,7 +146,6 @@ async function connectToLobby(username) {
     
     webSocket.onmessage = function(e) {
         const data = JSON.parse(e.data);
-        console.log(data);
 
         if (data['type'] == 'player_data') {
             const paddle = env.scene.getObjectByName("paddle_" + player.name);
@@ -270,7 +272,7 @@ async function onlineGameLoop(webSocket) {
     if (keysPressed[' '] && !status.is_connected) {
         keysPressed[' '] = false;
         getUserData('username').then((res) => {
-            connectToLobby(res)
+            connectToLobby(res, null)
         })
         .catch((err) => {
             console.log(err);

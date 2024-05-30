@@ -8,7 +8,7 @@ import { createEndScreen, returnToMenu } from "../pong/createEndScreen.js"
 import { actualizeScore } from "../pong/score.js";
 import { createField } from "../pong/createField.js";
 import { createOnlineSelectMenu } from "../pong/online.js";
-import { ClearAllEnv, getSize } from "../pong/createEnvironment.js";
+import { ClearAllEnv } from "../pong/createEnvironment.js";
 import { loadAllModel } from "../pong/loadModels.js"
 import { loadScene } from "../pong/loadModels.js";
 import { getUserData } from "../User.js";
@@ -23,6 +23,7 @@ export var clock;
 export var characters;
 
 var isGameLoaded = false;
+export const field = await createField();
 
 export async function init(queryParams) {
 	if (queryParams && queryParams.get("message"))
@@ -45,7 +46,6 @@ export async function init(queryParams) {
 	let userData;
 	let form;
 	const gameDiv = document.getElementById('game');
-	const field = await createField();
 
 	loadAllModel();
 
@@ -58,6 +58,7 @@ export async function init(queryParams) {
 			});
 		}
 	})
+
 	async function goToLocalSelectMenu() {
 		divMenu = document.getElementById("menu");
 		divMenu.remove();
@@ -84,7 +85,6 @@ export async function init(queryParams) {
 		delete keysPressed[event.key];
 	});
 
-
 	document.addEventListener('click', function (event) {
 		if (!gameDiv.contains(event.target)) {
 			document.body.style.overflow = 'auto';
@@ -100,13 +100,6 @@ export async function init(queryParams) {
 			userData = data;
 		})
 		
-		if (userData) {
-			checkIfUserIsInTournament(userData).then((response) => {
-				if (response && response['joined'])
-					connectToTournament(response['tournament']);
-			});
-		}
-
 		if (event.target.id == 'restart' && !isOnline) {
 			document.getElementById("endscreen").remove();
 			actualizeScore(player1, player2, environment, environment.font);
@@ -125,10 +118,10 @@ export async function init(queryParams) {
 		}
 		if (event.target.id == 'onlineGame' && userData) {
 			isOnline = true;
-			createOnlineMenu(field);
+			createOnlineMenu();
 		}
 		if (event.target.id == 'quick') {
-			createOnlineSelectMenu(field);
+			createOnlineSelectMenu(null);
 		}
 		if (event.target.id == 'create') {
 			createFormTournament();
@@ -173,7 +166,6 @@ export async function init(queryParams) {
 		player2.score = 0;
 	}
 
-	
 	async function localGameLoop() {
 		if (keyPress && !start) {
 			await handleMenuKeyPress(keysPressed, player1, player2, environment);

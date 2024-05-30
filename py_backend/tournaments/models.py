@@ -32,3 +32,7 @@ class Tournament(models.Model):
 
 	def clean(self):
 		super().clean()
+
+	def get_matches_by_player(self, player_id):
+		return self.matchups.filter(models.Q(player_1_id=player_id) | models.Q(player_2_id=player_id))
+	

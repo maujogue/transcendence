@@ -18,10 +18,12 @@ export async function connectToTournament(tournament) {
     
         wsTournament.onmessage = (event) => {
             const data = JSON.parse(event.data);
+            console.log("Received data:", data);
             if (data.type == "participants")
                 displayPlayerList(data.participants);
-            if (data.type == "matchup")
+            if (data.type == "matchup") {
                 createOnlineSelectMenu(data.match.lobby_id);
+            }
             // if (data.type == "status")
             //     handlerMessageStatus(data);
         };

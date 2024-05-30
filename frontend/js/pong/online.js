@@ -110,7 +110,7 @@ async function goToOnlineSelectMenu() {
 
 
 async function createOnlineSelectMenu(id) {
-    if (lobbyId)
+    if (id)
         lobbyId = id;
     document.getElementsByClassName("menu")[0]?.remove();
     status.exit = false;
@@ -126,10 +126,12 @@ async function createOnlineSelectMenu(id) {
 async function connectToLobby(username) {
     if (username == null)
         return ;
+    console.log(lobbyId);
     if (!lobbyId)
-        webSocket = new WebSocket('wss://127.0.0.1:8000/ws/lobby/');
-    else
-        webSocket = new WebSocket(`wss://127.0.0.1:8000/ws/lobby/${lobbyId}/`);
+        webSocket = new WebSocket('ws://127.0.0.1:8080/ws/lobby/');
+    else {
+        webSocket = new WebSocket(`ws://127.0.0.1:8080/ws/lobby/${lobbyId}/`);
+    }
 
     webSocket.onopen = function() {
         status.is_connected = true;

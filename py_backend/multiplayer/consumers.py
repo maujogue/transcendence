@@ -18,6 +18,12 @@ class PongConsumer(AsyncWebsocketConsumer):
         }))
 
     async def join_lobby(self):
+        if self.scope['url_route']['kwargs']['lobby_id']:
+            try:
+                print(self.scope['url_route']['kwargs']['lobby_id'])
+                return await Lobby.objects.aget(uuid=self.scope['url_route']['kwargs']['lobby_id'])
+            except Lobby.DoesNotExist:
+                return None
         async for lobby in Lobby.objects.filter(connected_user=1):
             return lobby
         lobby = Lobby()

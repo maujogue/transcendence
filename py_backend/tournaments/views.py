@@ -10,7 +10,6 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
 from .models import Tournament
-from .bracket import generate_bracket
 
 CustomUser = get_user_model()
 

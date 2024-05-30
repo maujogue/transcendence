@@ -97,11 +97,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_player_match(self, user):
-        match = TournamentMatch.objects.filter(player_1=user.id).first()
-        if match == None:
-            match = TournamentMatch.objects.filter(player_2=user.id).first()
-        print(match)
-        return match
+        return self.tournament.get_matches_by_player(user.pk).first()
 
     @database_sync_to_async
     def get_match_infos(self, match):

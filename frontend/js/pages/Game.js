@@ -50,7 +50,6 @@ export async function init(queryParams) {
 
 	loadAllModel();
 	
-	getTournamentBracket();
 	getUserData().then((data) => {
 		userData = data;
 		if (userData) {

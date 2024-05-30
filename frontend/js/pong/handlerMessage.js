@@ -5,6 +5,7 @@ import { createEndScreen } from './createEndScreen.js';
 import { sendColor } from './sendMessage.js';
 import { playersMove } from './online.js';
 import { displayErrorPopUp } from './tournament.js';
+import { wsTournament } from './tournament.js';
 
 
 export function setBallData(data, env) {
@@ -37,7 +38,7 @@ function handlerStopGame(webSocket, env, message) {
 }
 
 function handlerEndGame(data, env) {
-    if (!document.getElementById("endscreen"))
+    if (!document.getElementById("endscreen") && !wsTournament)
         createEndScreen(data['name']);
     playersMove.clear();
     env.ball.direction.x = 0;

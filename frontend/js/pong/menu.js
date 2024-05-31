@@ -277,8 +277,12 @@ export function createTournamentDiv() {
     	document.getElementsByClassName("menu")[0].remove();
 	createDivMenu("tournamentMenu");
     const tournamentDiv = document.createElement("div");
-	tournamentDiv.className = "tournament";
+	tournamentDiv.className = "tournament crt";
     document.getElementById("tournamentMenu").appendChild(tournamentDiv);
+	const img = document.createElement("img");
+	img.src = "./assets/img/fx/crt_effect.png";
+	img.className = "crt-effect";
+	tournamentDiv.appendChild(img);
 }
 
 export { displayMainMenu, createSelectMenu, moveCursor, createDivMenu,

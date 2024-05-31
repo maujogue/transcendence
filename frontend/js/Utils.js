@@ -35,7 +35,8 @@ function resetModalFormsInitListeners() {
 	modals.forEach(function (modal) {
 		if (!modal.classList.contains('modal-no-reset')){
 			var form = modal.querySelector('form');
-			modal.addEventListener('hidden.bs.modal', function () {
+			if (!form) return;
+			modal.addEventListener('hide.bs.modal', function () {
 				form.reset();
 				injectUserData();
 				form.querySelectorAll('.is-valid').forEach((e) => e.classList.remove('is-valid'));

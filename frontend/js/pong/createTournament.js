@@ -46,7 +46,7 @@ export function createFormTournament() {
 		<input type="number" class="glitched" id="max_players" name="max_players" min="2" required>\
 	</div>\
 	<div class="glitched">\
-		<button class="form-btn" id="form-btn" type="submit">Create</button>\
+		<button class="form-btn tournament-btn" id="form-btn" type="submit">Create</button>\
 	</div>\
 	</form>';
 }

@@ -148,7 +148,7 @@ export function createWaitingScreenTournament(tournament) {
     unsubscribeBtn.onclick = () => {
         unsubscribeFromTournament(tournament);
     }
-    unsubscribeBtn.className = "unsubscribe-btn";
+    unsubscribeBtn.className = "unsubscribe-btn tournament-btn";
     tournamentDiv.appendChild(unsubscribeBtn);
 	tournamentDiv.appendChild(header);
     tournamentDiv.appendChild(playerList);

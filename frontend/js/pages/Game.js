@@ -48,6 +48,8 @@ export async function init(queryParams) {
 	const gameDiv = document.getElementById('game');
 
 	loadAllModel();
+
+	window.addEventListener('resize', resize(environment));
 	
 	getUserData().then((data) => {
 		userData = data;

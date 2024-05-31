@@ -241,6 +241,7 @@ function createOnlineMenu() {
 	createDivMenu("onlineMenu");
 	const parent = document.getElementById("onlineMenu");
 	parent.innerHTML = '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>';
+	addCrtEffect(parent);
 	createGamemodeDiv("1v1", parent);
 	createGamemodeDiv("Tournament", parent);
 	createSubmode('Tournament', "Create");

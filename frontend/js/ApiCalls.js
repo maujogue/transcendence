@@ -49,7 +49,7 @@ async function login(loginForm) {
 async function logout() {
 	var response = await runEndPoint("users/logout/", "POST",);
 	if (response.statusCode === 200) {
-		toggleContentOnLogState();
+		await initPages();
 		await navigateTo("/dash");
 	}
 }

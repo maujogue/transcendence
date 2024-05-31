@@ -32,15 +32,17 @@ async function toggleContentOnLogState() {
 
 function resetModalFormsInitListeners() {
 	var modals = document.querySelectorAll('.modal');
-    modals.forEach(function (modal) {
-      var form = modal.querySelector('form');
-      modal.addEventListener('hidden.bs.modal', function () {
-        form.reset();
-		injectUserData();
-		form.querySelectorAll('.is-valid').forEach((e) => e.classList.remove('is-valid'));
-		form.querySelectorAll('.is-invalid').forEach((e) => e.classList.remove('is-invalid'));
-		resetCheckPassword();
-      });
+	modals.forEach(function (modal) {
+		if (!modal.classList.contains('modal-no-reset')){
+			var form = modal.querySelector('form');
+			modal.addEventListener('hidden.bs.modal', function () {
+				form.reset();
+				injectUserData();
+				form.querySelectorAll('.is-valid').forEach((e) => e.classList.remove('is-valid'));
+				form.querySelectorAll('.is-invalid').forEach((e) => e.classList.remove('is-invalid'));
+				resetCheckPassword();
+			});
+		}
 	});
 }
 

@@ -1,12 +1,25 @@
-import { injectUserData } from "./User.js";
+import { injectUserData, getUserData } from "./User.js";
 
-function enableDisableSaveButtonOnInput(input, userData) {
+function inputInitListeners() {
+	var modal = document.getElementById("updateProfileModal");
+	var formInputs = modal.querySelectorAll(".formInputs");
+	formInputs.forEach((input) => {
+		var inputClone = input.cloneNode(true);
+		input.parentNode.replaceChild(inputClone, input);
+		inputClone.addEventListener("input", enableDisableSaveButtonOnInput);
+	});
+}
+
+async function enableDisableSaveButtonOnInput(input) {
+	var userData = await getUserData();
+	input = input.target;
+	console.log(input.value, userData[input.name]);
 	if (userData && input.value !== userData[input.name]) {
 		disableFormInputs(input);
 		disableSaveChangesButton(input);
-	}
-	else
+	} else {
 		resetForm(input);
+	}
 }
 
 function resetForm(input) {
@@ -35,7 +48,6 @@ function resetForm(input) {
 function disableSaveChangesButton(input) {
 	var modal = input.closest(".modal");
 	var saveChangesButton = modal.querySelector(".saveChangesButton");
-	console.log(modal, saveChangesButton);
 	if (saveChangesButton) {
 		if (!input.classList.contains("is-invalid"))
 			saveChangesButton.classList.remove("disabled");
@@ -87,5 +99,6 @@ export {
 	disableSaveChangesButton,
 	getSubmittedInput,
 	resetForm,
-	toggleConfirmPasswordModal
+	toggleConfirmPasswordModal,
+	inputInitListeners
 };

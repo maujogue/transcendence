@@ -1,4 +1,4 @@
-import { resetForm, toggleConfirmPasswordModal } from "./DashboardUtils.js";
+import { resetForm, toggleConfirmPasswordModal, inputInitListeners } from "./DashboardUtils.js";
 import { showAlert } from "./Utils.js";
 import { injectUserData } from "./User.js";
 
@@ -42,6 +42,7 @@ async function updateInfo(endpoint, fetchBody, modalToDismiss) {
 	if (response.statusCode === 200) {
 		showAlert(data.status, true);
 		toggleConfirmPasswordModal(modalToDismiss);
+		inputInitListeners();
 		resetForm();
 		injectUserData();
 	} else if (data.error && data.error.length > 0) showAlert(data.error);

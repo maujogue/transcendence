@@ -1,5 +1,6 @@
 import { createBall } from './createBall.js';
 import { createEnvironment, createMap } from './createEnvironment.js';
+import { createDivMenu } from './menu.js';
 import { loadFont, actualizeScore } from './score.js';
 import { colors } from './varGlobal.js';
 import * as THREE from 'three';
@@ -37,6 +38,7 @@ function removeSelectMenu() {
 async function initGame(player1, player2) {
 	const environment = createEnvironment("canvas");
 	const map = await createMap(environment);
+	createDivMenu("t");
 
 	let dirLight = new THREE.DirectionalLight(0xffffff, 0.1);
 	dirLight.position.set(0, 0, 1);

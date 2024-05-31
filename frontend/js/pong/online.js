@@ -29,8 +29,6 @@ let oppInfo;
 let lobbyId = null;
 export const playersMove = new Map();
 
-document.addEventListener('fullscreenchange', resize(env));
-
 function setUserInfo(data) {
     let user = {
         'username': data['username'],

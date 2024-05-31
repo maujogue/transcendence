@@ -40,7 +40,7 @@ async function login(loginForm) {
 
 	if (response.statusCode === 200) {
 		bootstrap.Modal.getInstance(document.getElementById("login")).hide();
-		await initPages(false);
+		await initPages();
 	} else {
 		showAlert(response.data.error);
 	}

@@ -1,6 +1,7 @@
 import { isLoggedIn, toggleContentOnLogState, resetModalFormsInitListeners } from "./Utils.js";
 import { injectUserData } from "./User.js";
 import { initArray, importFunction, injectModule } from "./Modules.js";
+import { setIsGameLoaded } from "./pages/game.js";
 
 class Page {
 	constructor(name, urlPath, filePath, importJs) {
@@ -77,23 +78,26 @@ function toggleActiveTab(target) {
 		document.querySelector("a[href='" + target + "']").classList.add("active");
 }
 
-async function initPages(createHtmlDivs = true) {
+async function initPages() {
 	var contentContainer = document.getElementById("content-container");
+	contentContainer.innerHTML = "";
 	setLoading(true);
-	routes.forEach(async page => {
+	for (const page of routes) {
 		if (page.name === "sidebar")
 			document.getElementById("sidebar-container").innerHTML = page.html;
 		else {
-			if (createHtmlDivs) {
-				contentContainer.innerHTML += `<div id="${page.name}" class="page" hidden></div>`;
-				contentContainer.querySelector(`#${page.name}`).innerHTML = page.html;
-			}
+			contentContainer.innerHTML += `<div id="${page.name}" class="page" hidden></div>`;
+			contentContainer.querySelector(`#${page.name}`).innerHTML = page.html;
 		}
-		await injectModule();
-		await execPageJavascript(page.name);
-	});
+	};
+	await injectModule();
 	await toggleContentOnLogState();
 	await injectUserData();
+	for (const page of routes) {
+		if (page.name === "game")
+			setIsGameLoaded(false);
+		await execPageJavascript(page.name);
+	}
 	toggleActiveTab(location.pathname);
 	router();
 	setLoading(false);
@@ -130,7 +134,6 @@ async function execPageJavascript(pageName) {
 			await page.init(queryParams);
 		else
 			await page.init();
-		console.log("executed page javascript");
 	}
 }
 

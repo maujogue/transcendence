@@ -24,10 +24,20 @@ export var characters;
 
 var isGameLoaded = false;
 
+function getIsGameLoaded() {
+	console.log("isGameLoaded", isGameLoaded);
+    return isGameLoaded;
+}
+
+function setIsGameLoaded(value) {
+    isGameLoaded = value;
+	console.log("set GameLoaded to ", isGameLoaded);
+}
+
 export async function init(queryParams) {
 	if (queryParams && queryParams.get("message"))
 		showAlert(queryParams.get("message"), queryParams.get("success"));
-	if (isGameLoaded)
+	if (getIsGameLoaded())
 		return;
 
 	lobby = await loadScene('lobbyTest');
@@ -198,8 +208,8 @@ export async function init(queryParams) {
 	if (localLoop)
 	requestAnimationFrame(localGameLoop);
 	}
-	isGameLoaded = true;
+	setIsGameLoaded(true);
 }
 
 
-export { displayMainMenu }
+export { displayMainMenu, getIsGameLoaded, setIsGameLoaded }

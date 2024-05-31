@@ -443,90 +443,6 @@ animation: textShadow 1.6s infinite;
 	align-items: center;
 }
 
-/* .glitched {
-	animation: glitch 1.5s linear infinite;
-} */
-
-/* .glitched:after, .glitched:before {
-	position: absolute;
-	left: 0;
-	animation: glitch 0.5s linear infinite;
-}
-
-.glitched:before{
-	animation: glitchTop 0.5s linear infinite;
-	clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
-	-webkit-clip-path: polygon(0 0, 100% 0, 100% 33%, 0 33%);
-}
-
-.glitched:after {
-	animation: glitchBottom 1.5s linear infinite;
-	clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
-	-webkit-clip-path: polygon(0 67%, 100% 67%, 100% 100%, 0 100%);
-} */
-
-/* .form-field-name:after, .form-field-name:before {
-	content: "Name";
-	left: -1px;
-	animation: glitch 0.7s linear infinite;
-}
-
-.form-field-max_players:after, .form-field-max_players:before {
-	content: "Max Players";
-	left: -5px;
-	animation: glitch 0.4s linear infinite;
-}
-
-.form-field-max_points:after, .form-field-max_points:before {
-	content: "Max Points";
-	left: 2px;
-	animation: glitch 0.6s linear infinite;
-}
-
-.form-header::after, .form-header::before {
-	content: "Create Tournament";
-	left: -0.5px;
-	animation: glitch 1.5s linear infinite;
-} */
-
-
-/* @keyframes glitch {
-	2%, 64% {
-		transform: translate(1px, 0) skew(0deg);
-		color: rgb(235, 235, 235);
-	}
-	4%, 60% {
-		transform: translate(-1px, 0) skew(0deg);
-	}
-	62% {
-		transform: translate(0, 0) skew(5deg);
-		color: white;
-	}
-}
-
-@keyframes glitchTop {
-	2%, 64% {
-		transform: translate(1px, 2px);
-	}
-	4%, 60% {
-		transform: translate(-2px, -2px);
-	}
-	62% {
-		transform: translate(1px, -1px) skew(50deg);
-	}
-}
-
-@keyframes glitchBottom {
-	2%, 64% {
-		transform: translate(0, 0);
-	}
-	4%, 60% {
-		transform: translate(0, 0);
-	}
-	62% {
-		transform: translate(-5px, 2px) skew(21deg);
-	}
-} */
 
 .tournament::-webkit-scrollbar, .bracket::-webkit-scrollbar {
 	border-radius: 20px;            /* width of the entire scrollbar */
@@ -549,6 +465,7 @@ border: 3px solid orange;  /* creates padding around scroll thumb */
 	height: 10%;
 	background-color: var(--form-input-bg-color);
 	border: 1px solid black;
+	border-radius: 10px;
 	color: white;
 }
 
@@ -586,13 +503,16 @@ border: 3px solid orange;  /* creates padding around scroll thumb */
 }
 
 .form-btn {
+	font-size: 5vh !important;
 	border: none;
 	color: white;
+	width: 50%;
+	border-radius: 15px;
 	background-color: var(--form-input-bg-color);
 	font-family: 'baumansregular', sans-serif;
 	font-size: 1em;
 	margin: 10% 0;
-	padding: 5%;
+	padding: 2%;
 	position: relative;
 	overflow: hidden;
 	transform: perspective(600px) rotateX(25deg);
@@ -609,7 +529,7 @@ border: 3px solid orange;  /* creates padding around scroll thumb */
   
 .form-btn:hover {
 	box-shadow: 2px 2px 25px 2px var(--form-color);
-	background-color: var(--form-color);
+	text-shadow: 0 0 12px var(--form-color);
 }
 
 .hidden {

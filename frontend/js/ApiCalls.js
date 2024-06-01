@@ -41,6 +41,7 @@ async function login(loginForm) {
 	if (response.statusCode === 200) {
 		bootstrap.Modal.getInstance(document.getElementById("login")).hide();
 		await initPages();
+		await navigateTo("/dash");
 	} else {
 		showAlert(response.data.error);
 	}

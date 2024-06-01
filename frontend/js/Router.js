@@ -103,6 +103,21 @@ async function initPages() {
 	setLoading(false);
 }
 
+async function updatePage(pageName) {
+	var page = routes.find((x) => x.name === pageName);
+	if (page) {
+		setLoading(true);
+		var pageDiv = document.getElementById(pageName);
+		pageDiv.innerHTML = page.html;
+		await injectModule(pageName);
+		await toggleContentOnLogState();
+		await injectUserData();
+		await execPageJavascript(pageName);
+		setLoading(false);
+	}
+
+}
+
 function setLoading(state) {
 	var allPages = Array.from(document.querySelectorAll(".page"));
 	var contentContainer = document.getElementById("content-container");
@@ -137,4 +152,4 @@ async function execPageJavascript(pageName) {
 	}
 }
 
-export { navigateTo, execPageJavascript, routes, initArray, initPages };
+export { navigateTo, execPageJavascript, routes, initArray, initPages, updatePage };

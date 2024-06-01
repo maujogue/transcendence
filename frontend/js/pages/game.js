@@ -22,23 +22,9 @@ export var lobby;
 export var clock;
 export var characters;
 
-var isGameLoaded = false;
-
-function getIsGameLoaded() {
-	console.log("isGameLoaded", isGameLoaded);
-    return isGameLoaded;
-}
-
-function setIsGameLoaded(value) {
-    isGameLoaded = value;
-	console.log("set GameLoaded to ", isGameLoaded);
-}
-
 export async function init(queryParams) {
 	if (queryParams && queryParams.get("message"))
 		showAlert(queryParams.get("message"), queryParams.get("success"));
-	if (getIsGameLoaded())
-		return;
 
 	lobby = await loadScene('lobbyTest');
 	clock = new THREE.Clock();
@@ -76,7 +62,7 @@ export async function init(queryParams) {
 		player2 = await displayCharacter(player2, environment, "elvis", "player2");
 	}
 
-	document.addEventListener("keydown", function (event) {
+	gameDiv.addEventListener("keydown", function (event) {
 		keysPressed[event.key] = true;
 		if (keysPressed['A'])
 			keysPressed['a'] = true;
@@ -90,22 +76,19 @@ export async function init(queryParams) {
 		event.stopPropagation();
 	});
 
-	document.addEventListener("keyup", function (event) {
+	gameDiv.addEventListener("keyup", function (event) {
 		delete keysPressed[event.key];
 	});
 
-
-	document.addEventListener('click', function (event) {
+	gameDiv.addEventListener('click', function (event) {
+		document.body.style.overflow = 'hidden';
+		gameDiv.focus();
 		if (!gameDiv.contains(event.target)) {
 			document.body.style.overflow = 'auto';
 		}
 	});
 
-	gameDiv.addEventListener('click', function () {
-		document.body.style.overflow = 'hidden';
-	});
-
-	document.body.addEventListener("click", function (event) {
+	gameDiv.addEventListener("click", function (event) {
 		getUserData().then((data) => {
 			userData = data;
 		})
@@ -166,7 +149,7 @@ export async function init(queryParams) {
 		}
 	});
 
-	document.addEventListener('fullscreenchange', function () {
+	gameDiv.addEventListener('fullscreenchange', function () {
 		if (isFullScreen())
 			resize(environment);
 	});
@@ -208,8 +191,7 @@ export async function init(queryParams) {
 	if (localLoop)
 	requestAnimationFrame(localGameLoop);
 	}
-	setIsGameLoaded(true);
 }
 
 
-export { displayMainMenu, getIsGameLoaded, setIsGameLoaded }
+export { displayMainMenu }

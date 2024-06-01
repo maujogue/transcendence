@@ -1,7 +1,6 @@
 import { isLoggedIn, toggleContentOnLogState, resetModalFormsInitListeners } from "./Utils.js";
 import { injectUserData } from "./User.js";
 import { initArray, importFunction, injectModule } from "./Modules.js";
-import { setIsGameLoaded } from "./pages/game.js";
 
 class Page {
 	constructor(name, urlPath, filePath, importJs) {
@@ -95,7 +94,7 @@ async function initPages() {
 	await injectUserData();
 	for (const page of routes) {
 		if (page.name === "game")
-			setIsGameLoaded(false);
+			contentContainer.querySelector("#game").setAttribute("tabindex", "0");
 		await execPageJavascript(page.name);
 	}
 	toggleActiveTab(location.pathname);

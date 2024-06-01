@@ -84,7 +84,6 @@ function generateUniqueId(moduleName) {
 
 function getModuleDiv(moduleName) {
 	var modules = document.querySelectorAll("." + moduleName);
-	console.log(modules);
 	for (const module of modules) {
 		if (!module.hasAttribute("id")) {
 			module.id = generateUniqueId(moduleName);

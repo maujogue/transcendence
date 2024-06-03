@@ -1,6 +1,6 @@
-import { isLoggedIn, toggleContentOnLogState } from "./Utils.js";
+import { isLoggedIn, toggleContentOnLogState, resetModalFormsInitListeners } from "./Utils.js";
 import { injectUserData } from "./User.js";
-import { injectModule, initArray, importFunction } from "./Modules.js";
+import { initArray, importFunction, injectModule } from "./Modules.js";
 
 class Page {
 	constructor(name, urlPath, filePath, importJs) {
@@ -20,94 +20,51 @@ class Page {
 }
 
 const routes = [
-	new Page("Dashboard", "/", "html/Dashboard.html", true),
-	new Page("Dashboard", "/dash", "html/Dashboard.html", true),
-	new Page("Sidebar", "", "html/Sidebar.html", true),
-	new Page("About", "/about", "html/About.html"),
-	new Page("Game", "/game", "html/Game.html", true),
-	new Page("EmailVerified", "/emailVerified", "html/EmailVerified.html", true),
+	new Page("dashboard", "/dash", "html/Dashboard.html", true),
+	new Page("sidebar", "", "html/Sidebar.html", true),
+	new Page("about", "/about", "html/About.html"),
+	new Page("game", "/game", "html/Game.html", true),
+	new Page("emailVerified", "/emailVerified", "html/EmailVerified.html", true),
 ];
 
 window.addEventListener("popstate", () => router(routes));
 
 document.addEventListener("DOMContentLoaded", async () => {
-	document.body.addEventListener("click", (e) => navigateOnClick(e));
+	document.body.addEventListener("click", async (e) => await navigateOnClick(e));
 	await initArray(routes);
-	await initGame();
-	await initSidebar();
-	router(routes);
+	await initPages();
+	resetModalFormsInitListeners();
 });
 
 async function router() {
-	await injectPageHtml();
-	await injectModule();
-	await injectPageJs();
-	toggleContentOnLogState();
-	await injectUserData();
+	var allPages = Array.from(document.querySelectorAll(".page"));
+	let newPage = routes.find((page) => page.urlPath === location.pathname);
+	if (!newPage) {
+		newPage = routes[0];
+		history.pushState({}, '', newPage.urlPath);
+	}
+	var previousPage = allPages.find((x) => x.hidden == false);
+	if (previousPage)
+		previousPage.hidden = true;
+	var newPageDiv = allPages.find(page => page.id === newPage.name);
 	toggleActiveTab(location.pathname);
+	if (newPageDiv)
+		newPageDiv.hidden = false;
 };
 
-function navigateTo(url) {
-	if (url !== location.pathname) {
-		history.pushState({}, null, url);
-		router(routes);
-	}
-	toggleActiveTab(location.pathname);
-	injectUserData();
-	toggleContentOnLogState();
+async function navigateTo(url) {
+	history.pushState({}, null, url);
+	router();
 }
 
-function navigateOnClick(e) {
+async function navigateOnClick(e) {
 	let target = e.target;
 	while (target && target.parentNode !== document.body && !target.getAttribute("href"))
 		target = target.parentNode;
 	if (target && target.matches("[navlink]")) {
 		e.preventDefault();
-		navigateTo(target.getAttribute("href"));
+		await navigateTo(target.getAttribute("href"));
 	}
-}
-
-function getCurrentPage() {
-    let pathname = location.pathname;
-    let queryParams = new URLSearchParams(location.search);
-    let page = routes.find((page) => page.urlPath === pathname);
-    if (!page) {
-        page = routes[0];
-        history.pushState({}, '', '/');
-    }
-    return { page, queryParams };
-}
-
-async function injectPageHtml() {
-	const mainPageDiv = document.getElementById("content");
-	var page = getCurrentPage().page;
-	if (page && page.name == "Game") {
-		mainPageDiv.innerHTML = "";
-		document.getElementById("game").removeAttribute('hidden');
-	}
-	else if (page && page.html) {
-		mainPageDiv.innerHTML = page.html;
-		document.getElementById("game").setAttribute('hidden', '');
-	}
-}
-
-async function injectPageJs() {
-	var { page, queryParams } = getCurrentPage();
-	if (page && page.init)
-		page.init(queryParams);
-}
-
-async function initSidebar() {
-	const sidebarDiv = document.getElementById("sidebar-container");
-	let sidebar = routes.find((elm) => elm.name === "Sidebar");
-	sidebarDiv.innerHTML = sidebar.html;
-	sidebar.init();
-}
-
-async function initGame() {
-	let game = routes.find((elm) => elm.name === "Game");
-	document.getElementById("game").innerHTML = game.html;
-	await game.init();
 }
 
 function toggleActiveTab(target) {
@@ -120,4 +77,78 @@ function toggleActiveTab(target) {
 		document.querySelector("a[href='" + target + "']").classList.add("active");
 }
 
-export { navigateTo };
+async function initPages() {
+	var contentContainer = document.getElementById("content-container");
+	contentContainer.innerHTML = "";
+	setLoading(true);
+	for (const page of routes) {
+		if (page.name === "sidebar")
+			document.getElementById("sidebar-container").innerHTML = page.html;
+		else {
+			contentContainer.innerHTML += `<div id="${page.name}" class="page" hidden></div>`;
+			contentContainer.querySelector(`#${page.name}`).innerHTML = page.html;
+		}
+	};
+	await injectModule();
+	await toggleContentOnLogState();
+	await injectUserData();
+	for (const page of routes) {
+		if (page.name === "game")
+			contentContainer.querySelector("#game").setAttribute("tabindex", "0");
+		await execPageJavascript(page.name);
+	}
+	toggleActiveTab(location.pathname);
+	router();
+	setLoading(false);
+}
+
+async function updatePage(pageName) {
+	var page = routes.find((x) => x.name === pageName);
+	if (page) {
+		setLoading(true);
+		var pageDiv = document.getElementById(pageName);
+		pageDiv.innerHTML = page.html;
+		await injectModule(pageName);
+		await toggleContentOnLogState();
+		await injectUserData();
+		await execPageJavascript(pageName);
+		setLoading(false);
+	}
+
+}
+
+function setLoading(state) {
+	var allPages = Array.from(document.querySelectorAll(".page"));
+	var contentContainer = document.getElementById("content-container");
+	var currentPage = allPages.find((x) => x.hidden == false);
+	if (state) {
+		if (currentPage)
+			currentPage.hidden = true;
+		contentContainer.innerHTML += `<div id="loadingScreen" id="loadingScreen">
+		<div class="text-center">
+			<div class="spinner-border" role="status">
+				<span class="visually-hidden">Loading...</span>
+			</div>
+			<p class="mt-3">Loading</p>
+		</div>
+	</div>`;
+	} else {
+		document.getElementById("loadingScreen")?.remove();
+		if (currentPage)
+			currentPage.hidden = false;
+	}
+}
+
+async function execPageJavascript(pageName) {
+	let queryParams = new URLSearchParams(location.search);
+
+	var page = routes.find((e) => e.name === pageName);
+	if (page.init) {
+		if (page.urlPath === location.pathname)
+			await page.init(queryParams);
+		else
+			await page.init();
+	}
+}
+
+export { navigateTo, execPageJavascript, routes, initArray, initPages, updatePage };

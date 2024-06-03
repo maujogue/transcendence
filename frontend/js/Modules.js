@@ -3,13 +3,13 @@ class Module {
 		this.name = name;
 		this.init = null;
 		this.html = null;
-		this.filePath = "js/modules/" + name + ".html";
+		this.filePath = "js/modules/" + name + "/" + name + ".html";
 	}
 	async fetchHtml() {
 		this.html = await fetch(this.filePath).then((x) => x.text());
 	}
 	async fetchInit() {
-		this.init = await importFunction("./modules/", this.name, true);
+		this.init = await importFunction("./modules/" + this.name + "/", this.name, true);
 	}
 }
 
@@ -17,28 +17,45 @@ const modules = [
 	new Module("usernameInputModule"),
 	new Module("emailInputModule"),
 	new Module("friendList"),
+	new Module("statisticsModule"),
 	new Module("auth42"),
 ];
-
-initArray(modules);
 
 async function initArray(array) {
 	await Promise.all(array.map(module => module.fetchInit()));
 	await Promise.all(array.map(module => module.fetchHtml()));
 }
 
-async function injectModule() {
-	const regex = /^[ \n\t]*$/;
-	await initArray(modules);
-	modules.forEach((moduleType) => {
-		var moduleDivs = document.querySelectorAll("." + moduleType.name);
-		moduleDivs.forEach(async (div) => {
-			if (regex.test(div.innerHTML)) {
-				div.innerHTML = moduleType.html;
-				moduleType.init();
-			}
-		});
-	});
+async function injectModule(div) {
+    const regex = /^[ \n\t]*$/;
+    await initArray(modules);
+
+    for (const moduleType of modules) {
+		if (div) {
+			div = document.querySelector("." + div);
+        	var moduleDivs = div.querySelectorAll("." + moduleType.name);
+		}
+		else
+			var moduleDivs = document.querySelectorAll("." + moduleType.name);
+        for (const div of moduleDivs) {
+            if (regex.test(div.innerHTML)) {
+                div.innerHTML = moduleType.html;
+                await moduleType.init();
+            }
+        }
+    }
+}
+
+async function updateModule(moduleName) {
+	const module = modules.find(module => module.name === moduleName);
+	if (module) {
+		const moduleDivs = document.querySelectorAll("." + moduleName);
+		for (const div of moduleDivs) {
+			div.removeAttribute("id");
+			div.innerHTML = module.html;
+			await module.init();
+		}
+	}
 }
 
 async function importFunction(modulePath, moduleName, run) {
@@ -77,4 +94,4 @@ function getModuleDiv(moduleName) {
 	return null
 }
 
-export { initArray, injectModule, getModuleDiv, importFunction };
+export { initArray, injectModule, getModuleDiv, importFunction, updateModule};

@@ -1,13 +1,9 @@
 import { runEndPoint } from "./ApiUtils.js"
-import { getUserData } from "./User.js";
+import { getUserData, injectUserData } from "./User.js";
 
 async function isLoggedIn() {
-	var username = await getUserData("username");
-	if (username) {
-		var response = await runEndPoint("users/check_user_logged_in/" + username + "/", "POST");
-		return response.data["is_logged_in"];
-	}
-	return false
+	var response = await runEndPoint("users/check_user_logged_in/", "GET");
+	return response.data.is_logged_in;
 }
 
 async function check_user_42() {
@@ -32,11 +28,23 @@ async function toggleContentOnLogState() {
 	}
 	disableCollapsedSidebar();
 	disable42LoginElements();
-	resetAllForm();
 }
 
-function resetAllForm() {
-	document.querySelectorAll('form')?.forEach(form => { form.reset() });
+function resetModalFormsInitListeners() {
+	var modals = document.querySelectorAll('.modal');
+	modals.forEach(function (modal) {
+		if (!modal.classList.contains('modal-no-reset')){
+			var form = modal.querySelector('form');
+			if (!form) return;
+			modal.addEventListener('hide.bs.modal', function () {
+				form.reset();
+				injectUserData();
+				form.querySelectorAll('.is-valid').forEach((e) => e.classList.remove('is-valid'));
+				form.querySelectorAll('.is-invalid').forEach((e) => e.classList.remove('is-invalid'));
+				resetCheckPassword();
+			});
+		}
+	});
 }
 
 async function disable42LoginElements() {
@@ -160,6 +168,11 @@ function checkPassword(category, password1, password2) {
 	else helpTextAgain.classList.add("d-none");
 }
 
+function resetCheckPassword() {
+	var checkPasswordLines = document.querySelectorAll(".passwordHelpLine");
+	checkPasswordLines.forEach((e) => (e.style.color = "black"));
+}
+
 export {
 	toggleContentOnLogState,
 	showAlert,
@@ -170,4 +183,6 @@ export {
 	printQueryParamsMessage,
 	disableCollapsedSidebar,
 	toggleSearchBar,
+	resetCheckPassword,
+	resetModalFormsInitListeners,
 };

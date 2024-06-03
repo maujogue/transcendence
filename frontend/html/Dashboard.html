@@ -3,16 +3,16 @@
 	<div class="container-fluid logInContent">
 		<div class="row">
 			<!-- PROFILE SECTION -->
-			<div class="col-3">
+			<div class="col-3 ps-0" style="min-width:100px; max-width: 400px;">
 				<div class="d-flex bg-dark rounded text-white p-4 h-100 justify-content-center">
-					<img class="col img-fluid rounded-circle avatarDynamic" width="200" heigth="200" src=""
+					<img class="col rounded-circle avatarDynamic" width="50" heigth="50" src=""
 						alt="profile image" />
 				</div>
 			</div>
 			<div
-				class="col-8 bg-dark rounded text-white px-5 pb-5 pt-2 text-start d-flex flex-column justify-content-center">
+				class="col-9 bg-dark rounded text-white px-5 pb-5 pt-4 text-start d-flex flex-column justify-content-center">
 				<!-- EDIT PROFILE BUTTON -->
-				<button type="button" class="btn btn-outline-secondary mb-5 ms-auto" data-bs-toggle="modal"
+				<button type="button" class="btn btn-outline-secondary mt-auto mb-2 ms-auto" data-bs-toggle="modal"
 					data-bs-target="#updateProfileModal">
 					Edit
 				</button>
@@ -30,6 +30,9 @@
 				</div>
 			</div>
 		</div>
+		<div class="row statisticsModule">
+
+		</div>
 	</div>
 	<section>
 		<div class="logOutContent container text-center p-4 bg-white rounded shadow">
@@ -41,13 +44,13 @@
 
 <!-- UPDATE PROFILE MODAL-->
 
-<div class="modal fade" tabindex="-1" id="updateProfileModal">
+<div class="modal modal-no-reset fade" id="updateProfileModal" data-bs-backdrop="static" data-bs-keyboard="false">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<form id="updateProfileForm" autocomplete="off" class="novalidate">
 				<div class="modal-header">
 					<h3 class="modal-title">Update Profile</h3>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+					<button id="closeButtonUpdateProfile" type="button" class="btn-close" data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
 					<!-- USERNAME INPUT -->
@@ -155,11 +158,11 @@
 						</div>
 						<div id="updatePasswordHelpBlock" class="form-text">
 							Your password must contain :<br />
-							<span id="updatePassLength">- 8 to 20 characters</span><br />
-							<span id="updatePassLowercase">- Lowercase</span><br />
-							<span id="updatePassUppercase">- Uppercase</span><br />
-							<span id="updatePassNumbers">- Number</span><br />
-							<span id="updatePassSpecial">- Special character</span>
+							<span id="updatePassLength" class="passwordHelpLine">- 8 to 20 characters</span><br />
+							<span id="updatePassLowercase" class="passwordHelpLine">- Lowercase</span><br />
+							<span id="updatePassUppercase" class="passwordHelpLine">- Uppercase</span><br />
+							<span id="updatePassNumbers" class="passwordHelpLine">- Number</span><br />
+							<span id="updatePassSpecial" class="passwordHelpLine">- Special character</span>
 						</div>
 					</div>
 					<div class="mb-3">

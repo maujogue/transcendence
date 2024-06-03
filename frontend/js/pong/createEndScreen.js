@@ -23,10 +23,12 @@ function createEndScreen(winnerName) {
     restartBtn.className = 'btn';
     restartBtn.id = 'restart';
     restartBtn.innerText = 'Play again';
+	restartBtn.setAttribute("data-lang", "playagain");
     const backToTheMenuBtn = document.createElement('button');
     backToTheMenuBtn.className = 'btn';
     backToTheMenuBtn.id = 'backMenu';
-    backToTheMenuBtn.innerText = 'Back to the menu';
+    backToTheMenuBtn.innerText = 'Back to menu';
+	backToTheMenuBtn.setAttribute("data-lang", "backmenu");
 
     div.append(restartBtn);
     div.append(document.createElement('br'));

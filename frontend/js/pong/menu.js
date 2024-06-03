@@ -195,6 +195,7 @@ function createButton(text, id, parent) {
 	const textButton = document.createTextNode(text);
 	button.className = 'btn';
 	button.id = id;
+	button.setAttribute('data-lang', id);
 	button.appendChild(textButton);
 	document.getElementById(parent).appendChild(button);
 }
@@ -251,7 +252,7 @@ function createOnlineMenu() {
 export function createSubmode(listName, text) {
 	const firstWord = text.split(' ')[0].toLowerCase();
 	const list = document.querySelector('.submode-list-' + listName);
-	list.innerHTML += `<li class="submode" id="${firstWord}">${text}</li>`;
+	list.innerHTML += `<li class="submode" id="${firstWord}" data-lang="${text}">${text}</li>`;
 }
 
 export function createHUD(player, opp) {

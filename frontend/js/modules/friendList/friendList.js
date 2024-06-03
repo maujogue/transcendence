@@ -49,7 +49,7 @@ export async function init() {
 			username: friend_username
 		};
 
-		response = await runEndPoint("friends/send_request/" + friend_username + "/", JSON.stringify(fetchBody));
+		response = await runEndPoint("friends/send_request/" + friend_username + "/", "POST", JSON.stringify(fetchBody));
 
 		if (response.statusCode === 200) {
 			showAlert("You just send a friend request to " + friend_username + "  !", true);

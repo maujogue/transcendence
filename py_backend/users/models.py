@@ -25,7 +25,7 @@ class CustomUser(AbstractUser):
 	username = models.CharField(max_length=settings.MAX_LEN_USERNAME, unique=True)
 	tournament_username = models.CharField(max_length=settings.MAX_LEN_USERNAME, unique=True, default='')
 	email = models.EmailField(max_length=settings.MAX_LEN_EMAIL, unique=True)
-	email_is_verified = models.BooleanField(default=False)
+	email_is_verified = models.BooleanField(default=True)
 	title = models.CharField(max_length=50, null=True)
 	avatar = models.ImageField(default='avatar.jpg', upload_to='profile_avatars')
 	bio = models.TextField(max_length=settings.MAX_LEN_TEXT, default="")
@@ -35,6 +35,7 @@ class CustomUser(AbstractUser):
 	n_games_played = models.IntegerField(null=True)
 	friends = models.ManyToManyField("self", blank=True)
 	is_42auth = models.BooleanField(default=False)
+	lang = models.CharField(max_length=2, default='en')
 	
 	def save(self, *args, **kwargs):
 		if not self.tournament_username:

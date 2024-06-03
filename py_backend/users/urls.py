@@ -1,6 +1,7 @@
 from django.urls import path
 from users.views import *
 from users.views.username_available import username_available
+from users.views.update_lang import update_lang
 
 urlpatterns = [
     path('register/', register, name='register'),
@@ -12,6 +13,7 @@ urlpatterns = [
     path('update_profile_picture/', update_profile_picture, name='update_profile_picture'),
 	path('update_username/', update_profile_username, name='update_username'),
     path('update_email/', update_email, name='update_email'),
+	path('update_lang/', update_lang, name='update_lang'),
     path('get_user_data/', get_user_data, name='get_user_data'),
     path('username_available/', username_available, name='username_available'),
     path('email_available/', email_available, name='email_available'),

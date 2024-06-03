@@ -14,6 +14,7 @@ class Module {
 }
 
 const modules = [
+	new Module("translationsModule"),
 	new Module("usernameInputModule"),
 	new Module("emailInputModule"),
 	new Module("statisticsModule"),

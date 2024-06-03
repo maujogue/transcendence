@@ -113,7 +113,8 @@ function createTitle(div) {
 function createDivMenu(id) {
 	getSize();
 	const div = document.createElement("div");
-	div.className = "menu";
+	div.className = "menu crt";
+	addCrtEffect(div);
 	const canvas = document.getElementById("canvas");
 	div.id = id;
 	div.style.width = width + 'px';
@@ -159,9 +160,9 @@ function createInterfaceSelectMenu() {
 	
 	createDivMenu("selectMenu");
 	document.getElementById("selectMenu").innerHTML = '\
-		<i class="fa-solid fa-arrow-left icon" id="backIcon"></i> \
-		<i class="fa-solid fa-question icon" id="toggleButton"></i> \
-		<div id="toggleDiv" class="hidden"></div>';
+	<i class="fa-solid fa-arrow-left icon" id="backIcon"></i> \
+	<i class="fa-solid fa-question icon" id="toggleButton"></i> \
+	<div id="toggleDiv" class="hidden"></div>';
 	createPanelDiv();
 	createDivInputImg("P1");
 	createDivInputImg("P2");
@@ -173,6 +174,7 @@ function createInterfaceSelectMenu() {
 	});
 	createCursor("swatch0", "cursorP1", "P1");
 	createCursor("swatch1", "cursorP2", "P2");
+	addCrtEffect(document.getElementById("selectMenu"));
 }
 
 function createSelectMenu(characters) {
@@ -239,6 +241,7 @@ function createOnlineMenu() {
 	createDivMenu("onlineMenu");
 	const parent = document.getElementById("onlineMenu");
 	parent.innerHTML = '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>';
+	addCrtEffect(parent);
 	createGamemodeDiv("1v1", parent);
 	createGamemodeDiv("Tournament", parent);
 	createSubmode('Tournament', "Create");
@@ -272,17 +275,23 @@ export function createHUD(player, opp) {
 	`
 }
 
+export function addCrtEffect(parent) {
+	console.log("addCrtEffect");
+	console.log(parent);
+	const crtEffect = document.createElement("img");
+	crtEffect.src = "../assets/img/fx/crt_effect.png";
+	crtEffect.className = "crt-effect";
+	parent.appendChild(crtEffect);
+}
+
 export function createTournamentDiv() {
 	if (document.getElementsByClassName("menu")[0])
     	document.getElementsByClassName("menu")[0].remove();
 	createDivMenu("tournamentMenu");
     const tournamentDiv = document.createElement("div");
 	tournamentDiv.className = "tournament crt";
+	addCrtEffect(tournamentDiv)
     document.getElementById("tournamentMenu").appendChild(tournamentDiv);
-	const img = document.createElement("img");
-	img.src = "./assets/img/fx/crt_effect.png";
-	img.className = "crt-effect";
-	tournamentDiv.appendChild(img);
 }
 
 export { displayMainMenu, createSelectMenu, moveCursor, createDivMenu,

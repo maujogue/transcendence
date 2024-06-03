@@ -3,7 +3,7 @@ class Module {
 		this.name = name;
 		this.init = null;
 		this.html = null;
-		this.filePath = "./modules/" + name + "/" + name + ".html";
+		this.filePath = "js/modules/" + name + "/" + name + ".html";
 	}
 	async fetchHtml() {
 		this.html = await fetch(this.filePath).then((x) => x.text());

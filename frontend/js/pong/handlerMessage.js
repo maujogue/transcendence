@@ -33,11 +33,19 @@ export function removeGameScreen(env) {
     
 
 function handlerStopGame(webSocket, env, message) {
+    console.log("handlerStopGame");
     displayErrorPopUp(message, document.getElementById("hud"));
     document.getElementById("errorPopUp").classList.add("match-error");
     document.getElementById("PopUpCloseIcon").addEventListener("click", () => {
         removeGameScreen(env);
-        displayMainMenu();
+        if (wsTournament) {
+            wsTournament.send(JSON.stringify({
+                'type': 'status',
+                'status': 'endGame'
+            }));
+        }
+        else
+            displayMainMenu();
     });
     webSocket.close();
 }

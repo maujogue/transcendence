@@ -199,9 +199,6 @@ async function connectToLobby(username) {
     wsMatch.onclose = function(e) {
         console.log('Connection closed', e.code, e.reason);
         status.is_connected = false;
-        console.log(env);
-        if (env)
-            removeGameScreen(env);
         if (status.start)
             clearVariables();
     }

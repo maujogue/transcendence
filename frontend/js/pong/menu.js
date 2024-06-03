@@ -111,6 +111,8 @@ function createTitle(div) {
 }
 
 function createDivMenu(id) {
+	if (document.getElementById(id))
+		document.getElementById(id).remove();
 	getSize();
 	const div = document.createElement("div");
 	div.className = "menu crt";

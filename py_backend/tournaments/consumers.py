@@ -4,6 +4,7 @@ from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async
 
 from users.models import CustomUser
+from stats.models import Match
 from .models import Tournament, TournamentMatch
 from .bracket import generate_bracket
 
@@ -36,7 +37,21 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         else:
             await self.send(text_data=json.dumps({"type":"auth", "status": "failed"}))
 
+    async def validate_foreign_keys(self):
+        try:
+            tournament = await Tournament.objects.aget(id=self.scope['url_route']['kwargs']['tournament_id'])
+            match = await TournamentMatch.objects.aget(id=self.match.id)
+            return True
+        except Tournament.DoesNotExist:
+            print("Tournament does not exist")
+            return False
+        except TournamentMatch.DoesNotExist:
+            print("Match does not exist")
+            return False
+
     async def match_is_over(self):
+        if not await self.validate_foreign_keys():
+            return
         self.match.finished = True
         await self.channel_layer.group_send(
             self.tournament.name,
@@ -49,19 +64,29 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def send_bracket(self):
         bracket = await sync_to_async(self.tournament.get_tournament_bracket)()
+        print(bracket)
         await self.send(text_data=json.dumps({'type': 'bracket', 'bracket': bracket}))
 
     async def handler_status(self, status):
+        print("handler: ", status)
         if status == 'endGame':
             await self.match_is_over()
+            await self.set_match_info()
             await self.send_bracket()
 
-    async def set_match_info(self, match_info):
-        if self.match:
-            self.match.score_player_1 = match_info.get('score_player_1')
-            self.match.score_player_2 = match_info.get('score_player_2')
-            self.match.winner = match_info.get('winner') 
+    async def set_match_info(self):
+        print("set_match_info: ", self.match)
+        try:
+            match = await Match.objects.aget(uuid=self.match.lobby.uuid)
+            self.match.score_player_1 = match.player1_score
+            self.match.score_player_2 = match.player2_score
+            self.match.winner = match.winner
+            print("match_info: ", self.match)
             await self.match.asave()
+        except Match.DoesNotExist:
+            print("Match does not exist")
+            return
+        
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)

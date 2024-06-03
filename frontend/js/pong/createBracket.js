@@ -63,14 +63,14 @@ function createBracketCanvas() {
     document.getElementsByClassName('tournament')[0]?.appendChild(canvas);
 }
 
-export function drawBracket(data) {
+export function drawBracket(bracket) {
+    console.log(bracket);
     createBracketCanvas();
     canvas = document.getElementById('bracketCanvas');
     ctx = canvas.getContext('2d');
     ctx.font = '12px Arial';
     let prevRoundMatchesPosY = [];
-    
-    const rounds = data.tournament.rounds;
+    const rounds = bracket.tournament.rounds;
 
     rounds.forEach((round, roundIndex) => {
         let matchesPosY = [];

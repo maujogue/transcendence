@@ -18,7 +18,7 @@ class TournamentMatch(models.Model):
 	finished = models.BooleanField(default=False)
 
 	def __str__(self):
-		return f"{self.round}: {self.player_1} vs {self.player_2}"
+		return f"{self.round}: {self.player_1} vs {self.player_2}: {self.winner} wins!"
 
 class Tournament(models.Model):
 	name = models.fields.CharField(max_length=15, unique=True)

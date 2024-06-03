@@ -7,8 +7,10 @@ from django.core.exceptions import ValidationError
 from users.models import CustomUser
 from multiplayer.models import Lobby
 
+from math import log2, ceil
+
 class TournamentMatch(models.Model):
-	round = models.fields.CharField(max_length=15)
+	round = models.IntegerField(default=1)
 	player_1 = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='player1_match')
 	player_2 = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='player2_match', null=True, blank=True)
 	winner = models.CharField(max_length=15, null=True, blank=True)
@@ -18,7 +20,7 @@ class TournamentMatch(models.Model):
 	finished = models.BooleanField(default=False)
 
 	def __str__(self):
-		return f"{self.round}: {self.player_1} vs {self.player_2}"
+		return f"Round {self.round}: {self.player_1} vs {self.player_2}"
 
 class Tournament(models.Model):
 	name = models.fields.CharField(max_length=15, unique=True)
@@ -26,12 +28,18 @@ class Tournament(models.Model):
 	participants = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='joined_tournaments', blank=True)
 	started = models.BooleanField(default=False)
 	matchups = models.ManyToManyField(TournamentMatch, blank=True)
+	max_round = models.IntegerField(default=1)
 
 	def __str__(self):
 		return f'{self.name}'
 
 	def clean(self):
 		super().clean()
+
+	def save(self, *args, **kwargs):
+		if not self.pk:
+			self.max_round = ceil(log2(self.max_players))
+		super().save(*args, **kwargs)
 
 	def get_matches_by_player(self, player_id):
 		return self.matchups.filter(models.Q(player_1_id=player_id) | models.Q(player_2_id=player_id))
@@ -45,10 +53,10 @@ class Tournament(models.Model):
 			}
 		}
 
-		for round_name in rounds:
-			matches = self.matchups.filter(round=round_name)
+		for round_number in rounds:
+			matches = self.matchups.filter(round=round_number)
 			round_info = {
-				"name": round_name,
+				"name": self.get_round_name(round_number),
 				"matches": []
 			}
 
@@ -66,3 +74,11 @@ class Tournament(models.Model):
 			bracket["tournament"]["rounds"].append(round_info)
 			return bracket
 	
+
+	def get_round_name(self, round_number):
+		if round_number == self.max_round:
+			return "Finale"
+		elif round_number == self.max_round - 1:
+			return "semi-Finale"
+		else:
+			return f"Round {round_number}"

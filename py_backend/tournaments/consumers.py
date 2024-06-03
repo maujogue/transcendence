@@ -5,7 +5,7 @@ from asgiref.sync import sync_to_async
 
 from users.models import CustomUser
 from .models import Tournament, TournamentMatch
-from .bracket import generate_bracket
+from .bracket import generate_bracket, update_bracket
 
 class TournamentConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -51,16 +51,21 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         bracket = await sync_to_async(self.tournament.get_tournament_bracket)()
         await self.send(text_data=json.dumps({'type': 'bracket', 'bracket': bracket}))
 
+    async def generate_next_round(self):
+        pass
+
+
     async def handler_status(self, status):
         if status == 'endGame':
             await self.match_is_over()
+            await self.generate_next_round()
             await self.send_bracket()
 
     async def set_match_info(self, match_info):
         if self.match:
             self.match.score_player_1 = match_info.get('score_player_1')
             self.match.score_player_2 = match_info.get('score_player_2')
-            self.match.winner = match_info.get('winner') 
+            self.match.winner = match_info.get('winner')
             await self.match.asave()
 
     async def receive(self, text_data):

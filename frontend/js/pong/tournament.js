@@ -85,6 +85,7 @@ export async function unsubscribeFromTournament(tournament) {
     .then((response) => {
         if (!response.ok)
             throw new Error("Error while unsubscribing from tournament");
+        console.log("Unsubscribed from tournament");
         returnToMenu();
         wsTournament.close();
     })
@@ -127,6 +128,19 @@ export function displayErrorPopUp (message, parent) {
     });
 }
 
+export function createUnsubscribeButton(parent) {
+    const unsubscribeBtn = document.createElement("button");
+    unsubscribeBtn.textContent = "Unsubscribe";
+    unsubscribeBtn.onclick = () => {
+        checkIfUserIsInTournament(userData).then((response) => {
+            if (response && response['joined'])
+                unsubscribeFromTournament(response['tournament']);
+        })
+    }
+    unsubscribeBtn.className = "unsubscribe-btn tournament-btn";
+    parent.appendChild(unsubscribeBtn);
+}
+
 export function createWaitingScreenTournament(tournament) {
     if (!tournament)
         return;
@@ -143,13 +157,7 @@ export function createWaitingScreenTournament(tournament) {
     const playerList = document.createElement("div");
     playerList.className = "player-list";
     playerList.id = "player-list";
-    const unsubscribeBtn = document.createElement("button");
-    unsubscribeBtn.textContent = "Unsubscribe";
-    unsubscribeBtn.onclick = () => {
-        unsubscribeFromTournament(tournament);
-    }
-    unsubscribeBtn.className = "unsubscribe-btn tournament-btn";
-    tournamentDiv.appendChild(unsubscribeBtn);
+    createUnsubscribeButton(tournamentDiv);
 	tournamentDiv.appendChild(header);
     tournamentDiv.appendChild(playerList);
     tournament.participants.map((participant) => { 

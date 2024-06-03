@@ -1,3 +1,5 @@
+import { createUnsubscribeButton } from "./tournament.js";
+
 let canvas;
 let ctx;
 const startX = 75;
@@ -64,12 +66,15 @@ function createBracketCanvas() {
 }
 
 export function drawBracket(bracket) {
-    console.log(bracket);
     createBracketCanvas();
     canvas = document.getElementById('bracketCanvas');
     ctx = canvas.getContext('2d');
     ctx.font = '12px Arial';
     let prevRoundMatchesPosY = [];
+    if (!bracket) {
+        createUnsubscribeButton(document.getElementsByClassName('tournament')[0]);
+        return;
+    }
     const rounds = bracket.tournament.rounds;
 
     rounds.forEach((round, roundIndex) => {
@@ -104,4 +109,6 @@ export function drawBracket(bracket) {
         });
         prevRoundMatchesPosY = matchesPosY;
     });
+    console.log('Bracket drawn');
+    createUnsubscribeButton(document.getElementsByClassName('tournament')[0]);
 } 

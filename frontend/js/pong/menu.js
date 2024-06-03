@@ -212,8 +212,17 @@ function displayLobby() {
     <input id="submit" type="button" value="Enter">'
 }
 
+function removeAllMenu() {
+	if (document.getElementsByClassName("menu")) {
+		const divMenu = document.getElementsByClassName("menu");
+		for (let i = 0; i < divMenu.length; i++)
+			divMenu[i].remove()
+	}
+}
+
 function displayMainMenu() {
 	getSize();
+	removeAllMenu();
 	createDivMenu("menu");
 	const divMenu = document.getElementById("menu");
 	createTitle(document.getElementById("menu"));

@@ -174,6 +174,8 @@ class PongConsumer(AsyncWebsocketConsumer):
                 self.lobby_group_name,
                 self.channel_name
             )
+            if self.lobby.connected_user == 0:
+                await self.close_lobby()
         except Exception as e:
             print(e)
     
@@ -288,8 +290,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.lobby.stopGame()
         if self.player.name == 'player1':
             await self.createHistoryMatch()
-            await self.send_match_info()
-            # await self.close_lobby()
         await self.channel_layer.group_send(
             self.lobby_group_name, { 'type': 'pong.status', 'status': 'endGame', 'message': 'The game is over', 'name': self.player.name}
         )
@@ -360,12 +360,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             'score_player_2': self.opp.score,
             'winner': winner,
         }
-    
-    async def send_match_info(self):
-        match_info = await self.create_match_info()
-        print("match_info: ", match_info)
-        await self.send(text_data=json.dumps({ "type": "match_info", "match_info": match_info}))
-
                     
     async def pong_status(self, event):
         message = event["message"]
@@ -373,8 +367,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         status = event["status"]   
 
         if status == "endGame":
-            if self.player.name == 'player1':
-                await self.send_match_info()
             self.resetGame()
         await self.send(text_data=json.dumps({"type": 'status', 'status': status ,"message": message, "name": name}))
         if status == 'start':

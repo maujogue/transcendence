@@ -154,12 +154,6 @@ async function connectToLobby(username) {
         }
         if (data['type'] && data['type'] == 'status')
             handlerStatusMessage(data, wsMatch, env, status);
-        if (data['type'] == 'match_info') {
-            wsTournament?.send(JSON.stringify({
-                'type': 'match_info',
-                'match_info': data['match_info']
-            }));
-        }
         if (data['type'] == 'ball_data')
             setBallData(data, env);
         if (data['type'] == 'auth' && data['status'] == 'failed') 

@@ -90,13 +90,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        print(self.scope['user'], ": ", text_data_json)
         if text_data_json.get('type') == 'auth':
             await self.auth(text_data_json)
         if text_data_json.get('type') == 'status':
             await self.handler_status(text_data_json.get('status'))
-        if text_data_json.get('type') == 'match_info':
-            await self.set_match_info(text_data_json.get('match_info'))
 
 
     async def disconnect(self, close_code):
@@ -124,21 +121,26 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_tournament_participants(self):
         return [p.tournament_username for p in self.tournament.participants.all()]
+    
+    async def launch_tournament(self):
+        await self.channel_layer.group_send(
+            self.tournament.name,
+            {
+                'type': 'tournament.status',
+                'status': 'start'
+            }
+        )
+        self.tournament.started = True
+        await sync_to_async(self.tournament.save)()
+        await sync_to_async(generate_bracket)(self.tournament)
+        await self.send_matchups()
+
 
     async def check_tournament_start(self):
         if await self.is_tournament_full() and not self.tournament.started:
-            await self.channel_layer.group_send(
-                self.tournament.name,
-                {
-                    'type': 'tournament.status',
-                    'status': 'start'
-                }
-            )
-            self.tournament.started = True
-            await sync_to_async(self.tournament.save)()
-            await sync_to_async(generate_bracket)(self.tournament)
-            await self.send_matchups()
-
+            await self.launch_tournament()
+        elif self.tournament.started:
+            await self.send_bracket()
     
     async def send_matchups(self):
         await self.channel_layer.group_send(

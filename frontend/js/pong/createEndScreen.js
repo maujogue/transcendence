@@ -34,6 +34,7 @@ function createEndScreen(winnerName) {
 }
 
 function returnToMenu() {
+    console.log("returnToMenu");
     const menu = document.getElementsByClassName("menu");
     menu[0].remove();
     displayMainMenu();

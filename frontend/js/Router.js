@@ -124,14 +124,11 @@ function setLoading(state) {
 	if (state) {
 		if (currentPage)
 			currentPage.hidden = true;
-		contentContainer.innerHTML += `<div id="loadingScreen" id="loadingScreen">
-		<div class="text-center">
-			<div class="spinner-border" role="status">
-				<span class="visually-hidden">Loading...</span>
-			</div>
-			<p class="mt-3">Loading</p>
+		contentContainer.innerHTML += 
+			`<div id="loadingScreen" class="text-center justify-content-center d-flex align-items-center vh-100">
+			<div class="spinner-border" role="status"></div>
 		</div>
-	</div>`;
+		`;
 	} else {
 		document.getElementById("loadingScreen")?.remove();
 		if (currentPage)

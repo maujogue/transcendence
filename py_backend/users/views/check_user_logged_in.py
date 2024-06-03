@@ -9,4 +9,4 @@ import logging
 @require_http_methods(["GET"])
 @requires_csrf_token
 def check_user_logged_in_view(request):
-    return JsonResponse({'is_logged_in': request.user.is_authenticated})
+    return JsonResponse({'is_logged_in': request.user.is_authenticated}, status=200)

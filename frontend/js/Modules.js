@@ -14,11 +14,12 @@ class Module {
 }
 
 const modules = [
-	new Module("translationsModule"),
 	new Module("usernameInputModule"),
 	new Module("emailInputModule"),
 	new Module("statisticsModule"),
 	new Module("auth42"),
+
+	new Module("translationsModule"), //leave it last so that it injects all modules before it
 ];
 
 async function initArray(array) {

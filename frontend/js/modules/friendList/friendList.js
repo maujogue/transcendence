@@ -1,8 +1,8 @@
-import { getModuleDiv } from "../Modules.js";
-import { runEndPoint } from "../ApiUtils.js"
-import { showAlert, disableCollapsedSidebar } from "../Utils.js";
-import { checkInputAvailable } from "../ApiCalls.js";
-import { sendWebSocketMessage } from "../Friends.js";
+import { getModuleDiv } from "../../Modules.js";
+import { runEndPoint } from "../../ApiUtils.js"
+import { showAlert, disableCollapsedSidebar } from "../../Utils.js";
+import { checkInputAvailable } from "../../ApiCalls.js";
+import { sendWebSocketMessage } from "../../Friends.js";
 
 export async function init() {
 	var module = getModuleDiv("friendList");

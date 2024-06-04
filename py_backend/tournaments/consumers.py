@@ -40,7 +40,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def validate_foreign_keys(self):
         try:
             tournament = await Tournament.objects.aget(id=self.scope['url_route']['kwargs']['tournament_id'])
-            match = await TournamentMatch.objects.aget(id=self.match.id)
+            match = await TournamentMatch.objects.aget(lobby_id=self.match.lobby_id)
             return True
         except Tournament.DoesNotExist:
             print("Tournament does not exist")
@@ -68,20 +68,19 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({'type': 'bracket', 'bracket': bracket}))
 
     async def handler_status(self, status):
-        print("handler: ", status)
         if status == 'endGame':
             await self.match_is_over()
             await self.set_match_info()
             await self.send_bracket()
 
     async def set_match_info(self):
-        print("set_match_info: ", self.match)
         try:
-            match = await Match.objects.aget(uuid=self.match.lobby.uuid)
+            match = await Match.objects.aget(uuid=self.match.lobby_id)
+            self.match.player1 = match.player1
+            self.match.player2 = match.player2
             self.match.score_player_1 = match.player1_score
             self.match.score_player_2 = match.player2_score
             self.match.winner = match.winner
-            print("match_info: ", self.match)
             await self.match.asave()
         except Match.DoesNotExist:
             print("Match does not exist")
@@ -157,15 +156,15 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         return False
 
     @database_sync_to_async
-    def get_player_match(self, user):
-        return self.tournament.get_matches_by_player(user.pk).first()
+    def get_player_match(self, username):
+        return self.tournament.get_matches_by_player(username).first()
 
     @database_sync_to_async
     def get_match_infos(self, match):
         return {
-            'lobby_id': str(match.lobby.uuid),
-            'player_1': match.player_1.username,
-            'player_2': match.player_2.username if match.player_2 else None,
+            'lobby_id': str(match.lobby_id),
+            'player_1': match.player1,
+            'player_2': match.player2 if match.player2 else None,
             'round': match.round
         }
     
@@ -181,7 +180,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             text_data=json.dumps({'type': 'participants', 'participants': event['participants']}))
         
     async def tournament_matchups(self, event):
-        self.match = await self.get_player_match(self.scope['user'])
+        self.match = await self.get_player_match(self.scope['user'].username)
         if self.match:
             match_infos = await self.get_match_infos(self.match)
             await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos}))

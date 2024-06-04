@@ -32,11 +32,11 @@ function drawMatchBox(x, y, match) {
 function writePlayerName(x, y, playerName, score, winner) {
     if (winner === playerName)
         ctx.fillStyle = 'green';
-    else if (winner === "")
+    else if (!winner || winner === null)
         ctx.fillStyle = 'black';
     else
         ctx.fillStyle = 'red';
-    if (playerName == "") {
+    if (!playerName) {
         score = "-";
         ctx.fillStyle = "black";
     }

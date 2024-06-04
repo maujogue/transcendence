@@ -287,8 +287,6 @@ export function createHUD(player, opp) {
 }
 
 export function addCrtEffect(parent) {
-	console.log("addCrtEffect");
-	console.log(parent);
 	const crtEffect = document.createElement("img");
 	crtEffect.src = "../assets/img/fx/crt_effect.png";
 	crtEffect.className = "crt-effect";

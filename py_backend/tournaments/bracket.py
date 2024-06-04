@@ -13,20 +13,18 @@ def generate_bracket(tournament):
         match_lobby = Lobby.objects.create()
         match = TournamentMatch.objects.create(
             round=f"Round 1",
-            player_1=participants.pop(),
-            player_2=participants.pop(),
-            lobby=match_lobby
+            player1=participants.pop().username,
+            player2=participants.pop().username,
+            lobby_id=match_lobby.uuid
         )
-        print("generate_bracket: ", match)
         tournament.matchups.add(match)
     
     if participants:
-        print("odd")
         match_lobby = Lobby.objects.create()
         match =TournamentMatch.objects.create(
             round=f"Round 1",
-            player_1=participants.pop(),
-            lobby=match_lobby
+            player1=participants.pop().username,
+            lobby_id=match_lobby.uuid
         )
         tournament.matchups.add(match)
     tournament.save()

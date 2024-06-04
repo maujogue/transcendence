@@ -114,5 +114,8 @@
 	"name": "Name",
 	"create_tournament": "Create Tournament",
 	"create": "Create",
-	"tournaments_name": "Tournaments Name"
+	"tournaments_name": "Tournaments Name",
+	"max_players": "Max Players",
+
+	"42_auth_success": "You logged in successfully using your 42 account."
 }

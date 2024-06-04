@@ -114,5 +114,7 @@
     "name": "Nom",
     "create_tournament": "Créer un tournoi",
     "create": "Créer",
-    "tournaments_name": "Nom du tournoi"
+    "tournaments_name": "Nom du tournoi",
+	"max_players": "Nombre maximum de joueurs",
+	"42_auth_success": "Authentification réussie"
 }

@@ -86,7 +86,7 @@ def oauth_callback(request):
     try:
         curr_user = CustomUser.objects.get(email=email, username=username, is_42auth=True)
         login(request, curr_user)
-        return redirect('/dash?success=true&message=You logged in successfully using your 42 account.')
+        return redirect('/dash?success=true&message=42_auth_success')
     except CustomUser.DoesNotExist:
         pass
 

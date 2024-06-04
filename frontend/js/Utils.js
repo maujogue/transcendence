@@ -10,12 +10,6 @@ async function check_user_42() {
 	return await getUserData("is_42auth");
 }
 
-function printQueryParamsMessage(queryParams) {
-	if (queryParams && queryParams.get("message"))
-		showAlert(queryParams.get("message"), queryParams.get("success"));
-	history.replaceState(null, null, window.location.pathname);
-}
-
 async function toggleContentOnLogState() {
 	const logInContent = document.querySelectorAll(".logInContent");
 	const logOutContent = document.querySelectorAll(".logOutContent");
@@ -166,7 +160,6 @@ export {
 	check_user_42,
 	togglePasswordVisibility,
 	checkPassword,
-	printQueryParamsMessage,
 	resetCheckPassword,
 	resetModalFormsInitListeners,
 };

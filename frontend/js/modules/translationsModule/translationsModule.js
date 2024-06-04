@@ -5,8 +5,7 @@ import { getModuleDiv } from "../../Modules.js";
 import { runEndPoint } from "../../ApiUtils.js";
 import { getUserData } from "../../User.js";
 import { initPages } from '../../Router.js';
-import { isLoggedIn } from '../../Utils.js';
-
+import { isLoggedIn, showAlert } from '../../Utils.js';
 
 export async function init() {
 	var module = getModuleDiv("translationsModule");
@@ -58,10 +57,7 @@ export async function init() {
 	}
 
 	async function injectTranslations() {
-		var lang = Cookies.get("lang");
-		console.log(lang)
-		var json = getJsonFromLang(lang);
-		console.log(json);
+		var json = getJsonFromLang();
 		const elmDivs = document.querySelectorAll("[data-lang]");
 		elmDivs.forEach((elm) => {
 			const key = elm.getAttribute("data-lang");
@@ -71,7 +67,8 @@ export async function init() {
 	}
 }
 
-function getJsonFromLang(lang) {
+function getJsonFromLang() {
+	var lang = Cookies.get("lang");
 	switch (lang) {
 		case "es":
 			return es;
@@ -82,19 +79,31 @@ function getJsonFromLang(lang) {
 	}
 }
 
-export async function setLanguage(userLanguage) {
+async function setLanguage(userLanguage) {
 	const response = await runEndPoint("users/update_lang/", "POST", JSON.stringify({ lang: userLanguage }));
 }
 
-export async function injectGameTranslations() {
-	var lang = Cookies.get("lang");
-	var json = getJsonFromLang(lang);
+async function injectGameTranslations() {
+	var json = getJsonFromLang();
 
 	const elmDivs = document.querySelectorAll("#game [data-lang]");
 	elmDivs.forEach((elm) => {
 		const key = elm.getAttribute("data-lang");
-		console.log(key, json[key]);
 		if (json[key])
 			elm.innerHTML = json[key];
 	});
 }
+
+function printQueryParamsMessage(queryParams) {
+	if (queryParams) {
+		var message = queryParams.get("message");
+		var success = queryParams.get("success");
+		var json = getJsonFromLang();
+		if (message)
+			showAlert(json[message], success);
+		console.log(message, success, json, json[message]);
+	}
+	history.replaceState(null, null, window.location.pathname);
+}
+
+export { setLanguage, injectGameTranslations, printQueryParamsMessage }

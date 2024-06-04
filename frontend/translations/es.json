@@ -114,5 +114,7 @@
     "name": "Nombre",
     "create_tournament": "Crear torneo",
     "create": "Crear",
-    "tournaments_name": "Nombre del torneo"
+    "tournaments_name": "Nombre del torneo",
+	"max_players": "Jugadores máximos",
+	"42_auth_success": "¡Autenticación exitosa!"
 }

@@ -28,16 +28,10 @@ export async function init(queryParams) {
 		showAlert(queryParams.get("message"), queryParams.get("success"));
 
 	var target = document.querySelector('#game');
-
-	var observer = new MutationObserver(function (mutations) {
-		mutations.forEach(function (mutation) {
-			console.log(mutation.type);
-			injectGameTranslations();
-		});
-	});
-
 	var config = { attributes: true, childList: true, characterData: true };
-
+	var observer = new MutationObserver(function (mutations) {
+		mutations.forEach(injectGameTranslations);
+	});
 	observer.observe(target, config);
 
 	lobby = await loadScene('lobbyTest');

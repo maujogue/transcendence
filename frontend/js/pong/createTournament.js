@@ -42,7 +42,7 @@ export function createFormTournament() {
 		<input class="glitched" type="text" id="name" name="name" required>\
 	</div>\
 	<div class="form-field">\
-		<label for="max_players" class="form-field-max_players glitched" data-lang="max_player">Max players :</label>\
+		<label for="max_players" class="form-field-max_players glitched" data-lang="max_players">Max players :</label>\
 		<input type="number" class="glitched" id="max_players" name="max_players" min="2" required>\
 	</div>\
 	<div class="glitched">\

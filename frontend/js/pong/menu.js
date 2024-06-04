@@ -226,7 +226,7 @@ function displayMainMenu() {
 
 function createGamemodeDiv(text, parent) {
 	const div = document.createElement("div");
-	div.innerHTML += `<img class="gamemode-img" src="./assets/img/icon/${text}.png" alt="tournament_icon"><p>${text}</p>`;
+	div.innerHTML += `<img class="gamemode-img" src="./assets/img/icon/${text}.png" alt="tournament_icon"><p data-lang="${text}">${text}</p>`;
 	const list = document.createElement("ul");
 	list.className = "submode-list submode-list-" + text;
 	div.className = "gamemode";

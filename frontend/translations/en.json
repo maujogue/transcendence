@@ -49,6 +49,7 @@
     "current_password_label": "Current Password",
     "new_password_label": "New Password",
     "repeat_new_password_label": "Repeat New Password",
+	"password_help_block": "Your password must contain:",
     "password_help_length": "- 8 to 20 characters",
     "password_help_lowercase": "- Lowercase",
     "password_help_uppercase": "- Uppercase",
@@ -63,6 +64,7 @@
     "sidebar_about": "About",
     "log_in_button": "Log In",
     "sign_up_button": "Sign up",
+	"close_button": "Close",
     "collapse_button": "collapse",
     "sign_out_button": "Sign out",
     "login_modal_title": "Login",
@@ -103,9 +105,14 @@
 	"onlineGame": "Online Game",
 	"Create": "Create",
 	"Join": "Join",
-	"Quick play": "Private Game",
+	"Quick Play": "Quick Play",
+	"Private Game": "Private Game",
 	"1v1": "1v1",
 	"Tournament": "Tournament",
 	"playagain": "Play Again",
-	"backmenu": "Back to Menu"
+	"backmenu": "Back to Menu",
+	"name": "Name",
+	"create_tournament": "Create Tournament",
+	"create": "Create",
+	"tournaments_name": "Tournaments Name"
 }

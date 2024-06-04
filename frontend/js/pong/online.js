@@ -50,6 +50,7 @@ function clearVariables() {
     keyUp = false;
     oppInfo = null;
     playersMove.clear();
+    lobbyId = null;
 }
 
 
@@ -68,7 +69,6 @@ document.addEventListener("keyup", function(event) {
     event.stopPropagation();
 });
 
-
 function leaveMatchmaking() {
     if (wsMatch)
         wsMatch.close();
@@ -79,7 +79,6 @@ function leaveMatchmaking() {
     player.name = "player";
     paddle.name = "paddle_player";
 }
-
 
 function clickHandler(event) {
     if (event.target.id == 'restart') {
@@ -124,7 +123,6 @@ async function createOnlineSelectMenu(id) {
 async function connectToLobby(username) {
     if (username == null)
         return ;
-    console.log(lobbyId);
     if (!lobbyId)
         wsMatch = new WebSocket('ws://127.0.0.1:8080/ws/lobby/');
     else {
@@ -193,6 +191,7 @@ async function connectToLobby(username) {
     wsMatch.onclose = function(e) {
         console.log('Connection closed', e.code, e.reason);
         status.is_connected = false;
+        lobbyId = null;
         if (status.start)
             clearVariables();
     }
@@ -205,6 +204,7 @@ async function connectToLobby(username) {
         div.innerHTML = "Error while connecting to the server";
         selectMenu.appendChild(div);
         wsMatch = null;
+        lobbyId = null;
     }
 }
 

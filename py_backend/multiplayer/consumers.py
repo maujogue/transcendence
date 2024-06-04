@@ -21,6 +21,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def join_lobby(self):
         if self.scope['url_route']['kwargs'].get('lobby_id') is not None:
+            print("Lobby ID: ", self.scope['url_route']['kwargs']['lobby_id'])
             try:
                 return await Lobby.objects.aget(uuid=self.scope['url_route']['kwargs']['lobby_id'])
             except Lobby.DoesNotExist:
@@ -64,9 +65,9 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.exchangeBeforePointsP2 = []
         self.countExchange = 0
         self.lobby = await self.join_lobby()
-        self.lobby_name = self.lobby.uuid
-        if self.lobby.connected_user >= 2:
+        if not self.lobby or self.lobby.connected_user >= 2:
             return await self.close()
+        self.lobby_name = self.lobby.uuid
         self.ball = Ball()
         await self.create_player()
         self.lobby.connected_user += 1

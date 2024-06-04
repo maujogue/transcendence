@@ -27,6 +27,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             }
         )
 
+    async def check_if_disqualified(self):
+        if sync_to_async(self.tournament.check_if_player_is_disqualified)(self.scope['user'].tournament_username):
+            await self.send(text_data=json.dumps({'type': 'status', 'status': 'disqualified'}))
+        else:
+            print('not disqualified')
+
     async def auth(self, text_data_json):
         username = text_data_json.get('username')
         user = await self.authenticate_user_with_username(username)
@@ -34,6 +40,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.scope["user"] = user
             await self.send(text_data=json.dumps({"type": "auth", "status": "success"}))
             await self.check_tournament_start()
+            await self.check_if_disqualified()
         else:
             await self.send(text_data=json.dumps({"type":"auth", "status": "failed"}))
 
@@ -108,7 +115,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
 
     async def disconnect(self, close_code):
-        print('disconnected')
+        print('tournament disconnected')
         participants = await self.get_tournament_participants()
         await self.channel_layer.group_send(
             self.tournament.name,

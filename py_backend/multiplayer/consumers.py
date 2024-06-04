@@ -156,18 +156,21 @@ class PongConsumer(AsyncWebsocketConsumer):
                 await self.getPlayerMove(text_data_json)
 
     async def disconnect(self, close_code):
+        print(self.player.name, ": Disconnected")
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
 
         if self.is_connected == False:
+            print("Not connected")
             return
         self.is_connected = False
         try:
+            print("Disconnecting user")
             await self.lobby.disconnectUser(self.player)
             await self.channel_layer.group_send(
                 self.lobby_group_name, {  'type': 'pong.status', 'status': 'disconnected', 'message': f"{self.scope['user']} left the game", 'name': self.player.name}
             )
             if (self.lobby.game_started == True):
-                await self.lobby.stopGame()
+                print("disconnect: Game started")
                 await self.channel_layer.group_send(
                     self.lobby_group_name, { 'type': 'pong.status', 'status': 'stop', 'message': f"Connection lost with {self.scope['user']}", 'name': self.player.name}
                 )
@@ -179,7 +182,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             if self.lobby.connected_user == 0:
                 await self.close_lobby()
         except Exception as e:
-            print(e)
+            print("Error: ", e)
     
     async def close_lobby(self):
         try:
@@ -288,10 +291,9 @@ class PongConsumer(AsyncWebsocketConsumer):
             await self.collision(self.opp)
 
     async def setGameOver(self):
-        print("Game Over")
-        await self.lobby.stopGame()
         if self.player.name == 'player1':
             await self.createHistoryMatch()
+            await self.lobby.stopGame()
         await self.channel_layer.group_send(
             self.lobby_group_name, { 'type': 'pong.status', 'status': 'endGame', 'message': 'The game is over', 'name': self.player.name}
         )
@@ -310,7 +312,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         if self.lobby.player1Present == False:
             winner = player2.user.username
         elif self.lobby.player2Present == False:
-            winner = player1.user.username   
+            winner = player1.user.username
+        print("Winner: ", winner)   
         loser = player1.user.username if player1.user.username != winner else player2.user.username
         match = Match(  uuid=self.lobby.uuid,
                         player1=player1.user.username, 

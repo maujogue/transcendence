@@ -37,6 +37,17 @@ class Tournament(models.Model):
 	def get_matches_by_player(self, username):
 		return self.matchups.filter(models.Q(player1=username) | models.Q(player2=username))
 	
+	def get_disqualified_players(self):
+		disqualified_players = []
+		for match in self.matchups.all().filter(finished=True):
+			disqualified_player = match.player1 if match.player1.tournament_username != match.winner else match.player2.tournament_username
+			disqualified_players.append(disqualified_player)
+		return disqualified_players
+	
+	def check_if_player_is_disqualified(self, username):
+		disqualified_players = self.get_disqualified_players()
+		return username in disqualified_players
+	
 	def get_player_tournament_username(self, username):
 		try:
 			return CustomUser.objects.get(username=username).tournament_username

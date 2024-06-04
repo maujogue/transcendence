@@ -117,5 +117,10 @@
 	"tournaments_name": "Tournaments Name",
 	"max_players": "Max Players",
 
-	"42_auth_success": "You logged in successfully using your 42 account."
+	"42_login_success": "You logged in successfully using your 42 account.",
+	"42_register_success": "You registered successfully using your 42 account.",
+	"42_auth_error": "An error occurred while trying to log in using your 42 account. Please try again later.",
+	"username_not_unique": "This username is already taken.",
+	"email_not_unique": "This email is already taken.",
+	"unexpected_error": "An unexpected error occurred. Please try again later."
 }

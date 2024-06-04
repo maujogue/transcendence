@@ -13,6 +13,7 @@ async function check_user_42() {
 function printQueryParamsMessage(queryParams) {
 	if (queryParams && queryParams.get("message"))
 		showAlert(queryParams.get("message"), queryParams.get("success"));
+	history.replaceState(null, null, window.location.pathname);
 }
 
 async function toggleContentOnLogState() {

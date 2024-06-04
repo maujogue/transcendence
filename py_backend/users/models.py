@@ -38,7 +38,7 @@ class CustomUser(AbstractUser):
 	
 	def save(self, *args, **kwargs):
 		if not self.tournament_username:
-			self.tournament_username = generate_random_pseudo(random.randint(4, 10))
+			self.tournament_username = generate_random_pseudo(random.randint(4, 8))
 		super().save(*args, **kwargs)
 		img = Image.open(self.avatar.path)
 		if img.height > 300 or img.width > 300:

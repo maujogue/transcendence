@@ -37,6 +37,12 @@ class Tournament(models.Model):
 	def get_matches_by_player(self, username):
 		return self.matchups.filter(models.Q(player1=username) | models.Q(player2=username))
 	
+	def get_player_tournament_username(self, username):
+		try:
+			return CustomUser.objects.get(username=username).tournament_username
+		except CustomUser.DoesNotExist:
+			return username
+		
 	def get_tournament_bracket(self):
 		rounds = self.matchups.values_list('round', flat=True).distinct()
 		bracket = {
@@ -54,11 +60,14 @@ class Tournament(models.Model):
 			}
 
 			for match in matches:
+				player1 = self.get_player_tournament_username(match.player1)
+				player2 = self.get_player_tournament_username(match.player2) if match.player2 else None
+				winner = self.get_player_tournament_username(match.winner) if match.winner else None
 				match_info = {
 					"match_id": str(match.lobby_id),
-					"player1": match.player1,
-					"player2": match.player2 if match.player2 else None,
-					"winner": match.winner,
+					"player1": player1,
+					"player2": player2 if match.player2 else None,
+					"winner": winner,
 					"player1_score": match.score_player_1,
 					"player2_score": match.score_player_2
 				}

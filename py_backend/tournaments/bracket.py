@@ -13,8 +13,8 @@ def generate_bracket(tournament):
         match_lobby = Lobby.objects.create()
         match = TournamentMatch.objects.create(
             round=f"Round 1",
-            player1=participants.pop().username,
-            player2=participants.pop().username,
+            player1=participants.pop().tournament_username,
+            player2=participants.pop().tournament_username,
             lobby_id=match_lobby.uuid
         )
         tournament.matchups.add(match)
@@ -23,7 +23,7 @@ def generate_bracket(tournament):
         match_lobby = Lobby.objects.create()
         match =TournamentMatch.objects.create(
             round=f"Round 1",
-            player1=participants.pop().username,
+            player1=participants.pop().tournament_username,
             lobby_id=match_lobby.uuid
         )
         tournament.matchups.add(match)

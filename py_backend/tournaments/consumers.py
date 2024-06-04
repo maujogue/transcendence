@@ -64,14 +64,24 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def send_bracket(self):
         bracket = await sync_to_async(self.tournament.get_tournament_bracket)()
-        print(bracket)
         await self.send(text_data=json.dumps({'type': 'bracket', 'bracket': bracket}))
 
     async def handler_status(self, status):
         if status == 'endGame':
+
             await self.match_is_over()
             await self.set_match_info()
             await self.send_bracket()
+
+    async def send_disqualified(self, username):
+        await self.channel_layer.group_send(
+            self.tournament.name,
+            {
+                'type': 'tournament.status',
+                'status': 'disqualified',
+                'username': username
+            }
+        )
 
     async def set_match_info(self):
         try:
@@ -81,7 +91,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.match.score_player_1 = match.player1_score
             self.match.score_player_2 = match.player2_score
             self.match.winner = match.winner
+            loser = match.player1 if match.winner == match.player2 else match.player2
             await self.match.asave()
+            await self.send_disqualified(loser)
         except Match.DoesNotExist:
             print("Match does not exist")
             return
@@ -180,10 +192,15 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             text_data=json.dumps({'type': 'participants', 'participants': event['participants']}))
         
     async def tournament_matchups(self, event):
-        self.match = await self.get_player_match(self.scope['user'].username)
+        self.match = await self.get_player_match(self.scope['user'].tournament_username)
         if self.match:
             match_infos = await self.get_match_infos(self.match)
             await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos}))
 
     async def tournament_status(self, event):
-        await self.send(text_data=json.dumps({'type': 'status', 'status': event['status']}))
+        if event['status'] == 'disqualified':
+            print('disqualified: ', event['username'])
+            if event['username'] == self.scope['user'].tournament_username:
+                await self.send(text_data=json.dumps({'type': 'status', 'status': 'disqualified'}))
+        else:
+            await self.send(text_data=json.dumps({'type': 'status', 'status': event['status']}))

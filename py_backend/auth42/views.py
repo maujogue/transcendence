@@ -60,19 +60,19 @@ def oauth_callback(request):
     access_token = token_json.get('access_token')
     
     if not access_token:
-        return redirect('/dash?success=false&message=Failed to obtain access token from 42 API.')
+        return redirect('/dash?success=false&message=42_auth_error')
     
     user_info_url = 'https://api.intra.42.fr/v2/me'
     headers = {'Authorization': f'Bearer {access_token}'}
     user_info_response = requests.get(user_info_url, headers=headers)
     
     if user_info_response.status_code != 200:
-        return redirect('/dash?success=false&message=Failed to obtain user information from 42 API.')
+        return redirect('/dash?success=false&message=42_auth_error')
 
     user_info = user_info_response.json()
     
     if not all(k in user_info for k in ('login', 'email', 'image')):
-        return redirect('/dash?success=false&message=User information is incomplete from 42 API.')
+        return redirect('/dash?success=false&message=42_auth_error')
     
     username = user_info.get('login')
     email = user_info.get('email')
@@ -81,21 +81,21 @@ def oauth_callback(request):
         img_url = user_info['image']['versions']['medium']
         avatarMedium = download_image(img_url, username)
     else:
-        return redirect('/dash?success=false&message=Failed to obtain user image from 42 API.')
+        return redirect('/dash?success=false&message=42_auth_error')
     
     try:
         curr_user = CustomUser.objects.get(email=email, username=username, is_42auth=True)
         login(request, curr_user)
-        return redirect('/dash?success=true&message=42_auth_success')
+        return redirect('/dash?success=true&message=42_login_success')
     except CustomUser.DoesNotExist:
         pass
 
     is_unique, response = username_is_unique(username)
     if not is_unique:
-        return redirect(f'/dash?success=false&message={response}')
+        return redirect(f'/dash?success=false&message=username_not_unique')
     is_unique, response = email_is_unique(email)
     if not is_unique:
-        return redirect(f'/dash?success=false&message={response}')
+        return redirect(f'/dash?success=false&message=email_not_unique')
  
     try:
         user = CustomUser.objects.create(username=username, email=email)
@@ -103,9 +103,9 @@ def oauth_callback(request):
         user.is_42auth = True
         user.save()
         login(request, user)
-        return redirect('/dash?success=true&message=You registered successfully using your 42 account.')
+        return redirect('/dash?success=true&message=42_register_success')
     except IntegrityError:
-        return redirect('/dash?success=false&message=An unexpected error occurred while creating the user.')
+        return redirect('/dash?success=false&unexpected_error')
 
 
 def download_image(image_url, username):

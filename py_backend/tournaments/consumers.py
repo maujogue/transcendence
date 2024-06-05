@@ -38,6 +38,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def match_is_over(self):
         self.match.finished = True
+        await self.match.asave()
         await self.channel_layer.group_send(
             self.tournament.name,
             {
@@ -45,14 +46,15 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 'status': 'endGame'
             }
         )
-        await self.match.asave()
 
     async def send_bracket(self):
         bracket = await sync_to_async(self.tournament.get_tournament_bracket)()
         await self.send(text_data=json.dumps({'type': 'bracket', 'bracket': bracket}))
 
     async def generate_next_round(self):
-        pass
+        current_round = await sync_to_async(list)(self.tournament.matchups.filter(round=self.match.round))
+        if all(matches.finished for matches in current_round):
+            await sync_to_async(update_bracket)(self.tournament, self.match.round)
 
 
     async def handler_status(self, status):

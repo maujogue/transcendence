@@ -37,9 +37,9 @@ export async function init() {
 
 	async function getFriendName(username){
 		var friend_username = await checkInputAvailable(username, "username");
-		if (!friend_username)
+		if (!friend_username) {
 			sendFriendRequest(username);
-		else
+		} else
 			showAlert("This user does not exist.", false);
 	}
 
@@ -53,6 +53,7 @@ export async function init() {
 
 		if (response.statusCode === 200) {
 			showAlert("You just send a friend request to " + friend_username + "  !", true);
+			console.log("PTDR");
 			sendWebSocketMessage ({
 				type: 'friend_request',
 				to: friend_username

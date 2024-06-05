@@ -15,10 +15,8 @@ export function friendsWebsocket() {
 
     webSocket.onmessage = (event) => {
         const data = JSON.parse(event.data);
+        const currentUserUsername = getUserData("username");
 
-        if (data.type === 'friend_request') {
-            alert("friend request receive");
-        }
     };    
 }
 

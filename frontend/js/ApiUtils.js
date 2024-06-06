@@ -1,4 +1,4 @@
-import { resetForm, toggleConfirmPasswordModal } from "./DashboardUtils.js";
+import { resetForm, toggleConfirmPasswordModal, inputInitListeners } from "./DashboardUtils.js";
 import { showAlert } from "./Utils.js";
 import { injectUserData } from "./User.js";
 
@@ -14,9 +14,9 @@ async function get_csrf_token() {
 		});
 }
 
-async function runEndPoint(endpoint, fetchBody) {
+async function runEndPoint(endpoint, method, fetchBody) {
 	return fetch("https://127.0.0.1:8000/api/" + endpoint, {
-		method: "POST",
+		method: method,
 		headers: {
 			"X-CSRFToken": await get_csrf_token(),
 			Accept: "application/json",
@@ -36,12 +36,13 @@ async function runEndPoint(endpoint, fetchBody) {
 }
 
 async function updateInfo(endpoint, fetchBody, modalToDismiss) {
-	var response = await runEndPoint(endpoint, fetchBody);
+	var response = await runEndPoint(endpoint, "POST", fetchBody);
 	var data = response.data;
 
 	if (response.statusCode === 200) {
 		showAlert(data.status, true);
 		toggleConfirmPasswordModal(modalToDismiss);
+		inputInitListeners();
 		resetForm();
 		injectUserData();
 	} else if (data.error && data.error.length > 0) showAlert(data.error);

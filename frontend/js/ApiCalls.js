@@ -1,8 +1,9 @@
-import { navigateTo } from "./Router.js";
+import { navigateTo, initPages } from "./Router.js";
 import { showAlert } from "./Utils.js";
-import { getUserData } from "./User.js";
+import { getUserData,  } from "./User.js";
 import { get_csrf_token, runEndPoint, updateInfo } from "./ApiUtils.js"
 import { getSubmittedInput, toggleConfirmPasswordModal } from "./DashboardUtils.js";
+import { toggleContentOnLogState } from "./Utils.js";
 
 async function register(registerForm) {
 	const userData = new FormData(registerForm);
@@ -15,6 +16,7 @@ async function register(registerForm) {
 
 	var response = await runEndPoint(
 		"users/register/",
+		"POST",
 		JSON.stringify(fetchBody)
 	);
 	var data = response.data;
@@ -34,22 +36,22 @@ async function login(loginForm) {
 		password: userData.get("password"),
 	};
 
-	var response = await runEndPoint("users/login/", JSON.stringify(fetchBody));
+	var response = await runEndPoint("users/login/", "POST", JSON.stringify(fetchBody));
 
 	if (response.statusCode === 200) {
-		Cookies.set("isLoggedIn", "true");
 		bootstrap.Modal.getInstance(document.getElementById("login")).hide();
-		navigateTo("/dash");
+		await initPages();
+		await navigateTo("/dash");
 	} else {
 		showAlert(response.data.error);
 	}
 }
 
 async function logout() {
-	var response = await runEndPoint("users/logout/");
+	var response = await runEndPoint("users/logout/", "POST",);
 	if (response.statusCode === 200) {
-		Cookies.remove("isLoggedIn");
-		navigateTo("/dash");
+		await initPages();
+		await navigateTo("/dash");
 	}
 }
 
@@ -61,7 +63,7 @@ async function updatePassword(updatePasswordForm) {
 		password: userData.get("password"),
 	};
 
-	var response = await runEndPoint("users/login/", JSON.stringify(fetchBody));
+	var response = await runEndPoint("users/login/", "POST", JSON.stringify(fetchBody));
 
 	if (response.statusCode === 200) {
 		const fetchBody = {
@@ -88,7 +90,7 @@ async function updateUsername(updateUsernameForm) {
 		password: userData.get("password"),
 	};
 
-	var response = await runEndPoint("users/login/", JSON.stringify(fetchBody));
+	var response = await runEndPoint("users/login/", "POST", JSON.stringify(fetchBody));
 
 	if (response.statusCode === 200) {
 		const fetchBody = {
@@ -111,7 +113,7 @@ async function updateEmail(updateEmailForm) {
 		password: userData.get("password"),
 	};
 
-	var response = await runEndPoint("users/login/", JSON.stringify(fetchBody));
+	var response = await runEndPoint("users/login/", "POST", JSON.stringify(fetchBody));
 
 	if (response.statusCode === 200) {
 		const fetchBody = {
@@ -126,7 +128,6 @@ async function updateEmail(updateEmailForm) {
 		showAlert("Password Incorrect, try again.");
 	}
 }
-
 function updateProfile() {
 	var updateProfileForm = document.getElementById("updateProfileForm");
 	var inputName = getSubmittedInput().getAttribute("name");
@@ -152,7 +153,7 @@ function updateProfileWithPassword() {
 	var updateProfileForm = document.getElementById("updateProfileForm");
 
 	var inputName = getSubmittedInput().getAttribute("name");
-	
+
 	if (inputName == "username")
 		updateUsername(updateProfileForm);
 	if (inputName == "email")
@@ -167,9 +168,9 @@ async function checkInputAvailable(input, type) {
 		username: input,
 	};
 	if (type === "username")
-		response = await runEndPoint("users/username_available/", JSON.stringify(fetchBody));
+		response = await runEndPoint("users/username_available/", "POST", JSON.stringify(fetchBody));
 	else if (type === "email")
-		response = await runEndPoint("users/email_available/", JSON.stringify(fetchBody));
+		response = await runEndPoint("users/email_available/", "POST", JSON.stringify(fetchBody));
 	if (response.statusCode === 200) {
 		return (true)
 	} else {

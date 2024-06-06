@@ -8,7 +8,7 @@ import { createEndScreen, returnToMenu } from "../pong/createEndScreen.js"
 import { actualizeScore } from "../pong/score.js";
 import { createField } from "../pong/createField.js";
 import { createOnlineSelectMenu } from "../pong/online.js";
-import { ClearAllEnv } from "../pong/createEnvironment.js";
+import { ClearAllEnv, getSize } from "../pong/createEnvironment.js";
 import { loadAllModel } from "../pong/loadModels.js"
 import { loadScene } from "../pong/loadModels.js";
 import { getUserData } from "../User.js";
@@ -22,14 +22,9 @@ export var lobby;
 export var clock;
 export var characters;
 
-var isGameLoaded = false;
-export const field = await createField();
-
 export async function init(queryParams) {
 	if (queryParams && queryParams.get("message"))
 		showAlert(queryParams.get("message"), queryParams.get("success"));
-	if (isGameLoaded)
-		return;
 
 	lobby = await loadScene('lobbyTest');
 	clock = new THREE.Clock();
@@ -46,11 +41,10 @@ export async function init(queryParams) {
 	let userData;
 	let form;
 	const gameDiv = document.getElementById('game');
+	const field = await createField();
 
 	loadAllModel();
 
-	window.addEventListener('resize', resize(environment));
-	
 	getUserData().then((data) => {
 		userData = data;
 		if (userData) {
@@ -60,16 +54,15 @@ export async function init(queryParams) {
 			});
 		}
 	})
-
 	async function goToLocalSelectMenu() {
 		divMenu = document.getElementById("menu");
 		divMenu.remove();
-		environment = createSelectMenu(characters);
+		environment = createSelectMenu(field, characters);
 		player1 = await displayCharacter(player1, environment, "chupacabra", "player1");
 		player2 = await displayCharacter(player2, environment, "elvis", "player2");
 	}
 
-	document.addEventListener("keydown", function (event) {
+	gameDiv.addEventListener("keydown", function (event) {
 		keysPressed[event.key] = true;
 		if (keysPressed['A'])
 			keysPressed['a'] = true;
@@ -83,25 +76,30 @@ export async function init(queryParams) {
 		event.stopPropagation();
 	});
 
-	document.addEventListener("keyup", function (event) {
+	gameDiv.addEventListener("keyup", function (event) {
 		delete keysPressed[event.key];
 	});
 
-	document.addEventListener('click', function (event) {
+	gameDiv.addEventListener('click', function (event) {
+		document.body.style.overflow = 'hidden';
+		gameDiv.focus();
 		if (!gameDiv.contains(event.target)) {
 			document.body.style.overflow = 'auto';
 		}
 	});
 
-	gameDiv.addEventListener('click', function () {
-		document.body.style.overflow = 'hidden';
-	});
-
-	document.body.addEventListener("click", function (event) {
+	gameDiv.addEventListener("click", function (event) {
 		getUserData().then((data) => {
 			userData = data;
 		})
 		
+		if (userData) {
+			checkIfUserIsInTournament(userData).then((response) => {
+				if (response && response['joined'])
+					connectToTournament(response['tournament']);
+			});
+		}
+
 		if (event.target.id == 'restart' && !isOnline) {
 			document.getElementById("endscreen").remove();
 			actualizeScore(player1, player2, environment, environment.font);
@@ -120,10 +118,10 @@ export async function init(queryParams) {
 		}
 		if (event.target.id == 'onlineGame' && userData) {
 			isOnline = true;
-			createOnlineMenu();
+			createOnlineMenu(field);
 		}
 		if (event.target.id == 'quick') {
-			createOnlineSelectMenu(null);
+			createOnlineSelectMenu(field);
 		}
 		if (event.target.id == 'create') {
 			createFormTournament();
@@ -151,7 +149,7 @@ export async function init(queryParams) {
 		}
 	});
 
-	document.addEventListener('fullscreenchange', function () {
+	gameDiv.addEventListener('fullscreenchange', function () {
 		if (isFullScreen())
 			resize(environment);
 	});
@@ -168,6 +166,7 @@ export async function init(queryParams) {
 		player2.score = 0;
 	}
 
+	
 	async function localGameLoop() {
 		if (keyPress && !start) {
 			await handleMenuKeyPress(keysPressed, player1, player2, environment);
@@ -192,7 +191,6 @@ export async function init(queryParams) {
 	if (localLoop)
 	requestAnimationFrame(localGameLoop);
 	}
-	isGameLoaded = true;
 }
 
 

@@ -5,6 +5,9 @@ import { createEndScreen } from './createEndScreen.js';
 import { sendColor } from './sendMessage.js';
 import { playersMove } from './online.js';
 import { displayErrorPopUp } from './tournament.js';
+import { toggleContentOnLogState } from '../Utils.js';
+import { injectModule, updateModule } from '../Modules.js';
+import { updatePage } from '../Router.js';
 import { wsTournament } from './tournament.js';
 
 
@@ -50,7 +53,7 @@ function handlerStopGame(webSocket, env, message) {
     webSocket.close();
 }
 
-function handlerEndGame(data, env) {
+async function handlerEndGame(data, env) {
     if (!document.getElementById("endscreen") && !wsTournament)
         createEndScreen(data['name']);
     if (wsTournament)
@@ -63,6 +66,7 @@ function handlerEndGame(data, env) {
     env.ball.direction.y = 0;
     env.ball.mesh.position.x = 0;
     env.ball.mesh.position.y = 0;
+	await updateModule("statisticsModule");
 }
 
 function handlerPlayerDisconnect(data, env, webSocket) {

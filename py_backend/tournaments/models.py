@@ -13,7 +13,7 @@ from math import log2, ceil
 
 class TournamentMatch(models.Model):
 	lobby_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-	round = models.fields.CharField(max_length=15)
+	round = models.IntegerField(default=1)
 	player1 = models.CharField(max_length=100, default='')
 	player2 = models.CharField(max_length=100, default='')
 	winner = models.CharField(max_length=15, null=True, blank=True)
@@ -31,6 +31,7 @@ class Tournament(models.Model):
 	started = models.BooleanField(default=False)
 	matchups = models.ManyToManyField(TournamentMatch, blank=True)
 	max_round = models.IntegerField(default=1)
+	current_round = models.IntegerField(default=1)
 
 	def __str__(self):
 		return f'{self.name}'
@@ -43,15 +44,15 @@ class Tournament(models.Model):
 			self.max_round = ceil(log2(self.max_players))
 		super().save(*args, **kwargs)
 
-	def get_matches_by_player(self, player_id):
-		player_matches = self.matchups.filter(models.Q(player_1_id=player_id) | models.Q(player_2_id=player_id))
+	def get_matches_by_player(self, username):
+		print(f"current_round: {self.current_round}")
+		print(f"username = {username}")
+		match = self.matchups.filter(
+			(models.Q(player1=username) | models.Q(player2=username))
+			).first()
+		print(f"match: {match}")
 
-		current_round = player_matches.aggregate(round_max=Max('round'))['round_max']
-
-		if current_round is None:
-			return TournamentMatch.objects.none()
-
-		return self.matchups.filter(models.Q(player_1_id=player_id) | models.Q(player_2_id=player_id), round=current_round)
+		return match
 	
 	def get_disqualified_players(self):
 		disqualified_players = []

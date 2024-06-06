@@ -75,10 +75,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({'type': 'bracket', 'bracket': bracket}))
 
     async def generate_next_round(self):
-        current_round = await sync_to_async(list)(self.tournament.matchups.filter(round=self.match.round))
-        if all(matches.finished for matches in current_round):
+        all_matches_round = await sync_to_async(list)(self.tournament.matchups.filter(round=self.tournament.current_round))
+        if all(matches.finished for matches in all_matches_round):
             await sync_to_async(update_bracket)(self.tournament, self.match.round)
+            self.tournament.current_round += 1
             await self.send_matchups()
+            await self.tournament.asave()
 
 
     async def handler_status(self, status):
@@ -169,6 +171,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.send_bracket()
     
     async def send_matchups(self):
+        print("going into")
         await self.channel_layer.group_send(
             self.tournament.name,
             {
@@ -181,11 +184,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if self.tournament.participants.count() == self.tournament.max_players:
             return True
         return False
-    @database_sync_to_async
-    def get_player_match(self, username):
-        return self.tournament.get_matches_by_player(username).first()
 
-    @database_sync_to_async
+    async def get_player_match(self, username):
+        return await sync_to_async(self.tournament.get_matches_by_player)(username)
+
     def get_match_infos(self, match):
         return {
             'lobby_id': str(match.lobby_id),
@@ -208,7 +210,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def tournament_matchups(self, event):
         self.match = await self.get_player_match(self.scope['user'].tournament_username)
         if self.match:
-            match_infos = await self.get_match_infos(self.match)
+            match_infos = self.get_match_infos(self.match)
             await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos}))
 
     async def tournament_status(self, event):

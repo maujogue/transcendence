@@ -1,7 +1,7 @@
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { Character } from "./Class/Character.js";
 import { charactersNames } from "./varGlobal.js";
-import { characters, displayMainMenu } from '../pages/Game.js';
+import { characters, displayMainMenu } from '../pages/game.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
 

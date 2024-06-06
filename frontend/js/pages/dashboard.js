@@ -1,24 +1,20 @@
 import { updatePassword, updateProfile, updateProfileWithPassword } from "../ApiCalls.js";
 import { togglePasswordVisibility, checkPassword, showAlert, printQueryParamsMessage } from "../Utils.js";
-import { enableDisableSaveButtonOnInput, resetForm } from "../DashboardUtils.js"
-import { getUserData } from "../User.js";
+import { resetForm, inputInitListeners } from "../DashboardUtils.js"
 
 export async function init(queryParams) {
 	printQueryParamsMessage(queryParams);
-	history.pushState({}, null, "/dash");
 
 	var modal = document.getElementById("updateProfileModal");
-	var formInputs = modal.querySelectorAll(".formInputs");
-	var userData = await getUserData();
-	formInputs.forEach((input) => {
-		input.addEventListener("input", () => enableDisableSaveButtonOnInput(input, userData))
-	});
+
 	var saveChangesButton = modal.querySelector("#saveChangesButton");
 	var discardChangesButton = modal.querySelector("#discardChangesButton");
 	var confirmPasswordButton = document.querySelector("#confirmPasswordButton");
 	var updatePasswordButton = document.querySelector("#updatePasswordButton");
 	var password1 = document.querySelector("#updatePasswordFirstPassword");
 	var password2 = document.querySelector("#updatePasswordSecondPassword");
+
+	inputInitListeners();
 
 	updatePasswordButton.addEventListener("click", () => updatePassword());
 	discardChangesButton.addEventListener("click", () => resetForm());

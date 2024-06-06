@@ -1,5 +1,4 @@
-import { getModuleDiv } from "../Modules.js";
-import { runEndPoint } from "../ApiUtils.js"
+import { getModuleDiv } from "../../Modules.js";
 
 export async function init() {
 	var module = getModuleDiv("auth42");

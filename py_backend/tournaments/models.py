@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Max
 from django.conf import settings
 import uuid
 
@@ -7,6 +8,8 @@ from django.core.exceptions import ValidationError
 
 from users.models import CustomUser
 from multiplayer.models import Lobby
+
+from math import log2, ceil
 
 class TournamentMatch(models.Model):
 	lobby_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -27,6 +30,7 @@ class Tournament(models.Model):
 	participants = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='joined_tournaments', blank=True)
 	started = models.BooleanField(default=False)
 	matchups = models.ManyToManyField(TournamentMatch, blank=True)
+	max_round = models.IntegerField(default=1)
 
 	def __str__(self):
 		return f'{self.name}'
@@ -34,8 +38,20 @@ class Tournament(models.Model):
 	def clean(self):
 		super().clean()
 
-	def get_matches_by_player(self, username):
-		return self.matchups.filter(models.Q(player1=username) | models.Q(player2=username))
+	def save(self, *args, **kwargs):
+		if not self.pk:
+			self.max_round = ceil(log2(self.max_players))
+		super().save(*args, **kwargs)
+
+	def get_matches_by_player(self, player_id):
+		player_matches = self.matchups.filter(models.Q(player_1_id=player_id) | models.Q(player_2_id=player_id))
+
+		current_round = player_matches.aggregate(round_max=Max('round'))['round_max']
+
+		if current_round is None:
+			return TournamentMatch.objects.none()
+
+		return self.matchups.filter(models.Q(player_1_id=player_id) | models.Q(player_2_id=player_id), round=current_round)
 	
 	def get_disqualified_players(self):
 		disqualified_players = []
@@ -65,10 +81,10 @@ class Tournament(models.Model):
 			}
 		}
 
-		for round_name in rounds:
-			matches = self.matchups.filter(round=round_name)
+		for round_number in rounds:
+			matches = self.matchups.filter(round=round_number)
 			round_info = {
-				"name": round_name,
+				"name": self.get_round_name(round_number),
 				"matches": []
 			}
 
@@ -89,3 +105,11 @@ class Tournament(models.Model):
 			bracket["tournament"]["rounds"].append(round_info)
 			return bracket
 	
+
+	def get_round_name(self, round_number):
+		if round_number == self.max_round:
+			return "Finale"
+		elif round_number == self.max_round - 1:
+			return "semi-Finale"
+		else:
+			return f"Round {round_number}"

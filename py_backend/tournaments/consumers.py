@@ -6,7 +6,7 @@ from asgiref.sync import sync_to_async
 from users.models import CustomUser
 from stats.models import Match
 from .models import Tournament, TournamentMatch
-from .bracket import generate_bracket
+from .bracket import generate_bracket, update_bracket
 
 class TournamentConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -61,6 +61,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if not await self.validate_foreign_keys():
             return
         self.match.finished = True
+        await self.match.asave()
         await self.channel_layer.group_send(
             self.tournament.name,
             {
@@ -68,11 +69,17 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 'status': 'endGame'
             }
         )
-        await self.match.asave()
 
     async def send_bracket(self):
         bracket = await sync_to_async(self.tournament.get_tournament_bracket)()
         await self.send(text_data=json.dumps({'type': 'bracket', 'bracket': bracket}))
+
+    async def generate_next_round(self):
+        current_round = await sync_to_async(list)(self.tournament.matchups.filter(round=self.match.round))
+        if all(matches.finished for matches in current_round):
+            await sync_to_async(update_bracket)(self.tournament, self.match.round)
+            await self.send_matchups()
+
 
     async def handler_status(self, status):
         if status == 'endGame':
@@ -99,6 +106,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.match.score_player_2 = match.player2_score
             self.match.winner = match.winner
             loser = match.player1 if match.winner == match.player2 else match.player2
+            await self.generate_next_round()
+            await self.send_bracket()
             await self.match.asave()
             await self.send_disqualified(loser)
         except Match.DoesNotExist:
@@ -112,7 +121,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.auth(text_data_json)
         if text_data_json.get('type') == 'status':
             await self.handler_status(text_data_json.get('status'))
-
 
     async def disconnect(self, close_code):
         print('tournament disconnected')
@@ -173,7 +181,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if self.tournament.participants.count() == self.tournament.max_players:
             return True
         return False
-
     @database_sync_to_async
     def get_player_match(self, username):
         return self.tournament.get_matches_by_player(username).first()

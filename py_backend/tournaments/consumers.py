@@ -10,6 +10,7 @@ from .bracket import generate_bracket
 
 class TournamentConsumer(AsyncWebsocketConsumer):
     async def connect(self):
+        print('connected: ', self.scope['user'])
         self.tournament = await self.get_tournament()
         if self.tournament is None:
             return await self.close()
@@ -28,7 +29,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         )
 
     async def check_if_disqualified(self):
-        if sync_to_async(self.tournament.check_if_player_is_disqualified)(self.scope['user'].tournament_username):
+        if await sync_to_async(self.tournament.check_if_player_is_disqualified)(self.scope['user'].tournament_username):
             await self.send(text_data=json.dumps({'type': 'status', 'status': 'disqualified'}))
         else:
             print('not disqualified')
@@ -75,7 +76,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def handler_status(self, status):
         if status == 'endGame':
-
             await self.match_is_over()
             await self.set_match_info()
             await self.send_bracket()
@@ -207,7 +207,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def tournament_status(self, event):
         if event['status'] == 'disqualified':
             print('disqualified: ', event['username'])
-            if event['username'] == self.scope['user'].tournament_username:
+            if event['username'] == self.scope['user'].username:
                 await self.send(text_data=json.dumps({'type': 'status', 'status': 'disqualified'}))
         else:
             await self.send(text_data=json.dumps({'type': 'status', 'status': event['status']}))

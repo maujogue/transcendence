@@ -38,6 +38,10 @@ def create_tournament(request):
 	if len(name) > 15:
 		return JsonResponse({"errors": "Name is too long."},
 					status=400)
+	
+	if not name.isalnum():
+		return JsonResponse({"errors": "Name must be alphanumeric."},
+					status=400)
 
 	if not max_players in range(2, 16):
 		return JsonResponse({"errors": "Invalid number of players."}, status=400)
@@ -66,7 +70,7 @@ def create_tournament(request):
 
 @require_http_methods(["GET"])
 def list_tournaments(request):
-	tournaments = Tournament.objects.all() #TODO Return only tournaments that are not full
+	tournaments = Tournament.objects.all().filter(started=False)
 	tournaments = [{"id": t.id, "name": t.name, "max_players": t.max_players,
 					"participants": [p.tournament_username for p in t.participants.all()]}
 					for t in tournaments]

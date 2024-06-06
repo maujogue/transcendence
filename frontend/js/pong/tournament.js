@@ -50,6 +50,8 @@ function handlerMessageStatus(data) {
     console.log("Status:", data.status);
     if (data.status == "endGame")
         wsMatch?.close();
+    if (data.status == "disqualified")
+        displayErrorPopUp("You have been disqualified", document.getElementsByClassName("tournament")[0]);
 }
 
 function displayPlayerList(participants) {

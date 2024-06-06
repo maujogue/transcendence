@@ -46,7 +46,9 @@ class Tournament(models.Model):
 	
 	def check_if_player_is_disqualified(self, username):
 		disqualified_players = self.get_disqualified_players()
-		return username in disqualified_players
+		if username in disqualified_players:
+			return True
+		return False
 	
 	def get_player_tournament_username(self, username):
 		try:

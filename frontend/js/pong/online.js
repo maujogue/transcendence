@@ -10,7 +10,7 @@ import { characters } from "../pages/game.js";
 import { updateMixers } from "./displayCharacter.js";
 import { resize } from "./resize.js";
 import { getUserData } from "../User.js";
-import { field } from "../pages/Game.js";
+import { field } from "../pages/game.js";
 import { wsTournament } from "./tournament.js";
 
 let env;

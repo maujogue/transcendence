@@ -5,10 +5,10 @@ import { createEndScreen } from './createEndScreen.js';
 import { sendColor } from './sendMessage.js';
 import { playersMove } from './online.js';
 import { displayErrorPopUp } from './tournament.js';
+import { wsTournament } from './tournament.js';
 import { toggleContentOnLogState } from '../Utils.js';
 import { injectModule, updateModule } from '../Modules.js';
 import { updatePage } from '../Router.js';
-import { wsTournament } from './tournament.js';
 
 
 export function setBallData(data, env) {

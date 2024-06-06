@@ -87,7 +87,10 @@ export async function init(queryParams) {
 		delete keysPressed[event.key];
 	});
 
-	document.addEventListener('click', function (event) {
+
+	gameDiv.addEventListener('click', function (event) {
+		document.body.style.overflow = 'hidden';
+		gameDiv.focus();
 		if (!gameDiv.contains(event.target)) {
 			document.body.style.overflow = 'auto';
 		}

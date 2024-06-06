@@ -1,3 +1,4 @@
+import { displayMainMenu } from "./menu.js";
 import { createUnsubscribeButton } from "./tournament.js";
 
 let canvas;
@@ -62,6 +63,7 @@ function createBracketCanvas() {
     canvas.id = 'bracketCanvas';
     canvas.width = 800;
     canvas.height = 600;
+    createLeaveButton(document.getElementsByClassName('tournament')[0]);
     document.getElementsByClassName('tournament')[0]?.appendChild(canvas);
 }
 
@@ -86,7 +88,6 @@ export function drawBracket(bracket) {
         round.matches.forEach((match, matchIndex) => {
             let matchY;
 
-
             if (roundIndex === 0)
                 matchY = startY + matchIndex * (boxHeight + verticalSpacing);
             else {
@@ -109,6 +110,11 @@ export function drawBracket(bracket) {
         });
         prevRoundMatchesPosY = matchesPosY;
     });
-    console.log('Bracket drawn');
-    createUnsubscribeButton(document.getElementsByClassName('tournament')[0]);
 } 
+
+function createLeaveButton(parent) {
+    parent.innerHTML += '<i class="fa-solid fa-xmark close-icon" id="leaveTournament"></i>'
+    document.getElementById('leaveTournament').addEventListener('click', () => {
+        displayMainMenu();
+    });
+}

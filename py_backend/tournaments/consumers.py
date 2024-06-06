@@ -55,6 +55,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         current_round = await sync_to_async(list)(self.tournament.matchups.filter(round=self.match.round))
         if all(matches.finished for matches in current_round):
             await sync_to_async(update_bracket)(self.tournament, self.match.round)
+            await self.send_matchups()
 
 
     async def handler_status(self, status):
@@ -79,7 +80,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.handler_status(text_data_json.get('status'))
         if text_data_json.get('type') == 'match_info':
             await self.set_match_info(text_data_json.get('match_info'))
-
 
     async def disconnect(self, close_code):
         print('disconnected')
@@ -135,7 +135,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if self.tournament.participants.count() == self.tournament.max_players:
             return True
         return False
-
     @database_sync_to_async
     def get_player_match(self, user):
         return self.tournament.get_matches_by_player(user.pk).first()

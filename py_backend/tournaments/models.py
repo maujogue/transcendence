@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Max
 from django.conf import settings
 
 from django.core.validators import MinValueValidator, MaxValueValidator
@@ -42,7 +43,14 @@ class Tournament(models.Model):
 		super().save(*args, **kwargs)
 
 	def get_matches_by_player(self, player_id):
-		return self.matchups.filter(models.Q(player_1_id=player_id) | models.Q(player_2_id=player_id))
+		player_matches = self.matchups.filter(models.Q(player_1_id=player_id) | models.Q(player_2_id=player_id))
+
+		current_round = player_matches.aggregate(round_max=Max('round'))['round_max']
+
+		if current_round is None:
+			return TournamentMatch.objects.none()
+
+		return self.matchups.filter(models.Q(player_1_id=player_id) | models.Q(player_2_id=player_id), round=current_round)
 	
 	def get_tournament_bracket(self):
 		rounds = self.matchups.values_list('round', flat=True).distinct()

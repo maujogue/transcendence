@@ -1,0 +1,165 @@
+<div class="mt-4 card p-0">
+	<div class="card-header">
+		<h2>Statistics</h2>
+	</div>
+	<div class="card-body">
+		<div class="row mb-3">
+			<div class="col-sm-6 col-md-3">
+				<div class="stat-item card">
+					<div class="card-body">
+						<h5 class="card-title">Win Rate</h5>
+						<p class="card-text" id="winrate">0%</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6 col-md-3">
+				<div class="stat-item card">
+					<div class="card-body">
+						<h5 class="card-title">Wins</h5>
+						<p class="card-text" id="wins">0</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6 col-md-3">
+				<div class="stat-item card">
+					<div class="card-body">
+						<h5 class="card-title">Losses</h5>
+						<p class="card-text" id="losses">0</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6 col-md-3">
+				<div class="stat-item card">
+					<div class="card-body">
+						<h5 class="card-title">Win Streak</h5>
+						<p class="card-text" id="winstreak">0</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="gamesPlayedRow" class="row">
+			<div class="col-md-6">
+				<div class="d-flex">
+					<h3>Match History</h3>
+					<div class="dropdown mb-3 ms-auto history-dropdown">
+						<button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
+							data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							All Matches
+						</button>
+						<div class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton">
+							<a class="dropdown-item" data-filter="all" hidden>All Matches</a>
+							<a class="dropdown-item" data-filter="wins">Wins</a>
+							<a class="dropdown-item" data-filter="losses">Losses</a>
+						</div>
+					</div>
+				</div>
+				<div class="table-responsive">
+					<table class="table table-striped" id="match-history">
+						<thead>
+							<tr>
+								<th>Date</th>
+								<th>Score</th>
+								<th>Result</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- Match history rows will be added here dynamically -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="d-flex">
+					<h3>Match Winrate</h3>
+					<div class="dropdown mb-3 ms-auto winrate-dropdown">
+						<button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
+							data-bs-toggle="dropdown">
+							Pie Chart
+						</button>
+						<div class="dropdown-menu dropdown-menu-dark">
+							<a class="dropdown-item" data-filter="Pie Chart" hidden>Pie Chart</a>
+							<a class="dropdown-item" data-filter="Bar Chart">Bar Chart</a>
+							<a class="dropdown-item" data-filter="Doughnut Chart">Doughnut Chart</a>
+						</div>
+					</div>
+				</div>
+				<div class="chart-container">
+					<canvas class="chart-container" id="winRateChart" height="400px"></canvas>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="d-flex">
+					<h3>Goal-Average</h3>
+					<div class="dropdown mb-3 ms-auto goal-dropdown">
+						<button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
+							data-bs-toggle="dropdown">
+							Pie Chart
+						</button>
+						<div class="dropdown-menu dropdown-menu-dark">
+							<a class="dropdown-item" data-filter="Pie Chart" hidden>Pie Chart</a>
+							<a class="dropdown-item" data-filter="Bar Chart">Bar Chart</a>
+							<a class="dropdown-item" data-filter="Doughnut Chart">Doughnut Chart</a>
+						</div>
+					</div>
+				</div>
+				<div class="chart-container">
+					<canvas class="chart-container" id="goalAverageChart" height="400px"></canvas>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="d-flex">
+					<h3>Exchanges</h3>
+					<div class="dropdown mb-3 ms-auto exchange-dropdown">
+						<button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
+							data-bs-toggle="dropdown">
+							Bar Chart
+						</button>
+						<div class="dropdown-menu dropdown-menu-dark">
+							<a class="dropdown-item" data-filter="Bar Chart" hidden>Bar Chart</a>
+							<a class="dropdown-item" data-filter="Pie Chart">Pie Chart</a>
+							<a class="dropdown-item" data-filter="Doughnut Chart">Doughnut Chart</a>
+						</div>
+					</div>
+				</div>
+				<div class="chart-container">
+					<canvas class="chart-container" id="exchangeChart" height="400px"></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+	.win-row {
+		background-color: #d4edda;
+	}
+
+	.loss-row {
+		background-color: #f8d7da;
+	}
+
+	.result-icon {
+		font-size: 1.5em;
+	}
+
+	.chart-container {
+		position: relative;
+		/* max-height: 500px; */
+		/* margin-left: auto;
+      margin-right: auto; */
+	}
+
+	.table-responsive{
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        #match-history thead,
+        #match-history tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+        #match-history thead {
+            width: calc(100% - 1em);
+        }
+</style>

@@ -1,12 +1,25 @@
-import { injectUserData } from "./User.js";
+import { injectUserData, getUserData } from "./User.js";
 
-function enableDisableSaveButtonOnInput(input, userData) {
+function inputInitListeners() {
+	var modal = document.getElementById("updateProfileModal");
+	var formInputs = modal.querySelectorAll(".formInputs");
+	formInputs.forEach((input) => {
+		var inputClone = input.cloneNode(true);
+		input.parentNode.replaceChild(inputClone, input);
+		inputClone.addEventListener("input", enableDisableSaveButtonOnInput);
+	});
+}
+
+async function enableDisableSaveButtonOnInput(input) {
+	var userData = await getUserData();
+	input = input.target;
+	console.log(input.value, userData[input.name]);
 	if (userData && input.value !== userData[input.name]) {
 		disableFormInputs(input);
 		disableSaveChangesButton(input);
-	}
-	else
+	} else {
 		resetForm(input);
+	}
 }
 
 function resetForm(input) {
@@ -14,6 +27,7 @@ function resetForm(input) {
 	var saveChangesButton = document.querySelector(".saveChangesButton");
 	var discardChangesButton = document.getElementById("discardChangesButton");
 	var updatePasswordButton = document.getElementById("updatePassword");
+	var closeButton = document.getElementById("closeButtonUpdateProfile");
 
 	injectUserData();
 	formInputs.forEach((elm) => {
@@ -27,12 +41,13 @@ function resetForm(input) {
 	discardChangesButton.classList.add("d-none");
 	updatePasswordButton.classList.remove("d-none");
 	saveChangesButton.classList.add("disabled");
+	closeButton.classList.remove("d-none");
+
 }
 
 function disableSaveChangesButton(input) {
 	var modal = input.closest(".modal");
 	var saveChangesButton = modal.querySelector(".saveChangesButton");
-	console.log(modal, saveChangesButton);
 	if (saveChangesButton) {
 		if (!input.classList.contains("is-invalid"))
 			saveChangesButton.classList.remove("disabled");
@@ -45,6 +60,7 @@ function disableFormInputs(input) {
 	var formInputs = document.querySelectorAll(".formInputs");
 	var discardChangesButton = document.getElementById("discardChangesButton");
 	var updatePasswordButton = document.getElementById("updatePassword");
+	var closeButton = document.getElementById("closeButtonUpdateProfile");
 
 	formInputs.forEach((elm) => {
 		if (elm != input)
@@ -52,6 +68,8 @@ function disableFormInputs(input) {
 	});
 	discardChangesButton.classList.remove("d-none");
 	updatePasswordButton.classList.add("d-none");
+	closeButton.classList.add("d-none");
+
 }
 
 
@@ -81,5 +99,6 @@ export {
 	disableSaveChangesButton,
 	getSubmittedInput,
 	resetForm,
-	toggleConfirmPasswordModal
+	toggleConfirmPasswordModal,
+	inputInitListeners
 };

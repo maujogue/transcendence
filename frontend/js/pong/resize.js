@@ -1,4 +1,4 @@
-import { init } from "../pages/Game.js";
+import { init } from "../pages/game.js";
 import { recreateCanvas } from "./createEnvironment.js";
 import { initSpaceBackground, stopStep } from "./spaceBackground.js";
 import { winWidth, winHeight } from "./varGlobal.js";

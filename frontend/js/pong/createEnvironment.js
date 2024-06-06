@@ -3,6 +3,7 @@ import { createField, createBorder } from './createField.js';
 import { winWidth, winHeight } from './varGlobal.js';
 import { isFullScreen } from './resize.js';
 import { stopStep } from './spaceBackground.js';
+import { addCrtEffect } from './menu.js';
 
 function getSize() {
 	var width = winWidth;

@@ -6,7 +6,7 @@ import { initGame } from "./initGame.js";
 import { translateBall} from "./onlineCollision.js";
 import { handlerScore, setBallData, handlerStatusMessage, removeGameScreen } from "./handlerMessage.js";
 import { sendCharacter} from "./sendMessage.js";
-import { characters } from "../pages/game.js";
+import { characters } from "../pages/Game.js";
 import { updateMixers } from "./displayCharacter.js";
 import { resize } from "./resize.js";
 import { getUserData } from "../User.js";
@@ -28,8 +28,6 @@ export let wsMatch = null;
 let oppInfo;
 let lobbyId = null;
 export const playersMove = new Map();
-
-document.addEventListener('fullscreenchange', resize(env));
 
 function setUserInfo(data) {
     let user = {

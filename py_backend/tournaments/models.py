@@ -57,7 +57,7 @@ class Tournament(models.Model):
 	def get_disqualified_players(self):
 		disqualified_players = []
 		for match in self.matchups.all().filter(finished=True):
-			disqualified_player = match.player1 if match.player1.tournament_username != match.winner else match.player2.tournament_username
+			disqualified_player = match.player1 if match.player1 != match.winner else match.player2
 			disqualified_players.append(disqualified_player)
 		return disqualified_players
 	

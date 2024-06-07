@@ -29,7 +29,8 @@ def update_bracket(tournament):
     print("update bracket !")
     winners = []
     for match in tournament.matchups.filter(round=tournament.current_round):
-        if match.winner == match.player1.username:
+        print(f"match.winner: {match.winner}")
+        if match.winner == match.player1:
             winners.append(match.player1)
         else:
             winners.append(match.player2)

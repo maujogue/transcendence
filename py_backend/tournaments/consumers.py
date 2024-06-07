@@ -29,7 +29,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         )
 
     async def check_if_disqualified(self):
-        if await sync_to_async(self.tournament.check_if_player_is_disqualified)(self.scope['user'].tournament_username):
+        if await sync_to_async(self.tournament.check_if_player_is_disqualified)(self.scope['user']):
             await self.send(text_data=json.dumps({'type': 'status', 'status': 'disqualified'}))
         else:
             print('not disqualified')

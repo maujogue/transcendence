@@ -1,5 +1,3 @@
-from django.dispatch import receiver
-
 import random
 from .models import Tournament, TournamentMatch, Lobby
 
@@ -36,10 +34,12 @@ def update_bracket(tournament):
         else:
             winners.append(match.player2)
     
+    next_round = tournament.current_round + 1
+
     while len(winners) >= 2:
         match_lobby = Lobby.objects.create()
         match = TournamentMatch.objects.create(
-            round=tournament.current_round,
+            round=next_round,
             player1=winners.pop(),
             player2=winners.pop(),
             lobby_id=match_lobby.uuid
@@ -49,11 +49,12 @@ def update_bracket(tournament):
     if winners:
         match_lobby = Lobby.objects.create()
         match = TournamentMatch.objects.create(
-            round=tournament.current_round,
+            round=next_round,
             player1=winners.pop(),
             player2=winners.pop(),
             lobby_id=match_lobby.uuid
         )
         tournament.matchups.add(match)
 
+    tournament.current_round = next_round
     tournament.save()

@@ -77,8 +77,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def generate_next_round(self):
         all_matches_round = await sync_to_async(list)(self.tournament.matchups.filter(round=self.tournament.current_round))
         if all(matches.finished for matches in all_matches_round):
-            await sync_to_async(update_bracket)(self.tournament, self.match.round)
-            self.tournament.current_round += 1
+            await sync_to_async(update_bracket)(self.tournament)
             await self.send_matchups()
             await self.tournament.asave()
 

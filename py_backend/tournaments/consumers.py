@@ -62,10 +62,11 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             return
         self.match.finished = True
         await self.match.asave()
+        str_lobby_id = f"{self.match.lobby_id}"
         await self.channel_layer.group_send(
-            self.tournament.name,
+            str_lobby_id,
             {
-                'type': 'tournament.status',
+                'type': 'match.status',
                 'status': 'endGame'
             }
         )

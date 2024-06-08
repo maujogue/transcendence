@@ -26,7 +26,6 @@ def generate_bracket(tournament):
     tournament.save()
 
 def update_bracket(tournament):
-    print("update bracket !")
     winners = []
     for match in tournament.matchups.filter(round=tournament.current_round):
         print(f"match.winner: {match.winner}")

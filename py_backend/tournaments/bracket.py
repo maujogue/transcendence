@@ -1,60 +1,44 @@
 import random
 from .models import Tournament, TournamentMatch, Lobby
 
+def create_tournament_match(tournament, playerList):
+    match_lobby = Lobby.objects.create()
+    player1 = playerList.pop()
+    player2 = playerList.pop() if len(playerList) > 0 else None
+    match = TournamentMatch.objects.create(
+        round=1,
+        player1=player1,
+        player2=player2,
+        lobby_id=match_lobby.uuid
+    )
+    print("create tournament match: ", match)
+    tournament.matchups.add(match)
+    tournament.save()
+
 def generate_bracket(tournament):
     participants = list(tournament.participants.values_list('tournament_username', flat=True))
     random.shuffle(participants)
 
-    while len(participants) >= 2:
-        match_lobby = Lobby.objects.create()
-        match = TournamentMatch.objects.create(
-            round=1,
-            player1=participants.pop(),
-            player2=participants.pop(),
-            lobby_id=match_lobby.uuid
-        )
-        tournament.matchups.add(match)
+    while len(participants) >= 1:
+        create_tournament_match(tournament, participants)
     
-    if participants:
-        match_lobby = Lobby.objects.create()
-        match =TournamentMatch.objects.create(
-            round=1,
-            player1=participants.pop(),
-            lobby_id=match_lobby.uuid
-        )
-        tournament.matchups.add(match)
     tournament.save()
 
-def update_bracket(tournament):
+def get_round_winners(tournament):
     winners = []
     for match in tournament.matchups.filter(round=tournament.current_round):
-        print(f"match.winner: {match.winner}")
         if match.winner == match.player1:
             winners.append(match.player1)
         else:
             winners.append(match.player2)
-    
-    next_round = tournament.current_round + 1
+    return winners
 
-    while len(winners) >= 2:
-        match_lobby = Lobby.objects.create()
-        match = TournamentMatch.objects.create(
-            round=next_round,
-            player1=winners.pop(),
-            player2=winners.pop(),
-            lobby_id=match_lobby.uuid
-        )
-        tournament.matchups.add(match)
-    
-    if winners:
-        match_lobby = Lobby.objects.create()
-        match = TournamentMatch.objects.create(
-            round=next_round,
-            player1=winners.pop(),
-            player2=winners.pop(),
-            lobby_id=match_lobby.uuid
-        )
-        tournament.matchups.add(match)
 
-    tournament.current_round = next_round
-    tournament.save()
+def update_bracket(tournament):
+    print("update bracket")
+    winners = get_round_winners(tournament)
+    
+    tournament.current_round =+ 1
+
+    while len(winners) >= 1:
+        create_tournament_match(tournament, winners)

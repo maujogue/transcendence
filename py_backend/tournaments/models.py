@@ -15,7 +15,7 @@ class TournamentMatch(models.Model):
 	lobby_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	round = models.IntegerField(default=1)
 	player1 = models.CharField(max_length=100, default='')
-	player2 = models.CharField(max_length=100, default='')
+	player2 = models.CharField(max_length=100, default='', null=True, blank=True)
 	winner = models.CharField(max_length=15, null=True, blank=True)
 	score_player_1 = models.IntegerField(default=0)
 	score_player_2 = models.IntegerField(default=0)

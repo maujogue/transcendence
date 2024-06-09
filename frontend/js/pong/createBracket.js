@@ -109,6 +109,7 @@ export function drawBracket(bracket) {
             indexMatchesPosY += 2;
         });
         prevRoundMatchesPosY = matchesPosY;
+        createUnsubscribeButton(document.getElementsByClassName('tournament')[0]);
     });
 } 
 

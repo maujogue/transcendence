@@ -144,6 +144,7 @@ async function connectToLobby(username) {
     
     wsMatch.onmessage = function(e) {
         const data = JSON.parse(e.data);
+        console.log(data);
 
         if (data['type'] == 'player_data') {
             const paddle = env.scene.getObjectByName("paddle_" + player.name);
@@ -271,7 +272,7 @@ async function onlineGameLoop(wsMatch) {
     }
     if (keysPressed[' '] && !status.is_connected) {
         keysPressed[' '] = false;
-        getUserData('username').then((res) => {
+        getUserData('tournament_username').then((res) => {
             connectToLobby(res, null)
         })
         .catch((err) => {

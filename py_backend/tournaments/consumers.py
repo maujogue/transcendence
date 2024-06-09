@@ -78,6 +78,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def generate_next_round(self):
         all_matches_round = await sync_to_async(list)(self.tournament.matchups.filter(round=self.tournament.current_round))
         if all(matches.finished for matches in all_matches_round):
+            print('all matches are finished')
             await sync_to_async(update_bracket)(self.tournament)
             await self.send_matchups()
             await self.tournament.asave()
@@ -108,10 +109,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.match.score_player_2 = match.player2_score
             self.match.winner = match.winner
             loser = match.player1 if match.winner == match.player2 else match.player2
-            await self.generate_next_round()
-            await self.send_bracket()
             await self.match.asave()
             await self.send_disqualified(loser)
+            await self.generate_next_round()
         except Match.DoesNotExist:
             print("Match does not exist")
             return

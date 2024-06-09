@@ -98,7 +98,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             
     async def authenticate_user_with_username(self, username):
         try:
-            user = await CustomUser.objects.aget(username=username)
+            user = await CustomUser.objects.aget(tournament_username=username)
             return user
         except CustomUser.DoesNotExist:
             return None
@@ -309,16 +309,16 @@ class PongConsumer(AsyncWebsocketConsumer):
         player2 = self.player if self.player.name == 'player2' else self.opp
 
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
-        winner = player1.user.username if player1.score > player2.score else player2.user.username
+        winner = player1.user.tournament_username if player1.score > player2.score else player2.user.tournament_username
         if self.lobby.player1Present == False:
-            winner = player2.user.username
+            winner = player2.user.tournament_username
         elif self.lobby.player2Present == False:
-            winner = player1.user.username
+            winner = player1.user.tournament_username
         print("Winner: ", winner)   
-        loser = player1.user.username if player1.user.username != winner else player2.user.username
+        loser = player1.user.tournament_username if player1.user.tournament_username != winner else player2.user.tournament_username
         match = Match(  uuid=self.lobby.uuid,
-                        player1=player1.user.username, 
-                        player2=player2.user.username, 
+                        player1=player1.user.tournament_username, 
+                        player2=player2.user.tournament_username, 
                         player1_average_exchange=self.calculateAverageExchange(self.exchangeBeforePointsP1),
                         player2_average_exchange=self.calculateAverageExchange(self.exchangeBeforePointsP2),
                         winner=winner,
@@ -360,11 +360,11 @@ class PongConsumer(AsyncWebsocketConsumer):
         except Lobby.DoesNotExist:
             print(self.lobby_name, " does not exist")
             return None
-        winner = self.player.user.username if self.player.score > self.opp.score else self.opp.user.username
+        winner = self.player.user.tournament_username if self.player.score > self.opp.score else self.opp.user.tournament_username
         if self.lobby.player1Present == False:
-            winner = self.opp.user.username
+            winner = self.opp.user.tournament_username
         if self.lobby.player2Present == False:
-            winner = self.player.user.username
+            winner = self.player.user.tournament_username
         return {
             'score_player_1': self.player.score,
             'score_player_2': self.opp.score,
@@ -457,7 +457,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         if not self.check_if_user_is_connected():
             return
         avatar = event["user"].avatar
-        username = event["user"].username
+        username = event["user"].tournament_username
         name = event["name"]
         with open(avatar.path, "rb") as avatar:
             encoded_string = base64.b64encode(avatar.read()).decode('utf-8')

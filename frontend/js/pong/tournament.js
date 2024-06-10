@@ -11,6 +11,7 @@ let userData;
 
 export async function connectToTournament(tournament) {
     try {
+        console.log("Connecting to tournament:", tournament);
         wsTournament = new WebSocket(`ws://127.0.0.1:8080/ws/tournament/${tournament.id}/`);
     
         wsTournament.onopen = () => {

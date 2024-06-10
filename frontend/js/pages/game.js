@@ -16,6 +16,7 @@ import { sendTournamentForm, createFormTournament} from "../pong/createTournamen
 import { createJoinTournamentMenu } from "../pong/joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "../pong/tournament.js";
 import { showAlert } from "../Utils.js";
+import { wsTournament } from "../pong/tournament.js";
 import * as THREE from 'three';
 
 export var lobby;
@@ -55,7 +56,7 @@ export async function init(queryParams) {
 		userData = data;
 		if (userData) {
 			checkIfUserIsInTournament(userData).then((response) => {
-				if (response && response['joined'])
+				if (response && response['joined'] && !wsTournament)
 					connectToTournament(response['tournament']);
 			});
 		}

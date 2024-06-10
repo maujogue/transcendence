@@ -48,7 +48,8 @@ class Tournament(models.Model):
 		print(f"current_round: {self.current_round}")
 		print(f"username = {username}")
 		match = self.matchups.filter(
-			(models.Q(player1=username) | models.Q(player2=username))
+			(models.Q(player1=username) | models.Q(player2=username)),
+			round=self.current_round
 			).first()
 		print(f"match: {match}")
 
@@ -114,3 +115,7 @@ class Tournament(models.Model):
 			return "semi-Finale"
 		else:
 			return f"Round {round_number}"
+		
+	async def increase_round(self):
+		self.current_round += 1
+		self.asave()

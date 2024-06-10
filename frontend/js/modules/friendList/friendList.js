@@ -50,22 +50,27 @@ export async function init() {
 		};
 
 		response = await runEndPoint("friends/send_request/" + friend_username + "/", "POST", JSON.stringify(fetchBody));
+		sendWebSocketMessage ({
+			type: 'friend_request',
+			from: 'ptdr',
+			to: friend_username
+		});
 
-		if (response.statusCode === 200) {
-			showAlert("You just send a friend request to " + friend_username + "  !", true);
-			console.log("PTDR");
-			sendWebSocketMessage ({
-				type: 'friend_request',
-				to: friend_username
-			});
+		// if (response.statusCode === 200) {
+		// 	showAlert("You just send a friend request to " + friend_username + "  !", true);
+		// 	console.log("PTDR");
+		// 	sendWebSocketMessage ({
+		// 		type: 'friend_request',
+		// 		to: friend_username
+		// 	});
 
-		} else if (response.data.message === "Request already send.") {
-			showAlert("FRIEND REQUEST ALREADY SEND.", false);
-		} else if (response.data.message === "Cannot send a request to himself.") {
-			showAlert("You cannot send a friend request to yourself.", false);
-		} else {
-			showAlert("FRIEND REQUEST NOT SEND.", false);
-		}
+		// } else if (response.data.message === "Request already send.") {
+		// 	showAlert("FRIEND REQUEST ALREADY SEND.", false);
+		// } else if (response.data.message === "Cannot send a request to himself.") {
+		// 	showAlert("You cannot send a friend request to yourself.", false);
+		// } else {
+		// 	showAlert("FRIEND REQUEST NOT SEND.", false);
+		// }
 	}
 }
 

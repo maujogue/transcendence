@@ -15,15 +15,20 @@ export function friendsWebsocket() {
 
     webSocket.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        const currentUserUsername = getUserData("username");
 
+        if (data.type === 'friend_request') {
+            console.log("OK1");
+            showAlert("You just receive a friend request from " + data.from, true);
+        }
     };    
 }
 
 async function sendWebSocketMessage(message) {
+    // console.log(message.from);
     if (webSocket.readyState === webSocket.OPEN) {
         webSocket.send(JSON.stringify({
             'type': message.type,
+            'from': message.from,
             'to': message.to,
         }));
     } else {

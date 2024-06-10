@@ -30,6 +30,7 @@ export async function connectToTournament(tournament) {
             if (data.type == "status")
                 handlerMessageStatus(data);
             if (data.type == "bracket") {
+                console.log("Received bracket:", data.bracket);
                 createTournamentDiv();
                 drawBracket(data.bracket);
             }

@@ -81,11 +81,27 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def send_bracket(self):
         bracket = await sync_to_async(self.tournament.get_tournament_bracket)()
-        await self.send(text_data=json.dumps({'type': 'bracket', 'bracket': bracket}))
+        await self.channel_layer.group_send(
+            self.tournament.name,
+            {
+                'type': 'tournament.bracket',
+                'bracket': bracket
+            }
+        )
 
     async def generate_round(self):
             await sync_to_async(generate_bracket)(self.tournament)
             await self.send_matchups()
+
+    async def advance_in_tournament(self):
+        print(f'{self.scope["user"].tournament_username}: all match in round {self.tournament.current_round} are finished')
+        print('max_round: ', self.tournament.max_round)
+        await self.tournament.increase_round()
+        if self.tournament.current_round <= self.tournament.max_round:
+            await self.generate_round()
+        else:
+            await self.set_tournament_over()
+
 
 
     async def handler_status(self, status):
@@ -94,15 +110,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.match_is_over()
             print(f'{self.scope["user"].tournament_username} match is over, {self.match.winner} wins!')
             if self.match.winner == self.scope['user'].tournament_username and await self.check_if_all_matches_finished():
-                print(f'{self.scope["user"].tournament_username}: all match in round {self.tournament.current_round} are finished')
-                print('max_round: ', self.tournament.max_round)
-                await self.tournament.increase_round()
-                if self.tournament.current_round <= self.tournament.max_round:
-                    await self.generate_round()
-                else:
-                    await self.set_tournament_over()
-            else:
-                await self.send_bracket()
+                await self.advance_in_tournament()
+            await self.send_bracket()
 
     async def send_disqualified(self, username):
         await self.channel_layer.group_send(
@@ -250,3 +259,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 await self.send(text_data=json.dumps({'type': 'status', 'status': 'disqualified'}))
         else:
             await self.send(text_data=json.dumps({'type': 'status', 'status': event['status']}))
+
+    async def tournament_bracket(self, event):
+        if not await sync_to_async(self.tournament.check_if_player_is_in_match)(self.scope['user'].tournament_username):
+            await self.send(text_data=json.dumps({'type': 'bracket', 'bracket': event['bracket']}))

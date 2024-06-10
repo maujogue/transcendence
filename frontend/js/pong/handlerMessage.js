@@ -58,6 +58,7 @@ async function handlerEndGame(data, env, webSocket) {
             'type': 'status',
             'status': 'endGame'
         }));
+        removeGameScreen(env);
         webSocket.close();
     }
     playersMove.clear();

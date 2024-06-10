@@ -105,7 +105,13 @@ class Tournament(models.Model):
 				round_info["matches"].append(match_info)
 			
 			bracket["tournament"]["rounds"].append(round_info)
-			return bracket
+		return bracket
+
+	def check_if_player_is_in_match(self, username):
+		match = self.get_matches_by_player(username)
+		if match and not match.finished:
+			return True
+		return False
 	
 
 	def get_round_name(self, round_number):

@@ -30,7 +30,6 @@ export async function connectToTournament(tournament) {
             if (data.type == "status")
                 handlerMessageStatus(data);
             if (data.type == "bracket") {
-                console.log("Received bracket:", data.bracket);
                 createTournamentDiv();
                 drawBracket(data.bracket);
             }
@@ -52,10 +51,12 @@ function handlerMessageStatus(data) {
     console.log("Status:", data.status);
     if (data.status == "endGame")
         wsMatch?.close();
-    //TODO differenciate 'disqualified' and 'lost'
     if (data.status == "disqualified")
         displayErrorPopUp("You have been disqualified", document.getElementsByClassName("tournament")[0]);
-}
+    if (data.status == "endTournament") {
+        displayErrorPopUp("The tournament has ended", document.getElementsByClassName("tournament")[0]);
+    }
+} 
 
 function displayPlayerList(participants) {
     console.log("displayPlayerList");

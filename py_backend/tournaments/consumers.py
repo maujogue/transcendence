@@ -68,7 +68,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.tournament.name,
             {
                 'type': 'tournament.status',
-                'status': 'end'
+                'status': 'endTournament'
             }
         )
 

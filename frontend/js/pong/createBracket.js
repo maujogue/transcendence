@@ -68,6 +68,7 @@ function createBracketCanvas() {
 }
 
 export function drawBracket(bracket) {
+    console.log("Drawing bracket: ", bracket);
     createBracketCanvas();
     canvas = document.getElementById('bracketCanvas');
     ctx = canvas.getContext('2d');

@@ -13,6 +13,7 @@ import { getUserData } from "../User.js";
 import { field } from "../pages/game.js";
 import { wsTournament } from "./tournament.js";
 
+let requestId
 let env;
 let player;
 let opp;
@@ -38,6 +39,7 @@ function setUserInfo(data) {
 }
 
 function clearVariables() {
+    cancelAnimationFrame(requestId);
     wsMatch = null;
     player = null;
     opp = null;
@@ -130,6 +132,7 @@ async function connectToLobby(username) {
     }
 
     wsMatch.onopen = function() {
+        console.log("Connected to the server mutliplayer");
         status.is_connected = true;
         document.getElementById("selectMenu").remove();
         wsMatch.send(JSON.stringify({
@@ -217,7 +220,7 @@ function movePaddle(data) {
         paddle.position.y = data['posY'];
 }
 
-function sendMove(wsMatch) { 
+function sendMove(wsMatch) {
     const move = (keysPressed["w"]) ? 1 : -1;
 
     if (keyPress && (keysPressed["w"] || keysPressed["s"])) {
@@ -291,7 +294,7 @@ async function onlineGameLoop(wsMatch) {
     env.renderer.render(env.scene, env.camera);
     updateMixers(player, opp);
     if (!status.exit)
-        requestAnimationFrame(() => onlineGameLoop(wsMatch));
+        requestId = requestAnimationFrame(() => onlineGameLoop(wsMatch));
 }
 
 export { connectToLobby, onlineGameLoop, goToOnlineSelectMenu, createOnlineSelectMenu}

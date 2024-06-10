@@ -59,18 +59,25 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         except TournamentMatch.DoesNotExist:
             print("Match does not exist")
             return False
+        
+    async def set_tournament_over(self):
+        print('tournament is over')
+        self.tournament.finished = True
+        await self.tournament.asave()
+        await self.channel_layer.group_send(
+            self.tournament.name,
+            {
+                'type': 'tournament.status',
+                'status': 'end'
+            }
+        )
 
     async def match_is_over(self):
         if not await self.validate_foreign_keys():
             return
         self.match.finished = True
         await self.match.asave()
-        if await self.check_if_all_matches_finished():
-            print(f'{self.scope["user"].tournament_username}: all match in round {self.tournament.current_round} are finished')
-            await self.tournament.increase_round()
-            await self.generate_round()
-        else:
-            await self.send_bracket()
+
 
     async def send_bracket(self):
         bracket = await sync_to_async(self.tournament.get_tournament_bracket)()
@@ -85,6 +92,17 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if status == 'endGame':
             await self.set_match_info()
             await self.match_is_over()
+            print(f'{self.scope["user"].tournament_username} match is over, {self.match.winner} wins!')
+            if self.match.winner == self.scope['user'].tournament_username and await self.check_if_all_matches_finished():
+                print(f'{self.scope["user"].tournament_username}: all match in round {self.tournament.current_round} are finished')
+                print('max_round: ', self.tournament.max_round)
+                await self.tournament.increase_round()
+                if self.tournament.current_round <= self.tournament.max_round:
+                    await self.generate_round()
+                else:
+                    await self.set_tournament_over()
+            else:
+                await self.send_bracket()
 
     async def send_disqualified(self, username):
         await self.channel_layer.group_send(
@@ -95,8 +113,16 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 'username': username
             }
         )
+
+    async def check_if_bracket_is_already_generated(self):
+        self.tournament = await self.get_tournament()
+        round_matches = await sync_to_async(list)(self.tournament.matchups.filter(round=self.tournament.current_round + 1))
+        if len(round_matches) > 0:
+            return True
+        return False
     
     async def check_if_all_matches_finished(self):
+        self.tournament = await self.get_tournament()
         all_matches = await sync_to_async(list)(self.tournament.matchups.filter(round=self.tournament.current_round))
         if all(matches.finished for matches in all_matches) and len(all_matches) > 0:
             return True
@@ -217,6 +243,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos}))
 
     async def tournament_status(self, event):
+        print('status: ', event['status'])
         if event['status'] == 'disqualified':
             if event['username'] == self.scope['user'].username:
                 print('disqualified: ', event['username'])

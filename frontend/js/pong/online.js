@@ -144,7 +144,6 @@ async function connectToLobby(username) {
     
     wsMatch.onmessage = function(e) {
         const data = JSON.parse(e.data);
-        console.log(data);
 
         if (data['type'] == 'player_data') {
             const paddle = env.scene.getObjectByName("paddle_" + player.name);

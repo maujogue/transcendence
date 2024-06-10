@@ -66,7 +66,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         self.match.finished = True
         await self.match.asave()
         if await self.check_if_all_matches_finished():
-            print(f'self.scope["user"].tournament_username: all match in round {self.tournament.current_round} are finished')
+            print(f'{self.scope["user"].tournament_username}: all match in round {self.tournament.current_round} are finished')
             await self.tournament.increase_round()
             await self.generate_round()
         else:

@@ -2,13 +2,10 @@ import { actualizeScoreOnline } from './onlineCollision.js';
 import { displayMainMenu } from './menu.js';
 import { ClearAllEnv } from './createEnvironment.js';
 import { createEndScreen } from './createEndScreen.js';
-import { sendColor } from './sendMessage.js';
 import { playersMove } from './online.js';
 import { displayErrorPopUp } from './tournament.js';
 import { wsTournament } from './tournament.js';
-import { toggleContentOnLogState } from '../Utils.js';
-import { injectModule, updateModule } from '../Modules.js';
-import { updatePage } from '../Router.js';
+import { updateModule } from '../Modules.js';
 
 
 export function setBallData(data, env) {
@@ -53,14 +50,16 @@ function handlerStopGame(webSocket, env, message) {
     webSocket.close();
 }
 
-async function handlerEndGame(data, env) {
+async function handlerEndGame(data, env, webSocket) {
     if (!document.getElementById("endscreen") && !wsTournament)
         createEndScreen(data['name']);
-    if (wsTournament)
+    if (wsTournament) {
         wsTournament.send(JSON.stringify({
             'type': 'status',
             'status': 'endGame'
         }));
+        webSocket.close();
+    }
     playersMove.clear();
     env.ball.direction.x = 0;
     env.ball.direction.y = 0;
@@ -80,7 +79,7 @@ export function handlerStatusMessage(data, webSocket, env, status) {
     if (data['status'] == 'stop')
         handlerStopGame(webSocket, env, data.message);
     if (data['status'] == 'endGame') {
-        handlerEndGame(data, env);
+        handlerEndGame(data, env, webSocket);
     }
     if (data['status'] == 'start') {
         status.gameIsInit = true;

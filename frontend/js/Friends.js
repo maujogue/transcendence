@@ -3,7 +3,7 @@ import { showAlert } from "./Utils.js";
 
 let webSocket = new WebSocket("ws://127.0.0.1:8080/ws/friends/");
 
-export function friendsWebsocket() {
+export async function friendsWebsocket() {
     webSocket.onopen = function() {
         getUserData('friendslist').then((res) => {
             webSocket.send(JSON.stringify({
@@ -18,17 +18,16 @@ export function friendsWebsocket() {
 
         if (data.type === 'friend_request') {
             console.log("OK1");
-            showAlert("You just receive a friend request from " + data.from, true);
+            showAlert("You just receive a friend request from " + data.from_user + " !", true);
         }
     };    
 }
 
 async function sendWebSocketMessage(message) {
-    // console.log(message.from);
     if (webSocket.readyState === webSocket.OPEN) {
         webSocket.send(JSON.stringify({
             'type': message.type,
-            'from': message.from,
+            'from_user': message.from_user,
             'to': message.to,
         }));
     } else {

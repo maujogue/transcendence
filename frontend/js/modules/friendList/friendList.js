@@ -3,6 +3,7 @@ import { runEndPoint } from "../../ApiUtils.js"
 import { showAlert, disableCollapsedSidebar } from "../../Utils.js";
 import { checkInputAvailable } from "../../ApiCalls.js";
 import { sendWebSocketMessage } from "../../Friends.js";
+import { getUserData } from "../../User.js";
 
 export async function init() {
 	var module = getModuleDiv("friendList");
@@ -50,11 +51,20 @@ export async function init() {
 		};
 
 		response = await runEndPoint("friends/send_request/" + friend_username + "/", "POST", JSON.stringify(fetchBody));
-		sendWebSocketMessage ({
+		let message = {
 			type: 'friend_request',
-			from: 'ptdr',
-			to: friend_username
-		});
+			from_user: await getUserData('username'),
+			to: friend_username,
+		}
+
+		showAlert("You just send a friend request to " + friend_username + "  !", true);
+		sendWebSocketMessage(message);
+
+		// sendWebSocketMessage ({
+		// 	type: 'friend_request',
+		// 	from: wow,
+		// 	to: friend_username
+		// });
 
 		// if (response.statusCode === 200) {
 		// 	showAlert("You just send a friend request to " + friend_username + "  !", true);

@@ -1,5 +1,7 @@
-import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from users.models import CustomUser
+import json
+
 
 class FriendsConsumer(AsyncWebsocketConsumer):
 
@@ -37,3 +39,19 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'from_user': event['from_user'],
             'to': event['to'],
             }))
+
+    async def authenticate_user_with_username(self, username):
+        try:
+            user = await CustomUser.objects.aget(username=username)
+            return user
+        except CustomUser.DoesNotExist:
+            return None
+        
+    async def authenticate_user(self, text_data_json):
+        username = text_data_json['username']
+        user = await self.authenticate_user_with_username(username)
+        if user is not None:
+            self.scope['user'] = user
+            await self.send(text_data=json.dumps({ "type": "auth", "status": "success"}))
+        else:
+            await self.send(text_data=json.dumps({ "type": "auth", "status": "failed"}))

@@ -1,16 +1,16 @@
 from solcx import compile_standard, install_solc
 import json
 
-install_solc("0.8.19")
+install_solc("0.8.0")
 
-contract_path = "/home/jrenault/Documents/42/transcendance/blockchain/smartContract.sol"
+contract_path = "/home/jrenault/Documents/42/transcendance/blockchain/tournamentContract.sol"
 with open(contract_path, 'r') as file:
     contract = file.read()
     
 compiledSolidity = compile_standard({
     "language": "Solidity",
     "sources": {
-        "tournament.sol": {
+        "tournamentContract.sol": {
             "content": contract
         }
     },

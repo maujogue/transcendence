@@ -15,8 +15,7 @@ export async function init() {
 		type: 'auth',
 		username: currentUserUsername,
 	}
-	sendWebSocketMessage(message_auth);
-
+	
 	var friendScroll = module.querySelector("#friendScroll");
 	var searchFriendForm = module.querySelector("#searchFriendForm");
 	searchFriendForm.addEventListener("submit", (event) => {
@@ -40,31 +39,40 @@ export async function init() {
 		};
 		console.log(searchFriendForm, fetchBody["username"]);
 
-		getFriendName(fetchBody.username);
+		console.log('sendFriendRea');
+		sendFriendRequest(fetchBody.username);
 	}
 
-	async function getFriendName(username){
-		var friend_username = await checkInputAvailable(username, "username");
-		if (!friend_username) {
-			sendFriendRequest(username);
-		} else
-			showAlert("This user does not exist.", false);
-	}
-
-	async function sendFriendRequest(friend_username){
-		var response;
-		const fetchBody = {
-			username: friend_username
-		};
-		response = await runEndPoint("friends/send_request/" + friend_username + "/", "POST", JSON.stringify(fetchBody));
-		let message_friend_request = {
-			type: 'friend_request',
-			from_user: currentUserUsername,
-			to: friend_username,
+	async function sendFriendRequest(username){
+		let message = {
+			'type': 'user_exist',
+			'username': username,
 		}
+		sendWebSocketMessage(message);
+	}
 
-		showAlert("You just send a friend request to " + friend_username + "  !", true);
-		sendWebSocketMessage(message_friend_request);
+	// async function getFriendName(username){
+	// 	var friend_username = await checkInputAvailable(username, "username");
+	// 	if (!friend_username) {
+	// 		sendFriendRequest(username);
+	// 	} else
+	// 		showAlert("This user does not exist.", false);
+	// }
+
+	// async function sendFriendRequest11(friend_username){
+	// 	var response;
+	// 	const fetchBody = {
+	// 		username: friend_username
+	// 	};
+	// 	response = await runEndPoint("friends/send_request/" + friend_username + "/", "POST", JSON.stringify(fetchBody));
+	// 	let message_friend_request = {
+	// 		type: 'friend_request',
+	// 		from_user: currentUserUsername,
+	// 		to: friend_username,
+	// 	}
+
+	// 	showAlert("You just send a friend request to " + friend_username + "  !", true);
+	// 	sendWebSocketMessage(message_friend_request);
 
 		// sendWebSocketMessage ({
 		// 	type: 'friend_request',
@@ -87,6 +95,6 @@ export async function init() {
 		// } else {
 		// 	showAlert("FRIEND REQUEST NOT SEND.", false);
 		// }
-	}
+	
 }
 

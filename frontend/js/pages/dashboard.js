@@ -6,7 +6,11 @@ import { getUserData } from "../User.js";
 
 export async function init(queryParams) {
 	var username = await getUserData('username');
-	friendsWebsocket(username);
+	console.log(username);
+	if (username) {
+		friendsWebsocket(username);
+	}
+
 
 	printQueryParamsMessage(queryParams);
 

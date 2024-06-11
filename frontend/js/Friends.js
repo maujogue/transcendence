@@ -1,9 +1,10 @@
 import { getUserData} from "./User.js"
 import { showAlert } from "./Utils.js";
 
-let webSocket = new WebSocket("ws://127.0.0.1:8080/ws/friends/");
+let webSocket;
 
 export async function friendsWebsocket(username) {
+    webSocket = new WebSocket("ws://127.0.0.1:8080/ws/friends/");
     webSocket.onopen = function() {
         webSocket.send(JSON.stringify({
             'type': 'auth',
@@ -17,11 +18,14 @@ export async function friendsWebsocket(username) {
         if (data.type === 'friend_request') {
             showAlert("You just receive a friend request from " + data.from_user + " !", true);
         }
+        if (data.type === 'user_exist') {
+            showAlert("This user does not exist.")
+        }
     };    
 }
 
 async function sendWebSocketMessage(message) {
-    if (webSocket.readyState === webSocket.OPEN) {
+    if (webSocket && webSocket.readyState === webSocket.OPEN) {
 
         if (message.type === 'auth') {
             webSocket.send(JSON.stringify({
@@ -34,6 +38,12 @@ async function sendWebSocketMessage(message) {
                 'type': message.type,
                 'from_user': message.from_user,
                 'to': message.to,
+            }));
+        }
+        if (message.type === 'user_exist') {
+            webSocket.send(JSON.stringify({
+                'type': message.type,
+                'username': message.username,
             }));
         }
 

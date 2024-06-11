@@ -1,12 +1,15 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from users.models import CustomUser
 from friends.models import InteractionRequest
+from users.utils import username_is_unique
+from asgiref.sync import sync_to_async
 import json
 
 
 class FriendsConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
+        print('connect')
         await self.accept()
 
 
@@ -33,10 +36,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         if message_type == 'friend_request':
             await self.friend_request(data)
 
-            # await self.channel_layer.group_discard(
-            #     data.get('to'),
-            #     self.channel_name,
-            # )
+
 
     async def send_friend_request_notification(self, event):
         if self.scope['user'].username == event['to']:
@@ -68,6 +68,11 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         from_user = data.get('from_user')
         to_user = data.get('to')
 
+        print(to_user)
+        if not await self.user_exist(to_user):
+            await self.send(text_data=json.dumps({ "type": "user_exist", "status": "failure"}))
+            return
+
         await self.channel_layer.group_add(
             data.get('to'),
             self.channel_name,)
@@ -79,3 +84,17 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             {'type': 'send_friend_request_notification',
             'from_user': from_user,
             'to': to_user})
+        
+        # await self.channel_layer.group_discard(
+        #     data.get('to'),
+        #     self.channel_name,
+        # )
+
+    async def user_exist(self, username):
+        response = CustomUser.objects.filter(username=username).exists()
+        if response == False:
+            return False
+        return True
+        
+
+            

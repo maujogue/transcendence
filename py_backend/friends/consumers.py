@@ -6,8 +6,8 @@ import json
 class FriendsConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
-
         await self.accept()
+
 
     async def disconnect(self, exit_code):
         await self.channel_layer.group_discard(
@@ -15,12 +15,12 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             self.channel_name,
         )
 
+
     async def receive(self, text_data):
         data = json.loads(text_data)
         message_type = data.get('type')
 
         if message_type == 'auth':            
-
             username = data.get('username')
             await self.authenticate_user(username)
             await self.channel_layer.group_add(
@@ -33,8 +33,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
             await self.channel_layer.group_add(
                 data.get('to'),
-                self.channel_name,
-            )
+                self.channel_name,)
 
             await self.channel_layer.group_send(
                 data.get('to'),
@@ -51,6 +50,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
                 'to': event['to'],
                 }))
 
+
     async def authenticate_user_with_username(self, username):
         try:
             user = await CustomUser.objects.aget(username=username)
@@ -58,6 +58,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         except CustomUser.DoesNotExist:
             return None
         
+
     async def authenticate_user(self, username):
         user = await self.authenticate_user_with_username(username)
         if user is not None:

@@ -35,6 +35,7 @@ class CustomUser(AbstractUser):
 	n_games_played = models.IntegerField(null=True)
 	friends = models.ManyToManyField("self", blank=True)
 	is_42auth = models.BooleanField(default=False)
+	is_online = models.BooleanField(default=False)
 	
 	def save(self, *args, **kwargs):
 		if not self.tournament_username:

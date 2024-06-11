@@ -53,6 +53,7 @@ function clearVariables() {
     oppInfo = null;
     playersMove.clear();
     lobbyId = null;
+    ClearAllEnv(env);
 }
 
 
@@ -140,7 +141,6 @@ async function connectToLobby(username) {
             'username': username,
         }));
         createWaitingScreen();
-        onlineGameLoop(wsMatch);
     }
     
     document.addEventListener('click', clickHandler);

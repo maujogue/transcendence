@@ -10,16 +10,6 @@ const boxHeight = 44;
 const horizontalSpacing = 175;
 let verticalSpacing = 8;
 
-export function getTournamentBracket() {
-    const url = `./js/pong/dev/bracket.json`;
-
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            drawBracket(data);
-        });
-}
-
 function drawMatchBox(x, y, match) {
     ctx.fillStyle = 'white';
     ctx.fillRect(x, y, boxWidth, boxHeight);

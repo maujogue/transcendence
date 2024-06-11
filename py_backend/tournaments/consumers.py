@@ -27,6 +27,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.auth(text_data_json)
         if text_data_json.get('type') == 'status':
             await self.handler_status(text_data_json.get('status'))
+        if text_data_json.get('type') == 'bracket':
+            bracket = await sync_to_async(self.tournament.get_tournament_bracket)()
+            await self.send(text_data=json.dumps({'type': 'bracket', 'bracket': bracket}))
 
     async def disconnect(self, close_code):
         print('tournament disconnected')

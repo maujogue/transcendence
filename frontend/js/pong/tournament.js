@@ -3,8 +3,7 @@ import { returnToMenu } from "./createEndScreen.js";
 import { getUserData } from "../User.js";
 import { createOnlineSelectMenu } from "./online.js";
 import { createTournamentDiv } from "./menu.js";
-import { wsMatch } from "./online.js";
-import { drawBracket, getTournamentBracket } from "./createBracket.js";
+import { drawBracket} from "./createBracket.js";
 
 export let wsTournament
 let userData;
@@ -145,9 +144,13 @@ export function createShowBracketButton(parent) {
     seeBracketBtn.textContent = "Show bracket";
     seeBracketBtn.className = "show-bracket-btn tournament-btn";
     parent.appendChild(seeBracketBtn);
-    seeBracketBtn.onclick = () => {
-        getTournamentBracket()
-    }
+    seeBracketBtn.onclick = () => ask_bracket();
+}
+
+function ask_bracket() {
+    wsTournament.send(JSON.stringify({
+        'type': 'bracket',
+    }));
 }
 
 export function createUnsubscribeButton(parent) {

@@ -112,6 +112,10 @@ class Tournament(models.Model):
 		if match and not match.finished:
 			return True
 		return False
+
+	def get_winner(self):
+		winner = self.matchups.filter(round=self.max_round).first().winner
+		return winner
 	
 
 	def get_round_name(self, round_number):

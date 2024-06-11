@@ -252,6 +252,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             if event['username'] == self.scope['user'].username:
                 print('disqualified: ', event['username'])
                 await self.send(text_data=json.dumps({'type': 'status', 'status': 'disqualified'}))
+        elif event['status'] == 'endTournament':
+            winner = await sync_to_async(self.tournament.get_winner)()
+            await self.send(text_data=json.dumps({'type': 'status', 'status': 'endTournament', 'winner': winner}))
         else:
             await self.send(text_data=json.dumps({'type': 'status', 'status': event['status']}))
 

@@ -24,9 +24,8 @@ export async function connectToTournament(tournament) {
             console.log("Received data:", data);
             if (data.type == "participants")
                 displayPlayerList(data.participants);
-            if (data.type == "matchup") {
+            if (data.type == "matchup")
                 createOnlineSelectMenu(data.match.lobby_id);
-            }
             if (data.type == "status")
                 handlerMessageStatus(data);
             if (data.type == "bracket") {
@@ -49,14 +48,21 @@ export async function connectToTournament(tournament) {
 
 function handlerMessageStatus(data) {
     console.log("Status:", data.status);
-    if (data.status == "endGame")
-        wsMatch?.close();
     if (data.status == "disqualified")
         displayErrorPopUp("You have been disqualified", document.getElementsByClassName("tournament")[0]);
     if (data.status == "endTournament") {
-        displayErrorPopUp("The tournament has ended", document.getElementsByClassName("tournament")[0]);
+        displayEndTournamentScreen(data);
     }
 } 
+
+function displayEndTournamentScreen(data) {
+    if (!document.getElementsByClassName("tournament")[0])
+        createTournamentDiv();
+    const tournamentDiv = document.getElementsByClassName("tournament")[0];
+    tournamentDiv.innerHTML = `<h1>${data.winner} won the tournament!</h1>`;
+    createUnsubscribeButton(tournamentDiv);
+    createShowBracketButton(tournamentDiv);
+}
 
 function displayPlayerList(participants) {
     console.log("displayPlayerList");
@@ -132,6 +138,16 @@ export function displayErrorPopUp (message, parent) {
         document.getElementById("PopUpCloseIcon").removeEventListener("click", () => {});
         errorPopUp.remove();
     });
+}
+
+export function createShowBracketButton(parent) {
+    const seeBracketBtn = document.createElement("button");
+    seeBracketBtn.textContent = "Show bracket";
+    seeBracketBtn.className = "show-bracket-btn tournament-btn";
+    parent.appendChild(seeBracketBtn);
+    seeBracketBtn.onclick = () => {
+        getTournamentBracket()
+    }
 }
 
 export function createUnsubscribeButton(parent) {

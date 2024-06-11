@@ -53,7 +53,7 @@ function clearVariables() {
     oppInfo = null;
     playersMove.clear();
     lobbyId = null;
-    ClearAllEnv(env);
+    ClearAllEnv(env)
 }
 
 
@@ -141,6 +141,8 @@ async function connectToLobby(username) {
             'username': username,
         }));
         createWaitingScreen();
+        cancelAnimationFrame(requestId);
+        onlineGameLoop(wsMatch);
     }
     
     document.addEventListener('click', clickHandler);
@@ -288,6 +290,7 @@ async function onlineGameLoop(wsMatch) {
     if (status.gameIsInit)
         await setGameIsStart();
     if (status.start && wsMatch) {
+        console.log("start");
         translateBall(env.ball);
         sendMove(wsMatch);
     }

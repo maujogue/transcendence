@@ -1,5 +1,6 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from users.models import CustomUser
+from friends.models import InteractionRequest
 import json
 
 
@@ -21,26 +22,16 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         message_type = data.get('type')
 
-        if message_type == 'auth':            
+        if message_type == 'auth':
             username = data.get('username')
             await self.authenticate_user(username)
+
             await self.channel_layer.group_add(
                 self.scope['user'].username,
                 self.channel_name)
 
         if message_type == 'friend_request':
-            from_user = data.get('from_user')
-            to_user = data.get('to')
-
-            await self.channel_layer.group_add(
-                data.get('to'),
-                self.channel_name,)
-
-            await self.channel_layer.group_send(
-                data.get('to'),
-                {'type': 'send_friend_request_notification',
-                'from_user': from_user,
-                'to': to_user})
+            await self.friend_request(data)
 
             # await self.channel_layer.group_discard(
             #     data.get('to'),
@@ -71,3 +62,20 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({ "type": "auth", "status": "success"}))
         else:
             await self.send(text_data=json.dumps({ "type": "auth", "status": "failed"}))
+
+    
+    async def friend_request(self, data):
+        from_user = data.get('from_user')
+        to_user = data.get('to')
+
+        await self.channel_layer.group_add(
+            data.get('to'),
+            self.channel_name,)
+
+        # InteractionRequest.objects.create(from_user=from_user, to_user=to_user)
+
+        await self.channel_layer.group_send(
+            data.get('to'),
+            {'type': 'send_friend_request_notification',
+            'from_user': from_user,
+            'to': to_user})

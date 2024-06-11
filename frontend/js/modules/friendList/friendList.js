@@ -40,7 +40,7 @@ export async function init() {
 		};
 		console.log(searchFriendForm, fetchBody["username"]);
 
-		await getFriendName(fetchBody.username);
+		getFriendName(fetchBody.username);
 	}
 
 	async function getFriendName(username){
@@ -56,7 +56,6 @@ export async function init() {
 		const fetchBody = {
 			username: friend_username
 		};
-
 		response = await runEndPoint("friends/send_request/" + friend_username + "/", "POST", JSON.stringify(fetchBody));
 		let message_friend_request = {
 			type: 'friend_request',

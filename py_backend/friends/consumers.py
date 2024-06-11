@@ -10,10 +10,11 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
 
     async def disconnect(self, exit_code):
-        await self.channel_layer.group_discard(
-            self.group_name,
-            self.channel_name,
-        )
+        # await self.channel_layer.group_discard(
+        #     self.group_name,
+        #     self.channel_name,
+        # )
+        pass
 
 
     async def receive(self, text_data):
@@ -41,7 +42,11 @@ class FriendsConsumer(AsyncWebsocketConsumer):
                 'from_user': from_user,
                 'to': to_user})
 
-            
+            # await self.channel_layer.group_discard(
+            #     data.get('to'),
+            #     self.channel_name,
+            # )
+
     async def send_friend_request_notification(self, event):
         if self.scope['user'].username == event['to']:
             await self.send(text_data=json.dumps({

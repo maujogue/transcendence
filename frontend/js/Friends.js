@@ -15,7 +15,6 @@ export async function friendsWebsocket(username) {
         const data = JSON.parse(event.data);
 
         if (data.type === 'friend_request') {
-            console.log("OK1");
             showAlert("You just receive a friend request from " + data.from_user + " !", true);
         }
     };    

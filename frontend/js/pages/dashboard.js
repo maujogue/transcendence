@@ -2,9 +2,12 @@ import { updatePassword, updateProfile, updateProfileWithPassword } from "../Api
 import { togglePasswordVisibility, checkPassword, showAlert, printQueryParamsMessage } from "../Utils.js";
 import { resetForm, inputInitListeners } from "../DashboardUtils.js"
 import { friendsWebsocket } from "../Friends.js";
+import { getUserData } from "../User.js";
 
 export async function init(queryParams) {
-	friendsWebsocket();
+	var username = await getUserData('username');
+	friendsWebsocket(username);
+
 	printQueryParamsMessage(queryParams);
 
 	var modal = document.getElementById("updateProfileModal");

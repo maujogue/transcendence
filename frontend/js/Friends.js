@@ -3,14 +3,12 @@ import { showAlert } from "./Utils.js";
 
 let webSocket = new WebSocket("ws://127.0.0.1:8080/ws/friends/");
 
-export async function friendsWebsocket() {
+export async function friendsWebsocket(username) {
     webSocket.onopen = function() {
-        getUserData('friendslist').then((res) => {
-            webSocket.send(JSON.stringify({
-                'type': 'auth',
-                'friendslist': res
-            }));
-        })
+        webSocket.send(JSON.stringify({
+            'type': 'auth',
+            'username': username,
+        }));
     }
 
     webSocket.onmessage = (event) => {

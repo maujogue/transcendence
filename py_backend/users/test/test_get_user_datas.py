@@ -26,12 +26,15 @@ class GetUserDatas(TestCase):
         self.user.refresh_from_db()
 
     def test_basic_get_user_data(self):
+        self.client.login(username='osterga', password='UserPassword9+')
         response = self.client.post(reverse('get_user_data'))
 
         self.assertEqual(response.status_code, 200)
 
     def test_get_user_data(self):
-        response = self.client.post(reverse('get_user_data'))
+        response = self.client.post(
+            reverse('get_user_data'),
+            content_type='application/json')
         response_data = response.json()
 
         encoded_string = convert_image_to_base64(self.user.avatar)

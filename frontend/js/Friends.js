@@ -1,18 +1,18 @@
 import { getUserData} from "./User.js"
 import { showAlert } from "./Utils.js";
 
-let webSocket;
+let wsFriends;
 
 export async function friendsWebsocket(username) {
-    webSocket = new WebSocket("ws://127.0.0.1:8080/ws/friends/");
-    webSocket.onopen = function() {
-        webSocket.send(JSON.stringify({
+    wsFriends = new WebSocket("ws://127.0.0.1:8080/ws/friends/");
+    wsFriends.onopen = function() {
+        wsFriends.send(JSON.stringify({
             'type': 'auth',
             'username': username,
         }));
     }
 
-    webSocket.onmessage = (event) => {
+    wsFriends.onmessage = (event) => {
         const data = JSON.parse(event.data);
 
         if (data.type === 'friend_request') {
@@ -24,24 +24,24 @@ export async function friendsWebsocket(username) {
     };    
 }
 
-async function sendWebSocketMessage(message) {
-    if (webSocket && webSocket.readyState === webSocket.OPEN) {
+async function sendwsFriendsMessage(message) {
+    if (wsFriends && wsFriends.readyState === wsFriends.OPEN) {
 
         if (message.type === 'auth') {
-            webSocket.send(JSON.stringify({
+            wsFriends.send(JSON.stringify({
                 'type': message.type,
                 'username': message.username,
             }));
         }
         if (message.type === 'friend_request') {
-            webSocket.send(JSON.stringify({
+            wsFriends.send(JSON.stringify({
                 'type': message.type,
                 'from_user': message.from_user,
                 'to': message.to,
             }));
         }
         if (message.type === 'user_exist') {
-            webSocket.send(JSON.stringify({
+            wsFriends.send(JSON.stringify({
                 'type': message.type,
                 'username': message.username,
             }));

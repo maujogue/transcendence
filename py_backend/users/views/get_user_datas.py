@@ -22,7 +22,8 @@ def get_user_data(request):
         'rank': user.rank,
         'n_games_played': user.n_games_played,
         'friendslist': utils_get_friendslist_data(user),
-        'is_42auth': user.is_42auth
+        'is_42auth': user.is_42auth,
+        'is_online': user.is_online,
     }
     return JsonResponse({'status': 'success', 'user': user_datas}, status=200)
 

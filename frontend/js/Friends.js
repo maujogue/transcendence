@@ -23,11 +23,21 @@ export async function friendsWebsocket(username) {
 
 async function sendWebSocketMessage(message) {
     if (webSocket.readyState === webSocket.OPEN) {
-        webSocket.send(JSON.stringify({
-            'type': message.type,
-            'from_user': message.from_user,
-            'to': message.to,
-        }));
+
+        if (message.type === 'auth') {
+            webSocket.send(JSON.stringify({
+                'type': message.type,
+                'username': message.username,
+            }));
+        }
+        if (message.type === 'friend_request') {
+            webSocket.send(JSON.stringify({
+                'type': message.type,
+                'from_user': message.from_user,
+                'to': message.to,
+            }));
+        }
+
     } else {
         console.error('WebSocket is not open');
     }

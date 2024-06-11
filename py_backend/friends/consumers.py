@@ -24,6 +24,13 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         message_type = data.get('type')
         
+        print('\n--------')
+        print(message_type)
+
+        if message_type == 'auth':
+            print('ptdr')
+            username = data.get('username')
+            await self.authenticate_user(username) 
         if message_type == 'friend_request':
             from_user = data.get('from_user')
             to_user = data.get('to')
@@ -47,11 +54,11 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         except CustomUser.DoesNotExist:
             return None
         
-    async def authenticate_user(self, text_data_json):
-        username = text_data_json['username']
+    async def authenticate_user(self, username):
         user = await self.authenticate_user_with_username(username)
         if user is not None:
             self.scope['user'] = user
             await self.send(text_data=json.dumps({ "type": "auth", "status": "success"}))
         else:
             await self.send(text_data=json.dumps({ "type": "auth", "status": "failed"}))
+        print(self.scope['user'])

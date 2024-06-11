@@ -10,6 +10,15 @@ export async function init() {
 	if (!module)
 		return;
 
+	const currentUserUsername = await getUserData('username');
+	console.log('------');
+	console.log(currentUserUsername);
+	let message_auth = {
+		type: 'auth',
+		username: currentUserUsername,
+	}
+	sendWebSocketMessage(message_auth);
+
 	var friendScroll = module.querySelector("#friendScroll");
 	var searchFriendForm = module.querySelector("#searchFriendForm");
 	searchFriendForm.addEventListener("submit", (event) => {
@@ -51,14 +60,14 @@ export async function init() {
 		};
 
 		response = await runEndPoint("friends/send_request/" + friend_username + "/", "POST", JSON.stringify(fetchBody));
-		let message = {
+		let message_friend_request = {
 			type: 'friend_request',
-			from_user: await getUserData('username'),
+			from_user: currentUserUsername,
 			to: friend_username,
 		}
 
 		showAlert("You just send a friend request to " + friend_username + "  !", true);
-		sendWebSocketMessage(message);
+		sendWebSocketMessage(message_friend_request);
 
 		// sendWebSocketMessage ({
 		// 	type: 'friend_request',

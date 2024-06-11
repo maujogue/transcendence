@@ -48,7 +48,7 @@ export async function init(queryParams) {
 	let form;
 	const gameDiv = document.getElementById('game');
 
-	loadAllModel();
+	await loadAllModel();
 
 	window.addEventListener('resize', resize(environment));
 	

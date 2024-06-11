@@ -110,6 +110,8 @@ async function goToOnlineSelectMenu() {
 
 
 async function createOnlineSelectMenu(id) {
+    if (wsMatch)
+        wsMatch.close();
     if (id)
         lobbyId = id;
     document.getElementsByClassName("menu")[0]?.remove();
@@ -290,7 +292,6 @@ async function onlineGameLoop(wsMatch) {
     if (status.gameIsInit)
         await setGameIsStart();
     if (status.start && wsMatch) {
-        console.log("start");
         translateBall(env.ball);
         sendMove(wsMatch);
     }

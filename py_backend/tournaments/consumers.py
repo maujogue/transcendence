@@ -11,6 +11,7 @@ from .bracket import generate_bracket
 class TournamentConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         print('connected: ', self.scope['user'])
+        self.match = None
         self.tournament = await self.get_tournament()
         if self.tournament is None:
             return await self.close()
@@ -19,7 +20,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.tournament.name,
             self.channel_name
         )
-        await self.send_participants_list()
+        if self.tournament.finished:
+            await self.send_tournament_end()
+        elif not self.tournament.started:
+            await self.send_participants_list()
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
@@ -48,24 +52,33 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
 
     async def handler_status(self, status):
+        print('status: ', status)
         if status == 'endGame':
             await self.endGame()
 
     async def endGame(self):
+        if not await self.validate_foreign_keys():
+            return
         await self.set_match_info()
         await self.match_is_over()
         print(f'{self.scope["user"].tournament_username} match is over, {self.match.winner} wins!')
         if self.match.winner == self.scope['user'].tournament_username and await self.check_if_all_matches_finished():
             await self.advance_in_tournament()
         else:
-            await self.send_bracket()
+            bracket = await sync_to_async(self.tournament.get_tournament_bracket)()
+            await self.send(text_data=json.dumps({'type': 'bracket', 'bracket': bracket}))
 
+
+    async def match_is_over(self):
+        self.match.finished = True
+        await self.match.asave()
 
     async def auth(self, text_data_json):
         username = text_data_json.get('username')
         user = await self.authenticate_user_with_username(username)
         if user:
             self.scope["user"] = user
+            self.match = await self.get_player_match(self.scope['user'].tournament_username)
             await self.send(text_data=json.dumps({"type": "auth", "status": "success"}))
             await self.check_tournament_start()
             await self.check_if_disqualified()
@@ -76,24 +89,11 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         print('tournament is over')
         self.tournament.finished = True
         await self.tournament.asave()
-        await self.channel_layer.group_send(
-            self.tournament.name,
-            {
-                'type': 'tournament.status',
-                'status': 'endTournament'
-            }
-        )
-
-    async def match_is_over(self):
-        if not await self.validate_foreign_keys():
-            return
-        self.match.finished = True
-        await self.match.asave()
-
+        await self.send_tournament_end()
 
     async def generate_round(self):
-            await sync_to_async(generate_bracket)(self.tournament)
-            await self.send_matchups()
+        await sync_to_async(generate_bracket)(self.tournament)
+        await self.send_all_matchups()
 
     async def advance_in_tournament(self):
         print(f'{self.scope["user"].tournament_username}: all match in round {self.tournament.current_round} are finished')
@@ -112,9 +112,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         return False
 
     async def set_match_info(self):
+        print('setting match info')
         try:
-            if not await self.validate_foreign_keys():
-                return
             match = await Match.objects.aget(uuid=self.match.lobby_id)
             self.match.player1 = match.player1
             self.match.player2 = match.player2
@@ -150,10 +149,15 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if await self.is_tournament_full() and not self.tournament.started:
             await self.launch_tournament()
         elif self.tournament.started:
-            await self.send_bracket()
+            if self.match:
+                await self.send_self_matchup()
+            else:
+                await self.send_bracket()
     
     async def validate_foreign_keys(self):
         try:
+            if not self.match:
+                self.match = await self.get_player_match(self.scope['user'].tournament_username)
             tournament = await Tournament.objects.aget(id=self.scope['url_route']['kwargs']['tournament_id'])
             match = await TournamentMatch.objects.aget(lobby_id=self.match.lobby_id)
             return True
@@ -199,8 +203,14 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             return CustomUser.objects.get(username=username)
         except CustomUser.DoesNotExist:
             return None
+        
+    async def send_self_matchup(self):
+        self.match = await self.get_player_match(self.scope['user'].tournament_username)
+        if self.match:
+            match_infos = self.get_match_infos(self.match)
+            await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos}))
 
-    async def send_matchups(self):
+    async def send_all_matchups(self):
         await self.channel_layer.group_send(
             self.tournament.name,
             {
@@ -235,6 +245,15 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             {
                 'type': 'tournament.participants',
                 'participants': participants
+            }
+        )
+
+    async def send_tournament_end(self):
+        await self.channel_layer.group_send(
+            self.tournament.name,
+            {
+                'type': 'tournament.status',
+                'status': 'endTournament'
             }
         )
 

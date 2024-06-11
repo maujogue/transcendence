@@ -743,6 +743,13 @@ border: 3px solid orange;  /* creates padding around scroll thumb */
 	bottom: 10%;
 }
 
+.close-icon {
+	font-size: 2.5em;
+    position: absolute;
+    right: 0;
+    margin: 1.5% 5%;
+}
+
 #game .logo {
 	width: 100%;
 	z-index: 1;
@@ -773,6 +780,10 @@ border: 3px solid orange;  /* creates padding around scroll thumb */
 .icon:hover {
 	transform: scale(1.2);
 	cursor: pointer;
+}
+
+.won-title {
+	font-size: 1.75em;
 }
 
 @keyframes moveKey {

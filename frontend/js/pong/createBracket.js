@@ -100,12 +100,11 @@ export function drawBracket(bracket) {
             indexMatchesPosY += 2;
         });
         prevRoundMatchesPosY = matchesPosY;
-        createUnsubscribeButton(document.getElementsByClassName('tournament')[0]);
     });
 } 
 
-function createLeaveButton(parent) {
-    parent.innerHTML += '<i class="fa-solid fa-xmark close-icon" id="leaveTournament"></i>'
+export function createLeaveButton(parent) {
+    parent.innerHTML += '<i class="fa-solid fa-xmark close-icon icon" id="leaveTournament"></i>'
     document.getElementById('leaveTournament').addEventListener('click', () => {
         displayMainMenu();
     });

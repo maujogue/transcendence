@@ -150,10 +150,14 @@ def check_if_tournament_joined(request, username):
 	except CustomUser.DoesNotExist:
 		return JsonResponse({"errors": "User not found."},
 					status=404)
-	tournament = Tournament.objects.filter(participants=user).first()
-	if not tournament or tournament.finished or tournament.check_if_player_is_disqualified(user.tournament_username):
+	tournaments = Tournament.objects.filter(participants=user, finished=False)
+	if not tournaments:
 		return JsonResponse({"message": "User has not joined any tournament.", "joined": False},
 					status=200)
-	tournamentJSON = {"id": tournament.id, "name": tournament.name, "max_players": tournament.max_players,
-					"participants": [p.username for p in tournament.participants.all()]}
-	return JsonResponse({"message": "User has joined a tournament.", "joined": True, "tournament": tournamentJSON}, status=200)
+	for tournament in tournaments:
+		if not tournament.check_if_player_is_disqualified(user.tournament_username):
+			tournamentJSON = {"id": tournament.id, "name": tournament.name, "max_players": tournament.max_players,
+							"participants": [p.username for p in tournament.participants.all()]}
+			return JsonResponse({"message": "User has joined a tournament.", "tournament": tournamentJSON, "joined": True},
+						status=200)
+	return JsonResponse({"message": "User has joined a tournament.", "joined": False}, status=200)

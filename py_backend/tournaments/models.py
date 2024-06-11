@@ -29,6 +29,7 @@ class Tournament(models.Model):
 	max_players = models.IntegerField(validators=[MinValueValidator(2), MaxValueValidator(32)])
 	participants = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='joined_tournaments', blank=True)
 	started = models.BooleanField(default=False)
+	finished = models.BooleanField(default=False)
 	matchups = models.ManyToManyField(TournamentMatch, blank=True)
 	max_round = models.IntegerField(default=1)
 	current_round = models.IntegerField(default=1)

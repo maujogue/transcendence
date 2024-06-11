@@ -3,7 +3,7 @@ import { returnToMenu } from "./createEndScreen.js";
 import { getUserData } from "../User.js";
 import { createOnlineSelectMenu } from "./online.js";
 import { createTournamentDiv } from "./menu.js";
-import { drawBracket} from "./createBracket.js";
+import { createLeaveButton, drawBracket} from "./createBracket.js";
 
 export let wsTournament
 let userData;
@@ -61,7 +61,7 @@ function displayEndTournamentScreen(data) {
         createTournamentDiv();
     const tournamentDiv = document.getElementsByClassName("tournament")[0];
     tournamentDiv.innerHTML = `<h1 class="won-title">${data.winner} won the tournament!</h1>`;
-    createUnsubscribeButton(tournamentDiv);
+    createLeaveButton(tournamentDiv);
     createShowBracketButton(tournamentDiv);
 }
 

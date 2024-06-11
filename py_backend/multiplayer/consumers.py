@@ -13,6 +13,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         return self.is_connected
 
     async def send_player_data(self):
+        if not self.check_if_user_is_connected():
+            return
         await self.send(text_data=json.dumps({
             'type': 'player_data',
             'name': self.player.name,
@@ -66,7 +68,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.countExchange = 0
         self.lobby = await self.join_lobby()
         if not self.lobby or self.lobby.connected_user >= 2:
-            return await self.close()
+            raise Exception("Lobby is full")
         self.lobby_name = self.lobby.uuid
         self.ball = Ball()
         await self.create_player()
@@ -89,12 +91,16 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
 
     async def connect(self):
-        await self.set_environment()
-        await self.accept()
-        await self.send_player_data()
-        if self.lobby.connected_user == 2:
-            await self.ask_opponent()
-            await self.startGame()
+        try:
+            await self.set_environment()
+            await self.accept()
+            await self.send_player_data()
+            if self.lobby.connected_user == 2:
+                await self.ask_opponent()
+                await self.startGame()
+        except Exception as e:
+            print("Error: ", e)
+            await self.close()
             
     async def authenticate_user_with_username(self, username):
         try:
@@ -157,14 +163,13 @@ class PongConsumer(AsyncWebsocketConsumer):
                 await self.getPlayerMove(text_data_json)
 
     async def disconnect(self, close_code):
-        print(self.player.name, ": Disconnected")
-        self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
-
         if self.is_connected == False:
             print("Not connected")
             return
+        self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
         self.is_connected = False
         try:
+            print(self.player.name, ": Disconnected")
             print("Disconnecting user")
             await self.lobby.disconnectUser(self.player)
             await self.channel_layer.group_send(
@@ -292,7 +297,9 @@ class PongConsumer(AsyncWebsocketConsumer):
             await self.collision(self.opp)
 
     async def setGameOver(self):
-        if self.player.name == 'player1':
+        print("Game Over")
+        self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
+        if self.player.name == 'player1' or self.lobby.player1Present == False:
             await self.createHistoryMatch()
             await self.lobby.stopGame()
         await self.channel_layer.group_send(
@@ -374,6 +381,7 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def pong_status(self, event):
         if not self.check_if_user_is_connected():
             return
+        print("Status: ", event["status"])
         message = event["message"]
         name = event["name"]
         status = event["status"]   

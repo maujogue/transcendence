@@ -75,6 +75,7 @@ function handlerPlayerDisconnect(data, env, webSocket) {
 }
 
 export function handlerStatusMessage(data, webSocket, env, status) {
+    console.log("status", data);
     if (data['status'] == 'disconnected')
         handlerPlayerDisconnect(data, env, webSocket);
     if (data['status'] == 'stop')

@@ -23,6 +23,9 @@ class GetUserDatas(TestCase):
             reverse('login'), 
             data=json.dumps(user), 
             content_type='application/json')
+        
+        self.user.email_is_verified = True
+        self.user.save()
         self.user.refresh_from_db()
 
     def test_basic_get_user_data(self):
@@ -33,8 +36,8 @@ class GetUserDatas(TestCase):
 
     def test_get_user_data(self):
         response = self.client.post(
-            reverse('get_user_data'),
-            content_type='application/json')
+            reverse('get_user_data'))
+        
         response_data = response.json()
 
         encoded_string = convert_image_to_base64(self.user.avatar)

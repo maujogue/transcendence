@@ -59,7 +59,7 @@ function displayEndTournamentScreen(data) {
     if (!document.getElementsByClassName("tournament")[0])
         createTournamentDiv();
     const tournamentDiv = document.getElementsByClassName("tournament")[0];
-    tournamentDiv.innerHTML = `<h1>${data.winner} won the tournament!</h1>`;
+    tournamentDiv.innerHTML = `<h1 class="won-title">${data.winner} won the tournament!</h1>`;
     createUnsubscribeButton(tournamentDiv);
     createShowBracketButton(tournamentDiv);
 }

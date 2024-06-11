@@ -198,6 +198,16 @@ h1 {
 	border-radius: 20px;
 }
 
+.show-bracket-btn {
+	position: absolute;
+    bottom: 0;
+    left: 0;
+    margin: 5.5%;
+    font-size: 1em;
+    z-index: 1;
+    padding: 1%;
+}
+
 /* .crt {
     border-radius: 20px;
 	animation: textShadow 1.6s infinite;

@@ -11,8 +11,6 @@ export async function init() {
 		return;
 
 	const currentUserUsername = await getUserData('username');
-	console.log('------');
-	console.log(currentUserUsername);
 	let message_auth = {
 		type: 'auth',
 		username: currentUserUsername,

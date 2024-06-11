@@ -6,12 +6,7 @@ import json
 class FriendsConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
-        self.group_name = 'friend_request'
 
-        await self.channel_layer.group_add(
-            self.group_name,
-            self.channel_name,
-        )
         await self.accept()
 
     async def disconnect(self, exit_code):
@@ -23,29 +18,38 @@ class FriendsConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         data = json.loads(text_data)
         message_type = data.get('type')
-        
-        print('\n--------')
-        print(message_type)
 
-        if message_type == 'auth':
-            print('ptdr')
+        if message_type == 'auth':            
+
             username = data.get('username')
-            await self.authenticate_user(username) 
+            await self.authenticate_user(username)
+            await self.channel_layer.group_add(
+                self.scope['user'].username,
+                self.channel_name)
+
         if message_type == 'friend_request':
             from_user = data.get('from_user')
             to_user = data.get('to')
+
+            await self.channel_layer.group_add(
+                data.get('to'),
+                self.channel_name,
+            )
+
             await self.channel_layer.group_send(
-                self.group_name,
+                data.get('to'),
                 {'type': 'send_friend_request_notification',
                 'from_user': from_user,
                 'to': to_user})
+
             
     async def send_friend_request_notification(self, event):
-        await self.send(text_data=json.dumps({
-            'type': 'friend_request',
-            'from_user': event['from_user'],
-            'to': event['to'],
-            }))
+        if self.scope['user'].username == event['to']:
+            await self.send(text_data=json.dumps({
+                'type': 'friend_request',
+                'from_user': event['from_user'],
+                'to': event['to'],
+                }))
 
     async def authenticate_user_with_username(self, username):
         try:
@@ -61,4 +65,3 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({ "type": "auth", "status": "success"}))
         else:
             await self.send(text_data=json.dumps({ "type": "auth", "status": "failed"}))
-        print(self.scope['user'])

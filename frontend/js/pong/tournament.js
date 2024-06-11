@@ -7,10 +7,12 @@ import { drawBracket} from "./createBracket.js";
 
 export let wsTournament
 let userData;
+let currentTournament;
 
 export async function connectToTournament(tournament) {
     try {
         console.log("Connecting to tournament:", tournament);
+        currentTournament = tournament;
         wsTournament = new WebSocket(`ws://127.0.0.1:8080/ws/tournament/${tournament.id}/`);
     
         wsTournament.onopen = () => {
@@ -85,8 +87,9 @@ async function sendUsername() {
 
 
 
-export async function unsubscribeFromTournament(tournament) {
-    fetch(`https://127.0.0.1:8000/api/tournament/${tournament.id}/quit/`, {
+export async function unsubscribeFromTournament() {
+    console.log("Unsubscribing from tournament: ", currentTournament);
+    fetch(`https://127.0.0.1:8000/api/tournament/${currentTournament.id}/quit/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -156,12 +159,7 @@ function ask_bracket() {
 export function createUnsubscribeButton(parent) {
     const unsubscribeBtn = document.createElement("button");
     unsubscribeBtn.textContent = "Unsubscribe";
-    unsubscribeBtn.onclick = () => {
-        checkIfUserIsInTournament(userData).then((response) => {
-            if (response && response['joined'])
-                unsubscribeFromTournament(response['tournament']);
-        })
-    }
+    unsubscribeBtn.onclick = () => unsubscribeFromTournament();
     unsubscribeBtn.className = "unsubscribe-btn tournament-btn";
     parent.appendChild(unsubscribeBtn);
 }

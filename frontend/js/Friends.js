@@ -33,6 +33,7 @@ async function sendFriendsWebSocketMessage(message) {
             }));
         }
         if (message.type === 'friend_request') {
+            showAlert("You just send a friend request to " + message.to_user + "  !", true);
             wsFriends.send(JSON.stringify({
                 'type': message.type,
                 'from_user': message.from_user,

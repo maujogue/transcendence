@@ -186,6 +186,20 @@ h1 {
 	right: 0;
 }
 
+.ranking {
+	align-self: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    font-size: 1.1em;
+    background: beige;
+    margin: 1% 6%;
+    padding: 5%;
+    width: 100%;
+    height: 68%;
+}
+
 .crt-effect {
 	position: absolute;
 	top: 0;

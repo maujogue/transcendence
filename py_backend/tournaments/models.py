@@ -108,6 +108,21 @@ class Tournament(models.Model):
 			bracket["tournament"]["rounds"].append(round_info)
 		return bracket
 
+	def get_ranking(self):
+		ranking = {}
+		for player in self.participants.all():
+			player_username = player.tournament_username
+			player_score = 0
+			player_matches = self.matchups.filter(
+				(models.Q(player1=player_username) | models.Q(player2=player_username)),
+				finished=True
+			)
+			for match in player_matches:
+				if match.winner == player_username:
+					player_score += 1
+			ranking[player_username] = player_score
+		return ranking
+	
 	def check_if_player_is_in_match(self, username):
 		match = self.get_matches_by_player(username)
 		if match and not match.finished:
@@ -118,7 +133,6 @@ class Tournament(models.Model):
 		winner = self.matchups.filter(round=self.max_round).first().winner
 		return winner
 	
-
 	def get_round_name(self, round_number):
 		if round_number == self.max_round:
 			return "Finale"

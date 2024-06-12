@@ -289,7 +289,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 await self.send(text_data=json.dumps({'type': 'status', 'status': 'disqualified'}))
         elif event['status'] == 'endTournament':
             winner = await sync_to_async(self.tournament.get_winner)()
-            await self.send(text_data=json.dumps({'type': 'status', 'status': 'endTournament', 'winner': winner}))
+            ranking = await sync_to_async(self.tournament.get_ranking)()
+            print('endTournament: ', ranking)
+            await self.send(text_data=json.dumps({'type': 'status', 'status': 'endTournament', 'winner': winner, 'ranking': ranking}))
         else:
             await self.send(text_data=json.dumps({'type': 'status', 'status': event['status']}))
 

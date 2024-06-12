@@ -61,8 +61,24 @@ function displayEndTournamentScreen(data) {
         createTournamentDiv();
     const tournamentDiv = document.getElementsByClassName("tournament")[0];
     tournamentDiv.innerHTML = `<h1 class="won-title">${data.winner} won the tournament!</h1>`;
+    displayTournamentRanking(data.ranking);
     createLeaveButton(tournamentDiv);
     createShowBracketButton(tournamentDiv);
+}
+
+function displayTournamentRanking(ranking) {
+    const rankingDiv = document.createElement("div");
+    rankingDiv.className = "ranking";
+    rankingDiv.innerHTML = "<h2>Ranking</h2>";
+    let pos = 1;
+    for (let key in ranking) {
+        console.log(`${pos}: ${key}`);
+        const div = document.createElement("div");
+        div.textContent = `${pos}: ${key}`;
+        rankingDiv.appendChild(div);
+        pos++;
+    }
+    document.getElementsByClassName("tournament")[0].appendChild(rankingDiv);
 }
 
 function displayPlayerList(participants) {

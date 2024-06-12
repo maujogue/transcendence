@@ -7,6 +7,12 @@ import { displayErrorPopUp } from './tournament.js';
 import { wsTournament } from './tournament.js';
 import { updateModule } from '../Modules.js';
 
+function checkIfWebsocketIsOpen(webSocket) {
+    if (webSocket && webSocket.readyState == webSocket.OPEN)
+        return true;
+    return false;
+}
+
 
 export function setBallData(data, env) {
     if (!env.ball)
@@ -36,7 +42,7 @@ function handlerStopGame(webSocket, env, message) {
     console.log("handlerStopGame");
     displayErrorPopUp(message, document.getElementById("hud"));
     document.getElementById("errorPopUp").classList.add("match-error");
-    if (wsTournament) {
+    if (checkIfWebsocketIsOpen(wsTournament)) {
         wsTournament.send(JSON.stringify({
             'type': 'status',
             'status': 'endGame'
@@ -44,17 +50,11 @@ function handlerStopGame(webSocket, env, message) {
     }
     webSocket.close();
     document.getElementById("PopUpCloseIcon").addEventListener("click", () => {
-        if (wsTournament)
+        if (checkIfWebsocketIsOpen(wsTournament))
             removeGameScreen(env);
         else
             displayMainMenu();
     });
-}
-
-function checkIfWebsocketIsOpen(webSocket) {
-    if (webSocket && webSocket.readyState == webSocket.OPEN)
-        return true;
-    return false;
 }
 
 async function handlerEndGame(data, env, webSocket) {

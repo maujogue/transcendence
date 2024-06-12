@@ -56,6 +56,9 @@ async function printNotification(data) {
     if (data.type === 'user_exist' && data.status === 'failure') {
         showAlert("This user does not exist.", false)
     }
+    if (data.type === 'already_friends') {
+        showAlert("You are already friends with " + data.to_user + " !", false)
+    }
 }
 
 export { sendFriendsWebSocketMessage };

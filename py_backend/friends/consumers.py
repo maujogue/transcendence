@@ -30,6 +30,9 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         if message_type == 'friend_request':
             await self.friend_request(data)
 
+        if message_type == 'accept_request':
+            await self.accept_request(data)
+
 
 
 
@@ -51,21 +54,41 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         if user is None:
             await self.send(text_data=json.dumps({ "type": "user_exist", "status": "failure"}))
             return
-
+        
+        request = await sync_to_async(InteractionRequest.objects.create)(from_user=from_user, to_user=to_user)
+        isFriend = await sync_to_async(request.isFriend)()
+        if isFriend:
+            await self.send(text_data=json.dumps({ "type": "already_friends", "to_user": to_user}))
+            #delete request
+            return
+        
         await self.channel_layer.group_add(
-            data.get('to_user'),
+            to_user,
             self.channel_name,)
         await self.channel_layer.group_send(
-            data.get('to_user'),
+            to_user,
             {'type': 'send_notification',
             'from_user': from_user,
             'to_user': to_user})
         
-        await sync_to_async(InteractionRequest.objects.create)(from_user=from_user, to_user=to_user)
-        req = await self.get_request_from_user(to_user)
-        print(req)
+
+        await self.accept_request(data)
 
     
+    async def accept_request(self, data):
+        requests = await self.get_request_from_user(data.get('to_user'))
+
+        if data.get('from_user') not in requests:
+            await self.send(text_data=json.dumps({ "type": "accept_request", "status": "failure"}))
+            return
+        
+        from_user = await sync_to_async(CustomUser.objects.get)(username=data.get('from_user'))
+        to_user = await sync_to_async(CustomUser.objects.get)(username=data.get('to_user'))
+
+        await sync_to_async(from_user.friends.add)(to_user)
+        await sync_to_async(to_user.friends.add)(from_user)
+    
+
     async def send_notification(self, event):
         if self.scope['user'].username == event['to_user']:
             await self.send(text_data=json.dumps({

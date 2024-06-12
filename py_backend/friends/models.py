@@ -8,4 +8,6 @@ class InteractionRequest(models.Model):
     to_user = models.CharField(max_length=settings.MAX_LEN_USERNAME, unique=False, default='')
 
     def isFriend(self):
-        return self.to_user.friends.filter(id=self.from_user.id).exists() or self.from_user.friends.filter(id=self.to_user.id).exists()
+        from_user = CustomUser.objects.get(username=self.from_user)
+        to_user = CustomUser.objects.get(username=self.to_user)
+        return from_user.friends.filter(username=to_user.username).exists()

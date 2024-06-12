@@ -54,13 +54,16 @@ function createBracketCanvas() {
     canvas.id = 'bracketCanvas';
     canvas.width = 800;
     canvas.height = 600;
-    createLeaveButton(document.getElementsByClassName('tournament')[0]);
     document.getElementsByClassName('tournament')[0]?.appendChild(canvas);
 }
 
 export function drawBracket(bracket) {
     console.log("Drawing bracket: ", bracket);
-    createBracketCanvas();
+    const tournamentName = document.createElement('h1');
+    tournamentName.textContent = bracket.tournament.name;
+    document.getElementsByClassName('tournament')[0].appendChild(tournamentName);
+    createLeaveButton(document.getElementsByClassName('tournament')[0]);
+    createBracketCanvas(bracket.tournament.name);
     canvas = document.getElementById('bracketCanvas');
     ctx = canvas.getContext('2d');
     ctx.font = '12px Arial';

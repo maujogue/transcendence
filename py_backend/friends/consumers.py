@@ -36,7 +36,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             await self.friend_request(data)
 
 
-    async def send_friend_request_notification(self, event):
+    async def send_notification(self, event):
         if self.scope['user'].username == event['to_user']:
             await self.send(text_data=json.dumps({
                 'type': 'friend_request',
@@ -77,17 +77,24 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             self.channel_name,)
         await self.channel_layer.group_send(
             data.get('to_user'),
-            {'type': 'send_friend_request_notification',
+            {'type': 'send_notification',
             'from_user': from_user,
             'to_user': to_user})
         
-        from_user_instance, _ = await sync_to_async(CustomUser.objects.get_or_create)(username=from_user)
-        to_user_instance, _ = await sync_to_async(CustomUser.objects.get_or_create)(username=to_user)
-        await sync_to_async(InteractionRequest.objects.create)(from_user=from_user_instance, to_user=to_user_instance)
+        await sync_to_async(InteractionRequest.objects.create)(from_username=from_user, to_username=to_user)
+        await self.get_request_from_user(to_user)
+
+    
+    async def get_request_from_user(self, to_username):
+        all_requests = await sync_to_async(InteractionRequest.objects.all)()
+        requests =  await sync_to_async(all_requests.filter)(to_username=to_username)
+
+        # await sync_to_async(print)(all_requests)
+        await sync_to_async(print)(requests)
+
         
-        # await self.channel_layer.group_discard(
-        #     data.get('to'),
-        #     self.channel_name,
-        # )
+
+
+
 
             

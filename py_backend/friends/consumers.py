@@ -9,7 +9,6 @@ import json
 class FriendsConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
-        print('connect')
         await self.accept()
 
 
@@ -25,6 +24,8 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         message_type = data.get('type')
 
+        # print('data =', data)
+
         if message_type == 'auth':
             username = data.get('username')
             await self.authenticate_user(username)
@@ -39,11 +40,11 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
 
     async def send_friend_request_notification(self, event):
-        if self.scope['user'].username == event['to']:
+        if self.scope['user'].username == event['to_user']:
             await self.send(text_data=json.dumps({
                 'type': 'friend_request',
                 'from_user': event['from_user'],
-                'to': event['to'],
+                'to_user': event['to_user'],
                 }))
 
 
@@ -66,35 +67,29 @@ class FriendsConsumer(AsyncWebsocketConsumer):
     
     async def friend_request(self, data):
         from_user = data.get('from_user')
-        to_user = data.get('to')
+        to_user = data.get('to_user')
 
-        print(to_user)
-        if not await self.user_exist(to_user):
+        user = await self.authenticate_user_with_username(to_user)
+
+        if user is None:
             await self.send(text_data=json.dumps({ "type": "user_exist", "status": "failure"}))
             return
 
         await self.channel_layer.group_add(
-            data.get('to'),
+            data.get('to_user'),
             self.channel_name,)
 
         # InteractionRequest.objects.create(from_user=from_user, to_user=to_user)
 
         await self.channel_layer.group_send(
-            data.get('to'),
+            data.get('to_user'),
             {'type': 'send_friend_request_notification',
             'from_user': from_user,
-            'to': to_user})
+            'to_user': to_user})
         
         # await self.channel_layer.group_discard(
         #     data.get('to'),
         #     self.channel_name,
         # )
-
-    async def user_exist(self, username):
-        response = CustomUser.objects.filter(username=username).exists()
-        if response == False:
-            return False
-        return True
-        
 
             

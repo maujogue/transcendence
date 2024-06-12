@@ -2,7 +2,7 @@ import { getModuleDiv } from "../../Modules.js";
 import { runEndPoint } from "../../ApiUtils.js"
 import { showAlert, disableCollapsedSidebar } from "../../Utils.js";
 import { checkInputAvailable } from "../../ApiCalls.js";
-import { sendWebSocketMessage } from "../../Friends.js";
+import { sendFriendsWebSocketMessage } from "../../Friends.js";
 import { getUserData } from "../../User.js";
 
 export async function init() {
@@ -15,7 +15,7 @@ export async function init() {
 		type: 'auth',
 		username: currentUserUsername,
 	}
-	
+
 	var friendScroll = module.querySelector("#friendScroll");
 	var searchFriendForm = module.querySelector("#searchFriendForm");
 	searchFriendForm.addEventListener("submit", (event) => {
@@ -37,18 +37,17 @@ export async function init() {
 		const fetchBody = {
 			username: userData.get("username"),
 		};
-		console.log(searchFriendForm, fetchBody["username"]);
 
-		console.log('sendFriendRea');
 		sendFriendRequest(fetchBody.username);
 	}
-
+	
 	async function sendFriendRequest(username){
 		let message = {
-			'type': 'user_exist',
-			'username': username,
+			'type': 'friend_request',
+			'from_user': currentUserUsername,
+			'to_user': username,
 		}
-		sendWebSocketMessage(message);
+		sendFriendsWebSocketMessage(message);
 	}
 
 	// async function getFriendName(username){

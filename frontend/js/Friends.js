@@ -24,9 +24,8 @@ export async function friendsWebsocket(username) {
     };    
 }
 
-async function sendwsFriendsMessage(message) {
+async function sendFriendsWebSocketMessage(message) {
     if (wsFriends && wsFriends.readyState === wsFriends.OPEN) {
-
         if (message.type === 'auth') {
             wsFriends.send(JSON.stringify({
                 'type': message.type,
@@ -37,13 +36,7 @@ async function sendwsFriendsMessage(message) {
             wsFriends.send(JSON.stringify({
                 'type': message.type,
                 'from_user': message.from_user,
-                'to': message.to,
-            }));
-        }
-        if (message.type === 'user_exist') {
-            wsFriends.send(JSON.stringify({
-                'type': message.type,
-                'username': message.username,
+                'to_user': message.to_user,
             }));
         }
 
@@ -52,4 +45,4 @@ async function sendwsFriendsMessage(message) {
     }
 }
 
-export { sendWebSocketMessage };
+export { sendFriendsWebSocketMessage };

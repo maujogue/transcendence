@@ -145,7 +145,7 @@ export function displayErrorPopUp (message, parent) {
 export function createShowBracketButton(parent) {
     const seeBracketBtn = document.createElement("button");
     seeBracketBtn.textContent = "Show bracket";
-    seeBracketBtn.className = "show-bracket-btn tournament-btn";
+    seeBracketBtn.className = "show-bracket-btn end-tournament-btn tournament-btn";
     parent.appendChild(seeBracketBtn);
     seeBracketBtn.onclick = () => ask_bracket();
 }

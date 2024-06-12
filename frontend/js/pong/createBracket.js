@@ -105,7 +105,11 @@ export function drawBracket(bracket) {
 } 
 
 export function createLeaveButton(parent) {
-    parent.innerHTML += '<i class="fa-solid fa-xmark close-icon icon" id="leaveTournament"></i>'
+    const btn = document.createElement('button');
+    btn.id = 'leaveTournament';
+    btn.classList.add('tournament-btn', 'leave-tournament-btn', 'end-tournament-btn');
+    btn.textContent = 'Exit';
+    parent.appendChild(btn);
     document.getElementById('leaveTournament').addEventListener('click', () => {
         if (wsTournament)
             wsTournament.close();

@@ -199,13 +199,26 @@ h1 {
 }
 
 .show-bracket-btn {
-	position: absolute;
-    bottom: 0;
+	bottom: 0;
     left: 0;
-    margin: 5.5%;
-    font-size: 1em;
-    z-index: 1;
-    padding: 1%;
+}
+
+.end-tournament-btn {
+	position: absolute;
+	margin: 5.5%;
+	font-size: 1em;
+	z-index: 1;
+	padding: 1%;
+}
+
+.end-tournament-btn:hover {
+	box-shadow: 2px 2px 25px 2px rgb(255, 255, 255);
+}
+
+.leave-tournament-btn {
+	bottom: 0;
+	right: 0;
+	width: 15%;
 }
 
 /* .crt {

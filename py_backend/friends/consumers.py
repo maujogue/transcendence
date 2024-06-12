@@ -24,8 +24,6 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         message_type = data.get('type')
 
-        # print('data =', data)
-
         if message_type == 'auth':
             username = data.get('username')
             await self.authenticate_user(username)
@@ -36,7 +34,6 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
         if message_type == 'friend_request':
             await self.friend_request(data)
-
 
 
     async def send_friend_request_notification(self, event):
@@ -78,14 +75,15 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add(
             data.get('to_user'),
             self.channel_name,)
-
-        # InteractionRequest.objects.create(from_user=from_user, to_user=to_user)
-
         await self.channel_layer.group_send(
             data.get('to_user'),
             {'type': 'send_friend_request_notification',
             'from_user': from_user,
             'to_user': to_user})
+        
+        from_user_instance, _ = await sync_to_async(CustomUser.objects.get_or_create)(username=from_user)
+        to_user_instance, _ = await sync_to_async(CustomUser.objects.get_or_create)(username=to_user)
+        await sync_to_async(InteractionRequest.objects.create)(from_user=from_user_instance, to_user=to_user_instance)
         
         # await self.channel_layer.group_discard(
         #     data.get('to'),

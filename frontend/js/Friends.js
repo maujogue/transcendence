@@ -18,8 +18,9 @@ export async function friendsWebsocket(username) {
         if (data.type === 'friend_request') {
             showAlert("You just receive a friend request from " + data.from_user + " !", true);
         }
-        if (data.type === 'user_exist') {
-            showAlert("This user does not exist.")
+        if (data.type === 'user_exist' && data.status === 'failure') {
+            console.log('<');
+            showAlert("This user does not exist.", false)
         }
     };    
 }

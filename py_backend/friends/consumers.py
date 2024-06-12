@@ -81,15 +81,14 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'from_user': from_user,
             'to_user': to_user})
         
-        await sync_to_async(InteractionRequest.objects.create)(from_username=from_user, to_username=to_user)
+        await sync_to_async(InteractionRequest.objects.create)(from_user=from_user, to_user=to_user)
         await self.get_request_from_user(to_user)
 
     
-    async def get_request_from_user(self, to_username):
+    async def get_request_from_user(self, to_user):
         all_requests = await sync_to_async(InteractionRequest.objects.all)()
-        requests =  await sync_to_async(all_requests.filter)(to_username=to_username)
+        requests =  await sync_to_async(all_requests.filter)(to_user=to_user)
 
-        # await sync_to_async(print)(all_requests)
         await sync_to_async(print)(requests)
 
         

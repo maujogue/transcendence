@@ -15,11 +15,13 @@ export async function friendsWebsocket(username) {
     wsFriends.onmessage = (event) => {
         const data = JSON.parse(event.data);
 
-        if (data.type === 'friend_request') {
+        if (data.type === 'friend_request_to_user') {
             showAlert("You just receive a friend request from " + data.from_user + " !", true);
         }
+        if (data.type === 'friend_request_from_user') {
+            showAlert("You just send a friend request to " + data.to_user + " !", true);
+        }
         if (data.type === 'user_exist' && data.status === 'failure') {
-            console.log('<');
             showAlert("This user does not exist.", false)
         }
     };    
@@ -28,23 +30,29 @@ export async function friendsWebsocket(username) {
 async function sendFriendsWebSocketMessage(message) {
     if (wsFriends && wsFriends.readyState === wsFriends.OPEN) {
         if (message.type === 'auth') {
-            wsFriends.send(JSON.stringify({
-                'type': message.type,
-                'username': message.username,
-            }));
+            auth(message.username);
         }
         if (message.type === 'friend_request') {
-            showAlert("You just send a friend request to " + message.to_user + "  !", true);
-            wsFriends.send(JSON.stringify({
-                'type': message.type,
-                'from_user': message.from_user,
-                'to_user': message.to_user,
-            }));
+            friendRequest(message);
         }
-
     } else {
         console.error('WebSocket is not open');
     }
+}
+
+async function auth(username) {
+    wsFriends.send(JSON.stringify({
+        'type': message.type,
+        'username': message.username,
+    }));
+}
+
+async function friendRequest(message) {
+    wsFriends.send(JSON.stringify({
+        'type': message.type,
+        'from_user': message.from_user,
+        'to_user': message.to_user,
+    }));
 }
 
 export { sendFriendsWebSocketMessage };

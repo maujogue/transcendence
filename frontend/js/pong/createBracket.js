@@ -5,7 +5,7 @@ import { wsTournament } from "./tournament.js";
 let canvas;
 let ctx;
 const startX = 75;
-const startY = 0;
+const startY = 20;
 const boxWidth = 125;
 const boxHeight = 44;
 const horizontalSpacing = 175;
@@ -80,11 +80,14 @@ export function drawBracket(bracket) {
         const roundX = startX + roundIndex * horizontalSpacing;
         const prevRoundX = (startX + (roundIndex - 1) * horizontalSpacing) + boxWidth;
 
+        ctx.font = '20px Arial';
+        ctx.fillStyle = 'black';
+        ctx.fillText(round.name, roundX + (boxHeight / 2), startY);
         round.matches.forEach((match, matchIndex) => {
             let matchY;
 
             if (roundIndex === 0)
-                matchY = startY + matchIndex * (boxHeight + verticalSpacing);
+                matchY = (startY + 40) + matchIndex * (boxHeight + verticalSpacing);
             else {
                 verticalSpacing = prevRoundMatchesPosY[indexMatchesPosY + 1] - (prevRoundMatchesPosY[indexMatchesPosY] + boxHeight);
                 const twoBoxHeight = (boxHeight * 2) + (verticalSpacing / 2);

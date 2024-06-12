@@ -133,7 +133,7 @@ export function displayErrorPopUp (message, parent) {
     errorPopUp.id = "errorPopUp";
     errorPopUp.className = "error-pop-up";
     errorPopUp.innerHTML = ` \
-    <i id="PopUpCloseIcon" class="fa-solid fa-xmark close-icon"></i> \
+    <i id="PopUpCloseIcon" class="fa-solid fa-xmark close-icon icon"></i> \
     <p>${message}</p> `;
     parent.appendChild(errorPopUp);
     document.getElementById("PopUpCloseIcon").addEventListener("click", () => {

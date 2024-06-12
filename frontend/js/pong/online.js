@@ -262,7 +262,6 @@ async function setGameIsStart() {
             env = await initGame(player, opp);
         else
             env = await initGame(opp, player);
-        createHUD(player, opp);
         status.gameIsInit = false;
         status.start = true;
     }

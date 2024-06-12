@@ -1,5 +1,6 @@
 import { displayMainMenu } from "./menu.js";
 import { createUnsubscribeButton } from "./tournament.js";
+import { wsTournament } from "./tournament.js";
 
 let canvas;
 let ctx;
@@ -106,6 +107,8 @@ export function drawBracket(bracket) {
 export function createLeaveButton(parent) {
     parent.innerHTML += '<i class="fa-solid fa-xmark close-icon icon" id="leaveTournament"></i>'
     document.getElementById('leaveTournament').addEventListener('click', () => {
+        if (wsTournament)
+            wsTournament.close();
         displayMainMenu();
     });
 }

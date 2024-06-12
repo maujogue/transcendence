@@ -36,18 +36,19 @@ function handlerStopGame(webSocket, env, message) {
     console.log("handlerStopGame");
     displayErrorPopUp(message, document.getElementById("hud"));
     document.getElementById("errorPopUp").classList.add("match-error");
+    if (wsTournament) {
+        wsTournament.send(JSON.stringify({
+            'type': 'status',
+            'status': 'endGame'
+        }));
+    }
+    webSocket.close();
     document.getElementById("PopUpCloseIcon").addEventListener("click", () => {
-        removeGameScreen(env);
-        if (wsTournament) {
-            wsTournament.send(JSON.stringify({
-                'type': 'status',
-                'status': 'endGame'
-            }));
-        }
+        if (wsTournament)
+            removeGameScreen(env);
         else
             displayMainMenu();
     });
-    webSocket.close();
 }
 
 async function handlerEndGame(data, env, webSocket) {

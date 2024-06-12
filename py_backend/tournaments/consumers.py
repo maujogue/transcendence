@@ -52,13 +52,14 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
 
     async def handler_status(self, status):
-        print('status: ', status)
+        print('tournament status: ', status)
         if status == 'endGame':
             await self.endGame()
 
     async def endGame(self):
         if not await self.validate_foreign_keys():
             return
+        print('tournament: endGame')
         await self.set_match_info()
         await self.match_is_over()
         print(f'{self.scope["user"].tournament_username} match is over, {self.match.winner} wins!')
@@ -70,6 +71,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
 
     async def match_is_over(self):
+        print('match is over')
         self.match.finished = True
         await self.match.asave()
 
@@ -114,7 +116,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def set_match_info(self):
         print('setting match info')
         try:
-            match = await Match.objects.aget(uuid=self.match.lobby_id)
+            match = await Match.objects.aget(lobby_id=str(self.match.lobby_id))
             self.match.player1 = match.player1
             self.match.player2 = match.player2
             self.match.score_player_1 = match.player1_score
@@ -124,7 +126,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.match.asave()
             await self.send_disqualified(loser)
         except Match.DoesNotExist:
-            print("Match does not exist")
+            print("set match info: Match does not exist")
             return
         
     async def launch_tournament(self):

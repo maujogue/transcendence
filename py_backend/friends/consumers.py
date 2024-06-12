@@ -1,7 +1,7 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from users.models import CustomUser
 from friends.models import InteractionRequest
-from users.utils import username_is_unique
+from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async
 import json
 
@@ -62,7 +62,8 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'to_user': to_user})
         
         await sync_to_async(InteractionRequest.objects.create)(from_user=from_user, to_user=to_user)
-        await self.get_request_from_user(to_user)
+        req = await self.get_request_from_user(to_user)
+        print(req)
 
     
     async def send_notification(self, event):
@@ -78,13 +79,6 @@ class FriendsConsumer(AsyncWebsocketConsumer):
                 'from_user': event['from_user'],
                 'to_user': event['to_user'],
                 }))
-            
-    
-    async def get_request_from_user(self, to_user):
-        all_requests = await sync_to_async(InteractionRequest.objects.all)()
-        requests =  await sync_to_async(all_requests.filter)(to_user=to_user)
-
-        await sync_to_async(print)(requests)
 
     
     async def authenticate_user_with_username(self, username):
@@ -102,3 +96,9 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({ "type": "auth", "status": "success"}))
         else:
             await self.send(text_data=json.dumps({ "type": "auth", "status": "failed"}))
+
+    @database_sync_to_async
+    def get_request_from_user(self, to_user):
+        all_requests = InteractionRequest.objects.all()
+        requests = all_requests.filter(to_user=to_user)
+        return [r.from_user for r in requests]

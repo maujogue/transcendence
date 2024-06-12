@@ -14,16 +14,7 @@ export async function friendsWebsocket(username) {
 
     wsFriends.onmessage = (event) => {
         const data = JSON.parse(event.data);
-
-        if (data.type === 'friend_request_to_user') {
-            showAlert("You just receive a friend request from " + data.from_user + " !", true);
-        }
-        if (data.type === 'friend_request_from_user') {
-            showAlert("You just send a friend request to " + data.to_user + " !", true);
-        }
-        if (data.type === 'user_exist' && data.status === 'failure') {
-            showAlert("This user does not exist.", false)
-        }
+        printNotification(data);
     };    
 }
 
@@ -53,6 +44,18 @@ async function friendRequest(message) {
         'from_user': message.from_user,
         'to_user': message.to_user,
     }));
+}
+
+async function printNotification(data) {
+    if (data.type === 'friend_request_to_user') {
+        showAlert("You just receive a friend request from " + data.from_user + " !", true);
+    }
+    if (data.type === 'friend_request_from_user') {
+        showAlert("You just send a friend request to " + data.to_user + " !", true);
+    }
+    if (data.type === 'user_exist' && data.status === 'failure') {
+        showAlert("This user does not exist.", false)
+    }
 }
 
 export { sendFriendsWebSocketMessage };

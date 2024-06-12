@@ -51,10 +51,16 @@ function handlerStopGame(webSocket, env, message) {
     });
 }
 
+function checkIfWebsocketIsOpen(webSocket) {
+    if (webSocket && webSocket.readyState == webSocket.OPEN)
+        return true;
+    return false;
+}
+
 async function handlerEndGame(data, env, webSocket) {
-    if (!document.getElementById("endscreen") && !wsTournament)
+    if (!document.getElementById("endscreen") && !checkIfWebsocketIsOpen(wsTournament))
         createEndScreen(data['name']);
-    if (wsTournament) {
+    if (checkIfWebsocketIsOpen(wsTournament)) {
         wsTournament.send(JSON.stringify({
             'type': 'status',
             'status': 'endGame'

@@ -166,11 +166,10 @@ class PongConsumer(AsyncWebsocketConsumer):
         if self.is_connected == False:
             print("Not connected")
             return
-        self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
-        self.is_connected = False
         try:
             print(self.player.name, ": Disconnected")
-            print("Disconnecting user")
+            self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
+            self.is_connected = False
             await self.lobby.disconnectUser(self.player)
             await self.channel_layer.group_send(
                 self.lobby_group_name, {  'type': 'pong.status', 'status': 'disconnected', 'message': f"{self.scope['user']} left the game", 'name': self.player.name}
@@ -185,8 +184,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                 self.lobby_group_name,
                 self.channel_name
             )
-            self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
-            print("Connected users: ", self.lobby.connected_user)
             if self.lobby.connected_user == 0:
                 await self.close_lobby()
         except Exception as e:

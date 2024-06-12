@@ -5,6 +5,7 @@ from asgiref.sync import sync_to_async
 
 from users.models import CustomUser
 from stats.models import Match
+from multiplayer.models import Lobby
 from .models import Tournament, TournamentMatch
 from .bracket import generate_bracket
 
@@ -125,8 +126,18 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             loser = match.player1 if match.winner == match.player2 else match.player2
             await self.match.asave()
             await self.send_disqualified(loser)
+            await self.remove_lobby()
         except Match.DoesNotExist:
             print("set match info: Match does not exist")
+            return
+        
+    async def remove_lobby(self):
+        try:
+            lobby = await Lobby.objects.aget(pk=self.match.lobby_id)
+            await lobby.adelete()
+            print('lobby deleted')
+        except Lobby.DoesNotExist:
+            print("lobby does not exist")
             return
         
     async def launch_tournament(self):

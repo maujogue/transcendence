@@ -4,7 +4,7 @@ import uuid
 
 # Create your models here.
 class Match(models.Model):
-    lobby_id = models.CharField(max_length=100, primary_key=True, editable=False, blank=False, default=uuid.uuid4)
+    lobby_id = models.CharField(max_length=100, editable=False, blank=False, default="default", unique=False)
     player1 = models.CharField(max_length=100, default='')
     player2 = models.CharField(max_length=100, default='')
     player1_average_exchange = models.IntegerField(default=0)

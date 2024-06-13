@@ -4,6 +4,7 @@ import { getUserData } from "../User.js";
 import { createOnlineSelectMenu } from "./online.js";
 import { createTournamentDiv } from "./menu.js";
 import { createLeaveButton, drawBracket} from "./createBracket.js";
+import { hostname } from "../Router.js";
 
 export let wsTournament
 let userData;
@@ -13,7 +14,7 @@ export async function connectToTournament(tournament) {
     try {
         console.log("Connecting to tournament:", tournament);
         currentTournament = tournament;
-        wsTournament = new WebSocket(`ws://127.0.0.1:8080/ws/tournament/${tournament.id}/`);
+        wsTournament = new WebSocket(`wss://${hostname}:8000/ws/tournament/${tournament.id}/`);
     
         wsTournament.onopen = () => {
             createWaitingScreenTournament(tournament);
@@ -105,7 +106,7 @@ async function sendUsername() {
 
 export async function unsubscribeFromTournament() {
     console.log("Unsubscribing from tournament: ", currentTournament);
-    fetch(`https://127.0.0.1:8000/api/tournament/${currentTournament.id}/quit/`, {
+    fetch(`https://${hostname}:8000/api/tournament/${currentTournament.id}/quit/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -125,7 +126,7 @@ export async function unsubscribeFromTournament() {
 }
 
 export async function checkIfUserIsInTournament(user) {
-    return fetch(`https://127.0.0.1:8000/api/tournament/check-subscribed/${user.username}/`, {
+    return fetch(`https://${hostname}:8000/api/tournament/check-subscribed/${user.username}/`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

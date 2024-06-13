@@ -12,6 +12,7 @@ import { resize } from "./resize.js";
 import { getUserData } from "../User.js";
 import { field } from "../pages/game.js";
 import { wsTournament } from "./tournament.js";
+import { hostname } from "../Router.js";
 
 let requestId
 let env;
@@ -129,9 +130,9 @@ async function connectToLobby(username) {
     if (username == null)
         return ;
     if (!lobbyId)
-        wsMatch = new WebSocket('ws://127.0.0.1:8080/ws/lobby/');
+        wsMatch = new WebSocket(`wss://${hostname}:8000/ws/lobby/`);
     else {
-        wsMatch = new WebSocket(`ws://127.0.0.1:8080/ws/lobby/${lobbyId}/`);
+        wsMatch = new WebSocket(`wss://${hostname}:8000/ws/lobby/${lobbyId}/`);
     }
 
     wsMatch.onopen = function() {

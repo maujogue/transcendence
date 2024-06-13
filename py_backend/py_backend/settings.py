@@ -203,22 +203,26 @@ CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
 	"https://127.0.0.1:8000",
 	"https://localhost:8000",
+    "https://" + os.environ.get("DJANGO_ALLOWED_HOSTS") + ":8000",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
 	"https://127.0.0.1:8000",
 	"https://localhost:8000",
+    "https://" + os.environ.get("DJANGO_ALLOWED_HOSTS") + ":8000",
 ]
 
 ALLOWED_HOSTS = [
 	"localhost",
 	"127.0.0.1",
-    "0.0.0.0"
+    "0.0.0.0",
+    os.environ.get("DJANGO_ALLOWED_HOSTS"),
 ]
 
 CORS_ORIGIN_WHITELIST = [
 	"https://127.0.0.1:8000",
 	"https://localhost:8000",
+    "https://" + os.environ.get("DJANGO_ALLOWED_HOSTS") + ":8000",
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

@@ -130,9 +130,9 @@ async function connectToLobby(username) {
     if (username == null)
         return ;
     if (!lobbyId)
-        wsMatch = new WebSocket(`wss://${hostname}:8000/ws/lobby/`);
+        wsMatch = new WebSocket(`ws://${hostname}:8080/ws/lobby/`);
     else {
-        wsMatch = new WebSocket(`wss://${hostname}:8000/ws/lobby/${lobbyId}/`);
+        wsMatch = new WebSocket(`ws://${hostname}:8080/ws/lobby/${lobbyId}/`);
     }
 
     wsMatch.onopen = function() {

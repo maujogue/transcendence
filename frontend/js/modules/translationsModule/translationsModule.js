@@ -1,6 +1,3 @@
-import en from '../../../translations/en.json' with { type: 'json' };
-import es from '../../../translations/es.json' with { type: 'json' };
-import fr from '../../../translations/fr.json' with { type: 'json' };
 import { getModuleDiv } from "../../Modules.js";
 import { runEndPoint } from "../../ApiUtils.js";
 import { getUserData } from "../../User.js";
@@ -57,7 +54,7 @@ export async function init() {
 	}
 
 	async function injectTranslations() {
-		var json = getJsonFromLang();
+		var json = await getJsonFromLang();
 		const elmDivs = document.querySelectorAll("[data-lang]");
 		elmDivs.forEach((elm) => {
 			const key = elm.getAttribute("data-lang");
@@ -67,16 +64,9 @@ export async function init() {
 	}
 }
 
-function getJsonFromLang() {
+async function getJsonFromLang() {
 	var lang = Cookies.get("lang");
-	switch (lang) {
-		case "es":
-			return es;
-		case "fr":
-			return fr;
-		default:
-			return en;
-	}
+	return fetch(`../../../translations/${lang}.json`).then((res) => res.json()).then((data) => { return data });
 }
 
 async function setLanguage(userLanguage) {
@@ -84,7 +74,7 @@ async function setLanguage(userLanguage) {
 }
 
 async function injectGameTranslations() {
-	var json = getJsonFromLang();
+	var json = await getJsonFromLang();
 
 	const elmDivs = document.querySelectorAll("#game [data-lang]");
 	elmDivs.forEach((elm) => {
@@ -94,14 +84,13 @@ async function injectGameTranslations() {
 	});
 }
 
-function printQueryParamsMessage(queryParams) {
+async function printQueryParamsMessage(queryParams) {
 	if (queryParams) {
 		var message = queryParams.get("message");
 		var success = queryParams.get("success");
-		var json = getJsonFromLang();
+		var json = await getJsonFromLang();
 		if (message)
 			showAlert(json[message], success);
-		console.log(message, success, json, json[message]);
 	}
 	history.replaceState(null, null, window.location.pathname);
 }

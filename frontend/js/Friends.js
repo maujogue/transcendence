@@ -53,6 +53,9 @@ async function printNotification(data) {
     if (data.type === 'friend_request_from_user') {
         showAlert("You just send a friend request to " + data.to_user + " !", true);
     }
+    if (data.type === 'accept_request') {
+        showAlert(data.to_user + " accepted your friend request !", true);
+    }
     if (data.type === 'user_exist' && data.status === 'failure') {
         showAlert("This user does not exist.", false)
     }

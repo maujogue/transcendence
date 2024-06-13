@@ -70,7 +70,6 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             {'type': 'send_notification',
             'from_user': from_user,
             'to_user': to_user})
-        
 
         await self.accept_request(data)
 
@@ -87,18 +86,25 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
         await sync_to_async(from_user.friends.add)(to_user)
         await sync_to_async(to_user.friends.add)(from_user)
-    
+
+        if self.scope['user'].username == data['from_user']:
+            await self.send(text_data=json.dumps({
+                'type': 'accept_request',
+                'from_user': data['from_user'],
+                'to_user': data['to_user'],
+                }))
+        
 
     async def send_notification(self, event):
-        if self.scope['user'].username == event['to_user']:
-            await self.send(text_data=json.dumps({
-                'type': 'friend_request_to_user',
-                'from_user': event['from_user'],
-                'to_user': event['to_user'],
-                }))
         if self.scope['user'].username == event['from_user']:
             await self.send(text_data=json.dumps({
                 'type': 'friend_request_from_user',
+                'from_user': event['from_user'],
+                'to_user': event['to_user'],
+                }))
+        if self.scope['user'].username == event['to_user']:
+            await self.send(text_data=json.dumps({
+                'type': 'friend_request_to_user',
                 'from_user': event['from_user'],
                 'to_user': event['to_user'],
                 }))

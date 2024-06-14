@@ -110,12 +110,13 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def check_if_all_matches_finished(self):
         self.tournament = await self.get_tournament()
         all_matches = await sync_to_async(list)(self.tournament.matchups.filter(round=self.tournament.current_round))
+        print(f'all_matches: {all_matches}')
         if all(matches.finished for matches in all_matches) and len(all_matches) > 0:
             return True
         return False
 
     async def set_match_info(self):
-        print('setting match info')
+        print(f'{self.scope["user"].tournament_username} set match info, lobby_id: {self.match.lobby_id}')
         try:
             match = await Match.objects.aget(lobby_id=str(self.match.lobby_id))
             self.match.player1 = match.player1

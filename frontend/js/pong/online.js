@@ -129,6 +129,7 @@ async function createOnlineSelectMenu(id) {
 async function connectToLobby(username) {
     if (username == null)
         return ;
+    console.log(`Connecting to the server with username: ${username} and lobbyId: ${lobbyId}`);
     if (!lobbyId)
         wsMatch = new WebSocket(`ws://${hostname}:8080/ws/lobby/`);
     else {

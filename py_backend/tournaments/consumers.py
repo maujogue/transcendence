@@ -1,3 +1,4 @@
+import asyncio
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
@@ -96,6 +97,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def generate_round(self):
         await sync_to_async(generate_bracket)(self.tournament)
+        await self.send_bracket(True)
         await self.send_all_matchups()
 
     async def advance_in_tournament(self):
@@ -166,7 +168,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             if self.match:
                 await self.send_self_matchup()
             else:
-                await self.send_bracket()
+                await self.send_bracket(False)
     
     async def validate_foreign_keys(self):
         try:
@@ -242,13 +244,14 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             }
         )
 
-    async def send_bracket(self):
+    async def send_bracket(self, forAll):
         bracket = await sync_to_async(self.tournament.get_tournament_bracket)()
         await self.channel_layer.group_send(
             self.tournament.name,
             {
                 'type': 'tournament.bracket',
-                'bracket': bracket
+                'bracket': bracket,
+                'forAll': forAll
             }
         )
 
@@ -297,5 +300,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({'type': 'status', 'status': event['status']}))
 
     async def tournament_bracket(self, event):
-        if not await sync_to_async(self.tournament.check_if_player_is_in_match)(self.scope['user'].tournament_username):
+        print(f'bracket: {self.scope["user"].tournament_username} {event["bracket"]}, forAll: {event["forAll"]}')
+        if event['forAll'] or not await sync_to_async(self.tournament.check_if_player_is_in_match)(self.scope['user'].tournament_username):
             await self.send(text_data=json.dumps({'type': 'bracket', 'bracket': event['bracket']}))
+        if event['forAll']:
+            await asyncio.sleep(10)

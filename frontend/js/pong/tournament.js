@@ -48,6 +48,7 @@ export async function connectToTournament(tournament) {
     }
 }
 
+
 function handlerMessageStatus(data) {
     console.log("Status:", data.status);
     if (data.status == "disqualified")
@@ -102,8 +103,6 @@ async function sendUsername() {
     }));
 }
 
-
-
 export async function unsubscribeFromTournament() {
     console.log("Unsubscribing from tournament: ", currentTournament);
     fetch(`https://${hostname}:8000/api/tournament/${currentTournament.id}/quit/`, {
@@ -148,7 +147,7 @@ export function displayErrorPopUp (message, parent) {
     // console.error("displayErrorPopUp", message);
     const errorPopUp = document.createElement("div");
     errorPopUp.id = "errorPopUp";
-    errorPopUp.className = "error-pop-up";
+    errorPopUp.className = "error-pop-up pop-up";
     errorPopUp.innerHTML = ` \
     <i id="PopUpCloseIcon" class="fa-solid fa-xmark close-icon icon"></i> \
     <p>${message}</p> `;
@@ -157,6 +156,17 @@ export function displayErrorPopUp (message, parent) {
         document.getElementById("PopUpCloseIcon").removeEventListener("click", () => {});
         errorPopUp.remove();
     });
+}
+
+function displayMatchup(match) {
+    const popup = document.createElement("div");
+    popup.className = "matchup-pop-up pop-up";
+    popup.innerHTML = ` \
+    <i id="PopUpCloseIcon" class="fa-solid fa-xmark close-icon icon"></i> \
+    <h2>${match.round}</h2> \
+    <p>${match.player_1} VS ${match.player_2}</p>`;
+    document.getElementsByClassName("tournament")[0].appendChild(popup);
+    document.getElementById("PopUpCloseIcon").addEventListener("click", () => createOnlineSelectMenu(match.lobby_id))
 }
 
 export function createShowBracketButton(parent) {

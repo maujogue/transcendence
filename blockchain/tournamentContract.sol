@@ -23,5 +23,3 @@ contract StoreTournamentsScore {
         return message;
     }
 }
-
-//do a map of matches in a map of tournaments ?

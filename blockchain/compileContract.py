@@ -1,9 +1,9 @@
 from solcx import compile_standard, install_solc
 import json
 
-install_solc("0.8.0")
+install_solc("0.8.19")
 
-contract_path = "/home/jrenault/Documents/42/transcendance/blockchain/tournamentContract.sol"
+contract_path = "/home/jrenault/Documents/42/transcendence/blockchain/tournamentContract.sol"
 with open(contract_path, 'r') as file:
     contract = file.read()
     
@@ -21,7 +21,7 @@ compiledSolidity = compile_standard({
             }
         }
     }
-}, solc_version="0.8.0")
+}, solc_version="0.8.19")
 
 # print(compiledSolidity)
 with open("compiledSolidity.json", "w") as file:

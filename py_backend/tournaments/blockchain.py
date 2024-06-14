@@ -5,7 +5,7 @@ import json
 
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-BLOCKCHAIN_DIR = os.path.abspath(os.path.join(CURRENT_DIR, "../../../blockchain"))
+BLOCKCHAIN_DIR = os.path.abspath(os.path.join(CURRENT_DIR, "../../blockchain"))
 
 def get_contract_address():
     contract_address_path = os.path.abspath(os.path.join(BLOCKCHAIN_DIR, "contract_address.txt"))

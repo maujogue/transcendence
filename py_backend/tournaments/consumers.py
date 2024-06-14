@@ -103,9 +103,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
         contract_address = get_contract_address()
         if contract_address:
-            print("just before calling smart contract")
-            await sync_to_async(set_message_in_contract)(contract_address, "Tournament is finished!")
-            print("just after calling smart contract")
+            await sync_to_async(set_message_in_contract)(contract_address, "Tournament is finished!") #TODO check if it works in async so we don't have to wait the transaction to be done.
 
         await self.send_tournament_end()
 

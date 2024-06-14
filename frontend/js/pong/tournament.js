@@ -5,6 +5,7 @@ import { createOnlineSelectMenu } from "./online.js";
 import { createTournamentDiv } from "./menu.js";
 import { createLeaveButton, drawBracket} from "./createBracket.js";
 import { hostname } from "../Router.js";
+import { wsMatch } from "./online.js";
 
 export let wsTournament
 export let tournamentStatus;
@@ -65,6 +66,12 @@ function handlerMessageStatus(data) {
         tournamentStatus = "started";
     if (data.status == "waiting")
         tournamentStatus = "waiting";
+    if (data.status == "match_cancelled") {
+        wsMatch.send(JSON.stringify({
+            'type': 'cancel',
+        }));
+    }
+
         
 } 
 

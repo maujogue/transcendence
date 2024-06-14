@@ -57,7 +57,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'name': self.player.name
                 }
         )
-    
+
     async def set_environment(self):
         self.max_points = 1
         self.is_connected = False

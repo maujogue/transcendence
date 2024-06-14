@@ -29,6 +29,7 @@ function writePlayerName(x, y, playerName, score, winner) {
     else
         ctx.fillStyle = 'red';
     if (!playerName) {
+        playerName = "bye";
         score = "-";
         ctx.fillStyle = "black";
     }

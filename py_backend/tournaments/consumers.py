@@ -227,7 +227,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         
     async def send_self_matchup(self):
         self.match = await self.get_player_match(self.scope['user'].tournament_username)
-        if self.match and not self.match.finished:
+        if self.match and not self.match.finished and self.match.player2:
             match_infos = self.get_match_infos(self.match)
             await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos}))
 
@@ -291,7 +291,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def tournament_matchups(self, event):
         self.match = await self.get_player_match(self.scope['user'].tournament_username)
         print(f'{self.scope["user"].tournament_username} match: ', self.match)
-        if self.match:
+        if self.match and self.match.player2 and not self.match.finished:
             match_infos = self.get_match_infos(self.match)
             await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos}))
 

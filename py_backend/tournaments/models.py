@@ -22,7 +22,7 @@ class TournamentMatch(models.Model):
 	finished = models.BooleanField(default=False)
 
 	def __str__(self):
-		return f"{self.round}: {self.player1} vs {self.player2}: {self.winner} wins!"
+		return f"{self.round}: {self.player1} vs {self.player2}: {self.winner} wins! finished: {self.finished}"
 
 class Tournament(models.Model):
 	name = models.fields.CharField(max_length=15, unique=True)

@@ -57,12 +57,14 @@ function handlerMessageStatus(data) {
     console.log("Status:", data.status);
     if (data.status == "disqualified") {
         playerStatus = "disqualified";
-        displayErrorPopUp("You have been disqualified", document.getElementsByClassName("tournament")[0]);
+        // displayErrorPopUp("You have been disqualified", document.getElementsByClassName("tournament")[0]);
     }
     if (data.status == "endTournament")
         tournamentStatus = "finished";
     if (data.status == "start")
         tournamentStatus = "started";
+    if (data.status == "waiting")
+        tournamentStatus = "waiting";
         
 } 
 

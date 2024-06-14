@@ -63,26 +63,35 @@ function updateButtonWithStatus() {
         if (tournamentStatus === "finished")
             displayRankingButton(document.getElementsByClassName('tournament')[0]);
     }
-    if (tournamentStatus === "started")
+    if (tournamentStatus != "finished")
         displayWaitingText();
 }
 
 function displayWaitingText() {
     const waitingText = document.createElement('p');
+    let textContent;
     waitingText.id = 'waitingText';
     waitingText.classList.add('waiting-text');
     document.getElementsByClassName('tournament')[0].appendChild(waitingText);
     let dots = '';
     let maxDots = 3;
-    let interval = 500; // Interval in milliseconds
-
+    let interval = 500;
+    
     setInterval(() => {
+        if (tournamentStatus === "started")
+            textContent = 'Tournament start in few seconds';
+        if (tournamentStatus === "waiting")
+            textContent = 'Waiting for players to finish their matches';
+        if (playerStatus === "disqualified") {
+            waitingText.remove();
+            return;
+        }
         if (dots.length < maxDots) {
             dots += '.';
         } else {
             dots = '';
         }
-        waitingText.textContent = `Loading${dots}`;
+        waitingText.textContent = `${textContent}${dots}`;
     }, interval);
 }
 

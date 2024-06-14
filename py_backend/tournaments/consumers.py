@@ -1,3 +1,4 @@
+import asyncio
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
@@ -36,6 +37,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if text_data_json.get('type') == 'bracket':
             bracket = await sync_to_async(self.tournament.get_tournament_bracket)()
             await self.send(text_data=json.dumps({'type': 'bracket', 'bracket': bracket}))
+        if text_data_json.get('type') == 'getRanking':
+            await self.send_tournament_ranking()
 
     async def disconnect(self, close_code):
         print('tournament disconnected')
@@ -52,7 +55,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
 
-
     async def handler_status(self, status):
         print('tournament status: ', status)
         if status == 'endGame':
@@ -65,6 +67,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         await self.set_match_info()
         await self.match_is_over()
         print(f'{self.scope["user"].tournament_username} match is over, {self.match.winner} wins!')
+        if self.match.winner == self.scope['user'].tournament_username:
+            await self.send(text_data=json.dumps({'type': 'status', 'status': 'waiting'}))
         if self.match.winner == self.scope['user'].tournament_username and await self.check_if_all_matches_finished():
             await self.advance_in_tournament()
         else:
@@ -74,6 +78,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def match_is_over(self):
         print('match is over')
+        self.match = await self.get_player_match(self.scope['user'].tournament_username)
+        if not self.match:
+            return
         self.match.finished = True
         await self.match.asave()
 
@@ -103,7 +110,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         await self.send_tournament_end()
 
     async def generate_round(self):
+        print(f'{self.scope["user"].tournament_username}: generating round {self.tournament.current_round}')
         await sync_to_async(generate_bracket)(self.tournament)
+        await self.send_bracket(True)
         await self.send_all_matchups()
 
     async def advance_in_tournament(self):
@@ -118,12 +127,23 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def check_if_all_matches_finished(self):
         self.tournament = await self.get_tournament()
         all_matches = await sync_to_async(list)(self.tournament.matchups.filter(round=self.tournament.current_round))
+        print(f'all_matches: {all_matches}, are finished: {all(matches.finished for matches in all_matches)}')
         if all(matches.finished for matches in all_matches) and len(all_matches) > 0:
             return True
         return False
+    
+    async def check_if_match_is_started(self):
+        await asyncio.sleep(10)
+        try:
+            lobby = await Lobby.objects.aget(pk=self.match.lobby_id)
+            if not lobby.game_started:
+                print('match not started')
+        except Lobby.DoesNotExist:
+            print("lobby does not exist")
+            return
 
     async def set_match_info(self):
-        print('setting match info')
+        print(f'{self.scope["user"].tournament_username} set match info, lobby_id: {self.match.lobby_id}')
         try:
             match = await Match.objects.aget(lobby_id=str(self.match.lobby_id))
             self.match.player1 = match.player1
@@ -149,6 +169,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             return
         
     async def launch_tournament(self):
+        print('launch tournament')
         await self.channel_layer.group_send(
             self.tournament.name,
             {
@@ -173,7 +194,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             if self.match:
                 await self.send_self_matchup()
             else:
-                await self.send_bracket()
+                await self.send_bracket(False)
     
     async def validate_foreign_keys(self):
         try:
@@ -227,7 +248,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         
     async def send_self_matchup(self):
         self.match = await self.get_player_match(self.scope['user'].tournament_username)
-        if self.match:
+        if self.match and not self.match.finished and self.match.player2:
             match_infos = self.get_match_infos(self.match)
             await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos}))
 
@@ -249,13 +270,14 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             }
         )
 
-    async def send_bracket(self):
+    async def send_bracket(self, forAll):
         bracket = await sync_to_async(self.tournament.get_tournament_bracket)()
         await self.channel_layer.group_send(
             self.tournament.name,
             {
                 'type': 'tournament.bracket',
-                'bracket': bracket
+                'bracket': bracket,
+                'forAll': forAll
             }
         )
 
@@ -278,6 +300,11 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             }
         )
 
+    async def send_tournament_ranking(self):
+        winner = await sync_to_async(self.tournament.get_winner)()
+        ranking = await sync_to_async(self.tournament.get_ranking)()
+        await self.send(text_data=json.dumps({'type': 'ranking', 'winner': winner, 'ranking': ranking}))
+    
     async def tournament_participants(self, event):
         await self.send(
             text_data=json.dumps({'type': 'participants', 'participants': event['participants']}))
@@ -286,23 +313,31 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         self.match = await self.get_player_match(self.scope['user'].tournament_username)
         print(f'{self.scope["user"].tournament_username} match: ', self.match)
         if self.match:
-            match_infos = self.get_match_infos(self.match)
-            await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos}))
+            if not self.match.finished and self.match.player2:
+                match_infos = self.get_match_infos(self.match)
+                await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos}))
+                asyncio.create_task(self.check_if_match_is_started())
+            else:
+                await self.send(text_data=json.dumps({'type': 'status', 'status': 'waiting'}))
+                
 
     async def tournament_status(self, event):
         print('status: ', event['status'])
         if event['status'] == 'disqualified':
-            if event['username'] == self.scope['user'].username:
+            if event['username'] == self.scope['user'].tournament_username:
                 print('disqualified: ', event['username'])
                 await self.send(text_data=json.dumps({'type': 'status', 'status': 'disqualified'}))
         elif event['status'] == 'endTournament':
-            winner = await sync_to_async(self.tournament.get_winner)()
-            ranking = await sync_to_async(self.tournament.get_ranking)()
-            print('endTournament: ', ranking)
-            await self.send(text_data=json.dumps({'type': 'status', 'status': 'endTournament', 'winner': winner, 'ranking': ranking}))
+            await self.send(text_data=json.dumps({'type': 'status', 'status': 'endTournament'}))
+            await self.send_tournament_ranking()
         else:
             await self.send(text_data=json.dumps({'type': 'status', 'status': event['status']}))
 
+
+
     async def tournament_bracket(self, event):
-        if not await sync_to_async(self.tournament.check_if_player_is_in_match)(self.scope['user'].tournament_username):
+        print(f'bracket: {self.scope["user"].tournament_username} {event["bracket"]}, forAll: {event["forAll"]}')
+        if event['forAll'] or not await sync_to_async(self.tournament.check_if_player_is_in_match)(self.scope['user'].tournament_username):
             await self.send(text_data=json.dumps({'type': 'bracket', 'bracket': event['bracket']}))
+        if event['forAll']:
+            await asyncio.sleep(10)

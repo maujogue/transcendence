@@ -57,7 +57,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'name': self.player.name
                 }
         )
-    
+
     async def set_environment(self):
         self.max_points = 1
         self.is_connected = False
@@ -184,7 +184,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 self.lobby_group_name,
                 self.channel_name
             )
-            if self.lobby.connected_user == 0:
+            if self.lobby.connected_user == 0 and self.scope['url_route']['kwargs'].get('lobby_id') is None:
                 await self.close_lobby()
         except Exception as e:
             print("Error: ", e)
@@ -321,7 +321,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             winner = player2.user.tournament_username
         elif self.lobby.player2Present == False:
             winner = player1.user.tournament_username
-        print("Winner: ", winner)   
+        print(f'createHistoryMatch: lobby_id={self.lobby.uuid},  winner={winner}')   
         loser = player1.user.tournament_username if player1.user.tournament_username != winner else player2.user.tournament_username
         match = Match(  lobby_id=str(self.lobby.uuid),
                         player1=player1.user.tournament_username, 
@@ -360,23 +360,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.opp.resetPaddlePos()
         self.player.is_ready = False
         self.opp.is_ready = False
-
-    async def create_match_info(self):
-        try:
-            self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
-        except Lobby.DoesNotExist:
-            print(self.lobby_name, " does not exist")
-            return None
-        winner = self.player.user.tournament_username if self.player.score > self.opp.score else self.opp.user.tournament_username
-        if self.lobby.player1Present == False:
-            winner = self.opp.user.tournament_username
-        if self.lobby.player2Present == False:
-            winner = self.player.user.tournament_username
-        return {
-            'score_player_1': self.player.score,
-            'score_player_2': self.opp.score,
-            'winner': winner,
-        }
                     
     async def pong_status(self, event):
         if not self.check_if_user_is_connected():

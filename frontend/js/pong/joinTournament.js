@@ -8,7 +8,7 @@ let allTournaments;
 
 async function getAllTournaments() {
     try {
-        const response = await fetch('https://127.0.0.1:8000/api/tournament/list/');
+        const response = await fetch(`https://${hostname}:8000/api/tournament/list/`);
         if (!response.ok) {
             throw new Error('Erreur HTTP: ' + response.status);
         }

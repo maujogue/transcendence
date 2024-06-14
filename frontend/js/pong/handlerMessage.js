@@ -2,13 +2,16 @@ import { actualizeScoreOnline } from './onlineCollision.js';
 import { displayMainMenu } from './menu.js';
 import { ClearAllEnv } from './createEnvironment.js';
 import { createEndScreen } from './createEndScreen.js';
-import { sendColor } from './sendMessage.js';
 import { playersMove } from './online.js';
 import { displayErrorPopUp } from './tournament.js';
 import { wsTournament } from './tournament.js';
-import { toggleContentOnLogState } from '../Utils.js';
-import { injectModule, updateModule } from '../Modules.js';
-import { updatePage } from '../Router.js';
+import { updateModule } from '../Modules.js';
+
+function checkIfWebsocketIsOpen(webSocket) {
+    if (webSocket && webSocket.readyState == webSocket.OPEN)
+        return true;
+    return false;
+}
 
 
 export function setBallData(data, env) {
@@ -39,28 +42,32 @@ function handlerStopGame(webSocket, env, message) {
     console.log("handlerStopGame");
     displayErrorPopUp(message, document.getElementById("hud"));
     document.getElementById("errorPopUp").classList.add("match-error");
-    document.getElementById("PopUpCloseIcon").addEventListener("click", () => {
-        removeGameScreen(env);
-        if (wsTournament) {
-            wsTournament.send(JSON.stringify({
-                'type': 'status',
-                'status': 'endGame'
-            }));
-        }
-        else
-            displayMainMenu();
-    });
-    webSocket.close();
-}
-
-async function handlerEndGame(data, env) {
-    if (!document.getElementById("endscreen") && !wsTournament)
-        createEndScreen(data['name']);
-    if (wsTournament)
+    if (checkIfWebsocketIsOpen(wsTournament)) {
         wsTournament.send(JSON.stringify({
             'type': 'status',
             'status': 'endGame'
         }));
+    }
+    webSocket.close();
+    document.getElementById("PopUpCloseIcon").addEventListener("click", () => {
+        if (checkIfWebsocketIsOpen(wsTournament))
+            removeGameScreen(env);
+        else
+            displayMainMenu();
+    });
+}
+
+async function handlerEndGame(data, env, webSocket) {
+    if (!document.getElementById("endscreen") && !checkIfWebsocketIsOpen(wsTournament))
+        createEndScreen(data['name']);
+    if (checkIfWebsocketIsOpen(wsTournament)) {
+        wsTournament.send(JSON.stringify({
+            'type': 'status',
+            'status': 'endGame'
+        }));
+        removeGameScreen(env);
+        webSocket.close();
+    }
     playersMove.clear();
     env.ball.direction.x = 0;
     env.ball.direction.y = 0;
@@ -75,12 +82,13 @@ function handlerPlayerDisconnect(data, env, webSocket) {
 }
 
 export function handlerStatusMessage(data, webSocket, env, status) {
+    console.log("status", data);
     if (data['status'] == 'disconnected')
         handlerPlayerDisconnect(data, env, webSocket);
     if (data['status'] == 'stop')
         handlerStopGame(webSocket, env, data.message);
     if (data['status'] == 'endGame') {
-        handlerEndGame(data, env);
+        handlerEndGame(data, env, webSocket);
     }
     if (data['status'] == 'start') {
         status.gameIsInit = true;

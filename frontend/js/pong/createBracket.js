@@ -1,24 +1,15 @@
 import { displayMainMenu } from "./menu.js";
 import { createUnsubscribeButton } from "./tournament.js";
+import { wsTournament } from "./tournament.js";
 
 let canvas;
 let ctx;
 const startX = 75;
-const startY = 0;
+const startY = 20;
 const boxWidth = 125;
 const boxHeight = 44;
 const horizontalSpacing = 175;
 let verticalSpacing = 8;
-
-export function getTournamentBracket() {
-    const url = `./js/pong/dev/bracket.json`;
-
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            drawBracket(data);
-        });
-}
 
 function drawMatchBox(x, y, match) {
     ctx.fillStyle = 'white';
@@ -63,12 +54,16 @@ function createBracketCanvas() {
     canvas.id = 'bracketCanvas';
     canvas.width = 800;
     canvas.height = 600;
-    createLeaveButton(document.getElementsByClassName('tournament')[0]);
     document.getElementsByClassName('tournament')[0]?.appendChild(canvas);
 }
 
 export function drawBracket(bracket) {
-    createBracketCanvas();
+    console.log("Drawing bracket: ", bracket);
+    const tournamentName = document.createElement('h1');
+    tournamentName.textContent = bracket.tournament.name;
+    document.getElementsByClassName('tournament')[0].appendChild(tournamentName);
+    createLeaveButton(document.getElementsByClassName('tournament')[0]);
+    createBracketCanvas(bracket.tournament.name);
     canvas = document.getElementById('bracketCanvas');
     ctx = canvas.getContext('2d');
     ctx.font = '12px Arial';
@@ -85,11 +80,14 @@ export function drawBracket(bracket) {
         const roundX = startX + roundIndex * horizontalSpacing;
         const prevRoundX = (startX + (roundIndex - 1) * horizontalSpacing) + boxWidth;
 
+        ctx.font = '20px Arial';
+        ctx.fillStyle = 'black';
+        ctx.fillText(round.name, roundX + (boxHeight / 2), startY);
         round.matches.forEach((match, matchIndex) => {
             let matchY;
 
             if (roundIndex === 0)
-                matchY = startY + matchIndex * (boxHeight + verticalSpacing);
+                matchY = (startY + 40) + matchIndex * (boxHeight + verticalSpacing);
             else {
                 verticalSpacing = prevRoundMatchesPosY[indexMatchesPosY + 1] - (prevRoundMatchesPosY[indexMatchesPosY] + boxHeight);
                 const twoBoxHeight = (boxHeight * 2) + (verticalSpacing / 2);
@@ -112,9 +110,15 @@ export function drawBracket(bracket) {
     });
 } 
 
-function createLeaveButton(parent) {
-    parent.innerHTML += '<i class="fa-solid fa-xmark close-icon" id="leaveTournament"></i>'
+export function createLeaveButton(parent) {
+    const btn = document.createElement('button');
+    btn.id = 'leaveTournament';
+    btn.classList.add('tournament-btn', 'leave-tournament-btn', 'end-tournament-btn');
+    btn.textContent = 'Exit';
+    parent.appendChild(btn);
     document.getElementById('leaveTournament').addEventListener('click', () => {
+        if (wsTournament)
+            wsTournament.close();
         displayMainMenu();
     });
 }

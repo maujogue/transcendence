@@ -1,5 +1,6 @@
 import { get_csrf_token } from "./ApiCalls.js";
 import { isLoggedIn } from "./Utils.js";
+import { hostname } from "./Router.js";
 
 async function injectUserData() {
 	if (await isLoggedIn())
@@ -18,7 +19,7 @@ async function injectUserData() {
 }
 
 async function getUserData(dataElement) {
-  return fetch("https://127.0.0.1:8000/api/users/get_user_data/", {
+  return fetch(`https://${hostname}:8000/api/users/get_user_data/`, {
     method: "POST",
     headers: {
       "X-CSRFToken": await get_csrf_token(),

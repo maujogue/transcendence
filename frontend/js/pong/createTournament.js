@@ -2,6 +2,7 @@ import { connectToTournament } from "./tournament.js";
 import { get_csrf_token } from "../ApiUtils.js";
 import { createTournamentDiv } from "./menu.js";
 import { displayErrorPopUp } from "./tournament.js";
+import { hostname } from "../Router.js";
 
 export async function sendTournamentForm(form) {
 	const formData = new FormData(form);
@@ -10,7 +11,7 @@ export async function sendTournamentForm(form) {
 		max_players: formData.get("max_players")
 	}
 	
-	fetch('https://127.0.0.1:8000/api/tournament/create/', {
+	fetch(`https://${hostname}:8000/api/tournament/create/`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',

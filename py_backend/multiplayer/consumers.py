@@ -13,6 +13,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         return self.is_connected
 
     async def send_player_data(self):
+        if not self.check_if_user_is_connected():
+            return
         await self.send(text_data=json.dumps({
             'type': 'player_data',
             'name': self.player.name,
@@ -57,7 +59,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
     
     async def set_environment(self):
-        self.max_points = 3
+        self.max_points = 1
         self.is_connected = False
         self.is_ready = False
         
@@ -66,7 +68,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.countExchange = 0
         self.lobby = await self.join_lobby()
         if not self.lobby or self.lobby.connected_user >= 2:
-            return await self.close()
+            raise Exception("Lobby is full")
         self.lobby_name = self.lobby.uuid
         self.ball = Ball()
         await self.create_player()
@@ -89,16 +91,20 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
 
     async def connect(self):
-        await self.set_environment()
-        await self.accept()
-        await self.send_player_data()
-        if self.lobby.connected_user == 2:
-            await self.ask_opponent()
-            await self.startGame()
+        try:
+            await self.set_environment()
+            await self.accept()
+            await self.send_player_data()
+            if self.lobby.connected_user == 2:
+                await self.ask_opponent()
+                await self.startGame()
+        except Exception as e:
+            print("Error: ", e)
+            await self.close()
             
     async def authenticate_user_with_username(self, username):
         try:
-            user = await CustomUser.objects.aget(username=username)
+            user = await CustomUser.objects.aget(tournament_username=username)
             return user
         except CustomUser.DoesNotExist:
             return None
@@ -108,9 +114,9 @@ class PongConsumer(AsyncWebsocketConsumer):
         user = await self.authenticate_user_with_username(username)
         if user is not None:
             self.scope['user'] = user
-            await self.send(text_data=json.dumps({ "type": "auth", "status": "success"}))
+            await self.send_data({ "type": "auth", "status": "success"})
         else:
-            await self.send(text_data=json.dumps({ "type": "auth", "status": "failed"}))
+            await self.send_data({ "type": "auth", "status": "failed"})
         await self.channel_layer.group_send(
             self.lobby_group_name, { 'type': 'pong.user_info', 'user': self.scope['user'], 'name': self.player.name}
         )
@@ -157,25 +163,23 @@ class PongConsumer(AsyncWebsocketConsumer):
                 await self.getPlayerMove(text_data_json)
 
     async def disconnect(self, close_code):
-        print(self.player.name, ": Disconnected")
-        self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
-
         if self.is_connected == False:
             print("Not connected")
             return
-        self.is_connected = False
         try:
-            print("Disconnecting user")
+            print(self.player.name, ": Disconnected")
+            self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
+            self.is_connected = False
             await self.lobby.disconnectUser(self.player)
             await self.channel_layer.group_send(
                 self.lobby_group_name, {  'type': 'pong.status', 'status': 'disconnected', 'message': f"{self.scope['user']} left the game", 'name': self.player.name}
             )
             if (self.lobby.game_started == True):
                 print("disconnect: Game started")
+                await self.setGameOver()
                 await self.channel_layer.group_send(
                     self.lobby_group_name, { 'type': 'pong.status', 'status': 'stop', 'message': f"Connection lost with {self.scope['user']}", 'name': self.player.name}
                 )
-                await self.setGameOver()
             await self.channel_layer.group_discard(
                 self.lobby_group_name,
                 self.channel_name
@@ -188,6 +192,7 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def close_lobby(self):
         try:
             self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
+            print("Closing lobby")
             await self.lobby.adelete()
         except Lobby.DoesNotExist:
             return
@@ -292,7 +297,9 @@ class PongConsumer(AsyncWebsocketConsumer):
             await self.collision(self.opp)
 
     async def setGameOver(self):
-        if self.player.name == 'player1':
+        print("Game Over")
+        self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
+        if self.player.name == 'player1' or self.lobby.player1Present == False:
             await self.createHistoryMatch()
             await self.lobby.stopGame()
         await self.channel_layer.group_send(
@@ -309,16 +316,16 @@ class PongConsumer(AsyncWebsocketConsumer):
         player2 = self.player if self.player.name == 'player2' else self.opp
 
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
-        winner = player1.user.username if player1.score > player2.score else player2.user.username
+        winner = player1.user.tournament_username if player1.score > player2.score else player2.user.tournament_username
         if self.lobby.player1Present == False:
-            winner = player2.user.username
+            winner = player2.user.tournament_username
         elif self.lobby.player2Present == False:
-            winner = player1.user.username
+            winner = player1.user.tournament_username
         print("Winner: ", winner)   
-        loser = player1.user.username if player1.user.username != winner else player2.user.username
-        match = Match(  uuid=self.lobby.uuid,
-                        player1=player1.user.username, 
-                        player2=player2.user.username, 
+        loser = player1.user.tournament_username if player1.user.tournament_username != winner else player2.user.tournament_username
+        match = Match(  lobby_id=str(self.lobby.uuid),
+                        player1=player1.user.tournament_username, 
+                        player2=player2.user.tournament_username, 
                         player1_average_exchange=self.calculateAverageExchange(self.exchangeBeforePointsP1),
                         player2_average_exchange=self.calculateAverageExchange(self.exchangeBeforePointsP2),
                         winner=winner,
@@ -360,11 +367,11 @@ class PongConsumer(AsyncWebsocketConsumer):
         except Lobby.DoesNotExist:
             print(self.lobby_name, " does not exist")
             return None
-        winner = self.player.user.username if self.player.score > self.opp.score else self.opp.user.username
+        winner = self.player.user.tournament_username if self.player.score > self.opp.score else self.opp.user.tournament_username
         if self.lobby.player1Present == False:
-            winner = self.opp.user.username
+            winner = self.opp.user.tournament_username
         if self.lobby.player2Present == False:
-            winner = self.player.user.username
+            winner = self.player.user.tournament_username
         return {
             'score_player_1': self.player.score,
             'score_player_2': self.opp.score,
@@ -374,13 +381,14 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def pong_status(self, event):
         if not self.check_if_user_is_connected():
             return
+        print("multiplayer status: ", event["status"])
         message = event["message"]
         name = event["name"]
         status = event["status"]   
 
         if status == "endGame":
             self.resetGame()
-        await self.send(text_data=json.dumps({"type": 'status', 'status': status ,"message": message, "name": name}))
+        await self.send_data({"type": 'status', 'status': status ,"message": message, "name": name})
         if status == 'start':
             asyncio.create_task(self.gameLoop())
 
@@ -390,7 +398,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         if (self.player.name == event["name"]):
             self.opp.character = event["character"]
         if (self.player.name != event["name"]):
-            await self.send(text_data=json.dumps({ "type": "character_data", "character": event["character"], "name": event["name"]}))
+            await self.send_data({ "type": "character_data", "character": event["character"], "name": event["name"]})
     
     async def pong_user_data(self, event):
         if not self.check_if_user_is_connected():
@@ -399,7 +407,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         username = event["username"]
         name = event["name"]
         if (self.player.name != event["name"]):
-            await self.send(text_data=json.dumps({ "type": "user_info", "avatar": avatar, "username": username, "name": name}))
+            await self.send_data({ "type": "user_info", "avatar": avatar, "username": username, "name": name})
 
     async def pong_player_pos(self, event):
         if not self.check_if_user_is_connected():
@@ -412,8 +420,8 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.opp.move = move
             self.opp.posY = posY
         if name == "player1":
-            await self.send(text_data=json.dumps({ "type": "player_pos", "move": move, "name": name, "posY": posY}))
-            await self.send(text_data=json.dumps({ "type": "player_pos", "move": self.opp.move, "name": "player2", "posY": self.opp.posY}))
+            await self.send_data({ "type": "player_pos", "move": move, "name": name, "posY": posY})
+            await self.send_data({ "type": "player_pos", "move": self.opp.move, "name": "player2", "posY": self.opp.posY})
 
     async def pong_ball_data(self, event):
         if not self.check_if_user_is_connected():
@@ -428,7 +436,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.ball.dirX = dirX
         self.ball.dirY = dirY
 
-        await self.send(text_data=json.dumps({ "type": "ball_data", "posX": posX, "posY": posY, "dirX": dirX, "dirY": dirY}))
+        await self.send_data({ "type": "ball_data", "posX": posX, "posY": posY, "dirX": dirX, "dirY": dirY})
 
     async def pong_score(self, event):
         if not self.check_if_user_is_connected():
@@ -437,27 +445,27 @@ class PongConsumer(AsyncWebsocketConsumer):
         score = event["score"]
 
         self.player.resetPaddlePos()
-        await self.send(text_data=json.dumps({ "type": "score", "score": score, "name": name}))
+        await self.send_data({ "type": "score", "score": score, "name": name})
 
     async def pong_ask_character(self, event):
         if not self.check_if_user_is_connected():
             return
         name = event["name"]
 
-        await self.send(text_data=json.dumps({ "type": "ask_character", "name": name}))
+        await self.send_data({ "type": "ask_character", "name": name})
     
     async def pong_ask_user(self, event):
         if not self.check_if_user_is_connected():
             return
         name = event["name"]
 
-        await self.send(text_data=json.dumps({ "type": "ask_user", "name": name}))
+        await self.send_data({ "type": "ask_user", "name": name})
     
     async def pong_user_info(self, event):
         if not self.check_if_user_is_connected():
             return
         avatar = event["user"].avatar
-        username = event["user"].username
+        username = event["user"].tournament_username
         name = event["name"]
         with open(avatar.path, "rb") as avatar:
             encoded_string = base64.b64encode(avatar.read()).decode('utf-8')
@@ -466,4 +474,12 @@ class PongConsumer(AsyncWebsocketConsumer):
         else:
             self.opp.user = event["user"]
 
-        await self.send(text_data=json.dumps({ "type": "user_info", "avatar": encoded_string, "username": username, "name": name}))
+        await self.send_data({ "type": "user_info", "avatar": encoded_string, "username": username, "name": name})
+
+    async def send_data(self, data):
+        try:
+            await self.send(text_data=json.dumps(data))
+        except Exception as e:
+            print("Error: ", e)
+
+    

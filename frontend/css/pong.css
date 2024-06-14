@@ -186,6 +186,20 @@ h1 {
 	right: 0;
 }
 
+.ranking {
+	align-self: start;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    font-size: 1.1em;
+    background: beige;
+    margin: 1% 6%;
+    padding: 5%;
+    width: 100%;
+    height: 68%;
+}
+
 .crt-effect {
 	position: absolute;
 	top: 0;
@@ -198,7 +212,30 @@ h1 {
 	border-radius: 20px;
 }
 
-/* .crt {
+.show-bracket-btn {
+	bottom: 0;
+    left: 0;
+}
+
+.end-tournament-btn {
+	position: absolute;
+	margin: 5.5%;
+	font-size: 1em;
+	z-index: 1;
+	padding: 1%;
+}
+
+.end-tournament-btn:hover {
+	box-shadow: 2px 2px 25px 2px rgb(255, 255, 255);
+}
+
+.leave-tournament-btn {
+	bottom: 0;
+	right: 0;
+	width: 15%;
+}
+
+.crt {
     border-radius: 20px;
 	animation: textShadow 1.6s infinite;
 }
@@ -212,7 +249,6 @@ h1 {
 	left: 0;
 	bottom: 0;
 	right: 0;
-	background: rgba(18, 16, 16, 0.1);
 	opacity: 0;
 	z-index: 2;
 	pointer-events: none;
@@ -232,7 +268,7 @@ h1 {
 	background-size: 100% 2px, 3px 100%;
 	pointer-events: none;
   }
-*/
+
 
 .tournament {
 	color: #313131;
@@ -733,6 +769,17 @@ border: 3px solid orange;  /* creates padding around scroll thumb */
 	bottom: 10%;
 }
 
+.close-icon {
+    position: absolute;
+    right: 0;
+    margin: 1.5% 5%;
+}
+
+.close-icon:hover {
+	transform: scale(1.2);
+	cursor: pointer;
+}
+
 #game .logo {
 	width: 100%;
 	z-index: 1;
@@ -763,6 +810,10 @@ border: 3px solid orange;  /* creates padding around scroll thumb */
 .icon:hover {
 	transform: scale(1.2);
 	cursor: pointer;
+}
+
+.won-title {
+	font-size: 1.75em;
 }
 
 @keyframes moveKey {

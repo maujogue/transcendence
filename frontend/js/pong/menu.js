@@ -296,6 +296,7 @@ export function addCrtEffect(parent) {
 export function createTournamentDiv() {
 	if (document.getElementsByClassName("menu")[0])
     	document.getElementsByClassName("menu")[0].remove();
+	initSpaceBackground();
 	createDivMenu("tournamentMenu");
     const tournamentDiv = document.createElement("div");
 	tournamentDiv.className = "tournament crt";

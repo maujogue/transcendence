@@ -2,6 +2,7 @@ import { createTournamentDiv} from "./menu.js";
 import { connectToTournament } from "./tournament.js";
 import { get_csrf_token } from "../ApiUtils.js";
 import { displayErrorPopUp } from "./tournament.js";
+import { hostname } from "../Router.js";
 
 let allTournaments;
 
@@ -60,7 +61,7 @@ function createDivJoinTournament(parent) {
 }
 
 async function joinTournament(tournament) {
-    fetch(`https://127.0.0.1:8000/api/tournament/join/${tournament.id}/`, {
+    fetch(`https://${hostname}:8000/api/tournament/join/${tournament.id}/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

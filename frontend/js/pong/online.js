@@ -12,7 +12,9 @@ import { resize } from "./resize.js";
 import { getUserData } from "../User.js";
 import { field } from "../pages/game.js";
 import { wsTournament } from "./tournament.js";
+import { hostname } from "../Router.js";
 
+let requestId
 let env;
 let player;
 let opp;
@@ -38,6 +40,7 @@ function setUserInfo(data) {
 }
 
 function clearVariables() {
+    cancelAnimationFrame(requestId);
     wsMatch = null;
     player = null;
     opp = null;
@@ -51,6 +54,7 @@ function clearVariables() {
     oppInfo = null;
     playersMove.clear();
     lobbyId = null;
+    ClearAllEnv(env)
 }
 
 
@@ -107,6 +111,8 @@ async function goToOnlineSelectMenu() {
 
 
 async function createOnlineSelectMenu(id) {
+    if (wsMatch)
+        wsMatch.close();
     if (id)
         lobbyId = id;
     document.getElementsByClassName("menu")[0]?.remove();
@@ -124,12 +130,13 @@ async function connectToLobby(username) {
     if (username == null)
         return ;
     if (!lobbyId)
-        wsMatch = new WebSocket('ws://127.0.0.1:8080/ws/lobby/');
+        wsMatch = new WebSocket(`wss://${hostname}:8000/ws/lobby/`);
     else {
-        wsMatch = new WebSocket(`ws://127.0.0.1:8080/ws/lobby/${lobbyId}/`);
+        wsMatch = new WebSocket(`wss://${hostname}:8000/ws/lobby/${lobbyId}/`);
     }
 
     wsMatch.onopen = function() {
+        console.log("Connected to the server mutliplayer");
         status.is_connected = true;
         document.getElementById("selectMenu").remove();
         wsMatch.send(JSON.stringify({
@@ -137,6 +144,7 @@ async function connectToLobby(username) {
             'username': username,
         }));
         createWaitingScreen();
+        cancelAnimationFrame(requestId);
         onlineGameLoop(wsMatch);
     }
     
@@ -217,7 +225,7 @@ function movePaddle(data) {
         paddle.position.y = data['posY'];
 }
 
-function sendMove(wsMatch) { 
+function sendMove(wsMatch) {
     const move = (keysPressed["w"]) ? 1 : -1;
 
     if (keyPress && (keysPressed["w"] || keysPressed["s"])) {
@@ -255,7 +263,6 @@ async function setGameIsStart() {
             env = await initGame(player, opp);
         else
             env = await initGame(opp, player);
-        createHUD(player, opp);
         status.gameIsInit = false;
         status.start = true;
     }
@@ -271,7 +278,7 @@ async function onlineGameLoop(wsMatch) {
     }
     if (keysPressed[' '] && !status.is_connected) {
         keysPressed[' '] = false;
-        getUserData('username').then((res) => {
+        getUserData('tournament_username').then((res) => {
             connectToLobby(res, null)
         })
         .catch((err) => {
@@ -291,7 +298,7 @@ async function onlineGameLoop(wsMatch) {
     env.renderer.render(env.scene, env.camera);
     updateMixers(player, opp);
     if (!status.exit)
-        requestAnimationFrame(() => onlineGameLoop(wsMatch));
+        requestId = requestAnimationFrame(() => onlineGameLoop(wsMatch));
 }
 
 export { connectToLobby, onlineGameLoop, goToOnlineSelectMenu, createOnlineSelectMenu}

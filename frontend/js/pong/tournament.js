@@ -3,15 +3,18 @@ import { returnToMenu } from "./createEndScreen.js";
 import { getUserData } from "../User.js";
 import { createOnlineSelectMenu } from "./online.js";
 import { createTournamentDiv } from "./menu.js";
-import { wsMatch } from "./online.js";
-import { drawBracket, getTournamentBracket } from "./createBracket.js";
+import { createLeaveButton, drawBracket} from "./createBracket.js";
+import { hostname } from "../Router.js";
 
 export let wsTournament
 let userData;
+let currentTournament;
 
 export async function connectToTournament(tournament) {
     try {
-        wsTournament = new WebSocket(`ws://127.0.0.1:8080/ws/tournament/${tournament.id}/`);
+        console.log("Connecting to tournament:", tournament);
+        currentTournament = tournament;
+        wsTournament = new WebSocket(`wss://${hostname}:8000/ws/tournament/${tournament.id}/`);
     
         wsTournament.onopen = () => {
             createWaitingScreenTournament(tournament);
@@ -23,9 +26,8 @@ export async function connectToTournament(tournament) {
             console.log("Received data:", data);
             if (data.type == "participants")
                 displayPlayerList(data.participants);
-            if (data.type == "matchup") {
+            if (data.type == "matchup")
                 createOnlineSelectMenu(data.match.lobby_id);
-            }
             if (data.type == "status")
                 handlerMessageStatus(data);
             if (data.type == "bracket") {
@@ -48,11 +50,36 @@ export async function connectToTournament(tournament) {
 
 function handlerMessageStatus(data) {
     console.log("Status:", data.status);
-    if (data.status == "endGame")
-        wsMatch?.close();
-    //TODO differenciate 'disqualified' and 'lost'
     if (data.status == "disqualified")
         displayErrorPopUp("You have been disqualified", document.getElementsByClassName("tournament")[0]);
+    if (data.status == "endTournament") {
+        displayEndTournamentScreen(data);
+    }
+} 
+
+function displayEndTournamentScreen(data) {
+    if (!document.getElementsByClassName("tournament")[0])
+        createTournamentDiv();
+    const tournamentDiv = document.getElementsByClassName("tournament")[0];
+    tournamentDiv.innerHTML = `<h1 class="won-title">${data.winner} won the tournament!</h1>`;
+    displayTournamentRanking(data.ranking);
+    createLeaveButton(tournamentDiv);
+    createShowBracketButton(tournamentDiv);
+}
+
+function displayTournamentRanking(ranking) {
+    const rankingDiv = document.createElement("div");
+    rankingDiv.className = "ranking";
+    rankingDiv.innerHTML = "<h2>Ranking</h2>";
+    let pos = 1;
+    for (let key in ranking) {
+        console.log(`${pos}: ${key}`);
+        const div = document.createElement("div");
+        div.textContent = `${pos}: ${key}`;
+        rankingDiv.appendChild(div);
+        pos++;
+    }
+    document.getElementsByClassName("tournament")[0].appendChild(rankingDiv);
 }
 
 function displayPlayerList(participants) {
@@ -77,8 +104,9 @@ async function sendUsername() {
 
 
 
-export async function unsubscribeFromTournament(tournament) {
-    fetch(`https://127.0.0.1:8000/api/tournament/${tournament.id}/quit/`, {
+export async function unsubscribeFromTournament() {
+    console.log("Unsubscribing from tournament: ", currentTournament);
+    fetch(`https://${hostname}:8000/api/tournament/${currentTournament.id}/quit/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -98,7 +126,7 @@ export async function unsubscribeFromTournament(tournament) {
 }
 
 export async function checkIfUserIsInTournament(user) {
-    return fetch(`https://127.0.0.1:8000/api/tournament/check-subscribed/${user.username}/`, {
+    return fetch(`https://${hostname}:8000/api/tournament/check-subscribed/${user.username}/`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -122,7 +150,7 @@ export function displayErrorPopUp (message, parent) {
     errorPopUp.id = "errorPopUp";
     errorPopUp.className = "error-pop-up";
     errorPopUp.innerHTML = ` \
-    <i id="PopUpCloseIcon" class="fa-solid fa-xmark close-icon"></i> \
+    <i id="PopUpCloseIcon" class="fa-solid fa-xmark close-icon icon"></i> \
     <p>${message}</p> `;
     parent.appendChild(errorPopUp);
     document.getElementById("PopUpCloseIcon").addEventListener("click", () => {
@@ -131,15 +159,24 @@ export function displayErrorPopUp (message, parent) {
     });
 }
 
+export function createShowBracketButton(parent) {
+    const seeBracketBtn = document.createElement("button");
+    seeBracketBtn.textContent = "Show bracket";
+    seeBracketBtn.className = "show-bracket-btn end-tournament-btn tournament-btn";
+    parent.appendChild(seeBracketBtn);
+    seeBracketBtn.onclick = () => ask_bracket();
+}
+
+function ask_bracket() {
+    wsTournament.send(JSON.stringify({
+        'type': 'bracket',
+    }));
+}
+
 export function createUnsubscribeButton(parent) {
     const unsubscribeBtn = document.createElement("button");
     unsubscribeBtn.textContent = "Unsubscribe";
-    unsubscribeBtn.onclick = () => {
-        checkIfUserIsInTournament(userData).then((response) => {
-            if (response && response['joined'])
-                unsubscribeFromTournament(response['tournament']);
-        })
-    }
+    unsubscribeBtn.onclick = () => unsubscribeFromTournament();
     unsubscribeBtn.className = "unsubscribe-btn tournament-btn";
     parent.appendChild(unsubscribeBtn);
 }

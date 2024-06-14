@@ -15,7 +15,7 @@ class TournamentMatch(models.Model):
 	lobby_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	round = models.IntegerField(default=1)
 	player1 = models.CharField(max_length=100, default='')
-	player2 = models.CharField(max_length=100, default='')
+	player2 = models.CharField(max_length=100, default='', null=True, blank=True)
 	winner = models.CharField(max_length=15, null=True, blank=True)
 	score_player_1 = models.IntegerField(default=0)
 	score_player_2 = models.IntegerField(default=0)
@@ -29,6 +29,7 @@ class Tournament(models.Model):
 	max_players = models.IntegerField(validators=[MinValueValidator(2), MaxValueValidator(32)])
 	participants = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='joined_tournaments', blank=True)
 	started = models.BooleanField(default=False)
+	finished = models.BooleanField(default=False)
 	matchups = models.ManyToManyField(TournamentMatch, blank=True)
 	max_round = models.IntegerField(default=1)
 	current_round = models.IntegerField(default=1)
@@ -48,7 +49,8 @@ class Tournament(models.Model):
 		print(f"current_round: {self.current_round}")
 		print(f"username = {username}")
 		match = self.matchups.filter(
-			(models.Q(player1=username) | models.Q(player2=username))
+			(models.Q(player1=username) | models.Q(player2=username)),
+			round=self.current_round
 			).first()
 		print(f"match: {match}")
 
@@ -104,9 +106,33 @@ class Tournament(models.Model):
 				round_info["matches"].append(match_info)
 			
 			bracket["tournament"]["rounds"].append(round_info)
-			return bracket
-	
+		return bracket
 
+	def get_ranking(self):
+		ranking = {}
+		for player in self.participants.all():
+			player_username = player.tournament_username
+			player_score = 0
+			player_matches = self.matchups.filter(
+				(models.Q(player1=player_username) | models.Q(player2=player_username)),
+				finished=True
+			)
+			for match in player_matches:
+				if match.winner == player_username:
+					player_score += 1
+			ranking[player_username] = player_score
+		return ranking
+	
+	def check_if_player_is_in_match(self, username):
+		match = self.get_matches_by_player(username)
+		if match and not match.finished:
+			return True
+		return False
+
+	def get_winner(self):
+		winner = self.matchups.filter(round=self.max_round).first().winner
+		return winner
+	
 	def get_round_name(self, round_number):
 		if round_number == self.max_round:
 			return "Finale"
@@ -114,3 +140,7 @@ class Tournament(models.Model):
 			return "semi-Finale"
 		else:
 			return f"Round {round_number}"
+		
+	async def increase_round(self):
+		self.current_round += 1
+		self.asave()

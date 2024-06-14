@@ -26,3 +26,4 @@ compiledSolidity = compile_standard({
 # print(compiledSolidity)
 with open("compiledSolidity.json", "w") as file:
     json.dump(compiledSolidity, file)
+    

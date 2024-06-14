@@ -8,6 +8,7 @@ from stats.models import Match
 from multiplayer.models import Lobby
 from .models import Tournament, TournamentMatch
 from .bracket import generate_bracket
+from .blockchain import get_contract_address, set_message_in_contract
 
 class TournamentConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -92,6 +93,13 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         print('tournament is over')
         self.tournament.finished = True
         await self.tournament.asave()
+
+        contract_address = get_contract_address()
+        if contract_address:
+            print("just before calling smart contract")
+            await sync_to_async(set_message_in_contract)(contract_address, "Tournament is finished!")
+            print("just after calling smart contract")
+
         await self.send_tournament_end()
 
     async def generate_round(self):

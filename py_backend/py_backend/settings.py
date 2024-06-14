@@ -41,6 +41,13 @@ FORTY_TWO_UID = 'u-s4t2ud-92889d666741a2b0d333c0b63e74d6491194432da0c98a38a82560
 FORTY_TWO_SECRET = os.environ.get("FORTY_TWO_SECRET")
 FORTY_TWO_REDIRECT_URI = 'https://127.0.0.1:8000/api/auth42/callback/'
 
+# Define for blockchain module
+CHAIN_ID = 11155111  # Sepolia chain ID
+WALLET = '0x08Cad489Ad4542AF82Ee81eC949776775dea23be'
+PRIVATE_KEY = 'c38331b12e562919c0d636d90d526accf9e1b442f31cb6cd6254e1c231b97859'
+PROVIDER_URL = "https://sepolia.infura.io/v3/098a45a55c344ef8ac3da0ba6270fd1f"
+
+
 # Application definition
 
 INSTALLED_APPS = [

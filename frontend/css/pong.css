@@ -196,7 +196,7 @@ h1 {
     background: beige;
     margin: 1% 6%;
     padding: 5%;
-    width: 100%;
+    width: 87%;
     height: 68%;
 }
 
@@ -233,6 +233,17 @@ h1 {
 	bottom: 0;
 	right: 0;
 	width: 15%;
+}
+
+.show-ranking-btn {
+	bottom: 0;
+	left: 0;
+}
+
+.waiting-text {
+	position: absolute;
+    bottom: 0;
+    font-size: 1.5em;
 }
 
 .crt {

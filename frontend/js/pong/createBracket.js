@@ -1,5 +1,5 @@
 import { displayMainMenu } from "./menu.js";
-import { createUnsubscribeButton } from "./tournament.js";
+import { createUnsubscribeButton, playerStatus, tournamentStatus } from "./tournament.js";
 import { wsTournament } from "./tournament.js";
 
 let canvas;
@@ -57,21 +57,46 @@ function createBracketCanvas() {
     document.getElementsByClassName('tournament')[0]?.appendChild(canvas);
 }
 
+function updateButtonWithStatus() {
+    if (tournamentStatus === "finished" || playerStatus === "disqualified") {
+        createLeaveButton(document.getElementsByClassName('tournament')[0]);
+        if (tournamentStatus === "finished")
+            displayRankingButton(document.getElementsByClassName('tournament')[0]);
+    }
+    if (tournamentStatus === "started")
+        displayWaitingText();
+}
+
+function displayWaitingText() {
+    const waitingText = document.createElement('p');
+    waitingText.id = 'waitingText';
+    waitingText.classList.add('waiting-text');
+    document.getElementsByClassName('tournament')[0].appendChild(waitingText);
+    let dots = '';
+    let maxDots = 3;
+    let interval = 500; // Interval in milliseconds
+
+    setInterval(() => {
+        if (dots.length < maxDots) {
+            dots += '.';
+        } else {
+            dots = '';
+        }
+        waitingText.textContent = `Loading${dots}`;
+    }, interval);
+}
+
 export function drawBracket(bracket) {
     console.log("Drawing bracket: ", bracket);
     const tournamentName = document.createElement('h1');
     tournamentName.textContent = bracket.tournament.name;
     document.getElementsByClassName('tournament')[0].appendChild(tournamentName);
-    createLeaveButton(document.getElementsByClassName('tournament')[0]);
+    updateButtonWithStatus();
     createBracketCanvas(bracket.tournament.name);
     canvas = document.getElementById('bracketCanvas');
     ctx = canvas.getContext('2d');
     ctx.font = '12px Arial';
     let prevRoundMatchesPosY = [];
-    if (!bracket) {
-        createUnsubscribeButton(document.getElementsByClassName('tournament')[0]);
-        return;
-    }
     const rounds = bracket.tournament.rounds;
 
     rounds.forEach((round, roundIndex) => {
@@ -108,7 +133,18 @@ export function drawBracket(bracket) {
         });
         prevRoundMatchesPosY = matchesPosY;
     });
-} 
+}
+
+function displayRankingButton(parent) {
+    const btn = document.createElement('button');
+    btn.id = 'showRanking';
+    btn.classList.add('tournament-btn', 'show-ranking-btn', 'end-tournament-btn');
+    btn.textContent = 'Show Ranking';
+    parent.appendChild(btn);
+    document.getElementById('showRanking').addEventListener('click', () => {
+        wsTournament.send(JSON.stringify({type: "getRanking"}));
+    });
+}
 
 export function createLeaveButton(parent) {
     const btn = document.createElement('button');

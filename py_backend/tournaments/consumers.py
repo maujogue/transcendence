@@ -36,6 +36,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if text_data_json.get('type') == 'bracket':
             bracket = await sync_to_async(self.tournament.get_tournament_bracket)()
             await self.send(text_data=json.dumps({'type': 'bracket', 'bracket': bracket}))
+        if text_data_json.get('type') == 'getRanking':
+            await self.send_tournament_ranking()
 
     async def disconnect(self, close_code):
         print('tournament disconnected')
@@ -74,6 +76,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def match_is_over(self):
         print('match is over')
+        self.match = await self.get_player_match(self.scope['user'].tournament_username)
         self.match.finished = True
         await self.match.asave()
 
@@ -96,6 +99,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         await self.send_tournament_end()
 
     async def generate_round(self):
+        print(f'{self.scope["user"].tournament_username}: generating round {self.tournament.current_round}')
         await sync_to_async(generate_bracket)(self.tournament)
         await self.send_bracket(True)
         await self.send_all_matchups()
@@ -144,6 +148,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             return
         
     async def launch_tournament(self):
+        print('launch tournament')
         await self.channel_layer.group_send(
             self.tournament.name,
             {
@@ -222,7 +227,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         
     async def send_self_matchup(self):
         self.match = await self.get_player_match(self.scope['user'].tournament_username)
-        if self.match:
+        if self.match and not self.match.finished:
             match_infos = self.get_match_infos(self.match)
             await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos}))
 
@@ -274,6 +279,11 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             }
         )
 
+    async def send_tournament_ranking(self):
+        winner = await sync_to_async(self.tournament.get_winner)()
+        ranking = await sync_to_async(self.tournament.get_ranking)()
+        await self.send(text_data=json.dumps({'type': 'ranking', 'winner': winner, 'ranking': ranking}))
+    
     async def tournament_participants(self, event):
         await self.send(
             text_data=json.dumps({'type': 'participants', 'participants': event['participants']}))
@@ -292,12 +302,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 print('disqualified: ', event['username'])
                 await self.send(text_data=json.dumps({'type': 'status', 'status': 'disqualified'}))
         elif event['status'] == 'endTournament':
-            winner = await sync_to_async(self.tournament.get_winner)()
-            ranking = await sync_to_async(self.tournament.get_ranking)()
-            print('endTournament: ', ranking)
-            await self.send(text_data=json.dumps({'type': 'status', 'status': 'endTournament', 'winner': winner, 'ranking': ranking}))
+            await self.send(text_data=json.dumps({'type': 'status', 'status': 'endTournament'}))
+            await self.send_tournament_ranking()
         else:
             await self.send(text_data=json.dumps({'type': 'status', 'status': event['status']}))
+
+
 
     async def tournament_bracket(self, event):
         print(f'bracket: {self.scope["user"].tournament_username} {event["bracket"]}, forAll: {event["forAll"]}')

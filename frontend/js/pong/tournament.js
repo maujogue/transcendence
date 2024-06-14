@@ -7,6 +7,8 @@ import { createLeaveButton, drawBracket} from "./createBracket.js";
 import { hostname } from "../Router.js";
 
 export let wsTournament
+export let tournamentStatus;
+export let playerStatus;
 let userData;
 let currentTournament;
 
@@ -30,6 +32,8 @@ export async function connectToTournament(tournament) {
                 createOnlineSelectMenu(data.match.lobby_id);
             if (data.type == "status")
                 handlerMessageStatus(data);
+            if (data.type == "ranking")
+                displayRankingScreen(data);
             if (data.type == "bracket") {
                 createTournamentDiv();
                 drawBracket(data.bracket);
@@ -51,14 +55,18 @@ export async function connectToTournament(tournament) {
 
 function handlerMessageStatus(data) {
     console.log("Status:", data.status);
-    if (data.status == "disqualified")
+    if (data.status == "disqualified") {
+        playerStatus = "disqualified";
         displayErrorPopUp("You have been disqualified", document.getElementsByClassName("tournament")[0]);
-    if (data.status == "endTournament") {
-        displayEndTournamentScreen(data);
     }
+    if (data.status == "endTournament")
+        tournamentStatus = "finished";
+    if (data.status == "start")
+        tournamentStatus = "started";
+        
 } 
 
-function displayEndTournamentScreen(data) {
+function displayRankingScreen(data) {
     if (!document.getElementsByClassName("tournament")[0])
         createTournamentDiv();
     const tournamentDiv = document.getElementsByClassName("tournament")[0];

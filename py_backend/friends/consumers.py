@@ -31,7 +31,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'accept_request': self.accept_request,
             'remove_request': self.remove_friend,
             'get_friendslist': self.get_friendslist,
-            # 'get_requests': self.get_requests,
+            'get_requests': self.get_request_from_user,
         }
         handler = handlers.get(message_type)
         if handler:
@@ -76,7 +76,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'from_user': from_user,
             'to_user': to_user})
 
-        await self.accept_request(data)
+        # await self.accept_request(data)
 
     
     async def accept_request(self, data):
@@ -120,11 +120,6 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({
                 "type": "friendslist",
                 "friends": friends_list_data}))
-
-
-    # async def get_requests(self, data):
-
-
 
 
     async def new_request_notification(self, event):
@@ -171,7 +166,14 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
 
     @database_sync_to_async
-    def get_request_from_user(self, to_user):
+    def get_request_from_user(self, data):
+        print(data)
         all_requests = InteractionRequest.objects.all()
-        requests = all_requests.filter(to_user=to_user)
-        return [r.from_user for r in requests]
+        requests = all_requests.filter(to_user=data.get('from_user'))
+        print(requests.count())
+        if data.get('send') == 'true':
+            print('send')
+            # return a dict of all the requests where current user is the `to_user`
+            return
+        else:
+            return [r.from_user for r in requests]

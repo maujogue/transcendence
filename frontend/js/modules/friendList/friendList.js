@@ -52,10 +52,10 @@ export async function init() {
 	}
 
 	async function getInteractionRequests() {
-		console.log('getInteractionRequests');
 		let message = {
 			'type': 'get_requests',
-			'current_user': currentUser,
+			'from_user': currentUser,
+			'send': 'true',
 		}
 		sendFriendsWebSocketMessage(message);
 	}

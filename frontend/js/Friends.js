@@ -40,6 +40,9 @@ async function sendFriendsWebSocketMessage(message) {
             auth(message.username);
         } else if (message.type === 'get_friendslist') {
             sendGetFriendsListToConsumer(message);
+        } else if (message.type === 'get_requests') {
+            console.log('get req');
+            sendGetRequests(message);
         } else
             sendFriendRequestToConsumer(message);
     } else {
@@ -54,14 +57,22 @@ async function auth(username) {
     }));
 }
 
-async function sendGetFriendsListToConsumer(message){
+async function sendGetFriendsListToConsumer(message) {
     wsFriends.send(JSON.stringify({
         'type': message.type,
         'current_user': message.current_user,
     }));
 }
 
-async function sendFriendRequestToConsumer(message){
+async function sendGetRequests(message) {
+    wsFriends.send(JSON.stringify({
+        'type': message.type,
+        'from_user': message.from_user,
+        'send': message.send,
+    }));
+}
+
+async function sendFriendRequestToConsumer(message) {
     wsFriends.send(JSON.stringify({
         'type': message.type,
         'from_user': message.from_user,

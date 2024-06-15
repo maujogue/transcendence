@@ -29,13 +29,13 @@ contract StoreTournamentsScore {
 	}
 
 	function addMatch(
-		string memory _id,
-		string memory _round,
-		string memory _player1,
-		string memory _scorePlayer1,
-		string memory _player2,
-		string memory _scorePlayer2,
-		string memory _matchWinner
+		string calldata _id,
+		string calldata _round,
+		string calldata _player1,
+		string calldata _scorePlayer1,
+		string calldata _player2,
+		string calldata _scorePlayer2,
+		string calldata _matchWinner
 	) public onlyOwner {
 		matches.push(Match(
 			_id,
@@ -48,7 +48,7 @@ contract StoreTournamentsScore {
 		));
 	}
 
-	function setTournamentWinner(string memory _tournamentWinner) public onlyOwner {
+	function setTournamentWinner(string calldata _tournamentWinner) public onlyOwner {
 		tournamentWinner = _tournamentWinner;
 	}
 

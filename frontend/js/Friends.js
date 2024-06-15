@@ -32,12 +32,7 @@ async function sendFriendsWebSocketMessage(message) {
         if (message.type === 'auth') {
             auth(message.username);
         }
-        if (message.type === 'friend_request') {
-            friendRequest(message);
-        }
-        if (message.type === 'remove_request') {
-            removeFriend(message);
-        }
+        sendToConsumer(message);
     } else {
         console.error('WebSocket is not open');
     }
@@ -46,19 +41,11 @@ async function sendFriendsWebSocketMessage(message) {
 async function auth(username) {
     wsFriends.send(JSON.stringify({
         'type': message.type,
-        'username': message.username,
+        'username': username,
     }));
 }
 
-async function friendRequest(message) {
-    wsFriends.send(JSON.stringify({
-        'type': message.type,
-        'from_user': message.from_user,
-        'to_user': message.to_user,
-    }));
-}
-
-async function removeFriend(message) {
+async function sendToConsumer(message){
     wsFriends.send(JSON.stringify({
         'type': message.type,
         'from_user': message.from_user,

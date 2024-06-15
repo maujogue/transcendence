@@ -10,40 +10,14 @@ WALLET = '0x08Cad489Ad4542AF82Ee81eC949776775dea23be'
 PRIVATE_KEY = 'c38331b12e562919c0d636d90d526accf9e1b442f31cb6cd6254e1c231b97859'
 PROVIDER_URL = "https://sepolia.infura.io/v3/098a45a55c344ef8ac3da0ba6270fd1f"
 
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-COMPILED_CONTRACT_PATH = os.path.join(CURRENT_DIR, "compiledSolidity.json")
-CONTRACT_ADDRESS_PATH = os.path.join(CURRENT_DIR, "contract_address.txt")
-
-def get_message_in_contract(contract_address):
-    with open(COMPILED_CONTRACT_PATH, "r") as file:
-        compiledSolidity = json.load(file)
-    
-    provider_url = "https://sepolia.infura.io/v3/098a45a55c344ef8ac3da0ba6270fd1f"
-    w3 = Web3(HTTPProvider(provider_url))
-    abi = compiledSolidity["contracts"]["tournamentContract.sol"]["StoreTournamentsScore"]["abi"]
-
-    contract = w3.eth.contract(
-        address=contract_address,
-        abi=abi
-    )
-
-    message = contract.functions.getMessage().call()
-    return message
-
-
-def save_contract_address(contract_address):
-    with open(CONTRACT_ADDRESS_PATH, "w") as file:
-        file.write(contract_address)
-
-
-def deployContract(newMessage):
-    with open(COMPILED_CONTRACT_PATH, "r") as file:
+def deploy_tournament_contract(tournament_name):
+    with open("compiledSolidity.json", "r") as file:
         compiledSolidity = json.load(file)
 
     w3 = Web3(HTTPProvider(PROVIDER_URL))
 
-    abi = compiledSolidity["contracts"]["tournamentContract.sol"]["StoreTournamentsScore"]["abi"]
-    bytecode = compiledSolidity["contracts"]["tournamentContract.sol"]["StoreTournamentsScore"]["evm"]["bytecode"]["object"]
+    abi = compiledSolidity["contracts"]["tournamentContract.sol"]["StoreTournamentsData"]["abi"]
+    bytecode = compiledSolidity["contracts"]["tournamentContract.sol"]["StoreTournamentsData"]["evm"]["bytecode"]["object"]
     
     contract = w3.eth.contract(abi=abi, bytecode=bytecode)
 
@@ -64,10 +38,9 @@ def deployContract(newMessage):
 
     contract_address = transaction_receipt.contractAddress
 
-    save_contract_address(contract_address)
     print(f"contract address: {contract_address}")
     return contract_address
 
 if __name__ == "__main__":
-    str = ""
-    deployContract(str)
+    tournament_name = "tournamentName"
+    deploy_tournament_contract(tournament_name)

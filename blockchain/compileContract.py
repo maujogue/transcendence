@@ -1,9 +1,13 @@
 from solcx import compile_standard, install_solc
 import json
+import os
 
 install_solc("0.8.19")
 
-contract_path = "/home/jrenault/Documents/42/transcendence/blockchain/tournamentContract.sol"
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+os.path.abspath(os.path.join(CURRENT_DIR, "../../blockchain"))
+contract_path = os.path.abspath(os.path.join(CURRENT_DIR, "/tournamentContract.sol"))
 with open(contract_path, 'r') as file:
     contract = file.read()
     

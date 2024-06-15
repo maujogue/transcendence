@@ -69,5 +69,5 @@ def deployContract(newMessage):
     return contract_address
 
 if __name__ == "__main__":
-    str = "communication is a SUCCESS"
+    str = ""
     deployContract(str)

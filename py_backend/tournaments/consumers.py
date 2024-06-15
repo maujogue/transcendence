@@ -100,12 +100,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         print('tournament is over')
         self.tournament.finished = True
         await self.tournament.asave()
-
         contract_address = get_contract_address()
-        if contract_address:
-            await sync_to_async(set_message_in_contract)(contract_address, "Tournament is finished!") #TODO check if it works in async so we don't have to wait the transaction to be done.
 
         await self.send_tournament_end()
+
+        if contract_address:
+            set_message_in_contract(contract_address, "Tournament is finished!") #TODO check if it works in async so we don't have to wait the transaction to be done.
 
     async def generate_round(self):
         print(f'{self.scope["user"].tournament_username}: generating round {self.tournament.current_round}')

@@ -26,6 +26,9 @@ async function sendFriendsWebSocketMessage(message) {
         if (message.type === 'friend_request') {
             friendRequest(message);
         }
+        if (message.type === 'remove_request') {
+            removeFriend(message);
+        }
     } else {
         console.error('WebSocket is not open');
     }
@@ -39,6 +42,14 @@ async function auth(username) {
 }
 
 async function friendRequest(message) {
+    wsFriends.send(JSON.stringify({
+        'type': message.type,
+        'from_user': message.from_user,
+        'to_user': message.to_user,
+    }));
+}
+
+async function removeFriend(message) {
     wsFriends.send(JSON.stringify({
         'type': message.type,
         'from_user': message.from_user,
@@ -61,6 +72,9 @@ async function printNotification(data) {
     }
     if (data.type === 'already_friends') {
         showAlert("You are already friends with " + data.to_user + " !", false)
+    }
+    if (data.type === 'remove_friend') {
+        showAlert("You have deleted " + data.to_user + " from your friends", true);
     }
 }
 

@@ -33,6 +33,9 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         if message_type == 'accept_request':
             await self.accept_request(data)
 
+        if message_type == 'remove_request':
+            await self.remove_friend(data)
+
 
 #-----------------------------------------------------------------------------------------------------------------------
 
@@ -91,7 +94,19 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         if self.scope['user'].username == data['from_user']:
             data['type'] = 'accept_request'
             await self.send_notification(data)
+
+
+    async def remove_friend(self, data):
+        from_user = await sync_to_async(CustomUser.objects.get)(username=data.get('from_user'))
+        to_user = await sync_to_async(CustomUser.objects.get)(username=data.get('to_user'))
+
+        await sync_to_async(from_user.friends.delete)(to_user)
+        await sync_to_async(to_user.friends.delete)(from_user)
         
+        if self.scope['user'].username == data['from_user']:
+            data['type'] = 'remove_friend'
+            await self.send_notification(data)
+
 
     async def new_request_notification(self, event):
         if self.scope['user'].username == event['from_user']:

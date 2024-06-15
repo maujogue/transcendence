@@ -2,12 +2,12 @@ import { getUserData} from "./User.js"
 import { showAlert } from "./Utils.js";
 
 const notificationHandlers = {
-    'friend_request_to_user': () => showAlert(`You just receive a friend request from ${data.from_user}`, true),
-    'friend_request_from_user': () => showAlert(`You just send a friend request to ${data.to_user}`, true),
-    'accept_request': () => showAlert(`${data.to_user} accepted your friend request`, true),
-    'user_exist': status => showAlert(status === 'failure'? "This user does not exist." : "", false),
-    'already_friends': () => showAlert(`You are already friends with ${data.to_user}`, false),
-    'remove_friend': () => showAlert(`You have deleted ${data.to_user} from your friends`, true)
+    'friend_request_to_user': (data) => showAlert(`You just receive a friend request from ${data.from_user} !`, true),
+    'friend_request_from_user': (data) => showAlert(`You just send a friend request to ${data.to_user} !`, true),
+    'accept_request': (data) => showAlert(`${data.to_user} accepted your friend request !`, true),
+    'user_exist': () => showAlert("This user does not exist.", false),
+    'already_friends': (data) => showAlert(`You are already friends with ${data.to_user}.`, false),
+    'remove_friend': (data) => showAlert(`You have deleted ${data.to_user} from your friends.`, true)
 };
 
 let wsFriends;
@@ -55,7 +55,7 @@ async function sendToConsumer(message){
 
 async function printNotification(data) {
     const handler = notificationHandlers[data.type];
-    if (handler) {
+    if (handler && data) {
         handler.call(this, data);
     }
 }

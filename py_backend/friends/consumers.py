@@ -54,7 +54,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         user = await self.authenticate_user_with_username(to_user)
 
         if user is None:
-            await self.send(text_data=json.dumps({ "type": "user_exist", "status": "failure"}))
+            await self.send(text_data=json.dumps({ "type": "user_exist"}))
             return
         
         request = await sync_to_async(InteractionRequest.objects.create)(from_user=from_user, to_user=to_user)
@@ -73,7 +73,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'from_user': from_user,
             'to_user': to_user})
 
-        # await self.accept_request(data)
+        await self.accept_request(data)
 
     
     async def accept_request(self, data):

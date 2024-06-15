@@ -29,8 +29,8 @@ export async function init() {
 	</a>`;
 	for (var i = 0; i < 5; i++)
 		friendScroll.innerHTML += friendListHtml;
-	var response = await runEndPoint("friends/get_friendslist/");
-	console.log(response);
+	// var response = await runEndPoint("friends/get_friendslist/");
+	// console.log(response);
 
 	async function searchFriend(searchFriendForm) {
 		const userData = new FormData(searchFriendForm);

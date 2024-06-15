@@ -29,16 +29,18 @@ export async function init() {
 	</a>`;
 	for (var i = 0; i < 5; i++)
 		friendScroll.innerHTML += friendListHtml;
-	// var response = await runEndPoint("friends/get_friendslist/");
-	// console.log(response);
+
 
 	async function searchFriend(searchFriendForm) {
 		const userData = new FormData(searchFriendForm);
 		const fetchBody = {
 			username: userData.get("username"),
 		};
-
+		if (!fetchBody.username) 
+			return showAlert("Please enter a valid username.");
+		
 		sendFriendRequest(fetchBody.username);
+		await runEndPoint("friends/get_friendslist/");
 	}
 	
 	async function sendFriendRequest(username){

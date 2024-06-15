@@ -24,17 +24,15 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         message_type = data.get('type')
 
-        if message_type == 'auth':
-            await self.auth(data)
-
-        if message_type == 'friend_request':
-            await self.friend_request(data)
-
-        if message_type == 'accept_request':
-            await self.accept_request(data)
-
-        if message_type == 'remove_request':
-            await self.remove_friend(data)
+        handlers = {
+            'auth': self.auth,
+            'friend_request': self.friend_request,
+            'accept_request': self.accept_request,
+            'remove_request': self.remove_friend,
+        }
+        handler = handlers.get(message_type)
+        if handler:
+            await handler(data)
 
 
 #-----------------------------------------------------------------------------------------------------------------------

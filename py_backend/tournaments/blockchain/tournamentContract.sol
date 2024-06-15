@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.19;
 
-contract StoreTournamentsData {
+contract StoreTournamentData {
 	address owner;
 		
 	struct Match {
-		string id;
+		string matchId;
 		string round;
 		string player1;
 		string scorePlayer1;
@@ -29,7 +29,7 @@ contract StoreTournamentsData {
 	}
 
 	function addMatch(
-		string calldata _id,
+		string calldata _matchId,
 		string calldata _round,
 		string calldata _player1,
 		string calldata _scorePlayer1,
@@ -38,7 +38,7 @@ contract StoreTournamentsData {
 		string calldata _matchWinner
 	) public onlyOwner {
 		matches.push(Match(
-			_id,
+			_matchId,
 			_round,
 			_player1,
 			_scorePlayer1,
@@ -65,24 +65,25 @@ contract StoreTournamentsData {
 	}
 
 	function getMatch(string memory _id) public view returns (
-		string memory _matchId,
-		string memory _round,
-		string memory _player1,
-		string memory _scorePlayer1,
-		string memory _player2,
-		string memory _scorePlayer2,
-		string memory _matchWinner
+		string memory,
+		string memory,
+		string memory,
+		string memory,
+		string memory,
+		string memory,
+		string memory
 	) {
 		for (uint i  = 0; i < matches.length; i++) {
-			if (keccak256(abi.encodePacked(matches[i].id)) == keccak256(abi.encodePacked(_id))) {
+			if (keccak256(abi.encodePacked(matches[i].matchId)) == keccak256(abi.encodePacked(_id))) {
+				Match storage match_ = matches[i];
 				return (
-					matches[i].id,
-					matches[i].round,
-					matches[i].player1,
-					matches[i].scorePlayer1,
-					matches[i].player2,
-					matches[i].scorePlayer2,
-					matches[i].matchWinner
+					match_.matchId,
+					match_.round,
+					match_.player1,
+					match_.scorePlayer1,
+					match_.player2,
+					match_.scorePlayer2,
+					match_.matchWinner
 				);
 			}
 		}

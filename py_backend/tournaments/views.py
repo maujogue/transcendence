@@ -10,6 +10,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
 from .models import Tournament
+from .blockchain.tournamentContract import deploy_tournament_contract
 
 CustomUser = get_user_model()
 
@@ -47,9 +48,12 @@ def create_tournament(request):
 		return JsonResponse({"errors": "Invalid number of players."}, status=400)
 
 	try:
+		contract_address = deploy_tournament_contract(name)
+
 		tournament = Tournament.objects.create(
 			name=name,
-			max_players=max_players
+			max_players=max_players,
+#			contract_address=contract_address
 		)
 		tournament.participants.add(request.user)
 	except IntegrityError as e:
@@ -63,7 +67,9 @@ def create_tournament(request):
 		"id": tournament.id,
 		"name": tournament.name,
 		"max_players": tournament.max_players,
-		"participants": [p.tournament_username for p in tournament.participants.all()]
+		"participants": [p.tournament_username for p in tournament.participants.all()],
+#		"contract_address": tournament.contract_address
+
 	}
 	return JsonResponse({"message": "Tournament created successfully.", "tournament": tournamentJSON},
 					status=201)

@@ -8,7 +8,7 @@ const notificationHandlers = {
     'user_exist': () => showAlert("This user does not exist.", false),
     'already_friends': (data) => showAlert(`You are already friends with ${data.to_user}.`, false),
     'remove_friend': (data) => showAlert(`You have deleted ${data.to_user} from your friends.`, true),
-    'friendslist': () => showAlert(`FRIENDSLIST`, true),
+    // 'friendslist': () => showAlert(`FRIENDSLIST`, true),
 };
 
 let wsFriends;
@@ -28,6 +28,7 @@ export async function friendsWebsocket(username) {
 
         if (data.type === 'friendslist') {
             var friendslist = data.friends;
+            printFriendslist(friendslist);
         }
             
     };    
@@ -66,6 +67,11 @@ async function sendFriendRequestToConsumer(message){
         'from_user': message.from_user,
         'to_user': message.to_user,
     }));
+}
+
+async function printFriendslist(friendslist) {
+    const length = Object.keys(friendslist).length;
+    console.log("Length of the dictionary:", length);
 }
 
 async function printNotification(data) {

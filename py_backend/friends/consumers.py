@@ -75,7 +75,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'from_user': from_user,
             'to_user': to_user})
 
-        # await self.accept_request(data)
+        await self.accept_request(data)
 
     
     async def accept_request(self, data):

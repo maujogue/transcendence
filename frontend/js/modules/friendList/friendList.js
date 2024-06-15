@@ -43,6 +43,7 @@ export async function init() {
 	}
 
 	async function printFriendsList() {
+		console.log('printFriendsList');
 		let message = {
 			'type': 'get_friendslist',
 			'current_user': currentUser,

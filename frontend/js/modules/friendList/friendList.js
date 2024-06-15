@@ -40,16 +40,15 @@ export async function init() {
 	}
 
 	async function printFriendsList(friendScroll) {
+		console.log('printFriendsList');
 		var friendsListResponse = await runEndPoint("friends/get_friendslist/", "POST");
-
-		var friendListHtml = `<a class="ms-2 align-items-center text-white" data-bs-toggle="dropdown" navlink>
-		<img width="30" height="30" class="rounded-circle me-3 avatarDynamic" />
-		<span class="mt-1 usernameDynamic section-name"></span>
-		</a>`;
-		for (var i = 0; i < 5; i++)
-			friendScroll.innerHTML += friendListHtml;
+		console.log(friendsListResponse.message);
+		
+		// const length = Object.keys(friendsListResponse.friends).length;
+		// console.log("Length of the dictionary:", length);
 	}
 
+	
 	// async function printFriendsList(friendScroll) {
 	// 	var friendsListResponse = await runEndPoint("friends/get_friendslist/", "POST");
 

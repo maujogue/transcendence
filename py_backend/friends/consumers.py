@@ -91,6 +91,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
         await sync_to_async(from_user.friends.add)(to_user)
         await sync_to_async(to_user.friends.add)(from_user)
+        await self.delete_interaction_request(from_user, to_user)
 
         if self.scope['user'].username == data['from_user']:
             data['type'] = 'accept_request'
@@ -161,6 +162,13 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({ "type": "auth", "status": "success"}))
         else:
             await self.send(text_data=json.dumps({ "type": "auth", "status": "failed"}))
+
+
+    async def delete_interaction_request(self, from_user, to_user):
+        request = await sync_to_async(InteractionRequest.objects.get)(from_user=from_user, to_user=to_user)
+        if request:
+            await sync_to_async(request.delete)()
+
 
     @database_sync_to_async
     def get_request_from_user(self, to_user):

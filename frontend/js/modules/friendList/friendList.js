@@ -16,10 +16,9 @@ export async function init() {
 	var searchFriendForm = module.querySelector("#searchFriendForm");
 	searchFriendForm.addEventListener("submit", (event) => {
 		printFriendsList();
-		getInteractionRequests();
-
 		event.preventDefault();
 		searchFriend(event.target);
+		getInteractionRequests();
 	});
 	
 	

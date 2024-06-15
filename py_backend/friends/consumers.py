@@ -67,11 +67,11 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             self.channel_name,)
         await self.channel_layer.group_send(
             to_user,
-            {'type': 'send_notification',
+            {'type': 'new_request_notification',
             'from_user': from_user,
             'to_user': to_user})
 
-        await self.accept_request(data)
+        # await self.accept_request(data)
 
     
     async def accept_request(self, data):
@@ -88,28 +88,27 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await sync_to_async(to_user.friends.add)(from_user)
 
         if self.scope['user'].username == data['from_user']:
-            await self.send(text_data=json.dumps({
-                'type': 'accept_request',
-                'from_user': data['from_user'],
-                'to_user': data['to_user'],
-                }))
+            data['type'] = 'accept_request'
+            await self.send_notification(data)
         
 
-    async def send_notification(self, event):
+    async def new_request_notification(self, event):
         if self.scope['user'].username == event['from_user']:
-            await self.send(text_data=json.dumps({
-                'type': 'friend_request_from_user',
-                'from_user': event['from_user'],
-                'to_user': event['to_user'],
-                }))
+            event['type'] = 'friend_request_from_user'
+            await self.send_notification(event)
         if self.scope['user'].username == event['to_user']:
-            await self.send(text_data=json.dumps({
-                'type': 'friend_request_to_user',
-                'from_user': event['from_user'],
-                'to_user': event['to_user'],
-                }))
+            event['type'] = 'friend_request_to_user'
+            await self.send_notification(event)
 
-    
+
+    async def send_notification(self, event):
+        await self.send(text_data=json.dumps({
+            'type': event['type'],
+            'from_user': event['from_user'],
+            'to_user': event['to_user'],
+            }))
+
+
     async def authenticate_user_with_username(self, username):
         try:
             user = await CustomUser.objects.aget(username=username)

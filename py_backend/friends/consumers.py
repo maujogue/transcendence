@@ -34,6 +34,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             await self.accept_request(data)
 
 
+#-----------------------------------------------------------------------------------------------------------------------
 
 
     async def auth(self, data):
@@ -59,7 +60,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         isFriend = await sync_to_async(request.isFriend)()
         if isFriend:
             await self.send(text_data=json.dumps({ "type": "already_friends", "to_user": to_user}))
-            #delete request
+            await sync_to_async(request.delete)()
             return
         
         await self.channel_layer.group_add(
@@ -99,6 +100,9 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         if self.scope['user'].username == event['to_user']:
             event['type'] = 'friend_request_to_user'
             await self.send_notification(event)
+
+
+#---------- utils ---------------------------------------------------------------------------------------------------------
 
 
     async def send_notification(self, event):

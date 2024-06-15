@@ -10,12 +10,6 @@ export async function init() {
 	if (!module)
 		return;
 
-	const currentUserUsername = await getUserData('username');
-	let message_auth = {
-		type: 'auth',
-		username: currentUserUsername,
-	}
-
 	var friendScroll = module.querySelector("#friendScroll");
 	var searchFriendForm = module.querySelector("#searchFriendForm");
 	searchFriendForm.addEventListener("submit", (event) => {
@@ -23,13 +17,7 @@ export async function init() {
 		searchFriend(event.target);
 	});
 
-	var friendListHtml = `<a class="ms-2 align-items-center text-white" data-bs-toggle="dropdown" navlink>
-	<img width="30" height="30" class="rounded-circle me-3 avatarDynamic" />
-	<span class="mt-1 usernameDynamic section-name"></span>
-	</a>`;
-	for (var i = 0; i < 5; i++)
-		friendScroll.innerHTML += friendListHtml;
-
+	printFriendsList(friendScroll);
 
 	async function searchFriend(searchFriendForm) {
 		const userData = new FormData(searchFriendForm);
@@ -38,64 +26,38 @@ export async function init() {
 		};
 		if (!fetchBody.username) 
 			return showAlert("Please enter a valid username.");
-		
+
 		sendFriendRequest(fetchBody.username);
-		await runEndPoint("friends/get_friendslist/");
 	}
 	
 	async function sendFriendRequest(username){
 		let message = {
 			'type': 'friend_request',
-			'from_user': currentUserUsername,
+			'from_user':  await getUserData('username'),
 			'to_user': username,
 		}
 		sendFriendsWebSocketMessage(message);
 	}
 
-	// async function getFriendName(username){
-	// 	var friend_username = await checkInputAvailable(username, "username");
-	// 	if (!friend_username) {
-	// 		sendFriendRequest(username);
-	// 	} else
-	// 		showAlert("This user does not exist.", false);
+	async function printFriendsList(friendScroll) {
+		var friendsListResponse = await runEndPoint("friends/get_friendslist/", "POST");
+
+		var friendListHtml = `<a class="ms-2 align-items-center text-white" data-bs-toggle="dropdown" navlink>
+		<img width="30" height="30" class="rounded-circle me-3 avatarDynamic" />
+		<span class="mt-1 usernameDynamic section-name"></span>
+		</a>`;
+		for (var i = 0; i < 5; i++)
+			friendScroll.innerHTML += friendListHtml;
+	}
+
+	// async function printFriendsList(friendScroll) {
+	// 	var friendsListResponse = await runEndPoint("friends/get_friendslist/", "POST");
+
+	// 	var friendListHtml = `<a class="ms-2 align-items-center text-white" data-bs-toggle="dropdown" navlink>
+	// 	<img width="30" height="30" class="rounded-circle me-3 avatarDynamic" />
+	// 	<span class="mt-1 usernameDynamic section-name"></span>
+	// 	</a>`;
+	// 	for (var i = 0; i < 5; i++)
+	// 		friendScroll.innerHTML += friendListHtml;
 	// }
-
-	// async function sendFriendRequest11(friend_username){
-	// 	var response;
-	// 	const fetchBody = {
-	// 		username: friend_username
-	// 	};
-	// 	response = await runEndPoint("friends/send_request/" + friend_username + "/", "POST", JSON.stringify(fetchBody));
-	// 	let message_friend_request = {
-	// 		type: 'friend_request',
-	// 		from_user: currentUserUsername,
-	// 		to: friend_username,
-	// 	}
-
-	// 	showAlert("You just send a friend request to " + friend_username + "  !", true);
-	// 	sendWebSocketMessage(message_friend_request);
-
-		// sendWebSocketMessage ({
-		// 	type: 'friend_request',
-		// 	from: wow,
-		// 	to: friend_username
-		// });
-
-		// if (response.statusCode === 200) {
-		// 	showAlert("You just send a friend request to " + friend_username + "  !", true);
-		// 	console.log("PTDR");
-		// 	sendWebSocketMessage ({
-		// 		type: 'friend_request',
-		// 		to: friend_username
-		// 	});
-
-		// } else if (response.data.message === "Request already send.") {
-		// 	showAlert("FRIEND REQUEST ALREADY SEND.", false);
-		// } else if (response.data.message === "Cannot send a request to himself.") {
-		// 	showAlert("You cannot send a friend request to yourself.", false);
-		// } else {
-		// 	showAlert("FRIEND REQUEST NOT SEND.", false);
-		// }
-	
 }
-

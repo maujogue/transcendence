@@ -25,6 +25,11 @@ export async function friendsWebsocket(username) {
     wsFriends.onmessage = (event) => {
         const data = JSON.parse(event.data);
         printNotification(data);
+
+        if (data.type === 'friendslist')
+            //friendlist !!!!
+            console.log(data.friends[5].username);
+            
     };    
 }
 

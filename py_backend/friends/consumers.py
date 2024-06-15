@@ -115,7 +115,10 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         friends_count = await sync_to_async(len)(friendslist)
         friends_list_data = [{'username': friend.username, 'avatar': convert_image_to_base64(friend.avatar)} for friend in friendslist]
         if friends_count > 0:
-            await self.send(text_data=json.dumps({"type": "friendslist", 'friends': friends_list_data}))
+            print('count = ', friends_count)
+            await self.send(text_data=json.dumps({
+                "type": "friendslist",
+                "friends": friends_list_data}))
 
 
     async def new_request_notification(self, event):

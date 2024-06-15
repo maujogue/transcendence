@@ -1,6 +1,15 @@
 import { getUserData} from "./User.js"
 import { showAlert } from "./Utils.js";
 
+const notificationHandlers = {
+    'friend_request_to_user': () => showAlert(`You just receive a friend request from ${data.from_user}`, true),
+    'friend_request_from_user': () => showAlert(`You just send a friend request to ${data.to_user}`, true),
+    'accept_request': () => showAlert(`${data.to_user} accepted your friend request`, true),
+    'user_exist': status => showAlert(status === 'failure'? "This user does not exist." : "", false),
+    'already_friends': () => showAlert(`You are already friends with ${data.to_user}`, false),
+    'remove_friend': () => showAlert(`You have deleted ${data.to_user} from your friends`, true)
+};
+
 let wsFriends;
 
 export async function friendsWebsocket(username) {
@@ -58,23 +67,9 @@ async function removeFriend(message) {
 }
 
 async function printNotification(data) {
-    if (data.type === 'friend_request_to_user') {
-        showAlert("You just receive a friend request from " + data.from_user + " !", true);
-    }
-    if (data.type === 'friend_request_from_user') {
-        showAlert("You just send a friend request to " + data.to_user + " !", true);
-    }
-    if (data.type === 'accept_request') {
-        showAlert(data.to_user + " accepted your friend request !", true);
-    }
-    if (data.type === 'user_exist' && data.status === 'failure') {
-        showAlert("This user does not exist.", false)
-    }
-    if (data.type === 'already_friends') {
-        showAlert("You are already friends with " + data.to_user + " !", false)
-    }
-    if (data.type === 'remove_friend') {
-        showAlert("You have deleted " + data.to_user + " from your friends", true);
+    const handler = notificationHandlers[data.type];
+    if (handler) {
+        handler.call(this, data);
     }
 }
 

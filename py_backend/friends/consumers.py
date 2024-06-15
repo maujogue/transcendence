@@ -31,6 +31,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'accept_request': self.accept_request,
             'remove_request': self.remove_friend,
             'get_friendslist': self.get_friendslist,
+            # 'get_requests': self.get_requests,
         }
         handler = handlers.get(message_type)
         if handler:
@@ -118,6 +119,11 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({
                 "type": "friendslist",
                 "friends": friends_list_data}))
+
+
+    # async def get_requests(self, data):
+
+
 
 
     async def new_request_notification(self, event):

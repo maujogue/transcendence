@@ -16,6 +16,8 @@ export async function init() {
 	var searchFriendForm = module.querySelector("#searchFriendForm");
 	searchFriendForm.addEventListener("submit", (event) => {
 		printFriendsList();
+		getInteractionRequests();
+
 		event.preventDefault();
 		searchFriend(event.target);
 	});
@@ -43,9 +45,17 @@ export async function init() {
 	}
 
 	async function printFriendsList() {
-		console.log('printFriendsList');
 		let message = {
 			'type': 'get_friendslist',
+			'current_user': currentUser,
+		}
+		sendFriendsWebSocketMessage(message);
+	}
+
+	async function getInteractionRequests() {
+		console.log('getInteractionRequests');
+		let message = {
+			'type': 'get_requests',
 			'current_user': currentUser,
 		}
 		sendFriendsWebSocketMessage(message);

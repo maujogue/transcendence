@@ -10,15 +10,17 @@ export async function init() {
 	if (!module)
 		return;
 
+	const currentUser = await getUserData('username');	
+	
 	var friendScroll = module.querySelector("#friendScroll");
 	var searchFriendForm = module.querySelector("#searchFriendForm");
 	searchFriendForm.addEventListener("submit", (event) => {
+		printFriendsList();
 		event.preventDefault();
 		searchFriend(event.target);
 	});
-
-	printFriendsList(friendScroll);
-
+	
+	
 	async function searchFriend(searchFriendForm) {
 		const userData = new FormData(searchFriendForm);
 		const fetchBody = {
@@ -26,26 +28,26 @@ export async function init() {
 		};
 		if (!fetchBody.username) 
 			return showAlert("Please enter a valid username.");
-
+		
 		sendFriendRequest(fetchBody.username);
 	}
 	
+
 	async function sendFriendRequest(username){
 		let message = {
 			'type': 'friend_request',
-			'from_user':  await getUserData('username'),
+			'from_user': currentUser,
 			'to_user': username,
 		}
 		sendFriendsWebSocketMessage(message);
 	}
 
-	async function printFriendsList(friendScroll) {
-		console.log('printFriendsList');
-		var friendsListResponse = await runEndPoint("friends/get_friendslist/", "POST");
-		console.log(friendsListResponse.message);
-		
-		// const length = Object.keys(friendsListResponse.friends).length;
-		// console.log("Length of the dictionary:", length);
+	async function printFriendsList() {
+		let message = {
+			'type': 'get_friendslist',
+			'current_user': currentUser,
+		}
+		sendFriendsWebSocketMessage(message);
 	}
 
 	

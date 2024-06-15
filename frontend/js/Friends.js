@@ -7,7 +7,8 @@ const notificationHandlers = {
     'accept_request': (data) => showAlert(`${data.to_user} accepted your friend request !`, true),
     'user_exist': () => showAlert("This user does not exist.", false),
     'already_friends': (data) => showAlert(`You are already friends with ${data.to_user}.`, false),
-    'remove_friend': (data) => showAlert(`You have deleted ${data.to_user} from your friends.`, true)
+    'remove_friend': (data) => showAlert(`You have deleted ${data.to_user} from your friends.`, true),
+    'friendslist': () => showAlert(`FRIENDSLIST`, true),
 };
 
 let wsFriends;
@@ -31,8 +32,10 @@ async function sendFriendsWebSocketMessage(message) {
     if (wsFriends && wsFriends.readyState === wsFriends.OPEN) {
         if (message.type === 'auth') {
             auth(message.username);
-        }
-        sendToConsumer(message);
+        } else if (message.type === 'get_friendslist') {
+            sendGetFriendsListToConsumer(message);
+        } else
+            sendFriendRequestToConsumer(message);
     } else {
         console.error('WebSocket is not open');
     }
@@ -45,7 +48,14 @@ async function auth(username) {
     }));
 }
 
-async function sendToConsumer(message){
+async function sendGetFriendsListToConsumer(message){
+    wsFriends.send(JSON.stringify({
+        'type': message.type,
+        'current_user': message.current_user,
+    }));
+}
+
+async function sendFriendRequestToConsumer(message){
     wsFriends.send(JSON.stringify({
         'type': message.type,
         'from_user': message.from_user,

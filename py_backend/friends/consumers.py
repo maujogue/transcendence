@@ -3,6 +3,7 @@ from users.models import CustomUser
 from friends.models import InteractionRequest
 from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async
+from users.utils import convert_image_to_base64
 import json
 
 
@@ -29,6 +30,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'friend_request': self.friend_request,
             'accept_request': self.accept_request,
             'remove_request': self.remove_friend,
+            'get_friendslist': self.get_friendslist,
         }
         handler = handlers.get(message_type)
         if handler:
@@ -104,6 +106,16 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         if self.scope['user'].username == data['from_user']:
             data['type'] = 'remove_friend'
             await self.send_notification(data)
+
+
+    async def get_friendslist(self, data):
+        current_user = await sync_to_async(CustomUser.objects.get)(username=data.get('current_user'))
+        friendslist = []
+        friendslist = current_user.friends.all()
+        friends_count = await sync_to_async(len)(friendslist)
+        friends_list_data = [{'username': friend.username, 'avatar': convert_image_to_base64(friend.avatar)} for friend in friendslist]
+        if friends_count > 0:
+            await self.send(text_data=json.dumps({"type": "friendslist", 'friends': friends_list_data}))
 
 
     async def new_request_notification(self, event):

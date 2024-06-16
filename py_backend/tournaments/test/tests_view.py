@@ -47,7 +47,8 @@ class TournamentModeTest(TestCase):
 	def find_tournament_id(self, tournament):
 		if tournament.status_code == 201:
 			tournament_data = json.loads(tournament.content)
-		return tournament_data.get('tournament').get('id')
+			return tournament_data.get('tournament').get('id')
+		return None
 
 ### tests create a tournament ###
 
@@ -376,3 +377,26 @@ class TournamentModeTest(TestCase):
 		self.assertEqual(response.status_code, 200)
 		response = self.client.post(reverse("join_tournament", args=[id]))
 		self.assertEqual(response.status_code, 404)
+
+### tests smart contract view ###
+
+@patch('tournaments.views.deploy_tournament_contract')
+def test_add_tournament_contract(self, mock_deploy_contract):
+	name = "Hi there"
+	max_players = 2
+
+	self.client.login(username='testuser1', password='Password1+')
+	tournament = self.create_test_tournament(name, max_players)
+	id = self.find_tournament_id(tournament)
+
+	mock_deploy_contract.return_value = "0x123456789abcdef"
+
+	response = self.client.post(reverse('add_tournament_contract', args=[id]))
+	self.assertEqual(response.status_code, 200)
+
+	self.tournament.refresh_from_db()
+	self.assertEqual(self.tournament.contract_address, "0x123456789abcdef")
+
+	response_data = response.json()
+	self.assertEqual(response_data['message'], "Contract address added successfully.")
+	self.assertEqual(response_data['contract_address'], "0x123456789abcdef")

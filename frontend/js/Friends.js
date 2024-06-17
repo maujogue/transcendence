@@ -42,7 +42,7 @@ async function sendFriendsWebSocketMessage(message) {
             sendGetFriendsListToConsumer(message);
         } else if (message.type === 'get_current_user_requests') {
             sendGetCurrentUserRequests(message);
-        } else if (message.type === 'get_friend_status') {
+        } else if (message.type === 'get_friend_online_status') {
             getFriendOnlineStatus(message);
         } else
             sendFriendRequestToConsumer(message);
@@ -93,7 +93,7 @@ async function printFriendslist(friendslist) {
     console.log("Length of the dictionary:", length);
 
     for (let step = 0; step < length; step++) {
-        console.log('name =', friendslist[step].username);
+        console.log('friend #', step, 'name =', friendslist[step].username);
     }
 }
 

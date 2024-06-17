@@ -77,7 +77,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'to_user': to_user})
 
         # --- 
-        await self.accept_request(data)
+        # await self.accept_request(data)
         # ---
 
     

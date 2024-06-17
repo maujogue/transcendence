@@ -35,17 +35,17 @@ export async function friendsWebsocket(username) {
 }
 
 async function sendFriendsWebSocketMessage(message) {
+    const messageHandlers = {
+        auth: auth,
+        'get_friendslist': sendGetFriendsListToConsumer,
+        'get_current_user_requests': sendGetCurrentUserRequests,
+        'get_friend_online_status': getFriendOnlineStatus,
+        default: sendFriendRequestToConsumer
+    };
+
     if (wsFriends && wsFriends.readyState === wsFriends.OPEN) {
-        if (message.type === 'auth') {
-            auth(message.username);
-        } else if (message.type === 'get_friendslist') {
-            sendGetFriendsListToConsumer(message);
-        } else if (message.type === 'get_current_user_requests') {
-            sendGetCurrentUserRequests(message);
-        } else if (message.type === 'get_friend_online_status') {
-            getFriendOnlineStatus(message);
-        } else
-            sendFriendRequestToConsumer(message);
+        const handler = messageHandlers[message.type] || messageHandlers.default;
+        await handler(message);
     } else {
         console.error('WebSocket is not open');
     }

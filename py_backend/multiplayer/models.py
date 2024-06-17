@@ -7,8 +7,8 @@ class Lobby(models.Model):
     connected_user = models.IntegerField(default=0)
     player_ready = models.IntegerField(default=0)
     game_started = models.BooleanField(default=False)
-    player1Present = models.BooleanField(default=False)
-    player2Present = models.BooleanField(default=False)
+    player1 = models.CharField(max_length=100, default=None, null=True)
+    player2 = models.CharField(max_length=100, default=None, null=True)
 
     async def setPlayerReady(self, isReady, player):
         if isReady == 'true':
@@ -27,9 +27,9 @@ class Lobby(models.Model):
         if self.connected_user == 0:
             self.player_ready = 0
         if player.name == 'player1':
-            self.player1Present = False
+            self.player1 = None
         else:
-            self.player2Present = False
+            self.player2 = None
         await self.asave()
 
     async def stopGame(self):

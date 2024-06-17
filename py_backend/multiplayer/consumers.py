@@ -35,11 +35,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         return lobby
     
     async def create_player(self):
-        name = 'player1' if self.lobby.player1Present == False else 'player2'
-        if name == 'player1':
-            self.lobby.player1Present = True
-        else:
-            self.lobby.player2Present = True
+        name = 'player1' if not self.lobby.player1 else 'player2'
         oppName = 'player2' if name == 'player1' else 'player1'
         posX = -9.50 if name == 'player1' else 9.50
         oppPosX = 9.50 if name == 'player1' else -9.50
@@ -114,6 +110,15 @@ class PongConsumer(AsyncWebsocketConsumer):
         user = await self.authenticate_user_with_username(username)
         if user is not None:
             self.scope['user'] = user
+            try:
+                self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
+                if self.player.name == 'player1':
+                    self.lobby.player1 = user.tournament_username
+                else:
+                    self.lobby.player2 = user.tournament_username
+                await self.lobby.asave()
+            except Lobby.DoesNotExist:
+                return
             await self.send_data({ "type": "auth", "status": "success"})
         else:
             await self.send_data({ "type": "auth", "status": "failed"})
@@ -299,7 +304,7 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def setGameOver(self):
         print("Game Over")
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
-        if self.player.name == 'player1' or self.lobby.player1Present == False:
+        if self.player.name == 'player1' or not self.lobby.player1:
             await self.createHistoryMatch()
             await self.lobby.stopGame()
         await self.channel_layer.group_send(
@@ -317,9 +322,9 @@ class PongConsumer(AsyncWebsocketConsumer):
 
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
         winner = player1.user.tournament_username if player1.score > player2.score else player2.user.tournament_username
-        if self.lobby.player1Present == False:
+        if not self.lobby.player1:
             winner = player2.user.tournament_username
-        elif self.lobby.player2Present == False:
+        elif not self.lobby.player2:
             winner = player1.user.tournament_username
         print(f'createHistoryMatch: lobby_id={self.lobby.uuid},  winner={winner}')   
         loser = player1.user.tournament_username if player1.user.tournament_username != winner else player2.user.tournament_username

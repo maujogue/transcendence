@@ -257,7 +257,9 @@ async function sendIsReady(wsMatch) {
 }
 
 async function setGameIsStart() {
+    console.log("setGameIsStart");
     if (player && opp && oppInfo) {
+        console.log("player and opp is set");
         opp.userInfo = oppInfo;
         ClearAllEnv(env);
         if (player.name == "player1")

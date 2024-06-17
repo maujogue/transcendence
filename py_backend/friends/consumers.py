@@ -76,7 +76,9 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'from_user': from_user,
             'to_user': to_user})
 
+        # --- 
         await self.accept_request(data)
+        # ---
 
     
     async def accept_request(self, data):
@@ -108,6 +110,12 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         if self.scope['user'].username == data['from_user']:
             data['type'] = 'remove_friend'
             await self.send_notification(data)
+
+
+    async def decline_request(self, data):
+        from_user = data.get('from_user')
+        to_user = data.get('to_user')
+        await self.delete_interaction_request(from_user, to_user)
 
 
     async def get_friendslist(self, data):

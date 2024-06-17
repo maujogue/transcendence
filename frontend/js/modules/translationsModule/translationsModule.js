@@ -9,9 +9,9 @@ export async function init() {
 	if (!module)
 		return;
 
-	initLanguageSwitcher();
-	initDropdownListeners();
-	injectTranslations();
+	await initLanguageSwitcher();
+	await initDropdownListeners();
+	await injectTranslations();
 
 	async function initLanguageSwitcher() {
 		var button = module.querySelector('.languageSwitcher');
@@ -46,8 +46,7 @@ export async function init() {
 				button.querySelector(".section-name").textContent = name;
 				if (await isLoggedIn())
 					await setLanguage(lang);
-				else
-					Cookies.set("lang", lang);
+				Cookies.set("lang", lang);
 				initPages();
 			});
 		});
@@ -70,7 +69,7 @@ async function getJsonFromLang() {
 }
 
 async function setLanguage(userLanguage) {
-	const response = await runEndPoint("users/update_lang/", "POST", JSON.stringify({ lang: userLanguage }));
+	await runEndPoint("users/update_lang/", "POST", JSON.stringify({ lang: userLanguage }));
 }
 
 async function injectGameTranslations() {

@@ -31,7 +31,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'accept_request': self.accept_request,
             'remove_request': self.remove_friend,
             'get_friendslist': self.get_friendslist,
-            'get_requests': self.get_request_from_user,
+            'get_current_user_requests': self.get_current_user_requests,
         }
         handler = handlers.get(message_type)
         if handler:
@@ -76,11 +76,11 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'from_user': from_user,
             'to_user': to_user})
 
-        # await self.accept_request(data)
+        await self.accept_request(data)
 
     
     async def accept_request(self, data):
-        requests = await self.get_request_from_user(data.get('to_user'))
+        requests = await self.get_current_user_requests(data)
 
         if data.get('from_user') not in requests:
             await self.send(text_data=json.dumps({ "type": "accept_request", "status": "failure"}))
@@ -166,14 +166,9 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
 
     @database_sync_to_async
-    def get_request_from_user(self, data):
-        print(data)
+    def get_current_user_requests(self, data):
         all_requests = InteractionRequest.objects.all()
-        requests = all_requests.filter(to_user=data.get('from_user'))
-        print(requests.count())
-        if data.get('send') == 'true':
-            print('send')
-            # return a dict of all the requests where current user is the `to_user`
-            return
-        else:
-            return [r.from_user for r in requests]
+        requests = []
+        requests = all_requests.filter(to_user=data.get('to_user'))
+        return [r.from_user for r in requests]
+    

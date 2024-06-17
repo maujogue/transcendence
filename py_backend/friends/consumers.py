@@ -132,10 +132,8 @@ class FriendsConsumer(AsyncWebsocketConsumer):
                 "friends": friends_list_data}))
 
 
-    async def get_friend_online_status(self, friend):
-        print('get_friend_online_status')
-        print('friend =', friend)
-        friend_instance = await sync_to_async(CustomUser.objects.get)(username=friend)
+    async def get_friend_online_status(self, data):
+        friend_instance = await sync_to_async(CustomUser.objects.get)(username=data.get('friend'))
         if friend_instance.is_online:
             print('ONline')
             # await self.send(text_data=json.dumps({ "type": "online_status", "status": "online"}))
@@ -184,7 +182,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
     async def delete_interaction_request(self, from_user, to_user):
         #delete the line below
         request = []
-        
+
         request = await sync_to_async(InteractionRequest.objects.get)(from_user=from_user, to_user=to_user)
         if request:
             await sync_to_async(request.delete)()

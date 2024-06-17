@@ -31,6 +31,7 @@ export async function init() {
 			return showAlert("Please enter a valid username.");
 		
 		sendFriendRequest(fetchBody.username);
+		getFriendStatus(fetchBody.username);
 	}
 	
 
@@ -56,6 +57,14 @@ export async function init() {
 			'type': 'get_requests',
 			'from_user': currentUser,
 			'send': 'true',
+		}
+		sendFriendsWebSocketMessage(message);
+	}
+
+	async function getFriendStatus(friend_username) {
+		let message = {
+			'type': 'get_friend_online_status',
+			'friend': friend_username,
 		}
 		sendFriendsWebSocketMessage(message);
 	}

@@ -8,7 +8,6 @@ const notificationHandlers = {
     'user_exist': () => showAlert("This user does not exist.", false),
     'already_friends': (data) => showAlert(`You are already friends with ${data.to_user}.`, false),
     'remove_friend': (data) => showAlert(`You have deleted ${data.to_user} from your friends.`, true),
-    // 'friendslist': () => showAlert(`FRIENDSLIST`, true),
 };
 
 let wsFriends;
@@ -93,7 +92,7 @@ async function printFriendslist(friendslist) {
     console.log("Length of the dictionary:", length);
 
     for (let step = 0; step < length; step++) {
-        console.log('friend #', step, 'name =', friendslist[step].username);
+        console.log('#', step, ': name =', friendslist[step].username, ': status =', friendslist[step].status);
     }
 }
 

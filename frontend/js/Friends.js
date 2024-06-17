@@ -42,6 +42,8 @@ async function sendFriendsWebSocketMessage(message) {
             sendGetFriendsListToConsumer(message);
         } else if (message.type === 'get_current_user_requests') {
             sendGetCurrentUserRequests(message);
+        } else if (message.type === 'get_friend_status') {
+            getFriendOnlineStatus(message);
         } else
             sendFriendRequestToConsumer(message);
     } else {
@@ -79,9 +81,20 @@ async function sendFriendRequestToConsumer(message) {
     }));
 }
 
+async function getFriendOnlineStatus(message) {
+    wsFriends.send(JSON.stringify({
+        'type': message.type,
+        'friend': message.friend,
+    }));
+}
+
 async function printFriendslist(friendslist) {
     const length = Object.keys(friendslist).length;
     console.log("Length of the dictionary:", length);
+
+    for (let step = 0; step < length; step++) {
+        console.log('name =', friendslist[step].username);
+    }
 }
 
 async function printNotification(data) {

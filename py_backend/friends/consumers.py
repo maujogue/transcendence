@@ -32,6 +32,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'remove_request': self.remove_friend,
             'get_friendslist': self.get_friendslist,
             'get_current_user_requests': self.get_current_user_requests,
+            'get_friend_online_status': self.get_friend_online_status,
         }
         handler = handlers.get(message_type)
         if handler:
@@ -77,7 +78,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'to_user': to_user})
 
         # --- 
-        # await self.accept_request(data)
+        await self.accept_request(data)
         # ---
 
     
@@ -130,6 +131,14 @@ class FriendsConsumer(AsyncWebsocketConsumer):
                 "friends": friends_list_data}))
 
 
+    async def get_friend_online_status(self, data):
+        friend = await sync_to_async(CustomUser.objects.get)(username=data.get('friend'))
+        if friend.is_online:
+            await self.send(text_data=json.dumps({ "type": "online_status", "status": "online"}))
+        else:
+            await self.send(text_data=json.dumps({ "type": "online_status", "status": "offline"}))
+
+
     async def new_request_notification(self, event):
         if self.scope['user'].username == event['from_user']:
             event['type'] = 'friend_request_from_user'
@@ -168,6 +177,8 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
 
     async def delete_interaction_request(self, from_user, to_user):
+        #delete the line below
+        request = []
         request = await sync_to_async(InteractionRequest.objects.get)(from_user=from_user, to_user=to_user)
         if request:
             await sync_to_async(request.delete)()

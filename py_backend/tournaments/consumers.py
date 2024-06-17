@@ -9,7 +9,7 @@ from stats.models import Match
 from multiplayer.models import Lobby
 from .models import Tournament, TournamentMatch
 from .bracket import generate_bracket
-from .blockchain.blockchain import set_tournament_winner, add_match
+from .blockchain.blockchain import set_data_on_blockchain
 
 class TournamentConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -84,19 +84,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         self.match.finished = True
         await self.match.asave()
 
-        contract_address = self.tournament.contract_address
-        if contract_address:
-            add_match(
-                contract_address,
-                str(self.match.lobby_id),
-                str(self.match.round),
-                self.match.player1,
-                str(self.match.score_player_1),
-                self.match.player2,
-                str(self.match.score_player_2),
-                self.match.winner
-            )
-
     async def auth(self, text_data_json):
         username = text_data_json.get('username')
         user = await self.authenticate_user_with_username(username)
@@ -109,16 +96,15 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         else:
             await self.send(text_data=json.dumps({"type":"auth", "status": "failed"}))
 
+
     async def set_tournament_over(self):
         print('tournament is over')
         self.tournament.finished = True
         await self.tournament.asave()
-        contract_address = self.tournament.contract_address
 
         await self.send_tournament_end()
 
-        if contract_address: #TODO try to make it async or something so the code don't wait the transaction to finish.
-            set_tournament_winner(contract_address, self.tournament.get_winner())
+        await set_data_on_blockchain(self.tournament)
 
     async def generate_round(self):
         print(f'{self.scope["user"].tournament_username}: generating round {self.tournament.current_round}')

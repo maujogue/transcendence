@@ -237,3 +237,18 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'backend.amos@gmail.com'
 EMAIL_HOST_PASSWORD = 'hvqzjctapjxiijjf'
 EMAIL_USE_TLS = True
+
+# debugging
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "DEBUG",
+    },
+}

@@ -2,10 +2,10 @@
 pragma solidity ^0.8.19;
 
 contract StoreTournamentData {
+
 	address owner;
 		
 	struct Match {
-		string matchId;
 		string round;
 		string player1;
 		string scorePlayer1;
@@ -28,28 +28,12 @@ contract StoreTournamentData {
 		_;
 	}
 
-	function addMatch(
-		string calldata _matchId,
-		string calldata _round,
-		string calldata _player1,
-		string calldata _scorePlayer1,
-		string calldata _player2,
-		string calldata _scorePlayer2,
-		string calldata _matchWinner
-	) public onlyOwner {
-		matches.push(Match(
-			_matchId,
-			_round,
-			_player1,
-			_scorePlayer1,
-			_player2,
-			_scorePlayer2,
-			_matchWinner
-		));
-	}
-
-	function setTournamentWinner(string calldata _tournamentWinner) public onlyOwner {
+	function addMatchesAndWinner(
+		string calldata _tournamentWinner, Match[] calldata _matches) public onlyOwner {
 		tournamentWinner = _tournamentWinner;
+		for (uint i = 0; i < _matches.length; i++) {
+			matches.push(_matches[i]);
+		}
 	}
 
 	function getTournamentWinner() public view returns (string memory) {
@@ -64,29 +48,21 @@ contract StoreTournamentData {
 		return matches;
 	}
 
-	function getMatch(string memory _id) public view returns (
-		string memory,
-		string memory,
-		string memory,
-		string memory,
-		string memory,
-		string memory,
-		string memory
-	) {
-		for (uint i  = 0; i < matches.length; i++) {
-			if (keccak256(abi.encodePacked(matches[i].matchId)) == keccak256(abi.encodePacked(_id))) {
-				Match storage match_ = matches[i];
-				return (
-					match_.matchId,
-					match_.round,
-					match_.player1,
-					match_.scorePlayer1,
-					match_.player2,
-					match_.scorePlayer2,
-					match_.matchWinner
-				);
-			}
-		}
-		revert("Match not found");
-	}
+// 	function getMatchesByPlayer(string memory playerName) public view returns(Match[] memory) {
+// 		Match[] memory playerMatches;
+
+// 		for (uint i = 0; i < matches.length; i++) {
+// 			if ((keccak256(abi.encodePacked(matches[i].player1)) == keccak256(abi.encodePacked(playerName)))
+// 				|| (keccak256(abi.encodePacked(matches[i].player2)) == keccak256(abi.encodePacked(playerName)))) {
+// 					Match memory tempMatch = Match(matches[i].round,
+// 													matches[i].player1,
+// 													matches[i].scorePlayer1,
+// 													matches[i].player2,
+// 													matches[i].scorePlayer2,
+// 													matches[i].matchWinner);			
+// 					playerMatches.push(tempMatch);
+// 				}
+// 		}
+// 		return playerMatches;
+// 	}
 }

@@ -12,13 +12,20 @@ from django.db import IntegrityError
 from .models import Tournament
 from .blockchain.tournamentContract import deploy_tournament_contract
 
-CustomUser = get_user_model()
-
 import json
+
+### debug ###
+import logging
+
+logger = logging.getLogger(__name__)
+#######
+
+CustomUser = get_user_model()
 
 @login_required
 @require_http_methods(["POST"])
 def create_tournament(request):
+	logger.debug("create tournament view called")
 	try:
 		data = json.loads(request.body.decode("utf-8"))
 	except json.JSONDecodeError:
@@ -167,15 +174,20 @@ def check_if_tournament_joined(request, username):
 @login_required
 @require_http_methods(["POST"])
 def add_contract_address(request, tournament_id):
+	logger.debug("add_contract_address view called")
 	try:
 		tournament = Tournament.objects.get(pk=tournament_id)
+		logger.debug("tournament received")
 	except Tournament.DoesNotExist:
+		logger.debug("into error tournament not found")
 		return JsonResponse({"errors": "Tournament not found."},
 					status=404)
 	contract_address = deploy_tournament_contract(tournament.name)
+	logger.debug("deploy tournament contract called")
 
 	tournament.contract_address = contract_address
 	tournament.save()
+	logger.debug("contract address added successfully")
 	return JsonResponse({"message": "Contract address added successfully.",
 					"contract_address": contract_address},
 					status=200)

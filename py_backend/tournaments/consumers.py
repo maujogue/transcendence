@@ -41,17 +41,18 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         print('tournament disconnected')
-        participants = await self.get_tournament_participants()
-        await self.channel_layer.group_send(
-            self.tournament.name,
-            {
-                'type': 'tournament.participants',
-                'participants': participants
-            }
-        )
+        if not self.tournament.started:
+            participants = await self.get_tournament_participants()
+            await self.channel_layer.group_send(
+                self.tournament.name,
+                {
+                    'type': 'tournament.participants',
+                    'participants': participants
+                }
+            )
         await self.channel_layer.group_discard(
-            self.tournament.name,
-            self.channel_name
+        self.tournament.name,
+        self.channel_name
         )
 
     async def handler_status(self, status):
@@ -133,7 +134,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             if not winner:
                 winner = self.match.player1
             loser = self.match.player2 if winner == self.match.player1 else self.match.player1
-
             match = Match(  lobby_id=str(lobby.uuid),
                             player1=self.match.player1, 
                             player2=self.match.player2, 
@@ -146,14 +146,15 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await match.asave()
     
     
-    async def check_if_match_is_started(self):
-        await asyncio.sleep(10)
+    async def check_if_match_is_started(self, wait=True):
+        if wait:
+            await asyncio.sleep(10)
         try:
             lobby = await Lobby.objects.aget(pk=self.match.lobby_id)
             print(f'lobby: {lobby}')
-            if not lobby.game_started:
+            if not lobby.game_started and lobby.player1 == self.scope['user'].tournament_username or not lobby.player1:
                 print('match cancelled')
-                self.send(text_data=json.dumps({'type': 'status', 'status': 'match_cancelled'}))
+                await self.send(text_data=json.dumps({'type': 'status', 'status': 'match_cancelled'}))
                 await self.create_history_match(lobby)
                 await self.endGame()
         except Lobby.DoesNotExist:

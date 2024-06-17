@@ -133,7 +133,10 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
 
     async def get_friend_online_status(self, data):
-        friend_instance = await sync_to_async(CustomUser.objects.get)(username=data.get('friend'))
+        try:
+            friend_instance = await sync_to_async(CustomUser.objects.get)(username=data.get('friend'))
+        except CustomUser.DoesNotExist:
+            return
         if friend_instance.is_online:
             print('ONline')
             # await self.send(text_data=json.dumps({ "type": "online_status", "status": "online"}))

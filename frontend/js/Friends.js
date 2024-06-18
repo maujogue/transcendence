@@ -12,7 +12,8 @@ const notificationHandlers = {
 
 let wsFriends;
 
-export async function friendsWebsocket(username) {
+export function friendsWebsocket(username) {
+    console.log("socket on");
     wsFriends = new WebSocket("ws://127.0.0.1:8080/ws/friends/");
     wsFriends.onopen = function() {
         wsFriends.send(JSON.stringify({
@@ -87,19 +88,19 @@ async function getFriendOnlineStatus(message) {
     }));
 }
 
+async function printNotification(data) {
+    const handler = notificationHandlers[data.type];
+    if (handler && data) {
+        handler.call(this, data);
+    }
+}
+
 async function printFriendslist(friendslist) {
     const length = Object.keys(friendslist).length;
     console.log("Length of the dictionary:", length);
 
     for (let step = 0; step < length; step++) {
         console.log('#', step, ': name =', friendslist[step].username, ': status =', friendslist[step].status);
-    }
-}
-
-async function printNotification(data) {
-    const handler = notificationHandlers[data.type];
-    if (handler && data) {
-        handler.call(this, data);
     }
 }
 

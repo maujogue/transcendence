@@ -4,18 +4,21 @@ import { showAlert, disableCollapsedSidebar } from "../../Utils.js";
 import { checkInputAvailable } from "../../ApiCalls.js";
 import { sendFriendsWebSocketMessage } from "../../Friends.js";
 import { getUserData } from "../../User.js";
+import { friendsWebsocket } from "../../Friends.js";
 
 export async function init() {
 	var module = getModuleDiv("friendList");
 	if (!module)
 		return;
-
 	const currentUser = await getUserData('username');	
+	if (currentUser)
+		friendsWebsocket(currentUser);
+
+	printFriendsList();
 	
 	var friendScroll = module.querySelector("#friendScroll");
 	var searchFriendForm = module.querySelector("#searchFriendForm");
 	searchFriendForm.addEventListener("submit", (event) => {
-		printFriendsList();
 		event.preventDefault();
 		searchFriend(event.target);
 		getInteractionRequests();

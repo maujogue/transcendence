@@ -21,7 +21,7 @@ export async function init() {
 		printFriendsList();
 		event.preventDefault();
 		searchFriend(event.target);
-		getInteractionRequests();
+		getCurrentUserRequest();
 	});
 	
 	
@@ -55,7 +55,7 @@ export async function init() {
 		sendFriendsWebSocketMessage(message);
 	}
 
-	async function getInteractionRequests() {
+	async function getCurrentUserRequest() {
 		let message = {
 			'type': 'get_current_user_requests',
 			'from_user': currentUser,

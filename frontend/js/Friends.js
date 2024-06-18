@@ -80,7 +80,7 @@ async function wsMessageRouter(data) {
         'friend_request_to_user': (data) => showAlert(`You just receive a friend request from ${data.from_user} !`, true),
         'friend_request_from_user': (data) => showAlert(`You just send a friend request to ${data.to_user} !`, true),
         'accept_request': (data) => showAlert(`${data.to_user} accepted your friend request !`, true),
-        // 'user_himself': () => showAlert("You ")
+        'user_himself': () => showAlert("You cannot send a friend request to yourself.", false),
         'user_exist': () => showAlert("This user does not exist.", false),
         'already_friends': (data) => showAlert(`You are already friends with ${data.to_user}.`, false),
         'remove_friend': (data) => showAlert(`You have deleted ${data.to_user} from your friends.`, true),

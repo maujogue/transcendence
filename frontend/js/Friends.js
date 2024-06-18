@@ -22,8 +22,8 @@ export function friendsWebsocket(username) {
 async function sendFriendsWebSocketMessage(message) {
     const messageHandlers = {
         auth: auth,
-        'get_friendslist': sendGetFriendsListToConsumer,
-        'get_current_user_requests': sendGetCurrentUserRequests,
+        'get_friendslist': getFriendsList,
+        'get_current_user_requests': getCurrentUserRequests,
         'get_friend_online_status': getFriendOnlineStatus,
         default: sendFriendRequestToConsumer
     };
@@ -43,14 +43,14 @@ async function auth(username) {
     }));
 }
 
-async function sendGetFriendsListToConsumer(message) {
+async function getFriendsList(message) {
     wsFriends.send(JSON.stringify({
         'type': message.type,
         'current_user': message.current_user,
     }));
 }
 
-async function sendGetCurrentUserRequests(message) {
+async function getCurrentUserRequests(message) {
     wsFriends.send(JSON.stringify({
         'type': message.type,
         'from_user': message.from_user,
@@ -74,13 +74,11 @@ async function getFriendOnlineStatus(message) {
 }
 
 async function wsMessageRouter(data) {
-    console.log('type =', data.type);
-
     const notificationHandlers = {
         'friend_request_to_user': (data) => showAlert(`You just receive a friend request from ${data.from_user} !`, true),
         'friend_request_from_user': (data) => showAlert(`You just send a friend request to ${data.to_user} !`, true),
         'accept_request': (data) => showAlert(`${data.to_user} accepted your friend request !`, true),
-        // 'user_himself': () => showAlert("You ")
+        'user_himself': () => showAlert("You cannot send a friend request to yourself.", false),
         'user_exist': () => showAlert("This user does not exist.", false),
         'already_friends': (data) => showAlert(`You are already friends with ${data.to_user}.`, false),
         'remove_friend': (data) => showAlert(`You have deleted ${data.to_user} from your friends.`, true),

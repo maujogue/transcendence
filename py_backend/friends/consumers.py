@@ -63,8 +63,6 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             return await self.send(text_data=json.dumps({ "type": "user_exist"}))
         
         request = await sync_to_async(InteractionRequest.objects.create)(from_user=from_user, to_user=to_user)
-        c = await sync_to_async(InteractionRequest.objects.count)()
-        await sync_to_async(print)(c)
 
         isFriend = await sync_to_async(request.isFriend)()
         if isFriend:
@@ -198,9 +196,12 @@ class FriendsConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_requests(self, data):
         all_requests = InteractionRequest.objects.all()
-        requests = []
-        requests = all_requests.filter(to_user=data.get('from_user'))
-        return [{'name': r.from_user} for r in requests]
+        requests_list = []
+        for r in all_requests.filter(to_user=data.get('from_user')):
+            user = CustomUser.objects.get(username=r.from_user)
+            requests_list.append({'name': r.from_user, 'avatar': convert_image_to_base64(user.avatar)})
+        return requests_list
+    
 
     async def get_current_user_requests(self, data):
         requests = []

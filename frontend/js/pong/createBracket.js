@@ -119,6 +119,7 @@ export function drawBracket(bracket) {
         ctx.fillStyle = 'black';
         ctx.fillText(round.name, roundX + (boxHeight / 2), startY);
         round.matches.forEach((match, matchIndex) => {
+            console.log(`match: ${match.player1} vs ${match.player2}`);
             let matchY;
 
             if (roundIndex === 0)

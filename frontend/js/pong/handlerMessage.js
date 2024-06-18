@@ -7,7 +7,7 @@ import { displayErrorPopUp } from './tournament.js';
 import { wsTournament } from './tournament.js';
 import { updateModule } from '../Modules.js';
 
-function checkIfWebsocketIsOpen(webSocket) {
+export function checkIfWebsocketIsOpen(webSocket) {
     if (webSocket && webSocket.readyState == webSocket.OPEN)
         return true;
     return false;

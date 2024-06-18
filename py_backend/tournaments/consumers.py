@@ -148,7 +148,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     
     async def check_if_match_is_started(self, wait=True):
         if wait:
-            await asyncio.sleep(10)
+            await asyncio.sleep(100)
         try:
             lobby = await Lobby.objects.aget(pk=self.match.lobby_id)
             print(f'lobby: {lobby}')

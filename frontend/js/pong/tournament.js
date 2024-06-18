@@ -1,7 +1,7 @@
 import { get_csrf_token} from "../ApiUtils.js";
 import { returnToMenu } from "./createEndScreen.js";
 import { getUserData } from "../User.js";
-import { createOnlineSelectMenu } from "./online.js";
+import { clearOnlineVariables, createOnlineSelectMenu } from "./online.js";
 import { createTournamentDiv } from "./menu.js";
 import { createLeaveButton, drawBracket} from "./createBracket.js";
 import { hostname } from "../Router.js";
@@ -46,6 +46,9 @@ export async function connectToTournament(tournament) {
         };
         
         wsTournament.onclose = (event) => {
+            playerStatus = null;
+            tournamentStatus = null;
+            clearOnlineVariables();
             console.log("Websocket connection closed:", event);
         };
     } catch(err) {
@@ -66,13 +69,6 @@ function handlerMessageStatus(data) {
         tournamentStatus = "started";
     if (data.status == "waiting")
         tournamentStatus = "waiting";
-    if (data.status == "match_cancelled") {
-        wsMatch.send(JSON.stringify({
-            'type': 'cancel',
-        }));
-    }
-
-        
 } 
 
 function displayRankingScreen(data) {

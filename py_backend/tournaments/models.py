@@ -83,8 +83,9 @@ class Tournament(models.Model):
 				"rounds": []
 			}
 		}
+		round_number = len(rounds)
 
-		for round_number in rounds:
+		while round_number > 0:
 			matches = self.matchups.filter(round=round_number)
 			round_info = {
 				"name": self.get_round_name(round_number),
@@ -106,6 +107,7 @@ class Tournament(models.Model):
 				round_info["matches"].append(match_info)
 			
 			bracket["tournament"]["rounds"].append(round_info)
+			round_number -= 1
 		return bracket
 
 	def get_ranking(self):

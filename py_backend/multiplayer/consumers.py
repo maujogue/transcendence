@@ -149,23 +149,26 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
 
     async def receive(self, text_data):
-        self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
-        text_data_json = json.loads(text_data)
-        if text_data_json.get("type") == 'auth':
-            await self.authenticate_user(text_data_json)
-        if text_data_json.get("ready"):
-            await self.lobby.setPlayerReady(text_data_json.get("ready"), self.player)
-        if text_data_json.get("character"):
-            await self.set_character(text_data_json)
-        if self.lobby.player_ready == 2 and not self.lobby.game_started:
-            await self.startGame()
-        if text_data_json.get("type") == "user_info":
-            await self.channel_layer.group_send(
-                self.lobby_group_name, { 'type': 'pong.user_data', 'username': text_data_json.get('username'), 'avatar': text_data_json.get('avatar'), 'name': text_data_json.get('name')}
-            )
-        if self.lobby.game_started:
-            if text_data_json.get("type") == "player_pos":
-                await self.getPlayerMove(text_data_json)
+        try:
+            self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
+            text_data_json = json.loads(text_data)
+            if text_data_json.get("type") == 'auth':
+                await self.authenticate_user(text_data_json)
+            if text_data_json.get("ready"):
+                await self.lobby.setPlayerReady(text_data_json.get("ready"), self.player)
+            if text_data_json.get("character"):
+                await self.set_character(text_data_json)
+            if self.lobby.player_ready == 2 and not self.lobby.game_started:
+                await self.startGame()
+            if text_data_json.get("type") == "user_info":
+                await self.channel_layer.group_send(
+                    self.lobby_group_name, { 'type': 'pong.user_data', 'username': text_data_json.get('username'), 'avatar': text_data_json.get('avatar'), 'name': text_data_json.get('name')}
+                )
+            if self.lobby.game_started:
+                if text_data_json.get("type") == "player_pos":
+                    await self.getPlayerMove(text_data_json)
+        except Lobby.DoesNotExist:
+            print("Lobby does not exist")
 
     async def disconnect(self, close_code):
         if self.is_connected == False:

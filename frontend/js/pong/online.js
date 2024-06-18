@@ -4,7 +4,7 @@ import { handleMenuKeyPress} from "./handleKeyPress.js";
 import { ClearAllEnv } from "./createEnvironment.js";
 import { initGame } from "./initGame.js";
 import { translateBall} from "./onlineCollision.js";
-import { handlerScore, setBallData, handlerStatusMessage, removeGameScreen } from "./handlerMessage.js";
+import { handlerScore, setBallData, handlerStatusMessage, removeGameScreen, checkIfWebsocketIsOpen } from "./handlerMessage.js";
 import { sendCharacter} from "./sendMessage.js";
 import { characters } from "../pages/game.js";
 import { updateMixers } from "./displayCharacter.js";
@@ -39,7 +39,7 @@ function setUserInfo(data) {
     return user;
 }
 
-function clearVariables() {
+export function clearOnlineVariables() {
     cancelAnimationFrame(requestId);
     wsMatch = null;
     player = null;
@@ -109,6 +109,20 @@ async function goToOnlineSelectMenu() {
     removeP2Cursor();
 }
 
+function displayTimer() {
+    const timerDiv = document.createElement("div");
+    timerDiv.id = "timer";
+    timerDiv.classList.add("timer");
+    let time = 30;
+    timerDiv.innerHTML = `Time left: ${time}`;
+    document.getElementById("selectMenu").appendChild(timerDiv);
+    setInterval(() => {
+        if (time == 0)
+            return ;
+        time--;
+        timerDiv.innerHTML = `Time left: ${time}`;
+    }, 1000);
+}
 
 async function createOnlineSelectMenu(id) {
     if (wsMatch)
@@ -124,6 +138,8 @@ async function createOnlineSelectMenu(id) {
         paddle.position.x = 2.5;
         onlineGameLoop(wsMatch);
     });
+    if (checkIfWebsocketIsOpen(wsTournament)) 
+        displayTimer();
 }
 
 async function connectToLobby(username) {
@@ -202,7 +218,7 @@ async function connectToLobby(username) {
         status.is_connected = false;
         lobbyId = null;
         if (status.start)
-            clearVariables();
+            clearOnlineVariables();
     }
 
     wsMatch.onerror = function(e) {

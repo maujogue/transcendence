@@ -186,6 +186,12 @@ h1 {
 	right: 0;
 }
 
+.timer {
+	z-index: 1;
+    position: absolute;
+    left: 38%;
+}
+
 .ranking {
 	align-self: start;
     display: flex;

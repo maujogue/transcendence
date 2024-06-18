@@ -14,6 +14,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         print('connected: ', self.scope['user'])
         self.match = None
+        self.task = None
         self.tournament = await self.get_tournament()
         if self.tournament is None:
             return await self.close()
@@ -66,6 +67,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         print('tournament: endGame')
         await self.set_match_info()
         await self.match_is_over()
+        if not self.match:
+            return
         print(f'{self.scope["user"].tournament_username} match is over, {self.match.winner} wins!')
         if self.match.winner == self.scope['user'].tournament_username:
             await self.send(text_data=json.dumps({'type': 'status', 'status': 'waiting'}))
@@ -77,7 +80,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def match_is_over(self):
         print('match is over')
-        self.match = await self.get_player_match(self.scope['user'].tournament_username)
         if not self.match:
             return
         self.match.finished = True
@@ -147,18 +149,25 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     
     
     async def check_if_match_is_started(self, wait=True):
-        if wait:
-            await asyncio.sleep(30)
         try:
-            lobby = await Lobby.objects.aget(pk=self.match.lobby_id)
-            print(f'lobby: {lobby}')
-            if not lobby.game_started and lobby.player1 == self.scope['user'].tournament_username or not lobby.player1:
-                print('match cancelled')
-                await self.send(text_data=json.dumps({'type': 'status', 'status': 'match_cancelled'}))
-                await self.create_history_match(lobby)
-                await self.endGame()
-        except Lobby.DoesNotExist:
-            print("lobby does not exist")
+            if wait:
+                print(f'{self.scope["user"].tournament_username} waiting for match to start')
+                await asyncio.sleep(30)
+            try:
+                if not self.match:
+                    return
+                lobby = await Lobby.objects.aget(pk=self.match.lobby_id)
+                print(f'lobby: {lobby}, is_started = {lobby.game_started}, wait = {wait}')
+                if not lobby.game_started and lobby.player1 == self.scope['user'].tournament_username or not lobby.player1:
+                    print('match cancelled')
+                    await self.send(text_data=json.dumps({'type': 'status', 'status': 'match_cancelled'}))
+                    await self.create_history_match(lobby)
+                    await self.endGame()
+            except Lobby.DoesNotExist:
+                print("lobby does not exist")
+                return
+        except asyncio.CancelledError:
+            print('match started')
             return
 
     async def set_match_info(self):
@@ -335,7 +344,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             if not self.match.finished and self.match.player2:
                 match_infos = self.get_match_infos(self.match)
                 await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos}))
-                asyncio.create_task(self.check_if_match_is_started())
+                print(f'{self.scope["user"].tournament_username} matchup: ', match_infos)
+                if self.task:
+                    self.task.cancel()
+                self.task = asyncio.create_task(self.check_if_match_is_started())
             else:
                 await self.send(text_data=json.dumps({'type': 'status', 'status': 'waiting'}))
                 
@@ -355,7 +367,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
 
     async def tournament_bracket(self, event):
-        print(f'bracket: {self.scope["user"].tournament_username} {event["bracket"]}, forAll: {event["forAll"]}')
         if event['forAll'] or not await sync_to_async(self.tournament.check_if_player_is_in_match)(self.scope['user'].tournament_username):
             await self.send(text_data=json.dumps({'type': 'bracket', 'bracket': event['bracket']}))
         if event['forAll']:

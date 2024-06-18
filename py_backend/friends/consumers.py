@@ -55,13 +55,17 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         from_user = data.get('from_user')
         to_user = data.get('to_user')
 
+        if self.scope['user'].username == to_user:
+            return await self.send(text_data=json.dumps({ "type": "user_himself"}))
+         
         user = await self.authenticate_user_with_username(to_user)
-
         if user is None:
-            await self.send(text_data=json.dumps({ "type": "user_exist"}))
-            return
+            return await self.send(text_data=json.dumps({ "type": "user_exist"}))
         
         request = await sync_to_async(InteractionRequest.objects.create)(from_user=from_user, to_user=to_user)
+        c = await sync_to_async(InteractionRequest.objects.count)()
+        await sync_to_async(print)(c)
+
         isFriend = await sync_to_async(request.isFriend)()
         if isFriend:
             await self.send(text_data=json.dumps({ "type": "already_friends", "to_user": to_user}))
@@ -192,9 +196,17 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
 
     @database_sync_to_async
-    def get_current_user_requests(self, data):
+    def get_requests(self, data):
         all_requests = InteractionRequest.objects.all()
         requests = []
-        requests = all_requests.filter(to_user=data.get('to_user'))
-        return [r.from_user for r in requests]
+        requests = all_requests.filter(to_user=data.get('from_user'))
+        return [{'name': r.from_user} for r in requests]
+
+    async def get_current_user_requests(self, data):
+        requests = []
+        requests = await self.get_requests(data)
+        await self.send(text_data=json.dumps({
+            "type": "get_current_user_requests",
+            "friends": requests}))
+        
     

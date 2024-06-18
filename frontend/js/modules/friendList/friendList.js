@@ -14,11 +14,11 @@ export async function init() {
 	if (currentUser)
 		friendsWebsocket(currentUser);
 
-	printFriendsList();
 	
 	var friendScroll = module.querySelector("#friendScroll");
 	var searchFriendForm = module.querySelector("#searchFriendForm");
 	searchFriendForm.addEventListener("submit", (event) => {
+		printFriendsList();
 		event.preventDefault();
 		searchFriend(event.target);
 		getInteractionRequests();
@@ -57,7 +57,7 @@ export async function init() {
 
 	async function getInteractionRequests() {
 		let message = {
-			'type': 'get_requests',
+			'type': 'get_current_user_requests',
 			'from_user': currentUser,
 			'send': 'true',
 		}

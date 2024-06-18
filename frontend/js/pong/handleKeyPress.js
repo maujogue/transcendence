@@ -2,6 +2,7 @@ import { movePaddle } from "./movePaddle.js";
 import { displayCharacter } from "./displayCharacter.js";
 import { soloMode } from "../pages/Game.js";
 import { moveCursor } from "./menu.js";
+import { performAction } from "./AI/AIUtils.js";
 import * as THREE from 'three';
 
 async function handleMenuKeyPress(keysPressed, player1, player2, env) {
@@ -39,8 +40,12 @@ function handleKeyPress(keysPressed, player1, player2, environment) {
 		player1.light.position.y -= 0.15;
 	}
 
-	if (!player2 || soloMode)
+	if (!player2)
 		return;
+	if (soloMode) {
+		performAction(0); // AI action
+		return;
+	}
 	playerBox2 = new THREE.Box3().setFromObject(player2.paddle.mesh);
 	if (keysPressed["ArrowUp"] && !environment.border.up.box.intersectsBox(playerBox2)) {
 		player2.paddle.mesh.translateY(0.15);

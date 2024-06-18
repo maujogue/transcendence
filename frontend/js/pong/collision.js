@@ -14,13 +14,13 @@ async function checkIfScored(ball, player1, player2, environment) {
 
     if (ball.mesh.position.x < bbox1.min.x - 2) {
         player2.score++;
-        ball.direction.x = -0.1;
+        ball.direction.x = -0.055;
         resetPos(ball, player1, player2, environment);
         actualizeScore(player1, player2, environment, environment.font);
     }
     if (ball.mesh.position.x > bbox2.max.x + 2) {
         player1.score++; 
-        ball.direction.x = 0.1;
+        ball.direction.x = 0.055;
         resetPos(ball, player1, player2, environment);
         actualizeScore(player1, player2, environment, environment.font);
     }
@@ -39,6 +39,7 @@ function physicsBall(ball, paddleBox) {
 }
 
 function checkCollisionWithBorder(ball, ballBox, environment) {
+    console.log("Border down : ", environment.border.down);
     if (environment.border.up.box.intersectsBox(ballBox) || 
         environment.border.down.box.intersectsBox(ballBox)) {
         if (ball.direction.x > 0)

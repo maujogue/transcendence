@@ -15,12 +15,14 @@ import { getUserData } from "../User.js";
 import { sendTournamentForm, createFormTournament} from "../pong/createTournament.js";
 import { createJoinTournamentMenu } from "../pong/joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "../pong/tournament.js";
+import { loadAgentModel } from '../pong/AI/AIUtils.js';
 import * as THREE from 'three';
 
 export var lobby;
 export var clock;
 export var characters;
 export var soloMode;
+export var environment;
 
 var isGameLoaded = false;
 
@@ -33,7 +35,6 @@ export async function init() {
 	characters = new Map();
 	let start = false;
 	let divMenu = document.getElementById("menu");
-	let environment;
 	let player1;
 	let player2;
 	let keyPress = false;
@@ -203,6 +204,8 @@ export async function init() {
 			ClearAllEnv(environment);
 			if (!soloMode)
 				divMenu.remove();
+			else
+				var model = await loadAgentModel();
 			environment = await initGame(player1, player2);
 		}
 		if (start) {

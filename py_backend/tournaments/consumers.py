@@ -9,7 +9,6 @@ from stats.models import Match
 from multiplayer.models import Lobby
 from .models import Tournament, TournamentMatch
 from .bracket import generate_bracket
-from .blockchain.blockchain import set_data_on_blockchain
 
 class TournamentConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -101,8 +100,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         await self.tournament.asave()
 
         await self.send_tournament_end()
-
-        await set_data_on_blockchain(self.tournament)
 
     async def generate_round(self):
         print(f'{self.scope["user"].tournament_username}: generating round {self.tournament.current_round}')

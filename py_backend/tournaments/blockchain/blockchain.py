@@ -3,9 +3,6 @@ from django.conf import settings
 import os
 import json
 
-from channels.db import database_sync_to_async
-from asgiref.sync import sync_to_async
-
 def load_contract_abi():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     json_path = os.path.join(script_dir, "compiledSolidity.json")
@@ -15,7 +12,6 @@ def load_contract_abi():
 
     return abi
 
-@database_sync_to_async
 def set_data_on_blockchain(tournament):
     contract_address = tournament.contract_address
     tournament_winner = tournament.get_winner()

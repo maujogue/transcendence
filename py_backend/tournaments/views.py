@@ -11,6 +11,7 @@ from django.db import IntegrityError
 
 from .models import Tournament
 from .blockchain.tournamentContract import deploy_tournament_contract
+from .blockchain.blockchain import set_data_on_blockchain
 
 import json
 
@@ -170,6 +171,7 @@ def check_if_tournament_joined(request, username):
 						status=200)
 	return JsonResponse({"message": "User has joined a tournament.", "joined": False}, status=200)
 
+
 @login_required
 @require_http_methods(["POST"])
 def add_contract_address(request, tournament_id):
@@ -185,3 +187,14 @@ def add_contract_address(request, tournament_id):
 	return JsonResponse({"message": "Contract address added successfully.",
 					"contract_address": contract_address},
 					status=200)
+
+@require_http_methods(["POST"])
+def send_data_to_blockchain(request, tournament_id):
+	try:
+		tournament = Tournament.objects.get(pk=tournament_id)
+	except Tournament.DoesNotExist:
+		return JsonResponse({"errors": "Tournament not found."},
+					status=404)
+	set_data_on_blockchain(tournament)
+	return JsonResponse({"message": "Transaction initiated."},
+					 status=200)

@@ -121,18 +121,20 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         to_user = data.get('to_user')
         await self.delete_interaction_request(from_user, to_user)
 
-
-    async def get_friendslist(self, data):
-        current_user = await sync_to_async(CustomUser.objects.get)(username=data.get('current_user'))
+    @database_sync_to_async
+    def get_friends(self, data):
+        current_user = CustomUser.objects.get(username=data.get('current_user'))
         friendslist = []
         friendslist = current_user.friends.all()
-        friends_count = await sync_to_async(len)(friendslist)
         friends_list_data = [{'username': friend.username, 'status': friend.is_online, 'avatar': convert_image_to_base64(friend.avatar)} for friend in friendslist]
-        if friends_count > 0:
-            await self.send(text_data=json.dumps({
-                "type": "friendslist",
-                "friends": friends_list_data}))
+        return friends_list_data
 
+    async def get_friendslist(self, data):
+        friends_list_data = []
+        friends_list_data = await self.get_friends(data)
+        await self.send(text_data=json.dumps({
+            "type": "friendslist",
+            "friends": friends_list_data}))
 
     async def get_friend_online_status(self, data):
         try:
@@ -208,6 +210,6 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         requests = await self.get_requests(data)
         await self.send(text_data=json.dumps({
             "type": "get_current_user_requests",
-            "friends": requests}))
+            "friend_requests": requests}))
         
     

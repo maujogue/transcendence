@@ -9,6 +9,21 @@
 			<input type="text" name="username" class="me-4 form-control" placeholder="Search" autocomplete="off" style>
 		</div>
 	</form>
+	<div class="mb-3 dropdown d-flex align-items-center">
+		<ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+			<a class="ms-2 align-items-center text-white" data-bs-toggle="dropdown" navlink>
+				<img width="30" height="30" class="rounded-circle me-3 avatarDynamic" />
+				<span class="mt-1 usernameDynamic"></span>
+			</a>
+			<i class="ms-2 bi bi-check-square"></i>
+			<i class="ms-2 me-3 bi bi-x-square"></i>
+		</ul>
+		<a class="ms-2 d-flex align-items-center text-white text-decoration-none" id="dropdownUser1"
+			data-bs-toggle="dropdown" navlink>
+			<i class="mt-1 ms-2 bi bi-inbox-fill"></i>
+			<span class="section-name ms-2 dropdown-toggle" style="position: relative">Inbox</span>
+		</a>
+	</div>
 	<div id="friendScroll" class="d-flex flex-column gap-2" style="position:relative;">
 	
 	</div>
@@ -26,9 +41,11 @@
 		-ms-overflow-style: none;
 		scrollbar-width: none;
 	}
+
 	.disable-collapse.collapsed {
-		display:none;
+		display: none;
 	}
+
 	* {
 		white-space: nowrap;
 	}

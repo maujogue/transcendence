@@ -47,22 +47,4 @@ contract StoreTournamentData {
 	function getMatches() public view returns (Match[] memory) {
 		return matches;
 	}
-
-// 	function getMatchesByPlayer(string memory playerName) public view returns(Match[] memory) {
-// 		Match[] memory playerMatches;
-
-// 		for (uint i = 0; i < matches.length; i++) {
-// 			if ((keccak256(abi.encodePacked(matches[i].player1)) == keccak256(abi.encodePacked(playerName)))
-// 				|| (keccak256(abi.encodePacked(matches[i].player2)) == keccak256(abi.encodePacked(playerName)))) {
-// 					Match memory tempMatch = Match(matches[i].round,
-// 													matches[i].player1,
-// 													matches[i].scorePlayer1,
-// 													matches[i].player2,
-// 													matches[i].scorePlayer2,
-// 													matches[i].matchWinner);			
-// 					playerMatches.push(tempMatch);
-// 				}
-// 		}
-// 		return playerMatches;
-// 	}
 }

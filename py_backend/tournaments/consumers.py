@@ -75,7 +75,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             bracket = await sync_to_async(self.tournament.get_tournament_bracket)()
             await self.send(text_data=json.dumps({'type': 'bracket', 'bracket': bracket}))
 
-
     async def match_is_over(self):
         print('match is over')
         self.match = await self.get_player_match(self.scope['user'].tournament_username)
@@ -95,7 +94,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.check_if_disqualified()
         else:
             await self.send(text_data=json.dumps({"type":"auth", "status": "failed"}))
-
 
     async def set_tournament_over(self):
         print('tournament is over')

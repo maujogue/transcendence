@@ -29,6 +29,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'auth': self.auth,
             'friend_request': self.friend_request,
             'accept_request': self.accept_request,
+            'decline_request': self.decline_request,
             'remove_request': self.remove_friend,
             'get_friendslist': self.get_friendslist,
             'get_current_user_requests': self.get_current_user_requests,
@@ -199,7 +200,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
     def get_requests(self, data):
         all_requests = InteractionRequest.objects.all()
         requests_list = []
-        for r in all_requests.filter(to_user=data.get('from_user')):
+        for r in all_requests.filter(to_user=data.get('user')):
             user = CustomUser.objects.get(username=r.from_user)
             requests_list.append({'name': r.from_user, 'avatar': convert_image_to_base64(user.avatar)})
         return requests_list

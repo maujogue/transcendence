@@ -1,15 +1,6 @@
 import { getUserData} from "./User.js"
 import { showAlert } from "./Utils.js";
 
-const notificationHandlers = {
-    'friend_request_to_user': (data) => showAlert(`You just receive a friend request from ${data.from_user} !`, true),
-    'friend_request_from_user': (data) => showAlert(`You just send a friend request to ${data.to_user} !`, true),
-    'accept_request': (data) => showAlert(`${data.to_user} accepted your friend request !`, true),
-    'user_exist': () => showAlert("This user does not exist.", false),
-    'already_friends': (data) => showAlert(`You are already friends with ${data.to_user}.`, false),
-    'remove_friend': (data) => showAlert(`You have deleted ${data.to_user} from your friends.`, true),
-};
-
 let wsFriends;
 
 export function friendsWebsocket(username) {
@@ -24,13 +15,7 @@ export function friendsWebsocket(username) {
 
     wsFriends.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        printNotification(data);
-
-        if (data.type === 'friendslist') {
-            var friendslist = data.friends;
-            printFriendslist(friendslist);
-        }
-            
+        wsMessageRouter(data);
     };    
 }
 
@@ -88,20 +73,42 @@ async function getFriendOnlineStatus(message) {
     }));
 }
 
-async function printNotification(data) {
+async function wsMessageRouter(data) {
+    console.log('type =', data.type);
+
+    const notificationHandlers = {
+        'friend_request_to_user': (data) => showAlert(`You just receive a friend request from ${data.from_user} !`, true),
+        'friend_request_from_user': (data) => showAlert(`You just send a friend request to ${data.to_user} !`, true),
+        'accept_request': (data) => showAlert(`${data.to_user} accepted your friend request !`, true),
+        // 'user_himself': () => showAlert("You ")
+        'user_exist': () => showAlert("This user does not exist.", false),
+        'already_friends': (data) => showAlert(`You are already friends with ${data.to_user}.`, false),
+        'remove_friend': (data) => showAlert(`You have deleted ${data.to_user} from your friends.`, true),
+        'friendslist': (data) => printFriendslist(data),
+        'get_current_user_requests': (data) => fillInbox(data),
+    };
+
     const handler = notificationHandlers[data.type];
     if (handler && data) {
         handler.call(this, data);
     }
 }
 
-async function printFriendslist(friendslist) {
+async function printFriendslist(data) {
+    var friendslist = data.friends;
+
     const length = Object.keys(friendslist).length;
     console.log("Length of the dictionary:", length);
 
     for (let step = 0; step < length; step++) {
         console.log('#', step, ': name =', friendslist[step].username, ': status =', friendslist[step].status);
     }
+}
+
+async function fillInbox(data) {
+    var requestsList = data.friend_requests;
+
+    console.log(data);
 }
 
 export { sendFriendsWebSocketMessage };

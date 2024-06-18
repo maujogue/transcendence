@@ -22,7 +22,7 @@ export function friendsWebsocket(username) {
 async function sendFriendsWebSocketMessage(message) {
     const messageHandlers = {
         auth: auth,
-        'get_friendslist': getFriendsListToConsumer,
+        'get_friendslist': getFriendsList,
         'get_current_user_requests': getCurrentUserRequests,
         'get_friend_online_status': getFriendOnlineStatus,
         default: sendFriendRequestToConsumer
@@ -43,7 +43,7 @@ async function auth(username) {
     }));
 }
 
-async function getFriendsListToConsumer(message) {
+async function getFriendsList(message) {
     wsFriends.send(JSON.stringify({
         'type': message.type,
         'current_user': message.current_user,

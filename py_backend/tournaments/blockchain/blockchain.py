@@ -37,8 +37,28 @@ def set_data_on_blockchain(tournament):
         })
 
     #get all matches into an array or something like that before sending them
-    transaction = contract.functions.setDataOnBlockchain(tournament_winner, matches
+    transaction = contract.functions.addMatchesAndWinner(tournament_winner, matches
     ).build_transaction({
+        'gasPrice': w3.eth.gas_price,
+        'chainId': settings.CHAIN_ID,
+        'from': settings.WALLET,
+        'nonce': nonce
+    })
+    signed_transaction = w3.eth.account.sign_transaction(transaction, settings.PRIVATE_KEY)
+    transaction_hash = w3.eth.send_raw_transaction(signed_transaction.rawTransaction)
+    print("Waiting for transaction to finish...")
+    transaction_receipt = w3.eth.wait_for_transaction_receipt(transaction_hash)
+    print("Done! Matches and winner set.")
+
+def get_matches_by_player(player_name):
+    contract_address = tournament.contract_address
+    tournament_winner = tournament.get_winner()
+
+    abi = load_contract_abi()
+    w3 = Web3(HTTPProvider(settings.PROVIDER_URL))
+    contract = w3.eth.contract(address=contract_address, abi=abi)
+    nonce = w3.eth.get_transaction_count(settings.WALLET)
+    transaction = contract.functions.getMatches().build_transaction({
         'gasPrice': w3.eth.gas_price,
         'chainId': settings.CHAIN_ID,
         'from': settings.WALLET,

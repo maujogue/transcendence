@@ -46,14 +46,12 @@ class FriendsConsumer(AsyncWebsocketConsumer):
     async def auth(self, data):
         username = data.get('username')
         await self.authenticate_user(username)
-
         await self.channel_layer.group_add(
             self.scope['user'].username,
             self.channel_name)
         
-
+        
     async def friend_request(self, data):
-        await sync_to_async(print)(data)
         from_user = data.get('from_user')
         to_user = data.get('to_user')
 
@@ -64,7 +62,8 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         if user is None:
             return await self.send(text_data=json.dumps({ "type": "user_do_not_exist"}))
         
-        if self.request_already_sent(from_user, to_user):
+        is_already_send = await self.request_already_sent(from_user, to_user)
+        if is_already_send == True:
             return await self.send(text_data=json.dumps({ "type": "request_already_sent"}))
         
         request = await sync_to_async(InteractionRequest.objects.create)(from_user=from_user, to_user=to_user)
@@ -84,19 +83,8 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'from_user': from_user,
             'to_user': to_user})
 
-        # --- 
-        # await self.accept_request(data)
-        # await self.get_friend_online_status(data.get('friend'))
-        # ---
-
     
-    async def accept_request(self, data):
-        requests = await self.send_current_user_requests(data)
-
-        if data.get('from_user') not in requests:
-            await self.send(text_data=json.dumps({ "type": "accept_request", "status": "failure"}))
-            return
-        
+    async def accept_request(self, data):        
         from_user = await sync_to_async(CustomUser.objects.get)(username=data.get('from_user'))
         to_user = await sync_to_async(CustomUser.objects.get)(username=data.get('to_user'))
 
@@ -125,6 +113,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         from_user = data.get('from_user')
         to_user = data.get('to_user')
         await self.delete_interaction_request(from_user, to_user)
+
 
     @database_sync_to_async
     def get_friends(self, data):
@@ -191,8 +180,9 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({ "type": "auth", "status": "failed"}))
 
 
-    async def request_already_sent(self, from_user, to_user):
-        request = await sync_to_async(InteractionRequest.objects.filter)(from_user=from_user, to_user=to_user)
+    @database_sync_to_async
+    def request_already_sent(self, from_user, to_user):
+        request = InteractionRequest.objects.filter(from_user=from_user, to_user=to_user)
         if request:
             return True
         return False

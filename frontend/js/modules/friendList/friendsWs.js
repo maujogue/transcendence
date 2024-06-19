@@ -3,13 +3,14 @@ import { showAlert } from "../../Utils.js";
 import { fillInbox } from "./friendList.js";
 import { fillFriendsList } from "./friendList.js";
 
-const currentUser = await getUserData('username');
+let currentUser;
 let wsFriends;
 
-export function friendsWebsocket() {
+export async function friendsWebsocket() {
 	console.log("socket on");
 	wsFriends = new WebSocket("ws://127.0.0.1:8080/ws/friends/");
-	wsFriends.onopen = function () {
+	wsFriends.onopen = async function () {
+		currentUser = await getUserData('username');
 		auth();
 		getFriendsList();
 		getCurrentUserRequests();

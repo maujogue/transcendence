@@ -1,5 +1,5 @@
 import { getModuleDiv } from "../../Modules.js";
-import { showAlert } from "../../Utils.js";
+import { isLoggedIn, showAlert } from "../../Utils.js";
 import { friendsWebsocket } from "./friendsWs.js";
 import { sendFriendRequest } from "./friendsWs.js";
 import { getFriendStatus } from "./friendsWs.js";
@@ -12,7 +12,8 @@ export async function init() {
 	if (!module)
 		return;
 
-	friendsWebsocket();
+	if (await isLoggedIn())
+		friendsWebsocket();
 
 	var searchFriendForm = module.querySelector("#searchFriendForm");
 	searchFriendForm.addEventListener("submit", (event) => {

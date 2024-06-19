@@ -67,8 +67,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         print('tournament: endGame')
         await self.set_match_info()
         await self.match_is_over()
-        if not self.match:
-            return
         print(f'{self.scope["user"].tournament_username} match is over, {self.match.winner} wins!')
         if self.match.winner == self.scope['user'].tournament_username:
             await self.send(text_data=json.dumps({'type': 'status', 'status': 'waiting'}))
@@ -81,7 +79,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def match_is_over(self):
         print('match is over')
         if not self.match:
-            return
+            self.match = await self.get_player_match(self.scope['user'].tournament_username)
         self.match.finished = True
         await self.match.asave()
 
@@ -164,7 +162,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     await self.create_history_match(lobby)
                     await self.endGame()
             except Lobby.DoesNotExist:
-                print("lobby does not exist")
+                print("check_if_match_is_started: lobby does not exist")
                 return
         except asyncio.CancelledError:
             print('match started')
@@ -193,7 +191,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await lobby.adelete()
             print('lobby deleted')
         except Lobby.DoesNotExist:
-            print("lobby does not exist")
+            print("remove_lobby: lobby does not exist")
             return
         
     async def launch_tournament(self):

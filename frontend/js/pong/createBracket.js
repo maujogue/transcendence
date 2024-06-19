@@ -9,9 +9,9 @@ const startY = 20;
 const boxWidth = 125;
 const boxHeight = 44;
 const horizontalSpacing = 175;
-let verticalSpacing = 8;
 
 function drawMatchBox(x, y, match) {
+    console.log(`Drawing match box at x: ${x}, y: ${y}`);
     ctx.fillStyle = 'white';
     ctx.fillRect(x, y, boxWidth, boxHeight);
 
@@ -22,6 +22,7 @@ function drawMatchBox(x, y, match) {
 }
 
 function writePlayerName(x, y, playerName, score, winner) {
+    console.log(`Writing player name: ${playerName} at x: ${x}, y: ${y}`);
     if (winner === playerName)
         ctx.fillStyle = 'green';
     else if (!winner || winner === null)
@@ -49,6 +50,7 @@ function drawConnectingLine(x1, y1, x2, y2) {
 }
 
 function createBracketCanvas() {
+    console.log("Creating bracket canvas");
     if (document.getElementById('bracketCanvas'))
         document.getElementById('bracketCanvas').remove();
     const canvas = document.createElement('canvas');
@@ -110,6 +112,7 @@ export function drawBracket(bracket) {
     const rounds = bracket.tournament.rounds;
 
     rounds.forEach((round, roundIndex) => {
+        console.log(`round: ${round.name}`)
         let matchesPosY = [];
         let indexMatchesPosY = 0;
         const roundX = startX + roundIndex * horizontalSpacing;
@@ -119,13 +122,19 @@ export function drawBracket(bracket) {
         ctx.fillStyle = 'black';
         ctx.fillText(round.name, roundX + (boxHeight / 2), startY);
         round.matches.forEach((match, matchIndex) => {
+            console.log(`roundIndex: ${roundIndex}`)
             console.log(`match: ${match.player1} vs ${match.player2}`);
+            console.log(`roundX: ${roundX}, startY: ${startY}, matchIndex: ${matchIndex}`)
             let matchY;
 
-            if (roundIndex === 0)
+            if (roundIndex === 0) {
+                const verticalSpacing = 8;
+                console.log(`startY = ${startY}, matchIndex = ${matchIndex}, boxHeight = ${boxHeight}, verticalSpacing = ${verticalSpacing}`)
                 matchY = (startY + 40) + matchIndex * (boxHeight + verticalSpacing);
+            }
             else {
-                verticalSpacing = prevRoundMatchesPosY[indexMatchesPosY + 1] - (prevRoundMatchesPosY[indexMatchesPosY] + boxHeight);
+                console.log(`prevRoundMatchesPosY: ${prevRoundMatchesPosY}`)
+                const verticalSpacing = prevRoundMatchesPosY[indexMatchesPosY + 1] - (prevRoundMatchesPosY[indexMatchesPosY] + boxHeight);
                 const twoBoxHeight = (boxHeight * 2) + (verticalSpacing / 2);
                 matchY = (prevRoundMatchesPosY[indexMatchesPosY]  + (twoBoxHeight / 2)) - (boxHeight / 2);
             }

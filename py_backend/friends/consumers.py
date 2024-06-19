@@ -51,6 +51,13 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             self.channel_name)
         
         
+        friends = await self.get_friends()
+        for f in friends:
+            await self.channel_layer.group_add(
+                f.get('username'),
+                self.channel_name)
+        
+        
     async def friend_request(self, data):
         from_user = data.get('from_user')
         to_user = data.get('to_user')
@@ -81,7 +88,9 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             to_user,
             {'type': 'new_request_notification',
             'from_user': from_user,
-            'to_user': to_user})
+            'to_user': to_user,
+            'type_from_user': 'friend_request_from_user',
+            'type_to_user': 'friend_request_to_user'})
 
     
     async def accept_request(self, data):        
@@ -92,12 +101,19 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await sync_to_async(to_user.friends.add)(from_user)
         await self.delete_interaction_request(from_user, to_user)
 
-        # print('self =', self.scope['user'].username)
-        # print('data =', data['from_user'])
-        # if self.scope['user'].username == data['from_user']:
         data['type'] = 'accept_request'
         await self.send_notification(data)
-            
+
+        await self.channel_layer.group_add(
+            from_user.username,
+            self.channel_name,)
+        await self.channel_layer.group_send(
+            to_user.username,
+            {'type': 'new_request_notification',
+            'from_user': from_user.username,
+            'to_user': to_user.username,
+            'type_from_user': 'friend_accepted_from_user',
+            'type_to_user': 'friend_accepted_to_user'})
 
 
     async def remove_friend(self, data):
@@ -107,9 +123,8 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await sync_to_async(from_user.friends.delete)(to_user)
         await sync_to_async(to_user.friends.delete)(from_user)
         
-        if self.scope['user'].username == data['from_user']:
-            data['type'] = 'remove_friend'
-            await self.send_notification(data)
+        data['type'] = 'remove_friend'
+        await self.send_notification(data)
 
 
     async def decline_request(self, data):
@@ -117,12 +132,11 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         to_user = data.get('to_user')
         await self.delete_interaction_request(from_user, to_user)
         return await self.send(text_data=json.dumps({ "type": "request_declined"}))
-        
 
 
     @database_sync_to_async
-    def get_friends(self, data):
-        current_user = CustomUser.objects.get(username=data.get('current_user'))
+    def get_friends(self):
+        current_user = CustomUser.objects.get(username=self.scope['user'].username)
         friendslist = []
         friendslist = current_user.friends.all()
         friends_list_data = [{'username': friend.username, 'status': friend.is_online, 'avatar': convert_image_to_base64(friend.avatar)} for friend in friendslist]
@@ -130,7 +144,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
     async def get_friendslist(self, data):
         friends_list_data = []
-        friends_list_data = await self.get_friends(data)
+        friends_list_data = await self.get_friends()
         await self.send(text_data=json.dumps({
             "type": "friendslist",
             "friends": friends_list_data}))
@@ -150,11 +164,12 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
     async def new_request_notification(self, event):
         if self.scope['user'].username == event['from_user']:
-            event['type'] = 'friend_request_from_user'
+            event['type'] = event['type_from_user']
             await self.send_notification(event)
         if self.scope['user'].username == event['to_user']:
-            event['type'] = 'friend_request_to_user'
+            event['type'] = event['type_to_user']
             await self.send_notification(event)
+
 
 
 #---------- utils ---------------------------------------------------------------------------------------------------------

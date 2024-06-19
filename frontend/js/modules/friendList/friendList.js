@@ -41,7 +41,7 @@ async function fillInbox(data) {
 
 	inboxDiv.innerHTML = "";
 	requestsList.forEach(request => {
-		console.log(request);
+		// console.log(request);
 		if(length++ > 10)
 		{
 			if (!inboxDiv.querySelector(".finish"))
@@ -64,6 +64,7 @@ async function fillInbox(data) {
 	module.querySelectorAll(".accept-request").forEach(acceptButton => {
 		acceptButton.addEventListener("click", (e) => {
 			var fromUser = acceptButton.closest("li").querySelector("span").innerText;
+			console.log('before entering');
 			acceptFriendRequest(fromUser);
 			e.stopPropagation();
 		});

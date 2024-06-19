@@ -91,7 +91,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
     
     async def accept_request(self, data):
-        requests = await self.get_current_user_requests(data)
+        requests = await self.send_current_user_requests(data)
 
         if data.get('from_user') not in requests:
             await self.send(text_data=json.dumps({ "type": "accept_request", "status": "failure"}))
@@ -209,10 +209,14 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_requests(self, data):
-        print('data = ', data)
+        if data.get('type') == 'accept_request':
+            username = data.get('to_user')
+        else:
+            username = data.get('user')
+
         all_requests = InteractionRequest.objects.all()
         requests_list = []
-        for r in all_requests.filter(to_user=data.get('user')):
+        for r in all_requests.filter(to_user=username):
             user = CustomUser.objects.get(username=r.from_user)
             requests_list.append({'name': r.from_user, 'avatar': convert_image_to_base64(user.avatar)})
         return requests_list

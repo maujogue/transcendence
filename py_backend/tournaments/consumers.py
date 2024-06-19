@@ -61,6 +61,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if not await self.validate_foreign_keys():
             return
         print('tournament: endGame')
+        self.task.cancel()
         await self.set_match_info()
         await self.match_is_over()
         print(f'{self.scope["user"].tournament_username} match is over, {self.match.winner} wins!')
@@ -373,4 +374,4 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if event['forAll'] or not await sync_to_async(self.tournament.check_if_player_is_in_match)(self.scope['user'].tournament_username):
             await self.send(text_data=json.dumps({'type': 'bracket', 'bracket': event['bracket']}))
         if event['forAll']:
-            await asyncio.sleep(10)
+            await asyncio.sleep(8)

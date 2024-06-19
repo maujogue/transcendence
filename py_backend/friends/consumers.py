@@ -32,7 +32,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'decline_request': self.decline_request,
             'remove_request': self.remove_friend,
             'get_friendslist': self.get_friendslist,
-            'get_current_user_requests': self.get_current_user_requests,
+            'get_current_user_requests': self.send_current_user_requests,
             'get_friend_online_status': self.get_friend_online_status,
         }
         handler = handlers.get(message_type)
@@ -221,7 +221,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         return requests_list
     
 
-    async def get_current_user_requests(self, data):
+    async def send_current_user_requests(self, data):
         requests = []
         requests = await self.get_requests(data)
         await self.send(text_data=json.dumps({

@@ -194,6 +194,7 @@ h1 {
 
 .ranking {
 	align-self: start;
+	overflow-y: auto;
     display: flex;
     flex-direction: column;
     justify-content: start;

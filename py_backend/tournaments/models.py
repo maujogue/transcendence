@@ -76,37 +76,50 @@ class Tournament(models.Model):
 			return username
 		
 	def get_tournament_bracket(self):
-		rounds = self.matchups.values_list('round', flat=True).distinct()
-		bracket = {
-			"tournament": {
-				"name": self.name,
-				"rounds": []
-			}
-		}
+		total_rounds = self.max_round
 
-		for round_number in rounds:
+		bracket = {
+		"tournament": {
+			"name": self.name,
+			"rounds": []
+		}
+		}
+		for round_number in range(1, total_rounds + 1):
 			matches = self.matchups.filter(round=round_number)
 			round_info = {
 				"name": self.get_round_name(round_number),
 				"matches": []
 			}
 
-			for match in matches:
-				player1 = self.get_player_tournament_username(match.player1)
-				player2 = self.get_player_tournament_username(match.player2) if match.player2 else None
-				winner = self.get_player_tournament_username(match.winner) if match.winner else None
-				match_info = {
-					"match_id": str(match.lobby_id),
-					"player1": player1,
-					"player2": player2 if match.player2 else None,
-					"winner": winner,
-					"player1_score": match.score_player_1,
-					"player2_score": match.score_player_2
-				}
-				round_info["matches"].append(match_info)
-			
+			if matches.exists():
+				for match in matches:
+					player1 = self.get_player_tournament_username(match.player1) if match.player1 else None
+					player2 = self.get_player_tournament_username(match.player2) if match.player2 else None
+					winner = self.get_player_tournament_username(match.winner) if match.winner else None
+					match_info = {
+						"match_id": str(match.lobby_id),
+						"player1": player1,
+						"player2": player2,
+						"winner": winner,
+						"player1_score": match.score_player_1,
+						"player2_score": match.score_player_2
+					}
+					round_info["matches"].append(match_info)
+			else:
+				num_matches = 2 ** (total_rounds - round_number)
+				for _ in range(num_matches):
+					match_info = {
+						"match_id": None,
+						"player1": None,
+						"player2": None,
+						"winner": None,
+						"player1_score": 0,
+						"player2_score": 0
+					}
+					round_info["matches"].append(match_info)
 			bracket["tournament"]["rounds"].append(round_info)
 		return bracket
+
 
 	def get_ranking(self):
 		ranking = {}

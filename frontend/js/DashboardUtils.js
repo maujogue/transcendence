@@ -1,3 +1,4 @@
+import { updateModule } from "./Modules.js";
 import { injectUserData, getUserData } from "./User.js";
 
 function inputInitListeners() {
@@ -100,21 +101,27 @@ async function displayUserPage(username) {
 	userDash.style.opacity = 0;
 
 	setTimeout(() => {
-		userDash.querySelector("#closeProfileBtn").innerHTML = "<button id='closeUserDash' class='btn btn-danger mb-3 top-0 end-100'>Close Profile</button>";
+		userDash.querySelector("#closeProfileBtn").innerHTML = `
+		<button id='closeUserDash' class='btn btn-warning mb-3 top-0 end-100 d-flex align-items-center justify-content-center'>
+			<i class="pt-1 fa-solid fa-arrow-left text-white h4"></i>
+			<span class="pt-1 ms-2 text-white h4"> Back</span>
+		</button>
+		`;
 		var closeBtn = userDash.querySelector("#closeUserDash");
-		closeBtn.addEventListener("click", () => {
+		closeBtn.addEventListener("click", async () => {
 			userDash.style.opacity = 0;
-			showUserDash(null, closeBtn);
+			await showUserDash(null, closeBtn);
 		});
 	}, 500);
 	showUserDash(username);
 }
 
-function showUserDash(username, closeBtn) {
-	setTimeout(() => {
+async function showUserDash(username, closeBtn) {
+	setTimeout(async () => {
 		if (closeBtn)
 			closeBtn.remove();
-		injectUserData(userDash, username);
+		await injectUserData(userDash, username);
+		await updateModule("statisticsModule")
 		setTimeout(() => {
 			userDash.style.opacity = 1;
 		}, 200);

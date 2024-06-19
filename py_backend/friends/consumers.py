@@ -91,10 +91,6 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
     
     async def accept_request(self, data):
-        await sync_to_async(print)('accept_request')
-        c = await sync_to_async(InteractionRequest.objects.count)()
-        await sync_to_async(print)('count = ', c)
-
         requests = await self.get_current_user_requests(data)
 
         if data.get('from_user') not in requests:
@@ -213,6 +209,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_requests(self, data):
+        print('data = ', data)
         all_requests = InteractionRequest.objects.all()
         requests_list = []
         for r in all_requests.filter(to_user=data.get('user')):

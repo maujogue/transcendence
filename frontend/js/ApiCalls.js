@@ -24,8 +24,10 @@ async function register(registerForm) {
 	if (response.statusCode === 200) {
 		showAlert(response.data.status, true);
 	} else {
-		if (data.error && data.error.length > 0) showAlert(data.error[0]);
-		else showAlert(data.error);
+		if (data.error.password2)
+			showAlert(data.error.password2[0]);
+		else if (data.error && typeof(data.error[0]) === "string") showAlert(data.error[0]);
+		else showAlert("An error occurred, please try again.");
 	}
 }
 

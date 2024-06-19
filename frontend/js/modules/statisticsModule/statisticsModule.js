@@ -16,7 +16,7 @@ export async function init() {
 	if (response.statusCode == 200)
 		var matchs = response.data.matchs;
 	if (matchs.length == 0) {
-		module.querySelector("#gamesPlayedRow").innerHTML = '<span class="fs-5">Play your first match to see your statistics here! </span>';
+		module.querySelector("#gamesPlayedRow").innerHTML = '<span class="fs-5" data-lang="play_first_match">Play your first match to see your statistics here! </span>';
 		return;
 	}
 	response = await runEndPoint("stats/" + username + "/winrate", "GET");

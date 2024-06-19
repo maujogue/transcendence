@@ -34,6 +34,7 @@ class GetUserDatas(TestCase):
         self.assertEqual(response_data.get('user').get('winrate'), None)
         self.assertEqual(response_data.get('user').get('rank'), None)
         self.assertEqual(response_data.get('user').get('n_games_played'), None)
+        self.assertEqual(response_data.get('user').get('lang'), "en")
 
     def test_without_login(self):
         self.client.logout()

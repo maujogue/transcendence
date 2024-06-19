@@ -118,6 +118,7 @@ async function wsMessageRouter(data) {
 		'request_already_sent': () => showAlert(`You already sent a friend request to this user.`, false),
 		'already_friends': (data) => showAlert(`You are already friends with ${data.to_user}.`, false),
 		'remove_friend': (data) => showAlert(`You have deleted ${data.to_user} from your friends.`, true),
+		'request_declined': () => showAlert(`Request declined.`, false),
 		'friendslist': (data) => fillFriendsList(data),
 		'get_current_user_requests': (data) => fillInbox(data),
 	};

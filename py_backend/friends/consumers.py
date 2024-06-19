@@ -113,6 +113,8 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         from_user = data.get('from_user')
         to_user = data.get('to_user')
         await self.delete_interaction_request(from_user, to_user)
+        return await self.send(text_data=json.dumps({ "type": "request_declined"}))
+        
 
 
     @database_sync_to_async

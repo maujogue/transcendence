@@ -41,15 +41,16 @@ def deploy_tournament_contract(tournament_name):
 
         contract_address = transaction_receipt.contractAddress
 
-        print(f"contract address: {contract_address}")
         if contract_address:
+            print(f"contract address: {contract_address}")
             return contract_address
         else:
-            return "contract address doesnt exist"
+            print("contract address wasn't created.")
+            return None
 
     except Exception as e:
         print(f"Error deploying contract: {e}")
-        return "Error"
+        return None
 
 if __name__ == "__main__":
     tournament_name = "tournamentName"

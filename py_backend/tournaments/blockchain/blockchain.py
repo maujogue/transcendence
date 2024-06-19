@@ -32,7 +32,6 @@ def set_data_on_blockchain(tournament):
             'matchWinner': match.winner
         })
 
-    #get all matches into an array or something like that before sending them
     transaction = contract.functions.addMatchesAndWinner(tournament_winner, matches
     ).build_transaction({
         'gasPrice': w3.eth.gas_price,

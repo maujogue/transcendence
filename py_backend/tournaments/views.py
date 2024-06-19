@@ -180,7 +180,11 @@ def add_contract_address(request, tournament_id):
 	except Tournament.DoesNotExist:
 		return JsonResponse({"errors": "Tournament not found."},
 					status=404)
+
 	contract_address = deploy_tournament_contract(tournament.name)
+	if contract_address is None:
+		return JsonResponse({"errors": "Failed to deploy contract."},
+					status=500)
 
 	tournament.contract_address = contract_address
 	tournament.save()
@@ -195,6 +199,13 @@ def send_data_to_blockchain(request, tournament_id):
 	except Tournament.DoesNotExist:
 		return JsonResponse({"errors": "Tournament not found."},
 					status=404)
-	set_data_on_blockchain(tournament)
+	if tournament.contract_address == "0x0":
+		return JsonResponse({"errors": "Contract is not deployed."},
+					status=400)
+	try:
+		set_data_on_blockchain(tournament)
+	except Exception as e:
+		return JsonResponse({"errors": f"Failed to initiate transaction: {str(e)}"},
+					status=500)
 	return JsonResponse({"message": "Transaction initiated."},
-					 status=200)
+					status=200)

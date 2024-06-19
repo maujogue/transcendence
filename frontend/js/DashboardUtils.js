@@ -95,38 +95,6 @@ function toggleConfirmPasswordModal(modalToDismiss) {
 	}
 }
 
-async function displayUserPage(username) {
-	var userDash = document.getElementById("userDash");
-	userDash.style.transition = "opacity 0.5s";
-	userDash.style.opacity = 0;
-
-	setTimeout(() => {
-		userDash.querySelector("#closeProfileBtn").innerHTML = `
-		<button id='closeUserDash' class='btn btn-warning mb-3 top-0 end-100 d-flex align-items-center justify-content-center'>
-			<i class="pt-1 fa-solid fa-arrow-left text-white h4"></i>
-			<span class="pt-1 ms-2 text-white h4"> Back</span>
-		</button>
-		`;
-		var closeBtn = userDash.querySelector("#closeUserDash");
-		closeBtn.addEventListener("click", async () => {
-			userDash.style.opacity = 0;
-			await showUserDash(null, closeBtn);
-		});
-	}, 500);
-	showUserDash(username);
-}
-
-async function showUserDash(username, closeBtn) {
-	setTimeout(async () => {
-		if (closeBtn)
-			closeBtn.remove();
-		await injectUserData(userDash, username);
-		await updateModule("statisticsModule")
-		setTimeout(() => {
-			userDash.style.opacity = 1;
-		}, 200);
-	}, 500);
-}
 
 export {
 	enableDisableSaveButtonOnInput,
@@ -135,5 +103,4 @@ export {
 	resetForm,
 	toggleConfirmPasswordModal,
 	inputInitListeners,
-	displayUserPage
 };

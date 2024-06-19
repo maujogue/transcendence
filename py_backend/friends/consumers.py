@@ -27,6 +27,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
         handlers = {
             'auth': self.auth,
+            'check_user_exist': self.user_exist,
             'friend_request': self.friend_request,
             'accept_request': self.accept_request,
             'decline_request': self.decline_request,
@@ -61,7 +62,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
          
         user = await self.authenticate_user_with_username(to_user)
         if user is None:
-            return await self.send(text_data=json.dumps({ "type": "user_exist"}))
+            return await self.send(text_data=json.dumps({ "type": "user_request_exist"}))
         
         request = await sync_to_async(InteractionRequest.objects.create)(from_user=from_user, to_user=to_user)
 
@@ -186,6 +187,10 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         else:
             await self.send(text_data=json.dumps({ "type": "auth", "status": "failed"}))
 
+    async def user_exist(self, data):
+        username = data.get('username')
+        user = await self.authenticate_user_with_username(username)
+        await self.send(text_data=json.dumps({ "type": "user_exist", "exists": user is not None}))
 
     async def delete_interaction_request(self, from_user, to_user):
         #delete the line below
@@ -212,5 +217,5 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             "type": "get_current_user_requests",
             "friend_requests": requests}))
-        
+    
     

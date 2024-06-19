@@ -2,6 +2,7 @@ import { getUserData } from "../../User.js"
 import { showAlert } from "../../Utils.js";
 import { fillInbox } from "./friendList.js";
 import { fillFriendsList } from "./friendList.js";
+import { setUserExist } from "./friendList.js";
 
 const currentUser = await getUserData('username');
 let wsFriends;
@@ -86,6 +87,16 @@ async function declineFriendRequest(fromUser) {
 	}
 }
 
+async function checkUserExist(username) {
+	if (checkWs()) {
+		wsFriends.send(JSON.stringify({
+			'type': 'check_user_exist',
+			'username': username,
+		}));
+	}
+}
+
+
 async function getFriendStatus(username) {
 	if (checkWs()) {
 		wsFriends.send(JSON.stringify({
@@ -110,11 +121,13 @@ async function wsMessageRouter(data) {
 			showAlert(`${data.to_user} accepted your friend request !`, true)
 		},
 		'user_himself': () => showAlert("You cannot send a friend request to yourself.", false),
-		'user_exist': () => showAlert("This user does not exist.", false),
+		'user_request_exist': () => showAlert("This user does not exist.", false),
 		'already_friends': (data) => showAlert(`You are already friends with ${data.to_user}.`, false),
 		'remove_friend': (data) => showAlert(`You have deleted ${data.to_user} from your friends.`, true),
 		'friendslist': (data) => fillFriendsList(data),
 		'get_current_user_requests': (data) => fillInbox(data),
+		'user_exist' : (data) => setUserExist(data),
+
 	};
 	const handler = notificationHandlers[data.type];
 	if (handler && data) {
@@ -123,4 +136,4 @@ async function wsMessageRouter(data) {
 }
 
 
-export { sendFriendRequest, getFriendStatus, acceptFriendRequest, declineFriendRequest };
+export { sendFriendRequest, getFriendStatus, acceptFriendRequest, declineFriendRequest, checkUserExist };

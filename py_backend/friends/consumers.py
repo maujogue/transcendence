@@ -113,7 +113,14 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'from_user': from_user.username,
             'to_user': to_user.username,
             'type_from_user': 'friend_accepted_from_user',
-            'type_to_user': 'friend_accepted_to_user'})
+            'type_to_user': 'null'})
+        await self.channel_layer.group_send(
+            from_user.username,
+            {'type': 'send_friendslist',
+            })
+        
+    async def send_friendslist(self, event):
+        await self.get_friendslist(None)
 
 
     async def remove_friend(self, data):
@@ -176,6 +183,8 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
 
     async def send_notification(self, event):
+        if event['type'] == 'null':
+            return
         await self.send(text_data=json.dumps({
             'type': event['type'],
             'from_user': event['from_user'],

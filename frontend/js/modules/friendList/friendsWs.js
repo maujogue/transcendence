@@ -7,7 +7,6 @@ let currentUser;
 let wsFriends;
 
 export async function friendsWebsocket() {
-	console.log("socket on");
 	wsFriends = new WebSocket("ws://127.0.0.1:8080/ws/friends/");
 	wsFriends.onopen = async function () {
 		currentUser = await getUserData('username');
@@ -18,6 +17,7 @@ export async function friendsWebsocket() {
 
 	wsFriends.onmessage = (event) => {
 		const data = JSON.parse(event.data);
+		console.log('data =', data);
 		wsMessageRouter(data);
 	};
 }
@@ -107,7 +107,6 @@ async function wsMessageRouter(data) {
 			console.log('accept_request');
 			getCurrentUserRequests();
 			getFriendsList();
-			showAlert(`${data.to_user} accepted your friend request !`, true)
 		},
 		'user_himself': () => showAlert("You cannot send a friend request to yourself.", false),
 		'user_do_not_exist': () => showAlert("This user does not exist.", false),
@@ -117,6 +116,7 @@ async function wsMessageRouter(data) {
 		'request_declined': () => showAlert(`Request declined.`, false),
 		'friendslist': (data) => fillFriendsList(data),
 		'get_current_user_requests': (data) => fillInbox(data),
+		'friend_accepted_from_user': (data) => showAlert(`${data.to_user} accepted your friend request !`, true),
 	};
 	const handler = notificationHandlers[data.type];
 	console.log('data_type =', data.type);

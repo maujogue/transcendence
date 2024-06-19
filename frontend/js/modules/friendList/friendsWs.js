@@ -58,7 +58,6 @@ async function getCurrentUserRequests() {
 }
 
 async function sendFriendRequest(username) {
-	console.log('username', username);
 	if (checkWs()) {
 		wsFriends.send(JSON.stringify({
 			'type': 'friend_request',
@@ -69,7 +68,6 @@ async function sendFriendRequest(username) {
 }
 
 async function acceptFriendRequest(fromUser) {
-	console.log('sending accept request');
 	if (checkWs()) {
 		wsFriends.send(JSON.stringify({
 			'type': 'accept_request',
@@ -80,7 +78,6 @@ async function acceptFriendRequest(fromUser) {
 }
 
 async function declineFriendRequest(fromUser) {
-	console.log('sending decline request');
 	if (checkWs()) {
 		wsFriends.send(JSON.stringify({
 			'type': 'decline_request',
@@ -102,15 +99,14 @@ async function getFriendStatus(username) {
 async function wsMessageRouter(data) {
 	const notificationHandlers = {
 		'friend_request_to_user': (data) => {
-			fillFriendsList(data);
-			fillInbox(data);	
+			getCurrentUserRequests();
 			showAlert(`You just receive a friend request from ${data.from_user} !`, true)
 		},
 		'friend_request_from_user': (data) => showAlert(`You just send a friend request to ${data.to_user} !`, true),
 		'accept_request': (data) => {
-			console.log();
-			fillFriendsList(data);
-			fillInbox(data);
+			console.log('accept_request');
+			getCurrentUserRequests();
+			getFriendsList();
 			showAlert(`${data.to_user} accepted your friend request !`, true)
 		},
 		'user_himself': () => showAlert("You cannot send a friend request to yourself.", false),
@@ -123,6 +119,7 @@ async function wsMessageRouter(data) {
 		'get_current_user_requests': (data) => fillInbox(data),
 	};
 	const handler = notificationHandlers[data.type];
+	console.log('data_type =', data.type);
 	if (handler && data) {
 		handler.call(this, data);
 	}

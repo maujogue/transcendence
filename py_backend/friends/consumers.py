@@ -92,9 +92,12 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await sync_to_async(to_user.friends.add)(from_user)
         await self.delete_interaction_request(from_user, to_user)
 
-        if self.scope['user'].username == data['from_user']:
-            data['type'] = 'accept_request'
-            await self.send_notification(data)
+        # print('self =', self.scope['user'].username)
+        # print('data =', data['from_user'])
+        # if self.scope['user'].username == data['from_user']:
+        data['type'] = 'accept_request'
+        await self.send_notification(data)
+            
 
 
     async def remove_friend(self, data):

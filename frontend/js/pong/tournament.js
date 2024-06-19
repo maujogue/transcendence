@@ -82,19 +82,24 @@ function displayRankingScreen(data) {
 }
 
 function displayTournamentRanking(ranking) {
+    console.log("displayTournamentRanking: ", ranking);
     const rankingDiv = document.createElement("div");
     rankingDiv.className = "ranking";
     rankingDiv.innerHTML = "<h2>Ranking</h2>";
     let pos = 1;
-    for (let key in ranking) {
-        console.log(`${pos}: ${key}`);
-        const div = document.createElement("div");
-        div.textContent = `${pos}: ${key}`;
-        rankingDiv.appendChild(div);
-        pos++;
-    }
+    ranking.reverse();
+    ranking.map((player) => {
+        if (player != null) {
+            const playerDiv = document.createElement("div");
+            playerDiv.className = "player";
+            playerDiv.innerHTML = `<p>${pos}. ${player}</p>`;
+            rankingDiv.appendChild(playerDiv);
+            pos++;
+        }
+    });
     document.getElementsByClassName("tournament")[0].appendChild(rankingDiv);
 }
+
 
 function displayPlayerList(participants) {
     console.log("displayPlayerList");

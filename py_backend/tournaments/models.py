@@ -122,18 +122,17 @@ class Tournament(models.Model):
 
 
 	def get_ranking(self):
-		ranking = {}
-		for player in self.participants.all():
-			player_username = player.tournament_username
-			player_score = 0
-			player_matches = self.matchups.filter(
-				(models.Q(player1=player_username) | models.Q(player2=player_username)),
-				finished=True
-			)
-			for match in player_matches:
-				if match.winner == player_username:
-					player_score += 1
-			ranking[player_username] = player_score
+		ranking = []
+		i = 1
+		while i <= self.max_round:
+			matches = self.matchups.filter(round=i)
+			for match in matches:
+				if match.player1 == match.winner:
+					ranking.append(match.player2)
+				else:
+					ranking.append(match.player1)
+			i += 1
+		ranking.append(self.get_winner())
 		return ranking
 	
 	def check_if_player_is_in_match(self, username):

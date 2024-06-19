@@ -1,12 +1,12 @@
 <section>
 	<!-- LOGGED IN DASHBOARD -->
-	<div class="container-fluid logInContent">
+	<div id="userDash" class="container-fluid logInContent position-relative">
+		<div id="closeProfileBtn"></div>
 		<div class="row">
 			<!-- PROFILE SECTION -->
 			<div class="col-3 ps-0" style="min-width:100px; max-width: 400px;">
 				<div class="d-flex bg-dark rounded text-white p-4 h-100 justify-content-center">
-					<img class="col rounded-circle avatarDynamic" width="50" heigth="50" src=""
-						alt="profile image" />
+					<img class="col rounded-circle avatarDynamic" width="50" heigth="50" src="" alt="profile image" />
 				</div>
 			</div>
 			<div
@@ -50,7 +50,8 @@
 			<form id="updateProfileForm" autocomplete="off" class="novalidate">
 				<div class="modal-header">
 					<h3 class="modal-title">Update Profile</h3>
-					<button id="closeButtonUpdateProfile" type="button" class="btn-close" data-bs-dismiss="modal"></button>
+					<button id="closeButtonUpdateProfile" type="button" class="btn-close"
+						data-bs-dismiss="modal"></button>
 				</div>
 				<div class="modal-body">
 					<!-- USERNAME INPUT -->
@@ -77,10 +78,11 @@
 					<!-- SUBMIT FORM -->
 				</div>
 				<div class="modal-footer">
-					<a id="updatePassword" class="btn btn-outline-secondary me-auto auth-42-disable" data-bs-toggle="modal"
-						data-bs-target="#updatePasswordModal">Update Password</a>
+					<a id="updatePassword" class="btn btn-outline-secondary me-auto auth-42-disable"
+						data-bs-toggle="modal" data-bs-target="#updatePasswordModal">Update Password</a>
 					<a id="discardChangesButton" type="button" class="btn btn-outline-danger d-none">Discard Changes</a>
-					<a id="saveChangesButton" type="button" class="saveChangesButton btn btn-primary disabled">Save Changes</a>
+					<a id="saveChangesButton" type="button" class="saveChangesButton btn btn-primary disabled">Save
+						Changes</a>
 				</div>
 			</form>
 		</div>
@@ -195,4 +197,15 @@
 		</div>
 	</div>
 </div>
-<script type="module" src="../js/Dashboard.js"></script>
+
+<style>
+	#userDashboard {
+		transition: background-color 0.5s ease-in-out;
+		opacity: 1;
+	}
+
+	.hideDashboard {
+		/* opacity: 0; */
+		background-color: red;
+	}
+</style>

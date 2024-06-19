@@ -94,11 +94,39 @@ function toggleConfirmPasswordModal(modalToDismiss) {
 	}
 }
 
+async function displayUserPage(username) {
+	var userDash = document.getElementById("userDash");
+	userDash.style.transition = "opacity 0.5s";
+	userDash.style.opacity = 0;
+
+	setTimeout(() => {
+		userDash.querySelector("#closeProfileBtn").innerHTML = "<button id='closeUserDash' class='btn btn-danger mb-3 top-0 end-100'>Close Profile</button>";
+		var closeBtn = userDash.querySelector("#closeUserDash");
+		closeBtn.addEventListener("click", () => {
+			userDash.style.opacity = 0;
+			showUserDash(null, closeBtn);
+		});
+	}, 500);
+	showUserDash(username);
+}
+
+function showUserDash(username, closeBtn) {
+	setTimeout(() => {
+		if (closeBtn)
+			closeBtn.remove();
+		injectUserData(userDash, username);
+		setTimeout(() => {
+			userDash.style.opacity = 1;
+		}, 200);
+	}, 500);
+}
+
 export {
 	enableDisableSaveButtonOnInput,
 	disableSaveChangesButton,
 	getSubmittedInput,
 	resetForm,
 	toggleConfirmPasswordModal,
-	inputInitListeners
+	inputInitListeners,
+	displayUserPage
 };

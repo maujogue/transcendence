@@ -4,7 +4,7 @@ import { friendsWebsocket } from "./friendsWs.js";
 import { sendFriendRequest } from "./friendsWs.js";
 import { getFriendStatus } from "./friendsWs.js";
 import { acceptFriendRequest, declineFriendRequest} from "./friendsWs.js";
-
+import { displayUserPage } from "../../DashboardUtils.js";
 var module;
 
 export async function init() {
@@ -50,7 +50,7 @@ async function fillInbox(data) {
 		}
 		var friendRequestHtml = `
 		<li class="d-flex g-5">
-			<a class="dropdown-item align-items-center text-white" navlink>
+			<a class="userLink dropdown-item align-items-center text-white" navlink>
 				<img width="30" height="30" class="rounded-circle me-1" src="data:image/png;base64, ${request.avatar}"/>
 				<span class="mt-1">${request.name}</span>
 			</a>
@@ -75,6 +75,12 @@ async function fillInbox(data) {
 			e.stopPropagation();
 		});
 	});
+	module.querySelectorAll(".userLink").forEach(userLink => {
+		userLink.addEventListener("click", (e) => {
+			var fromUser = userLink.closest("li").querySelector("span").innerText;
+			displayUserPage(fromUser);
+		});
+	});
 }
 
 async function fillFriendsList(data) {
@@ -83,10 +89,13 @@ async function fillFriendsList(data) {
 
 	friendScroll.innerHTML = "";
 	friendList.forEach(friend => {
-		var friendListHtml = `<a class="ms-2 align-items-center text-white" data-bs-toggle="dropdown" navlink>
-		<img width="30" height="30" class="rounded-circle me-3"  src="data:image/png;base64, ${friend.avatar}"/>
-		<span class="mt-1 section-name">${friend.username}</span>
-		</a>`;
+		var friendListHtml = `
+		<li class="d-flex g-5">
+			<a class="userLink ms-2 align-items-center text-white" data-bs-toggle="dropdown" navlink>
+			<img width="30" height="30" class="rounded-circle me-3"  src="data:image/png;base64, ${friend.avatar}"/>
+			<span class="mt-1 section-name">${friend.username}</span>
+			</a>
+		</li>`;
 		friendScroll.innerHTML += friendListHtml;
 	});
 }

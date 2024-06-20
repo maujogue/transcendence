@@ -176,9 +176,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             friend_instance = CustomUser.objects.get(username=friend_username)
         except CustomUser.DoesNotExist:
             return
-        if friend_instance.is_online:
-            return True
-        return False
+        return friend_instance.is_online
 
 
     async def new_request_notification(self, event):

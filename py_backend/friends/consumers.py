@@ -146,7 +146,10 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         current_user = CustomUser.objects.get(username=self.scope['user'].username)
         friendslist = []
         friendslist = current_user.friends.all()
-        friends_list_data = [{'username': friend.username, 'status': friend.is_online, 'avatar': convert_image_to_base64(friend.avatar)} for friend in friendslist]
+        friends_list_data = [{'username': friend.username, 
+                            'status': friend.is_online, 
+                            'avatar': convert_image_to_base64(friend.avatar)}
+                            for friend in friendslist]
         return friends_list_data
 
 

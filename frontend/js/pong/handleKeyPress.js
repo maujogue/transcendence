@@ -1,8 +1,8 @@
 import { movePaddle } from "./movePaddle.js";
 import { displayCharacter } from "./displayCharacter.js";
-import { soloMode } from "../pages/game.js";
+import { soloMode, model } from "../pages/game.js";
 import { moveCursor } from "./menu.js";
-import { performAction } from "./AI/AIUtils.js";
+import { performAction, predictAction } from "./AI/AIUtils.js";
 import * as THREE from 'three';
 
 async function handleMenuKeyPress(keysPressed, player1, player2, env) {
@@ -43,7 +43,11 @@ function handleKeyPress(keysPressed, player1, player2, environment) {
 	if (!player2)
 		return;
 	if (soloMode) {
-		performAction(0); // AI action
+		var predictions = predictAction(player1, player2, environment, model);
+		const maxValue = Math.max(...predictions);
+		const action = predictions.indexOf(maxValue);
+		console.log("Action: ", action);
+		performAction(action, player2, environment); // AI action
 		return;
 	}
 	playerBox2 = new THREE.Box3().setFromObject(player2.paddle.mesh);

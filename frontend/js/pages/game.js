@@ -16,7 +16,7 @@ import { sendTournamentForm, createFormTournament } from "../pong/createTourname
 import { createJoinTournamentMenu } from "../pong/joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "../pong/tournament.js";
 import { showAlert } from "../Utils.js";
-import { loadAgentModel } from '../pong/AI/AIUtils.js';
+import { loadAgentModel, predictAction } from '../pong/AI/AIUtils.js';
 import * as THREE from 'three';
 import { injectGameTranslations } from "../modules/translationsModule/translationsModule.js";
 
@@ -25,6 +25,7 @@ export var clock;
 export var characters;
 export var soloMode;
 export var environment;
+export var model;
 
 export async function init(queryParams) {
 	if (queryParams && queryParams.get("message"))
@@ -209,11 +210,10 @@ export async function init(queryParams) {
 			if (!soloMode)
 				divMenu.remove();
 			else
-				var model = await loadAgentModel();
+				model = await loadAgentModel();
 			environment = await initGame(player1, player2);
 		}
 		if (start) {
-			// console.log("start");
 			if (keyPress)
 				handleKeyPress(keysPressed, player1, player2, environment);
 			checkCollision(environment.ball, player1, player2, environment);

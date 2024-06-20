@@ -27,7 +27,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
         handlers = {
             'auth': self.auth,
-            'friend_request': self.friend_request,
+            'friend_request': self.create_friend_request,
             'accept_request': self.accept_request,
             'decline_request': self.decline_request,
             'remove_request': self.remove_friend,
@@ -40,9 +40,6 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             await handler(data)
 
 
-#----------- friends functions ------------------------------------------------------------------------------------------------------------
-
-
     async def auth(self, data):
         username = data.get('username')
         await self.authenticate_user(username)
@@ -50,15 +47,17 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             self.scope['user'].username,
             self.channel_name)
         
-        
         friends = await self.get_friends()
         for f in friends:
             await self.channel_layer.group_add(
                 f.get('username'),
                 self.channel_name)
-        
-        
-    async def friend_request(self, data):
+
+
+#----------- friends functions ------------------------------------------------------------------------------------------------------------
+
+
+    async def create_friend_request(self, data):
         from_user = data.get('from_user')
         to_user = data.get('to_user')
 
@@ -107,7 +106,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
         await self.channel_layer.group_add(
             from_user.username,
-            self.channel_name,)
+            self.channel_name)
         event = {
             'type': 'new_request_notification',
             'from_user': from_user.username,
@@ -149,12 +148,14 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         friends_list_data = [{'username': friend.username, 'status': friend.is_online, 'avatar': convert_image_to_base64(friend.avatar)} for friend in friendslist]
         return friends_list_data
 
+
     async def get_friendslist(self, data):
         friends_list_data = []
         friends_list_data = await self.get_friends()
         await self.send(text_data=json.dumps({
             "type": "friendslist",
             "friends": friends_list_data}))
+
 
     async def get_friend_online_status(self, data):
         try:

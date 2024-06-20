@@ -172,10 +172,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_status(self, friend_username):
-        try:
-            friend_instance = CustomUser.objects.get(username=friend_username)
-        except CustomUser.DoesNotExist:
-            return
+        friend_instance = CustomUser.objects.get(username=friend_username)
         return friend_instance.is_online
 
 

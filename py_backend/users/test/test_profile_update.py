@@ -10,6 +10,7 @@ import json
 class ProfileUpdate(TestCase):
     def setUp(self):
         self.client = Client()
+        self.client2  = Client()
 
         self.user = CustomUser.objects.create_user(
             username="osterga",
@@ -23,7 +24,15 @@ class ProfileUpdate(TestCase):
             password="UserPassword9+",
             bio="Bonjours a tous, c'est Ochoa")
         
+        self.user3 = CustomUser.objects.create_user(
+            username="42boula",
+            email="42boula@gmail.com",
+            password="UserPassword9+",
+            bio="Bonjours a tous, c'est 42boula",
+            is_42auth=True)
+        
         self.client.login(username='osterga', password='UserPassword9+')
+        self.client2.login(username='42boula', password='UserPassword9+')
         self.uid = urlsafe_base64_encode(force_bytes(self.user.pk))
         self.token = email_update_token.make_token(self.user)
 
@@ -272,3 +281,56 @@ class ProfileUpdate(TestCase):
         self.user.refresh_from_db()
         self.assertEqual(response.status_code, 400)
         
+    def test_42auth_email(self):
+        update_datas = {
+            'email': '42boulanew@gmail.com'
+        }
+
+        response = self.client2.post(
+            reverse('update_email'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 400)
+
+    def test_42auth_username(self):
+        update_datas = {
+            'username': 'zebulon55'
+        }
+
+        response = self.client2.post(
+            reverse('update_username'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 400)
+
+    def test_42auth_password(self):
+        update_datas = {
+            'new_password1': 'Zxcvbnm98+',
+            'new_password2': 'Zxcvbnm98+'
+        }
+
+        response = self.client2.post(
+            reverse('update_password'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 400)
+        
+    def test_update_lang(self):
+        update_datas = {
+            'lang': 'fr'
+        }
+        
+        response = self.client.post(
+            reverse('update_lang'), 
+            data=update_datas,
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.user.lang, 'fr')

@@ -1,6 +1,6 @@
 import { resize, isFullScreen } from "../pong/resize.js";
 import { checkCollision } from "../pong/collision.js";
-import { displayMainMenu, createSelectMenu, createOnlineMenu, createLocalMenu} from '../pong/menu.js';
+import { displayMainMenu, createSelectMenu, createOnlineMenu } from '../pong/menu.js';
 import { handleKeyPress, handleMenuKeyPress } from '../pong/handleKeyPress.js';
 import { displayCharacter, updateMixers } from '../pong/displayCharacter.js';
 import { initGame } from "../pong/initGame.js";
@@ -12,29 +12,34 @@ import { ClearAllEnv, getSize } from "../pong/createEnvironment.js";
 import { loadAllModel } from "../pong/loadModels.js"
 import { loadScene } from "../pong/loadModels.js";
 import { getUserData } from "../User.js";
-import { sendTournamentForm, createFormTournament} from "../pong/createTournament.js";
+import { sendTournamentForm, createFormTournament } from "../pong/createTournament.js";
 import { createJoinTournamentMenu } from "../pong/joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "../pong/tournament.js";
-import { loadAgentModel } from '../pong/AI/AIUtils.js';
+import { showAlert } from "../Utils.js";
 import * as THREE from 'three';
+import { injectGameTranslations } from "../modules/translationsModule/translationsModule.js";
 
 export var lobby;
 export var clock;
 export var characters;
-export var soloMode;
-export var environment;
 
-var isGameLoaded = false;
+export async function init(queryParams) {
+	if (queryParams && queryParams.get("message"))
+		showAlert(queryParams.get("message"), queryParams.get("success"));
 
-export async function init() {
-	if (isGameLoaded)
-		return;
+	var target = document.querySelector('#game');
+	var config = { attributes: true, childList: true, characterData: true };
+	var observer = new MutationObserver(function (mutations) {
+		mutations.forEach(injectGameTranslations);
+	});
+	observer.observe(target, config);
 
 	lobby = await loadScene('lobbyTest');
 	clock = new THREE.Clock();
 	characters = new Map();
 	let start = false;
 	let divMenu = document.getElementById("menu");
+	let environment;
 	let player1;
 	let player2;
 	let keyPress = false;
@@ -45,7 +50,6 @@ export async function init() {
 	let form;
 	const gameDiv = document.getElementById('game');
 	const field = await createField();
-	soloMode = false;
 
 	loadAllModel();
 
@@ -59,24 +63,14 @@ export async function init() {
 		}
 	})
 	async function goToLocalSelectMenu() {
-		divMenu = document.getElementById("localMenu");
+		divMenu = document.getElementById("menu");
 		divMenu.remove();
 		environment = createSelectMenu(field, characters);
 		player1 = await displayCharacter(player1, environment, "chupacabra", "player1");
 		player2 = await displayCharacter(player2, environment, "elvis", "player2");
 	}
 
-	async function createAISelectMenu(field) {
-		document.getElementById("localMenu").remove();
-		environment = createSelectMenu(field, characters);
-		document.getElementById("cursorP2").remove();
-		document.getElementsByClassName("inputP2")[0].remove();
-		environment.renderer.render(environment.scene, environment.camera);
-		player1 = await displayCharacter(player1, environment, "chupacabra", "player1");
-		player2 = await displayCharacter(player2, environment, "elvis", "player2");
-	}
-
-	document.addEventListener("keydown", function (event) {
+	gameDiv.addEventListener("keydown", function (event) {
 		keysPressed[event.key] = true;
 		if (keysPressed['A'])
 			keysPressed['a'] = true;
@@ -90,32 +84,28 @@ export async function init() {
 		event.stopPropagation();
 	});
 
-	document.addEventListener("keyup", function (event) {
+	gameDiv.addEventListener("keyup", function (event) {
 		delete keysPressed[event.key];
 	});
 
-
-	document.addEventListener('click', function (event) {
+	gameDiv.addEventListener('click', function (event) {
+		document.body.style.overflow = 'hidden';
+		gameDiv.focus();
 		if (!gameDiv.contains(event.target)) {
 			document.body.style.overflow = 'auto';
 		}
 	});
 
-	gameDiv.addEventListener('click', function () {
-		document.body.style.overflow = 'hidden';
-	});
+	gameDiv.addEventListener("click", function (event) {
+		getUserData().then((data) => {
+			userData = data;
+		})
 
-	document.body.addEventListener("click", function (event) {
-		if (event.target.classList.contains('tournament-info')) {
-			getUserData().then((data) => {
-				userData = data;
-				if (userData) {
-					checkIfUserIsInTournament(userData).then((response) => {
-						if (response && response['joined'])
-							connectToTournament(response['tournament']);
-					});
-				}
-			})
+		if (userData) {
+			checkIfUserIsInTournament(userData).then((response) => {
+				if (response && response['joined'])
+					connectToTournament(response['tournament']);
+			});
 		}
 
 		if (event.target.id == 'restart' && !isOnline) {
@@ -130,19 +120,9 @@ export async function init() {
 			returnToMenu();
 		}
 		if (event.target.id == 'localGame') {
-			createLocalMenu(field);
-		}
-		if (event.target.id == '1v1') {
 			localLoop = true;
-			soloMode = false;
 			localGameLoop();
 			goToLocalSelectMenu();
-		}
-		if (event.target.id == 'easy') {
-			localLoop = true;
-			soloMode = true;
-			localGameLoop();
-			createAISelectMenu(field);
 		}
 		if (event.target.id == 'onlineGame' && userData) {
 			isOnline = true;
@@ -177,13 +157,13 @@ export async function init() {
 		}
 	});
 
-	document.addEventListener('fullscreenchange', function () {
+	gameDiv.addEventListener('fullscreenchange', function () {
 		if (isFullScreen())
 			resize(environment);
 	});
 
 	function setIfGameIsEnd() {
-		if (player1.score < 1 && player2.score < 1)
+		if (player1.score < 5 && player2.score < 5)
 			return;
 		let winner = player1.name;
 		if (player2.score > player1.score)
@@ -194,6 +174,7 @@ export async function init() {
 		player2.score = 0;
 	}
 
+
 	async function localGameLoop() {
 		if (keyPress && !start) {
 			await handleMenuKeyPress(keysPressed, player1, player2, environment);
@@ -202,10 +183,7 @@ export async function init() {
 		if (keysPressed[" "] && document.getElementById("selectMenu") && player1 && player2 && !start) {
 			start = true;
 			ClearAllEnv(environment);
-			if (!soloMode)
-				divMenu.remove();
-			else
-				var model = await loadAgentModel();
+			divMenu.remove();
 			environment = await initGame(player1, player2);
 		}
 		if (start) {
@@ -221,8 +199,7 @@ export async function init() {
 		if (localLoop)
 			requestAnimationFrame(localGameLoop);
 	}
-
-	isGameLoaded = true;
 }
+
 
 export { displayMainMenu }

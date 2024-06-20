@@ -1,13 +1,20 @@
-function isLoggedIn() {
-	if (Cookies.get("isLoggedIn") === "true") return true;
-	else return false;
+import { runEndPoint } from "./ApiUtils.js"
+import { getUserData, injectUserData } from "./User.js";
+
+async function isLoggedIn() {
+	var response = await runEndPoint("users/check_user_logged_in/", "GET");
+	return response.data.is_logged_in;
 }
 
-function toggleContentOnLogState() {
+async function check_user_42() {
+	return await getUserData("is_42auth");
+}
+
+async function toggleContentOnLogState() {
 	const logInContent = document.querySelectorAll(".logInContent");
 	const logOutContent = document.querySelectorAll(".logOutContent");
 
-	if (isLoggedIn()) {
+	if (await isLoggedIn()) {
 		logInContent.forEach((e) => (e.style.display = "block"));
 		logOutContent.forEach((e) => (e.style.display = "none"));
 	} else {
@@ -15,12 +22,52 @@ function toggleContentOnLogState() {
 		logOutContent.forEach((e) => (e.style.display = "block"));
 	}
 	disableCollapsedSidebar();
+	disable42LoginElements();
 }
 
-function disableCollapsedSidebar() {
+function resetModalFormsInitListeners() {
+	var modals = document.querySelectorAll('.modal');
+	modals.forEach(function (modal) {
+		if (!modal.classList.contains('modal-no-reset')){
+			var form = modal.querySelector('form');
+			if (!form) return;
+			modal.addEventListener('hide.bs.modal', function () {
+				form.reset();
+				injectUserData();
+				form.querySelectorAll('.is-valid').forEach((e) => e.classList.remove('is-valid'));
+				form.querySelectorAll('.is-invalid').forEach((e) => e.classList.remove('is-invalid'));
+				resetCheckPassword();
+			});
+		}
+	});
+}
+
+async function disable42LoginElements() {
+	const elements = document.querySelectorAll(".auth-42-disable");
+	const headers = document.querySelectorAll(".auth-42-disable-header");
+	if (await check_user_42()) {
+		elements.forEach(e => {
+			e.classList.add("disabled");
+		});
+		headers.forEach(e => {
+			e.innerHTML = "<btn class='btn w-100 bg-warning mb-3 '>You can't modify your username, email or password because you logged in with 42</span>";
+		});
+	}
+	else {
+		elements.forEach(e => {
+			if (e.classList.contains("disabled"))
+				e.classList.remove("disabled");
+		});
+		headers.forEach(e => {
+			e.innerHTML = "";
+		});
+	}
+}
+
+async function disableCollapsedSidebar() {
 	const sidebar = document.getElementById("sidebar");
 	const content = document.getElementById("content-container");
-	if (!isLoggedIn()) {
+	if (!(await isLoggedIn())) {
 		sidebar.classList.remove("collapsed");
 		content.classList.remove("collapsed");
 		var sectionNames = document.querySelectorAll(".section-name");
@@ -32,6 +79,7 @@ function disableCollapsedSidebar() {
 
 function showAlert(message, success) {
 	var alertDiv = document.createElement("div");
+	success = success === true || success === 'true';
 	var bgColor = success ? "alert-success" : "alert-danger";
 	alertDiv.className = "alert d-flex align-items-center";
 	alertDiv.classList.add(bgColor);
@@ -100,10 +148,18 @@ function checkPassword(category, password1, password2) {
 	else helpTextAgain.classList.add("d-none");
 }
 
+function resetCheckPassword() {
+	var checkPasswordLines = document.querySelectorAll(".passwordHelpLine");
+	checkPasswordLines.forEach((e) => (e.style.color = "black"));
+}
+
 export {
 	toggleContentOnLogState,
 	showAlert,
 	isLoggedIn,
+	check_user_42,
 	togglePasswordVisibility,
 	checkPassword,
+	resetCheckPassword,
+	resetModalFormsInitListeners,
 };

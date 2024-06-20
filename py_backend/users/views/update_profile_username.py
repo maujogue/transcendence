@@ -15,6 +15,8 @@ def update_profile_username(request):
         return data
     
     username = data.get('username')
+    if request.user.is_42auth:
+        return JsonResponse({'status': "You cannot update your username because you are authenticated with 42."}, status=400)
 
     if username:
         is_unique, error_message = username_is_unique(username)

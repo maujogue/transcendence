@@ -10,6 +10,7 @@ import json
 class FriendsConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
+        await self.set_online_status(True)
         await self.accept()
 
 
@@ -18,7 +19,8 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         #     self.group_name,
         #     self.channel_name,
         # )
-        pass
+        print('disconnected')
+        await self.set_online_status(False)
 
 
     async def receive(self, text_data):
@@ -154,9 +156,11 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
 
     async def get_friends_online_status(self, data):
+        print('--------------\nget_friends_online_status')
         friends = await self.get_friends()
         for friend in friends:
             friend['status'] = await self.get_status(friend['username'])
+            print(friend['status'])
 
         # await self.send(text_data=json.dumps({ "type": "online_status", "status": "online"}))
         # await self.send(text_data=json.dumps({ "type": "online_status", "status": "offline"}))
@@ -252,5 +256,15 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             "type": "get_current_user_requests",
             "friend_requests": requests}))
+
+
+    @database_sync_to_async    
+    def set_online_status(self, status):
+        try:
+            user = CustomUser.objects.get(username=self.scope['user'].username)
+            user.is_online = status
+            user.save()
+        except CustomUser.DoesNotExist:
+            return False
         
     

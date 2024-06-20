@@ -12,12 +12,12 @@ export async function friendsWebsocket() {
 		currentUser = await getUserData('username');
 		auth();
 		getFriendsList();
+		getFriendsStatus();
 		getCurrentUserRequests();
 	}
 
 	wsFriends.onmessage = (event) => {
 		const data = JSON.parse(event.data);
-		console.log('data =', data);
 		wsMessageRouter(data);
 	};
 }

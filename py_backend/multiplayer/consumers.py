@@ -208,6 +208,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             return
 
     async def startGame(self):
+        await self.lobby.startGame()
         await self.channel_layer.group_send(
         self.lobby_group_name, { 
             'type': 'pong.status',
@@ -225,7 +226,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'dirY': self.ball.dirY
             }
         )
-        await self.lobby.startGame()
 
     async def gameLoop(self):
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)

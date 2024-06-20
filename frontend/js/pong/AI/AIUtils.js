@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { environment } from '../../pages/Game.js';
+import { environment } from '../../pages/game.js';
 
 export function getGameState() {
 	return {

@@ -1,6 +1,6 @@
 import { movePaddle } from "./movePaddle.js";
 import { displayCharacter } from "./displayCharacter.js";
-import { soloMode } from "../pages/Game.js";
+import { soloMode } from "../pages/game.js";
 import { moveCursor } from "./menu.js";
 import { performAction } from "./AI/AIUtils.js";
 import * as THREE from 'three';

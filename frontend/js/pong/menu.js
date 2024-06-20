@@ -5,7 +5,7 @@ import { isFullScreen } from './resize.js';
 import { winWidth, winHeight, charactersNames } from './varGlobal.js';
 import { createFormTournament } from "./createTournament.js";
 import { initSpaceBackground } from "./spaceBackground.js";
-import { characters } from "../pages/Game.js";
+import { characters } from "../pages/game.js";
 
 let width = winWidth;
 let height = winHeight;

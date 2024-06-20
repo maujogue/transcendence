@@ -73,9 +73,6 @@ export async function init(queryParams) {
 		player2 = await displayCharacter(player2, environment, "elvis", "player2");
 	}
 
-<<<<<<<<< Temporary merge branch 1:frontend/js/pages/game.js
-	gameDiv.addEventListener("keydown", function (event) {
-=========
 	async function createAISelectMenu(field) {
 		document.getElementById("localMenu").remove();
 		environment = createSelectMenu(field, characters);
@@ -84,10 +81,9 @@ export async function init(queryParams) {
 		environment.renderer.render(environment.scene, environment.camera);
 		player1 = await displayCharacter(player1, environment, "chupacabra", "player1");
 		player2 = await displayCharacter(player2, environment, "elvis", "player2");
-	}
+		}
 
 	document.addEventListener("keydown", function (event) {
->>>>>>>>> Temporary merge branch 2:frontend/js/pages/Game.js
 		keysPressed[event.key] = true;
 		if (keysPressed['A'])
 			keysPressed['a'] = true;
@@ -232,4 +228,4 @@ export async function init(queryParams) {
 }
 
 
-export { displayMainMenu }
+export { displayMainMenu } ;

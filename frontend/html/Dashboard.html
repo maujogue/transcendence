@@ -6,40 +6,40 @@
 			<!-- PROFILE SECTION -->
 			<div class="col-3 ps-0" style="min-width:100px; max-width: 400px;">
 				<div class="d-flex bg-dark rounded text-white p-4 h-100 justify-content-center">
-					<img class="col rounded-circle avatarDynamic" width="50" heigth="50" src="" alt="profile image" />
+					<img class="col rounded-circle avatarDynamic" width="50" heigth="50" src="" alt="profile image"
+						data-lang="profile_image_alt" />
 				</div>
 			</div>
 			<div
 				class="col-9 bg-dark rounded text-white px-5 pb-5 pt-4 text-start d-flex flex-column justify-content-center">
 				<!-- EDIT PROFILE BUTTON -->
 				<button id="editProfileBtn" type="button" class="btn btn-outline-secondary mt-auto mb-2 ms-auto"
-					data-bs-toggle="modal" data-bs-target="#updateProfileModal">
+					data-bs-toggle="modal" data-bs-target="#updateProfileModal" data-lang="edit_profile_button">
 					Edit
 				</button>
 				<div id="manageFriendshipBtn" class="mt-auto mb-2 ms-auto">
 				</div>
 				<div class="d-flex justify-content-between">
-					<h3 class="text-info">Username</h3>
+					<h3 class="text-info" data-lang="username_label">Username</h3>
 					<h3 class="usernameDynamic"></h3>
 				</div>
 				<div class="d-flex justify-content-between">
-					<h3 class="text-info">Email</h3>
+					<h3 class="text-info" data-lang="email_label">Email</h3>
 					<h3 class="emailDynamic"></h3>
 				</div>
 				<div class="d-flex justify-content-between">
-					<h3 class="text-info">Bio</h3>
+					<h3 class="text-info" data-lang="bio_label">Bio</h3>
 					<h3 class="bioDynamic"></h3>
 				</div>
 			</div>
 		</div>
 		<div class="row statisticsModule">
-
 		</div>
 	</div>
 	<section>
 		<div class="logOutContent container text-center p-4 bg-white rounded shadow">
 			<div class="text-primary" style="font-size: 100px;"><i class="fas fa-sign-in-alt"></i></div>
-			<div class="h4 mt-3">Log in to see your profile!</div>
+			<div class="h4 mt-3" data-lang="log_in_to_see_profile">Log in to see your profile!</div>
 		</div>
 	</section>
 </section>
@@ -51,7 +51,7 @@
 		<div class="modal-content">
 			<form id="updateProfileForm" autocomplete="off" class="novalidate">
 				<div class="modal-header">
-					<h3 class="modal-title">Update Profile</h3>
+					<h3 class="modal-title" data-lang="update_profile_modal_title">Update Profile</h3>
 					<button id="closeButtonUpdateProfile" type="button" class="btn-close"
 						data-bs-dismiss="modal"></button>
 				</div>
@@ -59,32 +59,33 @@
 					<!-- USERNAME INPUT -->
 					<div class="auth-42-disable-header"></div>
 					<div class="mb-3 usernameInputModule auth-42-disable">
-
 					</div>
 					<!-- EMAIL INPUT -->
 					<div class="mb-3 emailInputModule auth-42-disable">
 					</div>
 					<!-- BIO INPUT -->
 					<div class="mb-3">
-						<label for="bio" class="col-form-label">Bio</label>
+						<label for="bio" class="col-form-label" data-lang="bio_label">Bio</label>
 						<textarea maxlength="250" rows="4" type="text" name="bio"
 							class="form-control bioDynamic formInputs" id="bio" placeholder="What about you ?"
-							autocomplete="off" style="resize: none;"></textarea>
+							autocomplete="off" style="resize: none;" data-lang="bio_placeholder"></textarea>
 					</div>
 					<!-- AVATAR INPUT -->
 					<div class="mb-3">
-						<label for="avatar" class="col-form-label">Avatar</label>
+						<label for="avatar" class="col-form-label" data-lang="avatar_label">Avatar</label>
 						<input type="file" accept=".jpg,.png" name="avatar" class="form-control formInputs" id="avatar"
-							placeholder="avatar photo" autocomplete="off" />
+							placeholder="avatar photo" autocomplete="off" data-lang="avatar_placeholder" />
 					</div>
 					<!-- SUBMIT FORM -->
 				</div>
 				<div class="modal-footer">
 					<a id="updatePassword" class="btn btn-outline-secondary me-auto auth-42-disable"
-						data-bs-toggle="modal" data-bs-target="#updatePasswordModal">Update Password</a>
-					<a id="discardChangesButton" type="button" class="btn btn-outline-danger d-none">Discard Changes</a>
-					<a id="saveChangesButton" type="button" class="saveChangesButton btn btn-primary disabled">Save
-						Changes</a>
+						data-bs-toggle="modal" data-bs-target="#updatePasswordModal"
+						data-lang="update_password_button">Update Password</a>
+					<a id="discardChangesButton" type="button" class="btn btn-outline-danger d-none"
+						data-lang="discard_changes_button">Discard Changes</a>
+					<a id="saveChangesButton" type="button" class="saveChangesButton btn btn-primary disabled"
+						data-lang="save_changes_button">Save Changes</a>
 				</div>
 			</form>
 		</div>
@@ -97,7 +98,7 @@
 		<div class="modal-content">
 			<!-- LOGIN TITLE -->
 			<div class="modal-header">
-				<h1 class="modal-title fs-5">Password Check</h1>
+				<h1 class="modal-title fs-5" data-lang="password_check_title">Password Check</h1>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<!-- LOGIN COMMENT -->
@@ -105,7 +106,8 @@
 			<!-- PASSWORD INPUT -->
 			<div class="modal-body">
 				<div class="mb-3">
-					<label for="confirmPasswordPassword" class="col-form-label">Password</label>
+					<label for="confirmPasswordPassword" class="col-form-label"
+						data-lang="password_label">Password</label>
 					<div class="d-flex align-items-center gap-2">
 						<input form="updateProfileForm" type="password" name="password" class="form-control"
 							id="confirmPasswordPassword" autocomplete="current-password" required />
@@ -120,7 +122,8 @@
 						data-bs-target="#updateProfileModal">
 						Back
 					</button>
-					<button type="button" id="confirmPasswordButton" class="btn btn-primary">
+					<button type="button" id="confirmPasswordButton" class="btn btn-primary"
+						data-lang="confirm_password_button">
 						Confirm Password
 					</button>
 				</div>
@@ -136,7 +139,7 @@
 			<form id="updatePasswordForm">
 				<!-- LOGIN TITLE -->
 				<div class="modal-header">
-					<h1 class="modal-title fs-5">Password Update</h1>
+					<h1 class="modal-title fs-5" data-lang="password_update_title">Password Update</h1>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<!-- COMMENT -->
@@ -144,7 +147,8 @@
 				<!-- PASSWORD INPUT -->
 				<div class="modal-body">
 					<div class="mb-3">
-						<label for="updatePasswordCurrentPassword" class="col-form-label">Current Password</label>
+						<label for="updatePasswordCurrentPassword" class="col-form-label"
+							data-lang="current_password_label">Current Password</label>
 						<div class="d-flex align-items-center gap-2">
 							<input type="password" name="password" class="form-control"
 								id="updatePasswordCurrentPassword" autocomplete="current-password" required />
@@ -152,7 +156,8 @@
 						</div>
 					</div>
 					<div class="mb-3">
-						<label for="updatePasswordFirstPassword" class="col-form-label">New Password</label>
+						<label for="updatePasswordFirstPassword" class="col-form-label"
+							data-lang="new_password_label">New Password</label>
 						<div class="d-flex align-items-center gap-2">
 							<input id="updatePasswordFirstPassword" type="password" name="new_password1"
 								class="form-control" autocomplete="current-password" minlength="8" maxlength="20"
@@ -161,16 +166,23 @@
 							<i id="updatePasswordFirstPasswordToggle" class="fas fa-eye"></i>
 						</div>
 						<div id="updatePasswordHelpBlock" class="form-text">
-							Your password must contain :<br />
-							<span id="updatePassLength" class="passwordHelpLine">- 8 to 20 characters</span><br />
-							<span id="updatePassLowercase" class="passwordHelpLine">- Lowercase</span><br />
-							<span id="updatePassUppercase" class="passwordHelpLine">- Uppercase</span><br />
-							<span id="updatePassNumbers" class="passwordHelpLine">- Number</span><br />
-							<span id="updatePassSpecial" class="passwordHelpLine">- Special character</span>
+							<span data-lang="password_help_block">Your password must contain :</span>
+							<br />
+							<span id="updatePassLength" class="passwordHelpLine" data-lang="password_help_length">- 8 to
+								20 characters</span><br />
+							<span id="updatePassLowercase" class="passwordHelpLine"
+								data-lang="password_help_lowercase">- Lowercase</span><br />
+							<span id="updatePassUppercase" class="passwordHelpLine"
+								data-lang="password_help_uppercase">- Uppercase</span><br />
+							<span id="updatePassNumbers" class="passwordHelpLine" data-lang="password_help_numbers">-
+								Number</span><br />
+							<span id="updatePassSpecial" class="passwordHelpLine" data-lang="password_help_special">-
+								Special character</span>
 						</div>
 					</div>
 					<div class="mb-3">
-						<label for="updatePasswordSecondPassword" class="col-form-label">Repeat New Password</label>
+						<label for="updatePasswordSecondPassword" class="col-form-label"
+							data-lang="repeat_new_password_label">Repeat New Password</label>
 						<div class="d-flex align-items-center gap-2">
 							<input id="updatePasswordSecondPassword" type="password" name="new_password2"
 								class="form-control" autocomplete="current-password" minlength="8" maxlength="20"
@@ -178,7 +190,8 @@
 								autocomplete="new-password" required />
 							<i id="updatePasswordSecondPasswordToggle" class="fas fa-eye"></i>
 						</div>
-						<div id="updatePasswordAgainHelpBlock" class="form-text text-danger d-none">
+						<div id="updatePasswordAgainHelpBlock" class="form-text text-danger d-none"
+							data-lang="password_mismatch">
 							Passwords don't match
 						</div>
 					</div>
@@ -190,7 +203,8 @@
 							data-bs-target="#updateProfileModal">
 							Back
 						</button>
-						<button type="button" id="updatePasswordButton" class="btn btn-primary">
+						<button type="button" id="updatePasswordButton" class="btn btn-primary"
+							data-lang="confirm_password_button">
 							Confirm Password
 						</button>
 					</div>
@@ -204,10 +218,5 @@
 	#userDashboard {
 		transition: background-color 0.5s ease-in-out;
 		opacity: 1;
-	}
-
-	.hideDashboard {
-		/* opacity: 0; */
-		background-color: red;
 	}
 </style>

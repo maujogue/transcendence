@@ -28,3 +28,7 @@ p {
 #game:not(:focus) {
     opacity: 0.90;
 }
+
+img {
+	pointer-events: none;
+}

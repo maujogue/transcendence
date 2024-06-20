@@ -1,7 +1,8 @@
 import { updatePassword, updateProfile, updateProfileWithPassword } from "../ApiCalls.js";
-import { togglePasswordVisibility, checkPassword, showAlert, printQueryParamsMessage } from "../Utils.js";
+import { togglePasswordVisibility, checkPassword, showAlert } from "../Utils.js";
 import { resetForm, inputInitListeners } from "../DashboardUtils.js"
 import { getUserData } from "../User.js";
+import { printQueryParamsMessage } from "../modules/translationsModule/translationsModule.js";
 
 export async function init(queryParams) {
 	printQueryParamsMessage(queryParams);

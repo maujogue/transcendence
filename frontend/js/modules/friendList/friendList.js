@@ -1,12 +1,12 @@
 import { getModuleDiv } from "../../Modules.js";
-import { showAlert } from "../../Utils.js";
+import { isLoggedIn, showAlert } from "../../Utils.js";
 import { friendsWebsocket } from "./friendsWs.js";
 import { sendFriendRequest } from "./friendsWs.js";
-import { getFriendStatus } from "./friendsWs.js";
 import { acceptFriendRequest, declineFriendRequest } from "./friendsWs.js";
 import { updateModule } from "../../Modules.js";
 import { injectUserData } from "../../User.js";
 import { checkUserExist } from "./friendsWs.js";
+
 var module;
 var friendList;
 var userExists;
@@ -16,7 +16,8 @@ export async function init() {
 	if (!module)
 		return;
 
-	friendsWebsocket();
+	if (await isLoggedIn())
+		friendsWebsocket();
 
 	var searchFriendForm = module.querySelector("#searchFriendForm");
 	searchFriendForm.addEventListener("submit", (event) => {
@@ -46,8 +47,8 @@ async function fillInbox(data) {
 
 	inboxDiv.innerHTML = "";
 	requestsList.forEach(request => {
-		console.log(request);
-		if (length++ > 10) {
+		if(length++ > 10)
+		{
 			if (!inboxDiv.querySelector(".finish"))
 				inboxDiv.innerHTML += `<div class="finish mx-auto">...</div>`;
 			return;

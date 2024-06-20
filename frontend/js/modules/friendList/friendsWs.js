@@ -4,13 +4,13 @@ import { fillInbox } from "./friendList.js";
 import { fillFriendsList } from "./friendList.js";
 import { setUserExist } from "./friendList.js";
 
-const currentUser = await getUserData('username');
+let currentUser;
 let wsFriends;
 
-export function friendsWebsocket() {
-	console.log("socket on");
-	wsFriends = new WebSocket("wss://127.0.0.1:8000/ws/friends/");
-	wsFriends.onopen = function () {
+export async function friendsWebsocket() {
+	wsFriends = new WebSocket("ws://127.0.0.1:8080/ws/friends/");
+	wsFriends.onopen = async function () {
+		currentUser = await getUserData('username');
 		auth();
 		getFriendsList();
 		getCurrentUserRequests();
@@ -18,6 +18,7 @@ export function friendsWebsocket() {
 
 	wsFriends.onmessage = (event) => {
 		const data = JSON.parse(event.data);
+		console.log('data =', data);
 		wsMessageRouter(data);
 	};
 }
@@ -97,10 +98,10 @@ async function checkUserExist(username) {
 }
 
 
-async function getFriendStatus(username) {
+async function getFriendsStatus(username) {
 	if (checkWs()) {
 		wsFriends.send(JSON.stringify({
-			'type': 'get_friend_online_status',
+			'type': 'get_friends_online_status',
 			'friend': username,
 		}));
 	}
@@ -109,25 +110,26 @@ async function getFriendStatus(username) {
 async function wsMessageRouter(data) {
 	const notificationHandlers = {
 		'friend_request_to_user': (data) => {
-			fillFriendsList(data);
-			fillInbox(data);	
+			getCurrentUserRequests();
 			showAlert(`You just receive a friend request from ${data.from_user} !`, true)
 		},
 		'friend_request_from_user': (data) => showAlert(`You just send a friend request to ${data.to_user} !`, true),
 		'accept_request': (data) => {
-			console.log();
-			fillFriendsList(data);
-			fillInbox(data);
-			showAlert(`${data.to_user} accepted your friend request !`, true)
+			getCurrentUserRequests();
+			getFriendsList();
 		},
 		'user_himself': () => showAlert("You cannot send a friend request to yourself.", false),
 		'user_request_exist': () => showAlert("This user does not exist.", false),
+		'user_do_not_exist': () => showAlert("This user does not exist.", false),
+		'request_already_sent': () => showAlert(`You already sent a friend request to this user.`, false),
 		'already_friends': (data) => showAlert(`You are already friends with ${data.to_user}.`, false),
 		'remove_friend': (data) => showAlert(`You have deleted ${data.to_user} from your friends.`, true),
+		'request_declined': () => showAlert(`Request declined.`, false),
 		'friendslist': (data) => fillFriendsList(data),
 		'get_current_user_requests': (data) => fillInbox(data),
 		'user_exist' : (data) => setUserExist(data),
 
+		'friend_accepted_from_user': (data) => showAlert(`${data.to_user} accepted your friend request !`, true),
 	};
 	const handler = notificationHandlers[data.type];
 	if (handler && data) {
@@ -135,5 +137,4 @@ async function wsMessageRouter(data) {
 	}
 }
 
-
-export { sendFriendRequest, getFriendStatus, acceptFriendRequest, declineFriendRequest, checkUserExist };
+export { sendFriendRequest, getFriendsStatus, acceptFriendRequest, declineFriendRequest, checkUserExist };

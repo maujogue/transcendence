@@ -28,41 +28,50 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         handlers = {
             'auth': self.auth,
             'check_user_exist': self.user_exist,
-            'friend_request': self.friend_request,
+            'friend_request': self.create_friend_request,
             'accept_request': self.accept_request,
             'decline_request': self.decline_request,
             'remove_request': self.remove_friend,
-            'get_friendslist': self.get_friendslist,
-            'get_current_user_requests': self.get_current_user_requests,
-            'get_friend_online_status': self.get_friend_online_status,
+            'get_friendslist': self.send_friendslist,
+            'get_current_user_requests': self.send_current_user_requests,
+            'get_friends_online_status': self.get_friends_online_status,
         }
         handler = handlers.get(message_type)
         if handler:
             await handler(data)
 
 
-#----------- friends functions ------------------------------------------------------------------------------------------------------------
-
-
     async def auth(self, data):
         username = data.get('username')
         await self.authenticate_user(username)
-
         await self.channel_layer.group_add(
             self.scope['user'].username,
             self.channel_name)
         
+        friends = await self.get_friends()
+        for f in friends:
+            await self.channel_layer.group_add(
+                f.get('username'),
+                self.channel_name)
 
-    async def friend_request(self, data):
+
+#----------- friends functions ------------------------------------------------------------------------------------------------------------
+
+
+    async def create_friend_request(self, data):
         from_user = data.get('from_user')
         to_user = data.get('to_user')
 
         if self.scope['user'].username == to_user:
             return await self.send(text_data=json.dumps({ "type": "user_himself"}))
-         
+
         user = await self.authenticate_user_with_username(to_user)
         if user is None:
-            return await self.send(text_data=json.dumps({ "type": "user_request_exist"}))
+            return await self.send(text_data=json.dumps({ "type": "user_do_not_exist"}))
+        
+        is_already_send = await self.request_already_sent(from_user, to_user)
+        if is_already_send == True:
+            return await self.send(text_data=json.dumps({ "type": "request_already_sent"}))
         
         request = await sync_to_async(InteractionRequest.objects.create)(from_user=from_user, to_user=to_user)
 
@@ -75,25 +84,17 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add(
             to_user,
             self.channel_name,)
-        await self.channel_layer.group_send(
-            to_user,
-            {'type': 'new_request_notification',
+        event = {
+            'type': 'new_request_notification',
             'from_user': from_user,
-            'to_user': to_user})
-
-        # --- 
-        # await self.accept_request(data)
-        # await self.get_friend_online_status(data.get('friend'))
-        # ---
+            'to_user': to_user,
+            'type_from_user': 'friend_request_from_user',
+            'type_to_user': 'friend_request_to_user'
+        }
+        await self.group_send(to_user, event)
 
     
-    async def accept_request(self, data):
-        requests = await self.get_current_user_requests(data)
-
-        if data.get('from_user') not in requests:
-            await self.send(text_data=json.dumps({ "type": "accept_request", "status": "failure"}))
-            return
-        
+    async def accept_request(self, data):        
         from_user = await sync_to_async(CustomUser.objects.get)(username=data.get('from_user'))
         to_user = await sync_to_async(CustomUser.objects.get)(username=data.get('to_user'))
 
@@ -101,9 +102,21 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await sync_to_async(to_user.friends.add)(from_user)
         await self.delete_interaction_request(from_user, to_user)
 
-        if self.scope['user'].username == data['from_user']:
-            data['type'] = 'accept_request'
-            await self.send_notification(data)
+        data['type'] = 'accept_request'
+        await self.send_notification(data)
+
+        await self.channel_layer.group_add(
+            from_user.username,
+            self.channel_name)
+        event = {
+            'type': 'new_request_notification',
+            'from_user': from_user.username,
+            'to_user': to_user.username,
+            'type_from_user': 'friend_accepted_from_user',
+            'type_to_user': None
+        }
+        await self.group_send(to_user.username, event)
+        await self.group_send(from_user.username, event = {'type': 'send_friendslist'})
 
 
     async def remove_friend(self, data):
@@ -113,62 +126,76 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await sync_to_async(from_user.friends.delete)(to_user)
         await sync_to_async(to_user.friends.delete)(from_user)
         
-        if self.scope['user'].username == data['from_user']:
-            data['type'] = 'remove_friend'
-            await self.send_notification(data)
+        data['type'] = 'remove_friend'
+        await self.send_notification(data)
 
 
     async def decline_request(self, data):
         from_user = data.get('from_user')
         to_user = data.get('to_user')
         await self.delete_interaction_request(from_user, to_user)
+        return await self.send(text_data=json.dumps({ "type": "request_declined"}))
+
 
     @database_sync_to_async
-    def get_friends(self, data):
-        current_user = CustomUser.objects.get(username=data.get('current_user'))
+    def get_friends(self):
+        current_user = CustomUser.objects.get(username=self.scope['user'].username)
         friendslist = []
         friendslist = current_user.friends.all()
         friends_list_data = [{'username': friend.username, 'status': friend.is_online, 'avatar': convert_image_to_base64(friend.avatar)} for friend in friendslist]
         return friends_list_data
 
-    async def get_friendslist(self, data):
+
+    async def send_friendslist(self, data):
         friends_list_data = []
-        friends_list_data = await self.get_friends(data)
+        friends_list_data = await self.get_friends()
         await self.send(text_data=json.dumps({
             "type": "friendslist",
             "friends": friends_list_data}))
 
-    async def get_friend_online_status(self, data):
+
+    async def get_friends_online_status(self, data):
+        friends = await self.get_friends()
+        for friend in friends:
+            friend['status'] = await self.get_status(friend['username'])
+
+        # await self.send(text_data=json.dumps({ "type": "online_status", "status": "online"}))
+        # await self.send(text_data=json.dumps({ "type": "online_status", "status": "offline"}))
+
+
+    async def get_status(self, friend_username):
         try:
-            friend_instance = await sync_to_async(CustomUser.objects.get)(username=data.get('friend'))
+            friend_instance = await sync_to_async(CustomUser.objects.get)(username=friend_username)
         except CustomUser.DoesNotExist:
             return
         if friend_instance.is_online:
-            print('ONline')
-            # await self.send(text_data=json.dumps({ "type": "online_status", "status": "online"}))
-        else:
-            print('OFFline')
-            # await self.send(text_data=json.dumps({ "type": "online_status", "status": "offline"}))
+            return True
+        return False
 
 
     async def new_request_notification(self, event):
         if self.scope['user'].username == event['from_user']:
-            event['type'] = 'friend_request_from_user'
+            event['type'] = event['type_from_user']
             await self.send_notification(event)
         if self.scope['user'].username == event['to_user']:
-            event['type'] = 'friend_request_to_user'
+            event['type'] = event['type_to_user']
             await self.send_notification(event)
-
-
-#---------- utils ---------------------------------------------------------------------------------------------------------
 
 
     async def send_notification(self, event):
+        if event['type'] is None:
+            return
         await self.send(text_data=json.dumps({
             'type': event['type'],
             'from_user': event['from_user'],
             'to_user': event['to_user'],
             }))
+
+
+    async def group_send(self, group_name, event):
+        await self.channel_layer.group_send(
+            group_name,
+            event)
 
 
     async def authenticate_user_with_username(self, username):
@@ -187,11 +214,15 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         else:
             await self.send(text_data=json.dumps({ "type": "auth", "status": "failed"}))
 
-    async def user_exist(self, data):
-        username = data.get('username')
-        user = await self.authenticate_user_with_username(username)
-        await self.send(text_data=json.dumps({ "type": "user_exist", "exists": user is not None}))
 
+    @database_sync_to_async
+    def request_already_sent(self, from_user, to_user):
+        request = InteractionRequest.objects.filter(from_user=from_user, to_user=to_user)
+        if request:
+            return True
+        return False
+    
+    
     async def delete_interaction_request(self, from_user, to_user):
         #delete the line below
         request = []
@@ -203,15 +234,20 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_requests(self, data):
+        if data.get('type') == 'accept_request':
+            username = data.get('to_user')
+        else:
+            username = data.get('user')
+
         all_requests = InteractionRequest.objects.all()
         requests_list = []
-        for r in all_requests.filter(to_user=data.get('user')):
+        for r in all_requests.filter(to_user=username):
             user = CustomUser.objects.get(username=r.from_user)
             requests_list.append({'name': r.from_user, 'avatar': convert_image_to_base64(user.avatar)})
         return requests_list
     
 
-    async def get_current_user_requests(self, data):
+    async def send_current_user_requests(self, data):
         requests = []
         requests = await self.get_requests(data)
         await self.send(text_data=json.dumps({

@@ -259,6 +259,7 @@ export function createLocalMenu() {
 	createGamemodeDiv("Solo", parent);
 	createSubmode('Multiplayer', "1v1");
 	createSubmode('Solo', "Easy");
+}
 
 export function createSubmode(listName, text) {
 	const firstWord = text.split(' ')[0].toLowerCase();
@@ -295,4 +296,4 @@ export function createTournamentDiv() {
 
 export { displayMainMenu, createSelectMenu, moveCursor, createDivMenu,
 		displayLobby, createWaitingScreen, createInterfaceSelectMenu, 
-		createOnlineMenu};
+		createOnlineMenu };

@@ -24,7 +24,7 @@ class OAuthCallbackTests(TestCase):
         response = self.client.get(self.oauth_callback_url, {'code': 'fake_code'})
 
         self.assertEqual(response.status_code, 302)
-        self.assertIn('/dash?success=false&message=Failed%20to%20obtain%20user%20information%20from%2042%20API.', response.url)
+        self.assertIn('/dash?success=false&message=42_auth_error', response.url)
 
 
     @patch('requests.post')
@@ -43,5 +43,5 @@ class OAuthCallbackTests(TestCase):
         response = self.client.get(self.oauth_callback_url, {'code': 'fake_code'})
 
         self.assertEqual(response.status_code, 302)
-        self.assertIn('/dash?success=false&message=User%20information%20is%20incomplete%20from%2042%20API.', response.url)
+        self.assertIn('/dash?success=false&message=42_auth_error', response.url)
 

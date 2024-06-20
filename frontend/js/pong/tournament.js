@@ -67,9 +67,21 @@ function handlerMessageStatus(data) {
         tournamentStatus = "finished";
     if (data.status == "start")
         tournamentStatus = "started";
-    if (data.status == "waiting")
+    if (data.status == "waiting") {
         tournamentStatus = "waiting";
-} 
+        ask_tournament_status();
+    }
+}
+
+async function ask_tournament_status() {
+    setInterval(() => {
+        if (tournamentStatus != "waiting" || !checkIfWebsocketIsOpen(wsTournament) || playerStatus == "disqualified")
+            return ;
+        wsTournament.send(JSON.stringify({
+            'type': 'ask_status',
+        }));
+    }, 60000)
+}
 
 function displayRankingScreen(data) {
     if (!document.getElementsByClassName("tournament")[0])

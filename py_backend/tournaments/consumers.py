@@ -35,6 +35,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.send_self_bracket()
         if text_data_json.get('type') == 'getRanking':
             await self.send_tournament_ranking()
+        if text_data_json.get('type') == 'ask_status':
+            if self.check_if_all_matches_finished():
+                await self.advance_in_tournament()
 
     async def disconnect(self, close_code):
         print('tournament disconnected')

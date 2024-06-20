@@ -175,10 +175,6 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             await self.send_notification(event)
 
 
-
-#---------- utils ---------------------------------------------------------------------------------------------------------
-
-
     async def send_notification(self, event):
         if event['type'] is None:
             return
@@ -192,8 +188,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
     async def group_send(self, group_name, event):
         await self.channel_layer.group_send(
             group_name,
-            event
-        )
+            event)
 
 
     async def authenticate_user_with_username(self, username):

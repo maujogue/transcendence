@@ -20,7 +20,8 @@ export function getGameState() {
 
 export async function loadAgentModel() {
     try {
-        const model = await tf.loadLayersModel('/frontend/js/pong/AI/models/json_model/model.json');
+		const model = fetch('/frontend/js/pong/AI/models/json_model/model.json')
+        // const model = await tf.loadLayersModel('/frontend/js/pong/AI/models/json_model/model.json');
         console.log('Model loaded successfully:', model);
         return model;
     } catch (error) {

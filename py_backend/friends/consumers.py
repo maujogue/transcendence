@@ -113,7 +113,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'from_user': from_user.username,
             'to_user': to_user.username,
             'type_from_user': 'friend_accepted_from_user',
-            'type_to_user': 'null'
+            'type_to_user': None
         }
         await self.group_send(to_user.username, event)
         await self.group_send(from_user.username, event = {'type': 'send_friendslist'})
@@ -183,7 +183,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
 
     async def send_notification(self, event):
-        if event['type'] == 'null':
+        if event['type'] is None:
             return
         await self.send(text_data=json.dumps({
             'type': event['type'],

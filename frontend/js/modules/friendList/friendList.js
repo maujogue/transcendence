@@ -6,10 +6,12 @@ import { acceptFriendRequest, declineFriendRequest } from "./friendsWs.js";
 import { updateModule } from "../../Modules.js";
 import { injectUserData } from "../../User.js";
 import { checkUserExist } from "./friendsWs.js";
+import { removeFriend } from "./friendsWs.js";
+import { injectTranslations } from "../translationsModule/translationsModule.js";
 
 var module;
 var friendList;
-var userExists;
+var userExists = false;
 
 export async function init() {
 	module = getModuleDiv("friendList");
@@ -34,9 +36,7 @@ export async function init() {
 		if (!fetchBody.username)
 			return showAlert("Please enter a valid username.");
 
-		displayUserPage(fetchBody.username);
-		sendFriendRequest(fetchBody.username);
-		// getFriendStatus(fetchBody.username);
+		await displayUserPage(fetchBody.username);
 	}
 }
 
@@ -46,9 +46,10 @@ async function fillInbox(data) {
 	var length = 0;
 
 	inboxDiv.innerHTML = "";
+	if (requestsList.length === 0)
+		inboxDiv.innerHTML = `<div class="mx-auto" data-lang="no_friend_request"></div>`;
 	requestsList.forEach(request => {
-		if(length++ > 10)
-		{
+		if (length++ > 10) {
 			if (!inboxDiv.querySelector(".finish"))
 				inboxDiv.innerHTML += `<div class="finish mx-auto">...</div>`;
 			return;
@@ -81,9 +82,9 @@ async function fillInbox(data) {
 		});
 	});
 	module.querySelectorAll(".userLink").forEach(userLink => {
-		userLink.addEventListener("click", (e) => {
+		userLink.addEventListener("click", async (e) => {
 			var fromUser = userLink.closest("li").querySelector("span").innerText;
-			displayUserPage(fromUser);
+			await displayUserPage(fromUser);
 		});
 	});
 }
@@ -96,79 +97,40 @@ async function fillFriendsList(data) {
 	friendList.forEach(friend => {
 		var friendListHtml = `
 		<li class="d-flex g-5">
-			<a class="userLink ms-2 align-items-center text-white" data-bs-toggle="dropdown" navlink>
+			<a class="userLink ms-2 align-items-center text-white" navlink>
 			<img width="30" height="30" class="rounded-circle me-3"  src="data:image/png;base64, ${friend.avatar}"/>
 			<span class="mt-1 section-name">${friend.username}</span>
 			</a>
 		</li>`;
 		friendScroll.innerHTML += friendListHtml;
 	});
+	await refreshManageFriendshipBtn();
 }
 
-function setUserExist(data) {
-	userExists = data.exists;
+async function refreshManageFriendshipBtn() {
+	var dashUser = userDash.querySelector(".usernameDynamic").innerText;
+	await initManageFriendshipBtn(dashUser);
 }
 
 async function displayUserPage(username) {
-	var userDash = document.getElementById("userDash");
-	userDash.style.transition = "opacity 0.5s";
-	userDash.style.opacity = 0;
-
 	await checkUserExist(username);
-	console.log("userExists = ", userExists);
-	if(userExists === false)
-		return showAlert("This user does not exist.");
-	setTimeout(() => {
-		userDash.querySelector("#closeProfileBtn").innerHTML = `
-		<button id='closeUserDash' class='btn btn-warning mb-3 top-0 end-100 d-flex align-items-center justify-content-center'>
-			<i class="pt-1 fa-solid fa-arrow-left text-white h5"></i>
-			<span class="pt-1 ms-2 text-white h5"> Back</span>
-		</button>
-		`;
-		var editBtn = userDash.querySelector("#editProfileBtn");
-		editBtn.hidden = true;
-		var manageFriendshipBtn = userDash.querySelector("#manageFriendshipBtn");
-		console.log("friendlist = ", friendList);
-		var friend = friendList.find(friend => friend.username === username);
-		if (friend)
-			manageFriendshipBtn.innerHTML = `
-			<button class="btn btn-danger" id="unfriendBtn">Unfriend</button>
-			`;
-		else
-			manageFriendshipBtn.innerHTML = `
-			<button class="btn btn-outline-success " id="addFriendBtn">Add Friend</button>
-			`;
-		manageFriendshipBtn.addEventListener("click", () => {
-			if (friend) {
-				// removeFriend(username);
-			}
-			else{
-				sendFriendRequest(username);
-				manageFriendshipBtn.querySelector("button").classList.add("btn-success");
-				manageFriendshipBtn.querySelector("button").classList.add("text-white");
-				manageFriendshipBtn.querySelector("button").innerHTML = "Friend Request Sent";
-				setTimeout(() => {
-					manageFriendshipBtn.querySelector("button").classList.remove("btn-success");
-					manageFriendshipBtn.querySelector("button").classList.remove("text-white");
-					manageFriendshipBtn.querySelector("button").innerHTML = "Add Friend";
-				}, 2000);
-			}
-		});
-		manageFriendshipBtn.hidden = false;
+	await new Promise(resolve => setTimeout(() => {
+		if (userExists === false)
+			return showAlert("This user does not exist.");
+		resolve();
+	}, 200));
 
-		var closeBtn = userDash.querySelector("#closeUserDash");
-		closeBtn.addEventListener("click", async () => {
-			userDash.style.opacity = 0;
-			await showUserDash(null, closeBtn);
-		});
-	}, 500);
-	showUserDash(username);
+	await waitThenInitDashButtons(username);
+	await injectDashData(username);
 }
 
-async function showUserDash(username, closeBtn) {
+async function injectDashData(username, close) {
 	setTimeout(async () => {
-		if (closeBtn)
-			closeBtn.remove();
+		if (close) {
+			showDiv("#closeProfileBtn", false);
+			showDiv("#manageFriendshipBtn", false);
+			showDiv("#editProfileBtn", true);
+		}
 		await injectUserData(userDash, username);
 		await updateModule("statisticsModule")
 		setTimeout(() => {
@@ -177,4 +139,68 @@ async function showUserDash(username, closeBtn) {
 	}, 500);
 }
 
-export { fillInbox, fillFriendsList, displayUserPage, setUserExist}
+async function waitThenInitDashButtons(username) {
+	var userDash = document.getElementById("userDash");
+	userDash.style.opacity = 0;
+
+	setTimeout(async () => {
+		showDiv("#closeProfileBtn", true);
+		showDiv("#editProfileBtn", false);
+		showDiv("#manageFriendshipBtn", true);
+		await initManageFriendshipBtn(username);
+		initCloseButton();
+	}, 500);
+}
+
+function setUserExist(data) {
+	userExists = data.exists;
+}
+
+function initCloseButton() {
+	var closeBtn = userDash.querySelector("#closeProfileBtn");
+	closeBtn.addEventListener("click", async () => {
+		userDash.style.opacity = 0;
+		await injectDashData(null, true);
+	});
+}
+
+function initManageFriendshipBtn(username) {
+	var manageFriendshipBtn = userDash.querySelector("#manageFriendshipBtn");
+
+	var friend = friendList.find(friend => friend.username === username);
+	if (friend)
+		manageFriendshipBtn.innerHTML = `<button class="btn btn-danger" disabled data-lang="unfriend">Unfriend</button>`;
+	else
+		manageFriendshipBtn.innerHTML = `<button class="btn btn-outline-success " disabled data-lang="add_friend">Add Friend</button>`;
+
+	injectTranslations();
+	var btn = manageFriendshipBtn.querySelector("button");
+	btn.addEventListener("click", () => {
+		if (friend) {
+			removeFriend(username);
+			btn.remove();
+			initManageFriendshipBtn(username);
+		}
+		else {
+			sendFriendRequest(username);
+			btn.classList.add("btn-success");
+			btn.classList.add("text-white");
+			btn.innerHTML = "<span data-lang='friend_request_sent'></span>";
+			injectTranslations();
+			setTimeout(() => {
+				btn.classList.remove("btn-success");
+				btn.classList.remove("text-white");
+				btn.innerHTML = "<span data-lang='add_friend'></span>";
+				injectTranslations();
+			}, 2000);
+		}
+	});
+	btn.disabled = false;
+}
+
+function showDiv(btnSelector, show) {
+	var btn = userDash.querySelector(btnSelector);
+	btn.hidden = !show;
+}
+
+export { fillInbox, fillFriendsList, displayUserPage, setUserExist }

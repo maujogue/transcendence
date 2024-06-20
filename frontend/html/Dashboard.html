@@ -1,7 +1,15 @@
 <section>
 	<!-- LOGGED IN DASHBOARD -->
-	<div id="userDash" class="container-fluid logInContent position-relative">
-		<div id="closeProfileBtn"></div>
+	<div id="userDash" class="container-fluid logInContent position-relative" style="transition: opacity 0.5s;">
+		<div class="d-flex mb-2 ms-0">
+			<div id="closeProfileBtn" hidden>
+				<button class="btn btn-warning">
+					<i class="pt-1 fa-solid fa-arrow-left text-white"></i>
+					<span class="pt-1 ms-2 text-white" data-lang="back"></span>
+				</button>
+			</div>
+			<div id="manageFriendshipBtn" class="ms-2" hidden></div>
+		</div>
 		<div class="row">
 			<!-- PROFILE SECTION -->
 			<div class="col-3 ps-0" style="min-width:100px; max-width: 400px;">
@@ -17,8 +25,6 @@
 					data-bs-toggle="modal" data-bs-target="#updateProfileModal" data-lang="edit_profile_button">
 					Edit
 				</button>
-				<div id="manageFriendshipBtn" class="mt-auto mb-2 ms-auto">
-				</div>
 				<div class="d-flex justify-content-between">
 					<h3 class="text-info" data-lang="username_label">Username</h3>
 					<h3 class="usernameDynamic"></h3>
@@ -119,7 +125,7 @@
 				<!-- CLOSE BUTTON -->
 				<div>
 					<button type="button" class="btn btn-secondary" data-bs-toggle="modal"
-						data-bs-target="#updateProfileModal">
+						data-bs-target="#updateProfileModal" data-lang="back">
 						Back
 					</button>
 					<button type="button" id="confirmPasswordButton" class="btn btn-primary"
@@ -213,10 +219,3 @@
 		</div>
 	</div>
 </div>
-
-<style>
-	#userDashboard {
-		transition: background-color 0.5s ease-in-out;
-		opacity: 1;
-	}
-</style>

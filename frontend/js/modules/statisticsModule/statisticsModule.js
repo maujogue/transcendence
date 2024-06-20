@@ -15,7 +15,6 @@ export async function init() {
 		username = usernameDiv.innerText;
 	else
 		username = await getUserData("username");
-	console.log(username);
 	if (!username)
 		return;
 	var response = await runEndPoint("stats/" + username + "/matchs", "GET");

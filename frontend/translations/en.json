@@ -122,5 +122,13 @@
 	"42_auth_error": "An error occurred while trying to log in using your 42 account. Please try again later.",
 	"username_not_unique": "This username is already taken.",
 	"email_not_unique": "This email is already taken.",
-	"unexpected_error": "An unexpected error occurred. Please try again later."
+	"unexpected_error": "An unexpected error occurred. Please try again later.",
+	"back": "Back",
+	"inbox": "Inbox",
+	"search": "Search",
+	"friends": "Friends",
+	"no_friend_requests": "No friend requests",
+	"add_friend": "Add friend",
+	"unfriend": "Unfriend",
+	"friend_request_sent": "Friend request sent"
 }

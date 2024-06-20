@@ -8,7 +8,7 @@ let currentUser;
 let wsFriends;
 
 export async function friendsWebsocket() {
-	wsFriends = new WebSocket("ws://127.0.0.1:8080/ws/friends/");
+	wsFriends = new WebSocket("wss://127.0.0.1:8000/ws/friends/");
 	wsFriends.onopen = async function () {
 		currentUser = await getUserData('username');
 		auth();
@@ -87,6 +87,15 @@ async function declineFriendRequest(fromUser) {
 		}));
 	}
 }
+async function removeFriend(toUser) {
+	if (checkWs()) {
+		wsFriends.send(JSON.stringify({
+			'type': 'remove_friend',
+			'from_user': currentUser,
+			'to_user': toUser,
+		}));
+	}
+}
 
 async function checkUserExist(username) {
 	if (checkWs()) {
@@ -119,13 +128,11 @@ async function wsMessageRouter(data) {
 			getFriendsList();
 		},
 		'user_himself': () => showAlert("You cannot send a friend request to yourself.", false),
-		'user_request_exist': () => showAlert("This user does not exist.", false),
 		'user_do_not_exist': () => showAlert("This user does not exist.", false),
 		'request_already_sent': () => showAlert(`You already sent a friend request to this user.`, false),
 		'already_friends': (data) => showAlert(`You are already friends with ${data.to_user}.`, false),
-		'remove_friend': (data) => showAlert(`You have deleted ${data.to_user} from your friends.`, true),
-		'request_declined': () => showAlert(`Request declined.`, false),
-		'friendslist': (data) => fillFriendsList(data),
+		'request_declined': () => getCurrentUserRequests(),
+		'friendslist': async (data) => await fillFriendsList(data),
 		'get_current_user_requests': (data) => fillInbox(data),
 		'user_exist' : (data) => setUserExist(data),
 
@@ -137,4 +144,4 @@ async function wsMessageRouter(data) {
 	}
 }
 
-export { sendFriendRequest, getFriendsStatus, acceptFriendRequest, declineFriendRequest, checkUserExist };
+export { sendFriendRequest, getFriendsStatus, acceptFriendRequest, declineFriendRequest, checkUserExist, removeFriend };

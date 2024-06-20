@@ -122,5 +122,13 @@
 	"42_auth_error": "Ocurrió un error al intentar iniciar sesión con tu cuenta 42. Por favor, inténtalo de nuevo más tarde.",
 	"username_not_unique": "Este nombre de usuario ya está en uso.",
 	"email_not_unique": "Este correo electrónico ya está en uso.",
-	"unexpected_error": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo más tarde."
+	"unexpected_error": "Ocurrió un error inesperado. Por favor, inténtalo de nuevo más tarde.",
+	"back": "Atrás",
+	"inbox": "Bandeja de entrada",
+	"search": "Buscar",
+	"friends": "Amigos",
+	"no_friend_requests": "No hay solicitudes de amistad",
+	"add_friend": "Agregar amigo",
+	"unfriend": "Eliminar de amigos",
+	"friend_request_sent": "Solicitud de amistad enviada"
 }

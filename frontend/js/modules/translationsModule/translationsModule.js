@@ -51,16 +51,16 @@ export async function init() {
 			});
 		});
 	}
+}
 
-	async function injectTranslations() {
-		var json = await getJsonFromLang();
-		const elmDivs = document.querySelectorAll("[data-lang]");
-		elmDivs.forEach((elm) => {
-			const key = elm.getAttribute("data-lang");
-			if (json[key])
-				elm.innerHTML = json[key];
-		});
-	}
+async function injectTranslations() {
+	var json = await getJsonFromLang();
+	const elmDivs = document.querySelectorAll("[data-lang]");
+	elmDivs.forEach((elm) => {
+		const key = elm.getAttribute("data-lang");
+		if (json[key])
+			elm.innerHTML = json[key];
+	});
 }
 
 async function getJsonFromLang() {
@@ -94,4 +94,4 @@ async function printQueryParamsMessage(queryParams) {
 	history.replaceState(null, null, window.location.pathname);
 }
 
-export { setLanguage, injectGameTranslations, printQueryParamsMessage }
+export { setLanguage, injectGameTranslations, printQueryParamsMessage, injectTranslations }

@@ -6,7 +6,6 @@ from asgiref.sync import sync_to_async
 from users.utils import convert_image_to_base64
 import json
 
-
 class FriendsConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
@@ -31,7 +30,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'friend_request': self.create_friend_request,
             'accept_request': self.accept_request,
             'decline_request': self.decline_request,
-            'remove_request': self.remove_friend,
+            'remove_friend': self.remove_friend,
             'get_friendslist': self.send_friendslist,
             'get_current_user_requests': self.send_current_user_requests,
             'get_friends_online_status': self.get_friends_online_status,
@@ -123,11 +122,10 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         from_user = await sync_to_async(CustomUser.objects.get)(username=data.get('from_user'))
         to_user = await sync_to_async(CustomUser.objects.get)(username=data.get('to_user'))
 
-        await sync_to_async(from_user.friends.delete)(to_user)
-        await sync_to_async(to_user.friends.delete)(from_user)
+        await sync_to_async(from_user.friends.remove)(to_user)
+        await sync_to_async(to_user.friends.remove)(from_user)
         
-        data['type'] = 'remove_friend'
-        await self.send_notification(data)
+        await self.group_send(from_user.username, event = {'type': 'send_friendslist'})
 
 
     async def decline_request(self, data):
@@ -214,6 +212,14 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         else:
             await self.send(text_data=json.dumps({ "type": "auth", "status": "failed"}))
 
+    async def user_exist(self, data):
+        username = data.get('username')
+        if username == self.scope['user'].username:
+            exists = False
+        else:	
+            user = await self.authenticate_user_with_username(username)
+            exists = user is not None
+        await self.send(text_data=json.dumps({ "type": "user_exist", "exists": exists}))
 
     @database_sync_to_async
     def request_already_sent(self, from_user, to_user):

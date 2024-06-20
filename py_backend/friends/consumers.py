@@ -161,9 +161,9 @@ class FriendsConsumer(AsyncWebsocketConsumer):
     async def send_friends_online_status(self, data):
         friends = await self.get_friends()
         dict_friends_status = []
-        for friend in friends:
-            friend['status'] = await self.get_status(friend['username'])
-            dict_friends_status.append({'username': friend['username'], 'status': friend['status']})
+        for f in friends:
+            f['status'] = await self.get_status(f['username'])
+            dict_friends_status.append({'username': f['username'], 'status': f['status']})
 
         await self.send(text_data=json.dumps({
             "type": "friends_online_status",
@@ -172,7 +172,10 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_status(self, friend_username):
-        friend_instance = CustomUser.objects.get(username=friend_username)
+        try:
+            friend_instance = CustomUser.objects.get(username=friend_username)
+        except CustomUser.DoesNotExist:
+            return None
         return friend_instance.is_online
 
 

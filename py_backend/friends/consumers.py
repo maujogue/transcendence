@@ -19,8 +19,9 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         #     self.group_name,
         #     self.channel_name,
         # )
-        print('disconnected')
+        print('disconnect')
         await self.set_online_status(False)
+        await self.group_send(self.scope['user'].username, event = {'type': 'rrr'})
 
 
     async def receive(self, text_data):
@@ -136,7 +137,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         to_user = data.get('to_user')
         await self.delete_interaction_request(from_user, to_user)
         return await self.send(text_data=json.dumps({ "type": "request_declined"}))
-
+    
 
     @database_sync_to_async
     def get_friends(self):
@@ -156,7 +157,8 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
 
     async def get_friends_online_status(self, data):
-        print('--------------\nget_friends_online_status')
+        print('\n--------------\nget_friends_online_status')
+
         friends = await self.get_friends()
         for friend in friends:
             friend['status'] = await self.get_status(friend['username'])
@@ -166,9 +168,10 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         # await self.send(text_data=json.dumps({ "type": "online_status", "status": "offline"}))
 
 
-    async def get_status(self, friend_username):
+    @database_sync_to_async
+    def get_status(self, friend_username):
         try:
-            friend_instance = await sync_to_async(CustomUser.objects.get)(username=friend_username)
+            friend_instance = CustomUser.objects.get(username=friend_username)
         except CustomUser.DoesNotExist:
             return
         if friend_instance.is_online:

@@ -39,7 +39,7 @@ function physicsBall(ball, paddleBox) {
 }
 
 function checkCollisionWithBorder(ball, ballBox, environment) {
-    console.log("Border down : ", environment.border.down);
+    // console.log("Border down : ", environment.border.down);
     if (environment.border.up.box.intersectsBox(ballBox) || 
         environment.border.down.box.intersectsBox(ballBox)) {
         if (ball.direction.x > 0)

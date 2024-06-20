@@ -15,12 +15,8 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
 
     async def disconnect(self, exit_code):
-        # await self.channel_layer.group_discard(
-        #     self.group_name,
-        #     self.channel_name,
-        # )
-        print('disconnect')
         await self.set_online_status(False)
+        await self.group_send(self.scope['user'].username, event = {'type': 'send_new_status', 'status': 'offline'})
 
 
     async def receive(self, text_data):
@@ -35,7 +31,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'remove_request': self.remove_friend,
             'get_friendslist': self.send_friendslist,
             'get_current_user_requests': self.send_current_user_requests,
-            'get_friends_online_status': self.get_friends_online_status,
+            'get_friends_online_status': self.send_friends_online_status,
         }
         handler = handlers.get(message_type)
         if handler:
@@ -158,16 +154,16 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             "friends": friends_list_data}))
 
 
-    async def get_friends_online_status(self, data):
-        print('\n--------------\nget_friends_online_status')
-
+    async def send_friends_online_status(self, data):
         friends = await self.get_friends()
+        dict_friends_status = []
         for friend in friends:
             friend['status'] = await self.get_status(friend['username'])
-            print(friend['status'])
+            dict_friends_status.append({'username': friend['username'], 'status': friend['status']})
 
-        # await self.send(text_data=json.dumps({ "type": "online_status", "status": "online"}))
-        # await self.send(text_data=json.dumps({ "type": "online_status", "status": "offline"}))
+        await self.send(text_data=json.dumps({
+            "type": "friends_online_status",
+            "friends": dict_friends_status}))
 
 
     @database_sync_to_async

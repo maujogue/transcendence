@@ -115,7 +115,8 @@ async function wsMessageRouter(data) {
 		'friendslist': (data) => fillFriendsList(data),
 		'get_current_user_requests': (data) => fillInbox(data),
 		'friend_accepted_from_user': (data) => showAlert(`${data.to_user} accepted your friend request !`, true),
-		// 'send_new_status': (data) => showAlert(`send_new_status.`, false),
+		// 'send_new_status': (data) =>
+		// 'friends_online_status': (data) =>
 	};
 	const handler = notificationHandlers[data.type];
 	console.log(data.type);

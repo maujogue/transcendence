@@ -16,7 +16,9 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, exit_code):
         await self.set_online_status(False)
-        await self.group_send(self.scope['user'].username, event = {'type': 'send_new_status', 'status': 'offline'})
+        await self.group_send(
+            self.scope['user'].username,
+            event = {'type': 'send_new_status', 'status': 'offline'})
 
 
     async def receive(self, text_data):
@@ -51,7 +53,9 @@ class FriendsConsumer(AsyncWebsocketConsumer):
                 f.get('username'),
                 self.channel_name)
         
-        await self.group_send(self.scope['user'].username, event = {'type': 'send_new_status', 'status': 'online'})
+        await self.group_send(
+            self.scope['user'].username,
+            event = {'type': 'send_new_status', 'status': 'online'})
 
 
 

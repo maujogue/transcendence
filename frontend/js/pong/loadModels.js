@@ -1,12 +1,12 @@
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { Character } from "./Class/Character.js";
 import { charactersNames } from "./varGlobal.js";
-import { characters, displayMainMenu } from '../pages/Game.js';
+import { characters, displayMainMenu } from '../pages/game.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
 
 async function loadModel(fileName) {
-    console.log(fileName);
+    // console.log(fileName);
     return new Promise((resolve, reject) => {
         const loader = new GLTFLoader();
         const draco = new DRACOLoader();
@@ -38,7 +38,7 @@ export async function loadScene(fileName) {
                 resolve(gltf);
             },
             (xhr) => {
-                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+                // console.log((xhr.loaded / xhr.total * 100) + '% loaded');
             },
             (error) => {
                 console.error('An error happened', error);

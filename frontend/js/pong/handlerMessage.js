@@ -4,48 +4,67 @@ import { ClearAllEnv } from './createEnvironment.js';
 import { createEndScreen } from './createEndScreen.js';
 import { sendColor } from './sendMessage.js';
 import { playersMove } from './online.js';
+import { displayErrorPopUp } from './tournament.js';
+import { toggleContentOnLogState } from '../Utils.js';
+import { injectModule, updateModule } from '../Modules.js';
+import { updatePage } from '../Router.js';
+
 
 export function setBallData(data, env) {
     if (!env.ball)
         return ;
     env.ball.direction.x = data['dirX'];
     env.ball.direction.y = data['dirY'];
-    env.ball.mesh.position.y = data['posY'];
-    env.ball.mesh.position.x = data['posX'];
+    if (env.ball.mesh.position.x != data['posX'] || env.ball.mesh.position.y != data['posY']) {
+        env.ball.mesh.translateX(data['posX'] - env.ball.mesh.position.x);
+        env.ball.mesh.translateY(data['posY'] - env.ball.mesh.position.y);
+    }
 }
 
 export function handlerScore(data, env, player, opp) {
     actualizeScoreOnline(data, env);
     player.paddle.mesh.position.y = 0;
     opp.paddle.mesh.position.y = 0;
-}
-
-function handlerStopGame(webSocket, env, start) {
-    start = false;
-    ClearAllEnv(env);
-    displayMainMenu();
-    webSocket.close();
-}
-
-function handlerEndGame(data, status) {
-    if (!document.getElementById("endscreen"))
-        createEndScreen(data['name']);
-    status.isReady = false;
-    status.start = false;
     playersMove.clear();
 }
 
-function handlerPlayerDisconnect(data, env) {
-    env.scene.remove(env.scene.getObjectByName(data['name']));
-    env.renderer.render(env.scene, env.camera);
+function handlerStopGame(webSocket, env, message) {
+    displayErrorPopUp(message, document.getElementById("hud"));
+    document.getElementById("errorPopUp").classList.add("match-error");
+    document.getElementById("PopUpCloseIcon").addEventListener("click", () => {
+        ClearAllEnv(env);
+        displayMainMenu();
+        document.getElementById("hud").remove();
+    });
+    webSocket.close();
 }
 
-export function handlerStatusMessage(data, webSocket, env, status, player) {
-    if (data['message'] == 'disconnected')
-        handlerPlayerDisconnect(data, env);
-    if (data['message'] == 'stopGame')
-        handlerStopGame(webSocket, env, status.start);
-    if (data['message'] == 'endGame') {
-        handlerEndGame(data, status);
+async function handlerEndGame(data, env) {
+    if (!document.getElementById("endscreen"))
+        createEndScreen(data['name']);
+    playersMove.clear();
+    env.ball.direction.x = 0;
+    env.ball.direction.y = 0;
+    env.ball.mesh.position.x = 0;
+    env.ball.mesh.position.y = 0;
+	await updateModule("statisticsModule");
+}
+
+function handlerPlayerDisconnect(data, env, webSocket) {
+    document.getElementById("endscreen")?.remove();
+    handlerStopGame(webSocket, env, data.message);
+}
+
+export function handlerStatusMessage(data, webSocket, env, status) {
+    if (data['status'] == 'disconnected')
+        handlerPlayerDisconnect(data, env, webSocket);
+    if (data['status'] == 'stop')
+        handlerStopGame(webSocket, env, data.message);
+    if (data['status'] == 'endGame') {
+        handlerEndGame(data, env);
+    }
+    if (data['status'] == 'start') {
+        status.gameIsInit = true;
+        document.getElementById("waitingScreen")?.remove();
     }
 }

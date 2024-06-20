@@ -197,6 +197,7 @@ function createButton(text, id, parent) {
 	const textButton = document.createTextNode(text);
 	button.className = 'btn';
 	button.id = id;
+	button.setAttribute('data-lang', id);
 	button.appendChild(textButton);
 	document.getElementById(parent).appendChild(button);
 }
@@ -227,19 +228,13 @@ function displayMainMenu() {
 
 function createGamemodeDiv(text, parent) {
 	const div = document.createElement("div");
-	div.innerHTML += `<img class="gamemode-img" src="./assets/img/icon/${text}.png" alt="tournament_icon"><p>${text}</p>`;
+	div.innerHTML += `<img class="gamemode-img" src="./assets/img/icon/${text}.png" alt="tournament_icon"><p data-lang="${text}">${text}</p>`;
 	const list = document.createElement("ul");
 	list.className = "submode-list submode-list-" + text;
 	div.className = "gamemode";
 	div.id = text;
 	parent.appendChild(div);
 	div.appendChild(list);
-}
-
-export function createSubmode(listName, text) {
-	const firstWord = text.split(' ')[0].toLowerCase();
-	const list = document.querySelector('.submode-list-' + listName);
-	list.innerHTML += `<li class="submode" id="${firstWord}">${text}</li>`;
 }
 
 function createOnlineMenu() {
@@ -264,7 +259,12 @@ export function createLocalMenu() {
 	createGamemodeDiv("Solo", parent);
 	createSubmode('Multiplayer', "1v1");
 	createSubmode('Solo', "Easy");
+}
 
+export function createSubmode(listName, text) {
+	const firstWord = text.split(' ')[0].toLowerCase();
+	const list = document.querySelector('.submode-list-' + listName);
+	list.innerHTML += `<li class="submode" id="${firstWord}" data-lang="${text}">${text}</li>`;
 }
 
 export function createHUD(player, opp) {
@@ -296,4 +296,4 @@ export function createTournamentDiv() {
 
 export { displayMainMenu, createSelectMenu, moveCursor, createDivMenu,
 		displayLobby, createWaitingScreen, createInterfaceSelectMenu, 
-		createOnlineMenu};
+		createOnlineMenu };

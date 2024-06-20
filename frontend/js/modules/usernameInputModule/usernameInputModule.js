@@ -1,7 +1,7 @@
-import { getUserData } from "../User.js";
-import { checkInputAvailable } from "../ApiCalls.js";
-import { disableSaveChangesButton, resetForm } from "../DashboardUtils.js";
-import { getModuleDiv } from "../Modules.js";
+import { getUserData } from "../../User.js";
+import { checkInputAvailable } from "../../ApiCalls.js";
+import { disableSaveChangesButton, resetForm } from "../../DashboardUtils.js";
+import { getModuleDiv } from "../../Modules.js";
 
 export async function init() {
 	var module = getModuleDiv("usernameInputModule");

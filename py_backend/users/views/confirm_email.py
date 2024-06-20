@@ -20,5 +20,5 @@ def confirm_email(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token):
         user.email_is_verified = True
         user.save()
-        return redirect('/dash')
+        return redirect('/emailVerified')
     return JsonResponse({'status': "error"}, status=400)

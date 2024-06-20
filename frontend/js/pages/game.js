@@ -12,11 +12,13 @@ import { ClearAllEnv, getSize } from "../pong/createEnvironment.js";
 import { loadAllModel } from "../pong/loadModels.js"
 import { loadScene } from "../pong/loadModels.js";
 import { getUserData } from "../User.js";
-import { sendTournamentForm, createFormTournament} from "../pong/createTournament.js";
+import { sendTournamentForm, createFormTournament } from "../pong/createTournament.js";
 import { createJoinTournamentMenu } from "../pong/joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "../pong/tournament.js";
+import { showAlert } from "../Utils.js";
 import { loadAgentModel } from '../pong/AI/AIUtils.js';
 import * as THREE from 'three';
+import { injectGameTranslations } from "../modules/translationsModule/translationsModule.js";
 
 export var lobby;
 export var clock;
@@ -24,11 +26,16 @@ export var characters;
 export var soloMode;
 export var environment;
 
-var isGameLoaded = false;
+export async function init(queryParams) {
+	if (queryParams && queryParams.get("message"))
+		showAlert(queryParams.get("message"), queryParams.get("success"));
 
-export async function init() {
-	if (isGameLoaded)
-		return;
+	var target = document.querySelector('#game');
+	var config = { attributes: true, childList: true, characterData: true };
+	var observer = new MutationObserver(function (mutations) {
+		mutations.forEach(injectGameTranslations);
+	});
+	observer.observe(target, config);
 
 	lobby = await loadScene('lobbyTest');
 	clock = new THREE.Clock();
@@ -66,6 +73,9 @@ export async function init() {
 		player2 = await displayCharacter(player2, environment, "elvis", "player2");
 	}
 
+<<<<<<<<< Temporary merge branch 1:frontend/js/pages/game.js
+	gameDiv.addEventListener("keydown", function (event) {
+=========
 	async function createAISelectMenu(field) {
 		document.getElementById("localMenu").remove();
 		environment = createSelectMenu(field, characters);
@@ -77,6 +87,7 @@ export async function init() {
 	}
 
 	document.addEventListener("keydown", function (event) {
+>>>>>>>>> Temporary merge branch 2:frontend/js/pages/Game.js
 		keysPressed[event.key] = true;
 		if (keysPressed['A'])
 			keysPressed['a'] = true;
@@ -90,32 +101,28 @@ export async function init() {
 		event.stopPropagation();
 	});
 
-	document.addEventListener("keyup", function (event) {
+	gameDiv.addEventListener("keyup", function (event) {
 		delete keysPressed[event.key];
 	});
 
-
-	document.addEventListener('click', function (event) {
+	gameDiv.addEventListener('click', function (event) {
+		document.body.style.overflow = 'hidden';
+		gameDiv.focus();
 		if (!gameDiv.contains(event.target)) {
 			document.body.style.overflow = 'auto';
 		}
 	});
 
-	gameDiv.addEventListener('click', function () {
-		document.body.style.overflow = 'hidden';
-	});
+	gameDiv.addEventListener("click", function (event) {
+		getUserData().then((data) => {
+			userData = data;
+		})
 
-	document.body.addEventListener("click", function (event) {
-		if (event.target.classList.contains('tournament-info')) {
-			getUserData().then((data) => {
-				userData = data;
-				if (userData) {
-					checkIfUserIsInTournament(userData).then((response) => {
-						if (response && response['joined'])
-							connectToTournament(response['tournament']);
-					});
-				}
-			})
+		if (userData) {
+			checkIfUserIsInTournament(userData).then((response) => {
+				if (response && response['joined'])
+					connectToTournament(response['tournament']);
+			});
 		}
 
 		if (event.target.id == 'restart' && !isOnline) {
@@ -177,13 +184,13 @@ export async function init() {
 		}
 	});
 
-	document.addEventListener('fullscreenchange', function () {
+	gameDiv.addEventListener('fullscreenchange', function () {
 		if (isFullScreen())
 			resize(environment);
 	});
 
 	function setIfGameIsEnd() {
-		if (player1.score < 1 && player2.score < 1)
+		if (player1.score < 5 && player2.score < 5)
 			return;
 		let winner = player1.name;
 		if (player2.score > player1.score)
@@ -193,6 +200,7 @@ export async function init() {
 		player1.score = 0;
 		player2.score = 0;
 	}
+
 
 	async function localGameLoop() {
 		if (keyPress && !start) {
@@ -221,8 +229,7 @@ export async function init() {
 		if (localLoop)
 			requestAnimationFrame(localGameLoop);
 	}
-
-	isGameLoaded = true;
 }
+
 
 export { displayMainMenu }

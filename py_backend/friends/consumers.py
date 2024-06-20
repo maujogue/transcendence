@@ -84,13 +84,14 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add(
             to_user,
             self.channel_name,)
-        await self.channel_layer.group_send(
-            to_user,
-            {'type': 'new_request_notification',
+        event = {
+            'type': 'new_request_notification',
             'from_user': from_user,
             'to_user': to_user,
             'type_from_user': 'friend_request_from_user',
-            'type_to_user': 'friend_request_to_user'})
+            'type_to_user': 'friend_request_to_user'
+        }
+        await self.group_send(to_user, event)
 
     
     async def accept_request(self, data):        
@@ -107,17 +108,16 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add(
             from_user.username,
             self.channel_name,)
-        await self.channel_layer.group_send(
-            to_user.username,
-            {'type': 'new_request_notification',
+        event = {
+            'type': 'new_request_notification',
             'from_user': from_user.username,
             'to_user': to_user.username,
             'type_from_user': 'friend_accepted_from_user',
-            'type_to_user': 'null'})
-        await self.channel_layer.group_send(
-            from_user.username,
-            {'type': 'send_friendslist',
-            })
+            'type_to_user': 'null'
+        }
+        await self.group_send(to_user.username, event)
+        await self.group_send(from_user.username, event = {'type': 'send_friendslist'})
+
         
     async def send_friendslist(self, event):
         await self.get_friendslist(None)
@@ -190,6 +190,13 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'from_user': event['from_user'],
             'to_user': event['to_user'],
             }))
+
+
+    async def group_send(self, group_name, event):
+        await self.channel_layer.group_send(
+            group_name,
+            event
+        )
 
 
     async def authenticate_user_with_username(self, username):

@@ -104,7 +104,6 @@ async function wsMessageRouter(data) {
 		},
 		'friend_request_from_user': (data) => showAlert(`You just send a friend request to ${data.to_user} !`, true),
 		'accept_request': (data) => {
-			console.log('accept_request');
 			getCurrentUserRequests();
 			getFriendsList();
 		},
@@ -119,11 +118,9 @@ async function wsMessageRouter(data) {
 		'friend_accepted_from_user': (data) => showAlert(`${data.to_user} accepted your friend request !`, true),
 	};
 	const handler = notificationHandlers[data.type];
-	console.log('data_type =', data.type);
 	if (handler && data) {
 		handler.call(this, data);
 	}
 }
-
 
 export { sendFriendRequest, getFriendStatus, acceptFriendRequest, declineFriendRequest };

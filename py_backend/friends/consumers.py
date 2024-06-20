@@ -31,7 +31,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'accept_request': self.accept_request,
             'decline_request': self.decline_request,
             'remove_request': self.remove_friend,
-            'get_friendslist': self.get_friendslist,
+            'get_friendslist': self.send_friendslist,
             'get_current_user_requests': self.send_current_user_requests,
             'get_friend_online_status': self.get_friend_online_status,
         }
@@ -115,7 +115,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'type_to_user': None
         }
         await self.group_send(to_user.username, event)
-        await self.group_send(from_user.username, event = {'type': 'get_friendslist'})
+        await self.group_send(from_user.username, event = {'type': 'send_friendslist'})
 
 
     async def remove_friend(self, data):
@@ -145,7 +145,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         return friends_list_data
 
 
-    async def get_friendslist(self, data):
+    async def send_friendslist(self, data):
         friends_list_data = []
         friends_list_data = await self.get_friends()
         await self.send(text_data=json.dumps({

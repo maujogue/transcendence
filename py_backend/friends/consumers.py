@@ -21,7 +21,6 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         # )
         print('disconnect')
         await self.set_online_status(False)
-        await self.group_send(self.scope['user'].username, event = {'type': 'rrr'})
 
 
     async def receive(self, text_data):
@@ -55,6 +54,9 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_add(
                 f.get('username'),
                 self.channel_name)
+        
+        await self.group_send(self.scope['user'].username, event = {'type': 'send_new_status', 'status': 'online'})
+
 
 
 #----------- friends functions ------------------------------------------------------------------------------------------------------------
@@ -269,5 +271,9 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             user.save()
         except CustomUser.DoesNotExist:
             return False
+        
+
+    async def send_new_status(self, event):
+        await self.send(text_data=json.dumps({"type": "send_new_status", "status": event['status']}))
         
     

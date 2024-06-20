@@ -12,7 +12,3 @@ from .username_availaible import *
 from .email_available import *
 from .confirm_email import *
 from .confirm_new_email import *
-from .pong_app_AI import game_state_view
-from .pong_app_AI import action_view
-from .pong_app_AI import reset_game_view
-from .pong_app_AI import reward_view

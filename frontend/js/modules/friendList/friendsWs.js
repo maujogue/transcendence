@@ -87,11 +87,10 @@ async function declineFriendRequest(fromUser) {
 	}
 }
 
-async function getFriendsStatus(username) {
+async function getFriendsStatus() {
 	if (checkWs()) {
 		wsFriends.send(JSON.stringify({
-			'type': 'get_friends_online_status',
-			'friend': username,
+			'type': 'get_friends_online_status'
 		}));
 	}
 }

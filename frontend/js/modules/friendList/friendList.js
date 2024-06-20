@@ -2,7 +2,6 @@ import { getModuleDiv } from "../../Modules.js";
 import { isLoggedIn, showAlert } from "../../Utils.js";
 import { friendsWebsocket } from "./friendsWs.js";
 import { sendFriendRequest } from "./friendsWs.js";
-import { getFriendStatus } from "./friendsWs.js";
 import { acceptFriendRequest, declineFriendRequest} from "./friendsWs.js";
 
 var module;
@@ -31,7 +30,6 @@ export async function init() {
 			return showAlert("Please enter a valid username.");
 
 		sendFriendRequest(fetchBody.username);
-		getFriendStatus(fetchBody.username);
 	}
 }
 

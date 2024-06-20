@@ -6,6 +6,7 @@ import { createTournamentDiv } from "./menu.js";
 import { createLeaveButton, drawBracket} from "./createBracket.js";
 import { hostname } from "../Router.js";
 import { wsMatch } from "./online.js";
+import { checkIfWebsocketIsOpen, handlerEndGame } from "./handlerMessage.js";
 
 export let wsTournament
 export let tournamentStatus;
@@ -71,6 +72,10 @@ function handlerMessageStatus(data) {
         tournamentStatus = "waiting";
         ask_tournament_status();
     }
+    if (data.status == "cancelled") {
+        wsMatch.close();
+        clearOnlineVariables();
+    }
 }
 
 async function ask_tournament_status() {
@@ -97,18 +102,30 @@ function displayTournamentRanking(ranking) {
     console.log("displayTournamentRanking: ", ranking);
     const rankingDiv = document.createElement("div");
     rankingDiv.className = "ranking";
-    rankingDiv.innerHTML = "<h2>Ranking</h2>";
+    rankingDiv.innerHTML = "<h2 class='ranking-title'>Ranking</h2>";
+    const podiumDiv = document.createElement("div");
+    podiumDiv.className = "podium";
+    const podium = ["🥇", "🥈", "🥉"]
+    const otherDiv = document.createElement("div"); 
+    otherDiv.className = "other";
     let pos = 1;
     ranking.reverse();
     ranking.map((player) => {
         if (player != null) {
             const playerDiv = document.createElement("div");
             playerDiv.className = "player";
-            playerDiv.innerHTML = `<p>${pos}. ${player}</p>`;
-            rankingDiv.appendChild(playerDiv);
+            if (pos < 4) {
+                playerDiv.innerHTML = `<p>${podium[pos - 1]} ${player}</p>`;
+                podiumDiv.appendChild(playerDiv);
+            } else {
+                playerDiv.innerHTML = `<p>${pos}. ${player}</p>`;
+                otherDiv.appendChild(playerDiv);
+            }
             pos++;
         }
     });
+    rankingDiv.appendChild(podiumDiv);
+    rankingDiv.appendChild(otherDiv);
     document.getElementsByClassName("tournament")[0].appendChild(rankingDiv);
 }
 

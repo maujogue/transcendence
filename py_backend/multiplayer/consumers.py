@@ -55,7 +55,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
 
     async def set_environment(self):
-        self.max_points = 1
+        self.max_points = 3
         self.is_connected = False
         self.is_ready = False
         
@@ -175,7 +175,9 @@ class PongConsumer(AsyncWebsocketConsumer):
             print("Not connected")
             return
         try:
-            print(self.player.name, ": Disconnected")
+            print(self.player.name, " : Disconnected")
+            if self.scope['user'] is not None:
+                print("User: ", self.scope['user'])
             self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
             self.is_connected = False
             await self.lobby.disconnectUser(self.player)

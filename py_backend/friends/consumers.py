@@ -33,7 +33,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'remove_request': self.remove_friend,
             'get_friendslist': self.send_friendslist,
             'get_current_user_requests': self.send_current_user_requests,
-            'get_friend_online_status': self.get_friend_online_status,
+            'get_friends_online_status': self.get_friends_online_status,
         }
         handler = handlers.get(message_type)
         if handler:
@@ -153,17 +153,23 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             "friends": friends_list_data}))
 
 
-    async def get_friend_online_status(self, data):
+    async def get_friends_online_status(self, data):
+        friends = await self.get_friends()
+        for friend in friends:
+            friend['status'] = await self.get_status(friend['username'])
+
+        # await self.send(text_data=json.dumps({ "type": "online_status", "status": "online"}))
+        # await self.send(text_data=json.dumps({ "type": "online_status", "status": "offline"}))
+
+
+    async def get_status(self, friend_username):
         try:
-            friend_instance = await sync_to_async(CustomUser.objects.get)(username=data.get('friend'))
+            friend_instance = await sync_to_async(CustomUser.objects.get)(username=friend_username)
         except CustomUser.DoesNotExist:
             return
         if friend_instance.is_online:
-            print('ONline')
-            # await self.send(text_data=json.dumps({ "type": "online_status", "status": "online"}))
-        else:
-            print('OFFline')
-            # await self.send(text_data=json.dumps({ "type": "online_status", "status": "offline"}))
+            return True
+        return False
 
 
     async def new_request_notification(self, event):

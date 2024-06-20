@@ -35,18 +35,18 @@ export function createFormTournament() {
 	document.getElementsByClassName("menu")[0].innerHTML += '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>';
 	const parent = document.getElementsByClassName("tournament")[0];
 	parent.innerHTML += '\
-	<h1 class="form-header glitched">Create Tournament</h1>\
+	<h1 class="form-header glitched" data-lang="create_tournament">Create Tournament</h1>\
 	<form id="tournamentForm" method="post">\
 	<div class="form-field">\
-		<label for="name" class="form-field-name glitched">Name :</label>\
+		<label for="name" class="form-field-name glitched" data-lang="name">Name :</label>\
 		<input class="glitched" type="text" id="name" name="name" required>\
 	</div>\
 	<div class="form-field">\
-		<label for="max_players" class="form-field-max_players glitched">Max players :</label>\
+		<label for="max_players" class="form-field-max_players glitched" data-lang="max_players">Max players :</label>\
 		<input type="number" class="glitched" id="max_players" name="max_players" min="2" required>\
 	</div>\
 	<div class="glitched">\
-		<button class="form-btn" id="form-btn" type="submit">Create</button>\
+		<button class="form-btn" id="form-btn" type="submit" data-lang="create">Create</button>\
 	</div>\
 	</form>';
 }

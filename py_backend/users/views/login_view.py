@@ -19,10 +19,13 @@ def login_view(request):
         password = form.cleaned_data['password']
         user = authenticate(username=username, password=password)
 
-        if user.email_is_verified == False:
-            return JsonResponse({'error': "Your email is not verified yet."}, status=400)
-
         if user is not None:
+            if not user.email_is_verified:
+                return JsonResponse({'error': "Your email is not verified yet."}, status=400)
+
+            user.is_42auth = False
+            user.save()
+
             auth_login(request, user)
             user_info = {
                 'username': user.username,
@@ -32,7 +35,8 @@ def login_view(request):
                 'bio': user.bio,
                 'winrate': user.winrate,
                 'rank': user.rank,
-                'n_games_played': user.n_games_played
+                'n_games_played': user.n_games_played,
+                'is_42auth': user.is_42auth
             }
             return JsonResponse({'status': "You are now logged in !", "user": user_info}, status=200)
     return JsonResponse({'error': "Wrong username or password."}, status=400)

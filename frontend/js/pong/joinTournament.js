@@ -42,6 +42,7 @@ function createDivJoinTournament(parent) {
     header.className = "list-header";
     const div = document.createElement("div");
     div.textContent = "Tournaments name";
+	div.setAttribute("data-lang", "tournaments_name");
     const div2 = document.createElement("div");
     div2.textContent = "Nb";
     const tournamentsInfo = document.createElement("div");
@@ -75,7 +76,7 @@ async function joinTournament(tournament) {
         connectToTournament(tournament);
     })
     .catch((error) => {
-        displayErrorPopUp(error);
+        displayErrorPopUp(error, document.getElementsByClassName("tournament")[0]);
         document.getElementById("PopUpCloseIcon")?.addEventListener("click", () => {
             displayAllTournaments();
         });

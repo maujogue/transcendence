@@ -1,7 +1,9 @@
 import { register, login, logout } from "../ApiCalls.js";
-import { togglePasswordVisibility, checkPassword } from "../Utils.js";
+import { togglePasswordVisibility, checkPassword, showAlert } from "../Utils.js";
+import { printQueryParamsMessage } from "../modules/translationsModule/translationsModule.js";
 
-export function init() {
+export function init(queryParams) {
+	printQueryParamsMessage(queryParams);
 	const collapseButton = document.getElementById("collapseButton");
 	var loginForm = document.getElementById("loginForm");
 	var logoutButton = document.getElementById("logoutButton");

@@ -115,11 +115,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'type_to_user': None
         }
         await self.group_send(to_user.username, event)
-        await self.group_send(from_user.username, event = {'type': 'send_friendslist'})
-
-        
-    async def send_friendslist(self, event):
-        await self.get_friendslist(None)
+        await self.group_send(from_user.username, event = {'type': 'get_friendslist'})
 
 
     async def remove_friend(self, data):

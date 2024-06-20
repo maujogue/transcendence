@@ -10,6 +10,11 @@ async function check_user_42() {
 	return await getUserData("is_42auth");
 }
 
+function printQueryParamsMessage(queryParams) {
+	if (queryParams && queryParams.get("message"))
+		showAlert(queryParams.get("message"), queryParams.get("success"));
+}
+
 async function toggleContentOnLogState() {
 	const logInContent = document.querySelectorAll(".logInContent");
 	const logOutContent = document.querySelectorAll(".logOutContent");

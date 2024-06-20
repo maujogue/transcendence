@@ -15,8 +15,8 @@ import { getUserData } from "../User.js";
 import { sendTournamentForm, createFormTournament } from "../pong/createTournament.js";
 import { createJoinTournamentMenu } from "../pong/joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "../pong/tournament.js";
-import { loadAgentModel } from '../pong/AI/AIUtils.js';
 import { showAlert } from "../Utils.js";
+import { loadAgentModel } from '../pong/AI/AIUtils.js';
 import * as THREE from 'three';
 import { injectGameTranslations } from "../modules/translationsModule/translationsModule.js";
 
@@ -73,6 +73,9 @@ export async function init(queryParams) {
 		player2 = await displayCharacter(player2, environment, "elvis", "player2");
 	}
 
+<<<<<<<<< Temporary merge branch 1:frontend/js/pages/game.js
+	gameDiv.addEventListener("keydown", function (event) {
+=========
 	async function createAISelectMenu(field) {
 		document.getElementById("localMenu").remove();
 		environment = createSelectMenu(field, characters);
@@ -83,7 +86,8 @@ export async function init(queryParams) {
 		player2 = await displayCharacter(player2, environment, "elvis", "player2");
 	}
 
-	gameDiv.addEventListener("keydown", function (event) {
+	document.addEventListener("keydown", function (event) {
+>>>>>>>>> Temporary merge branch 2:frontend/js/pages/Game.js
 		keysPressed[event.key] = true;
 		if (keysPressed['A'])
 			keysPressed['a'] = true;

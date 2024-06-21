@@ -73,7 +73,8 @@ function handlerMessageStatus(data) {
         ask_tournament_status();
     }
     if (data.status == "cancelled") {
-        wsMatch.close();
+        if (checkIfWebsocketIsOpen(wsMatch))
+            wsMatch.close();
         clearOnlineVariables();
     }
 }

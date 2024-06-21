@@ -35,9 +35,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.send_self_bracket()
         if text_data_json.get('type') == 'getRanking':
             await self.send_tournament_ranking()
-        if text_data_json.get('type') == 'ask_status':
-            if self.check_if_all_matches_finished():
-                await self.advance_in_tournament()
+        # if text_data_json.get('type') == 'ask_status':
+        #     if self.check_if_all_matches_finished():
+        #         await self.advance_in_tournament()
 
     async def disconnect(self, close_code):
         print('tournament disconnected')
@@ -109,14 +109,17 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def advance_in_tournament(self):
         await self.tournament.increase_round()
         if self.tournament.current_round <= self.tournament.max_round:
+            print(f'{self.scope["user"].tournament_username} advancing to round {self.tournament.current_round}')
             await self.generate_round()
         else:
+            print('tournament is over')
             await self.set_tournament_over()
 
     async def check_if_all_matches_finished(self):
         self.tournament = await self.get_tournament()
         all_matches = await sync_to_async(list)(self.tournament.matchups.filter(round=self.tournament.current_round))
         print(f'all_matches: {all_matches}, are finished: {all(matches.finished for matches in all_matches)}')
+        print(f'len(all_matches): {len(all_matches)}')
         if all(matches.finished for matches in all_matches) and len(all_matches) > 0:
             return True
         return False
@@ -352,7 +355,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 match_infos = self.get_match_infos(self.match)
                 await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos}))
                 print(f'{self.scope["user"].tournament_username} matchup: ', match_infos)
-                # await self.check_if_match_is_started(self.match)
+                await self.check_if_match_is_started(self.match)
             else:
                 await self.send(text_data=json.dumps({'type': 'status', 'status': 'waiting'}))
                 

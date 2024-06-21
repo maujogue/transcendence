@@ -307,7 +307,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             await self.collision(self.opp)
 
     async def setGameOver(self):
-        print("Game Over")
+        print("multiplayer: Game Over")
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
         if self.player.name == 'player1' or not self.lobby.player1:
             await self.createHistoryMatch()

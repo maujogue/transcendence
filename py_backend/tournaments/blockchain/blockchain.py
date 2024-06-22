@@ -2,6 +2,7 @@ from web3 import Web3, HTTPProvider
 from django.conf import settings
 import os
 import json
+import time
 
 def load_contract_abi():
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -14,6 +15,9 @@ def load_contract_abi():
 
 def set_data_on_blockchain(tournament):
     try:
+        while tournament.contract_address == "0x0":
+            print("Waiting for contract to be created")
+            time.sleep(3)
         contract_address = tournament.contract_address
         tournament_winner = tournament.get_winner()
 

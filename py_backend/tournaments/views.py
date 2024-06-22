@@ -15,10 +15,10 @@ from .blockchain.blockchain import set_data_on_blockchain
 
 import json
 
-# ### debug ###
-# import logging
+### debug ###
+import logging
 
-# logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 # #######
 
 CustomUser = get_user_model()
@@ -184,7 +184,7 @@ def add_contract_address(request, tournament_id):
 	contract_address = deploy_tournament_contract(tournament.name)
 	if contract_address is None:
 		return JsonResponse({"errors": "Failed to deploy contract."},
-					status=500)
+					status=400)
 
 	tournament.contract_address = contract_address
 	tournament.save()
@@ -194,18 +194,22 @@ def add_contract_address(request, tournament_id):
 
 @require_http_methods(["POST"])
 def send_data_to_blockchain(request, tournament_id):
+	logger.info(f"send_data_to_blockchain called for tournament_id: {tournament_id}")
 	try:
 		tournament = Tournament.objects.get(pk=tournament_id)
 	except Tournament.DoesNotExist:
+		logger.error("Tournament not found.")
 		return JsonResponse({"errors": "Tournament not found."},
 					status=404)
 	if tournament.contract_address == "0x0":
+		logger.error("Contract not deployed for id: {tournament_id}.")
 		return JsonResponse({"errors": "Contract is not deployed."},
 					status=400)
-	try:
-		set_data_on_blockchain(tournament)
-	except Exception as e:
-		return JsonResponse({"errors": f"Failed to initiate transaction: {str(e)}"},
-					status=500)
+	result = set_data_on_blockchain(tournament)
+	if "Failed" in result:
+		logger.error(f"Error in set_data_on_blockchainfor id: {tournament_id}: {result}")
+		return JsonResponse({"errors": result},
+					status=400)
+	logger.info(f"Data sent to blockchain successfully for tournament_id: {tournament_id}")
 	return JsonResponse({"message": "Transaction initiated."},
 					status=200)

@@ -9,6 +9,6 @@ urlpatterns = [
     path('<int:tournament_id>/quit/', views.quit_tournament, name='quit_tournament'),
     path('delete/<int:tournament_id>/', views.delete_tournament, name='delete_tournament'),
     path('check-subscribed/<str:username>/', views.check_if_tournament_joined, name='check_if_tournament_joined'),
-    path('contract/<int:tournament_id>/', views.add_contract_address, name='add_contract_address'),
-    path('contract/<int:tournament_id>/', views.send_data_to_blockchain, name='send_data_to_blockchain')
+    path('contract/create/<int:tournament_id>/', views.add_contract_address, name='add_contract_address'),
+    path('contract/send/<int:tournament_id>/', views.send_data_to_blockchain, name='send_data_to_blockchain')
 ]

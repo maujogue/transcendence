@@ -54,7 +54,7 @@ export function createFormTournament() {
 }
 
 async function createTournamentContract(tournament) {
-	fetch(`https://${hostname}:8000/api/tournament/contract/${tournament.id}/`, {
+	fetch(`https://${hostname}:8000/api/tournament/contract/create/${tournament.id}/`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',

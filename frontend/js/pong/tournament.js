@@ -63,8 +63,10 @@ function handlerMessageStatus(data) {
         playerStatus = "disqualified";
         // displayErrorPopUp("You have been disqualified", document.getElementsByClassName("tournament")[0]);
     }
-    if (data.status == "endTournament")
+    if (data.status == "endTournament" && tournamentStatus != "finished") {
         tournamentStatus = "finished";
+        sendTournamentOnBlockchain();
+    }
     if (data.status == "start")
         tournamentStatus = "started";
     if (data.status == "waiting")
@@ -238,4 +240,26 @@ export function insertPlayer(player) {
     const playerList = document.getElementById("player-list");
 	div.textContent = player;
     playerList?.appendChild(div);
+}
+
+async function sendTournamentOnBlockchain() {
+    console.log("sendTournamentOnBlockchain called");
+    try {
+        const response = await fetch(`https://${hostname}:8000/api/tournament/contract/send/${currentTournament.id}/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": await get_csrf_token(),
+            },
+        });
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error("Error sending tournament to blockchain:", data.errors);
+            throw new Error("Error sending tournament to blockchain: " + data.errors);
+        }
+        console.log(data.message);
+    } catch(error) {
+        console.error(error);
+    }
 }

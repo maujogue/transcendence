@@ -15,7 +15,12 @@ def load_contract_abi():
 
 def set_data_on_blockchain(tournament):
     try:
+        timeout = 30
+        start_time = time.time()
+
         while tournament.contract_address == "0x0":
+            if time.time() - start_time > timeout:
+                raise TimeoutError("Timeout waiting for contract address to be set.")
             print("Waiting for contract to be created")
             time.sleep(3)
         contract_address = tournament.contract_address

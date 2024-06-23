@@ -75,7 +75,10 @@ function handlerMessageStatus(data) {
     if (data.status == "cancelled") {
         if (checkIfWebsocketIsOpen(wsMatch))
             wsMatch.close();
-        clearOnlineVariables();
+        wsTournament.send(JSON.stringify({
+            'type': 'status',
+            'status': 'endGame'
+        }));
     }
 }
 

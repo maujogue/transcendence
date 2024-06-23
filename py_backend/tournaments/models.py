@@ -154,8 +154,6 @@ class Tournament(models.Model):
 			return f"Round {round_number}"
 		
 	async def increase_round(self):
-		if self.current_round > self.max_round:
-			return
 		self.current_round += 1
 		print(f"increase: current_round: {self.current_round}")
 		self.asave()

@@ -208,6 +208,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             return
 
     async def startGame(self):
+        print("multiplayer: Game started")
         await self.lobby.startGame()
         await self.channel_layer.group_send(
         self.lobby_group_name, { 

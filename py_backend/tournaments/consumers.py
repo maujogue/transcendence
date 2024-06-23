@@ -107,8 +107,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         await self.send_all_matchups()
 
     async def advance_in_tournament(self):
-        await self.tournament.increase_round()
-        if self.tournament.current_round <= self.tournament.max_round:
+        if self.tournament.current_round < self.tournament.max_round:
+            await self.tournament.increase_round()
             print(f'{self.scope["user"].tournament_username} advancing to round {self.tournament.current_round}')
             await self.generate_round()
         else:

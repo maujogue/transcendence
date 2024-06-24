@@ -15,6 +15,7 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def send_player_data(self):
         if not self.check_if_user_is_connected():
             return
+        print(f"self.player.name: {self.player.name}")
         await self.send(text_data=json.dumps({
             'type': 'player_data',
             'name': self.player.name,
@@ -34,7 +35,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         await lobby.asave()
         return lobby
     
-    async def create_player(self):
+    async def create_player(self): # TODO fix player name
         name = 'player1' if not self.lobby.player1 else 'player2'
         oppName = 'player2' if name == 'player1' else 'player1'
         posX = -9.50 if name == 'player1' else 9.50

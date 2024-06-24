@@ -58,8 +58,9 @@ function handlerStopGame(webSocket, env, message) {
 }
 
 async function handlerEndGame(data, env, webSocket) {
-    if (!document.getElementById("endscreen") && !checkIfWebsocketIsOpen(wsTournament))
+    if (!document.getElementById("endscreen") && !checkIfWebsocketIsOpen(wsTournament)) {
         createEndScreen(data['name']);
+    }
     if (checkIfWebsocketIsOpen(wsTournament)) {
         wsTournament.send(JSON.stringify({
             'type': 'status',

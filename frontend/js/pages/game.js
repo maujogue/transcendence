@@ -165,11 +165,18 @@ export async function init(queryParams) {
 	});
 
 	function setIfGameIsEnd() {
-		if (player1.score < 5 && player2.score < 5)
+		if (player1.score < 1 && player2.score < 1)
 			return;
+
 		let winner = player1.name;
 		if (player2.score > player1.score)
 			winner = player2.name;
+
+		if (winner === "player1")
+			winner = "player 1";
+		else if (winner === "player2")
+			winner = "player 2";
+
 		createEndScreen(winner);
 		start = false;
 		player1.score = 0;

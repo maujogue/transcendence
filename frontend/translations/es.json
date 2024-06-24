@@ -127,7 +127,7 @@
 	"inbox": "Bandeja de entrada",
 	"search": "Buscar",
 	"friends": "Amigos",
-	"no_friend_requests": "No hay solicitudes de amistad",
+	"no_friend_request": "No hay solicitude de amistad",
 	"add_friend": "Agregar amigo",
 	"unfriend": "Eliminar de amigos",
 	"friend_request_sent": "Solicitud de amistad enviada"

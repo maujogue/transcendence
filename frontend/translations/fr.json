@@ -127,7 +127,7 @@
 	"inbox": "Boîte de réception",
 	"search": "Recherche",
 	"friends": "Amis",
-	"no_friend_requests": "Aucune demande d'ami",
+	"no_friend_request": "Aucune demande d'ami",
 	"add_friend": "Ajouter un ami",
 	"unfriend": "Supprimer l'ami",
 	"friend_request_sent": "Demande d'ami envoyée"	

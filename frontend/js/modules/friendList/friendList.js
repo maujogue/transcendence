@@ -47,7 +47,7 @@ async function fillInbox(data) {
 
 	inboxDiv.innerHTML = "";
 	if (requestsList.length === 0)
-		inboxDiv.innerHTML = `<div class="mx-auto" data-lang="no_friend_request"></div>`;
+		inboxDiv.innerHTML = `<div class="mx-auto px-2" data-lang="no_friend_request"></div>`;
 	requestsList.forEach(request => {
 		if (length++ > 10) {
 			if (!inboxDiv.querySelector(".finish"))
@@ -98,8 +98,8 @@ async function fillFriendsList(data) {
 	var friendScroll = module.querySelector("#friendScroll");
 	friendScroll.innerHTML = "";
 
-    var friendListHtml = (friend, isOnline) => {
-        return `
+	var friendListHtml = (friend, isOnline) => {
+		return `
         <li class="d-flex g-5" ${!isOnline ? 'style="opacity:0.5;"' : ''}>
             <a class="userLink ms-2 align-items-center text-white" navlink>
                 <img width="30" height="30" class="rounded-circle me-3" src="data:image/png;base64, ${friend.avatar}"/>
@@ -108,9 +108,9 @@ async function fillFriendsList(data) {
 				</span>
             </a>
         </li>`;
-    }
+	}
 	onlineFriends.forEach(friend => {
-		console.log( friendListHtml(friend, true));
+		console.log(friendListHtml(friend, true));
 		friendScroll.innerHTML += friendListHtml(friend, true);
 	});
 	offlineFriends.forEach(friend => {

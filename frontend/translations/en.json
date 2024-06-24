@@ -127,7 +127,7 @@
 	"inbox": "Inbox",
 	"search": "Search",
 	"friends": "Friends",
-	"no_friend_requests": "No friend requests",
+	"no_friend_request": "No friend request",
 	"add_friend": "Add friend",
 	"unfriend": "Unfriend",
 	"friend_request_sent": "Friend request sent"

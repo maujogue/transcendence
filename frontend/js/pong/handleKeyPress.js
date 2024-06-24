@@ -31,11 +31,9 @@ function handleKeyPress(keysPressed, player1, player2, environment) {
 	playerBox1 = new THREE.Box3().setFromObject(player1.paddle.mesh);
 	if (keysPressed["w"] && !environment.border.up.box.intersectsBox(playerBox1)) {
 		player1.paddle.mesh.translateY(0.15);
-		player1.light.position.y += 0.15;
 	}
 	if (keysPressed["s"] && !environment.border.down.box.intersectsBox(playerBox1)) {
 		player1.paddle.mesh.translateY(-0.15);
-		player1.light.position.y -= 0.15;
 	}
 
 	if (!player2)
@@ -43,11 +41,9 @@ function handleKeyPress(keysPressed, player1, player2, environment) {
 	playerBox2 = new THREE.Box3().setFromObject(player2.paddle.mesh);
 	if (keysPressed["ArrowUp"] && !environment.border.up.box.intersectsBox(playerBox2)) {
 		player2.paddle.mesh.translateY(0.15);
-		player2.light.position.y += 0.15;
 	}
 	if (keysPressed["ArrowDown"] && !environment.border.down.box.intersectsBox(playerBox2)) {
 		player2.paddle.mesh.translateY(-0.15);
-		player2.light.position.y -= 0.15;
 	}
 }
 

@@ -20,11 +20,6 @@ export async function connectToTournament(tournament) {
         currentTournament = tournament;
         wsTournament = new WebSocket(`wss://${hostname}:8000/ws/tournament/${tournament.id}/`);
     
-        wsTournament.onopen = () => {
-            createWaitingScreenTournament(tournament);
-            fillUserData().then(sendUsername);
-        };
-    
         wsTournament.onmessage = (event) => {
             const data = JSON.parse(event.data);
             console.log("Received data:", data);

@@ -234,7 +234,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         # print('check tournament start')
         if await self.is_tournament_full() and not self.tournament.started:
             await self.launch_tournament()
-        elif self.tournament.started:
+        elif self.tournament.started and not self.tournament.finished:
             # print('tournament already started')
             if self.match and not self.match.finished and self.match.player2:
                 if not await self.check_if_match_is_started(self.match, False):

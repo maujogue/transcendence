@@ -188,9 +188,8 @@ export async function init(queryParams) {
 			environment = await initGame(player1, player2);
 		}
 		if (start) {
-			console.log("start");
 			if (keyPress)
-			handleKeyPress(keysPressed, player1, player2, environment);
+				handleKeyPress(keysPressed, player1, player2, environment);
 		checkCollision(environment.ball, player1, player2, environment);
 		setIfGameIsEnd();
 	}

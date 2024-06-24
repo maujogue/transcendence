@@ -1,6 +1,6 @@
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import requires_csrf_token
-from django.contrib.auth.decorators import login_required
+from users.decorators import custom_login_required
 from django.core.files.images import get_image_dimensions
 from django.http import JsonResponse
 
@@ -10,7 +10,7 @@ import magic
 
 
 @require_http_methods(["POST"])
-@login_required
+@custom_login_required
 @requires_csrf_token
 def update_profile_picture(request):
     uploaded_file = request.FILES.get("image")

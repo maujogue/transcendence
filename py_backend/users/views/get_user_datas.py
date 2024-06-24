@@ -14,22 +14,25 @@ def get_user_data(request, username=None):
         user = get_object_or_404(CustomUser, username=username)
     else:
         user = request.user
-    
-    user_datas = {
-        'username': user.username,
-        'email': user.email,
-        'email_is_verified': user.email_is_verified,
-        'avatar': convert_image_to_base64(user.avatar),
-        'bio': user.bio,
-        'title': user.title,
-        'winrate': user.winrate,
-        'rank': user.rank,
-        'n_games_played': user.n_games_played,
-        'is_42auth': user.is_42auth,
-        'lang': user.lang,
-        'friendslist': utils_get_friendslist_data(user),
-        'is_42auth': user.is_42auth,
-        'is_online': user.is_online,
-    }
-    return JsonResponse({'status': 'success', 'user': user_datas}, status=200)
+        
+    try:
+        user_datas = {
+            'username': user.username,
+            'email': user.email,
+            'email_is_verified': user.email_is_verified,
+            'avatar': convert_image_to_base64(user.avatar),
+            'bio': user.bio,
+            'title': user.title,
+            'winrate': user.winrate,
+            'rank': user.rank,
+            'n_games_played': user.n_games_played,
+            'is_42auth': user.is_42auth,
+            'lang': user.lang,
+            'friendslist': utils_get_friendslist_data(user),
+            'is_42auth': user.is_42auth,
+            'is_online': user.is_online,
+        }
+        return JsonResponse({'status': 'success', 'user': user_datas}, status=200)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
 

@@ -75,7 +75,7 @@ class VerificationEmail(TestCase):
         
         self.client.login(username='bob_seger', password='Mewtransse9+')
         
-        response = self.client.post(reverse('get_user_data'))
+        response = self.client.post(reverse('get_user_data_current'))
         response_data = response.json()
         self.assertEqual(response_data.get('user').get('email_is_verified'), False)
 

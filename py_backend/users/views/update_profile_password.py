@@ -1,11 +1,11 @@
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import requires_csrf_token
-from users.decorators import custom_login_required
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import update_session_auth_hash
 
 from django.http import JsonResponse
 
+from users.decorators import custom_login_required
 from users.utils import decode_json_body
 
 

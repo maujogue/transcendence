@@ -1,8 +1,9 @@
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import requires_csrf_token
-from users.decorators import custom_login_required
 from django.contrib.auth import logout
 from django.http import JsonResponse
+
+from users.decorators import custom_login_required
 
 
 @require_http_methods(["POST"])

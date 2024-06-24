@@ -155,14 +155,20 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             lobby = await Lobby.objects.aget(pk=match.lobby_id)
             print(f'lobby: {lobby}\n is_started = {lobby.game_started}, wait = {wait}\n player1 = {lobby.player1}, player2 = {lobby.player2}')
             if lobby.game_started:
-                return
-            print(f'{match} cancelled')
-            await self.create_history_match(lobby)
-            await self.send(text_data=json.dumps({'type': 'status', 'status': 'cancelled'}))
-        except Lobby.DoesNotExist:
-            try:
-                await TournamentMatch.objects.aget(lobby_id=match.lobby_id)
+                return True
+            if wait:
+                print(f'{match} cancelled')
+                await self.create_history_match(lobby)
                 await self.send(text_data=json.dumps({'type': 'status', 'status': 'cancelled'}))
+                await self.endGame()
+            return False
+        except Lobby.DoesNotExist:
+            print("check_if_match_is_started: lobby does not exist")
+            try:
+                if wait:
+                    await TournamentMatch.objects.aget(lobby_id=match.lobby_id)
+                    await self.send(text_data=json.dumps({'type': 'status', 'status': 'cancelled'}))
+                    await self.endGame()
             except TournamentMatch.DoesNotExist:
                 print("check_if_match_is_started: match does not exist")
                 return
@@ -226,7 +232,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         elif self.tournament.started:
             print('tournament already started')
             if self.match and not self.match.finished and self.match.player2:
-                await self.send_self_matchup()
+                if not await self.check_if_match_is_started(self.match, False):
+                    await self.send_self_matchup()
             else:
                 await self.send_bracket(False)
     

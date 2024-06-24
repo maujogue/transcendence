@@ -73,16 +73,11 @@ function handlerMessageStatus(data) {
         ask_tournament_status();
     }
     if (data.status == "cancelled") {
-        console.log("match cancelled");
         if (checkIfWebsocketIsOpen(wsMatch)) {
             console.log("Closing wsMatch");
             wsMatch.close();
             clearOnlineVariables();
         }
-        wsTournament.send(JSON.stringify({
-            'type': 'status',
-            'status': 'endGame'
-        }));
     }
 }
 

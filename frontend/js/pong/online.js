@@ -52,8 +52,8 @@ export function clearOnlineVariables() {
     }
     keyUp = false;
     oppInfo = null;
-    playersMove.clear();
     lobbyId = null;
+    playersMove.clear();
     ClearAllEnv(env)
 }
 
@@ -216,7 +216,6 @@ async function connectToLobby(username) {
     wsMatch.onclose = function(e) {
         console.log('Connection closed', e.code, e.reason);
         status.is_connected = false;
-        lobbyId = null;
         if (status.start)
             clearOnlineVariables();
     }
@@ -229,7 +228,6 @@ async function connectToLobby(username) {
         div.innerHTML = "Error while connecting to the server";
         selectMenu.appendChild(div);
         wsMatch = null;
-        lobbyId = null;
     }
 }
 

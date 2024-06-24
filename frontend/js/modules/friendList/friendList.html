@@ -1,32 +1,31 @@
 <section class="logInContent">
-	<div class="d-flex mb-3 mt-1 ms-2" style="position:relative;">
+	<div class="d-flex mb-3 mt-1 ms-2 friendsNavbarBtn" style="position:relative;">
 		<i class="mt-1 ms-2 bi bi-people-fill"></i>
 		<h4 class="ms-5 section-name" data-lang="friends"></h4>
 	</div>
 	<form id="searchFriendForm">
-		<div id="searchButton" class="ms-2 input-group input-group-sm my-3 ">
-			<button type="submit" class="input-group-text" id="basic-addon1">🔎</button>
-			<input type="text" name="username" class="me-4 form-control" placeholder="Search" autocomplete="off" style>
+		<div id="searchButton" class="ms-2 input-group input-group-sm my-3 friendsNavbarBtn">
+			<button type="submit" class="btn btn-secondary input-group-text"><i class="bi bi-search"></i></button>
+			<input type="text" name="username" class="me-4 form-control" placeholder="Search" autocomplete="off">
 		</div>
 	</form>
 	<div class="mb-3 dropdown d-flex align-items-center">
 		<ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-			<div id="friendRequestInbox" class="d-flex flex-column gap-3"></div> 
+			<div id="friendRequestInbox" class="d-flex flex-column gap-3"></div>
 		</ul>
-		<a class="ms-2 d-flex align-items-center text-white text-decoration-none" id="dropdownUser1"
+		<a class="ms-2 d-flex align-items-center text-white text-decoration-none friendsNavbarBtn" id="dropdownUser1"
 			data-bs-toggle="dropdown" navlink>
 			<i class="mt-1 ms-2 bi bi-inbox-fill"></i>
 			<span class="section-name ms-2 dropdown-toggle" style="position: relative" data-lang="inbox">Inbox</span>
 		</a>
 	</div>
 	<div id="friendScroll" class="d-flex flex-column gap-2" style="position:relative;">
-	
+
 	</div>
 </section>
 
 <style>
 	#friendScroll {
-		height: 40vh;
 		overflow: scroll;
 		position: relative;
 	}
@@ -35,6 +34,14 @@
 		display: none;
 		-ms-overflow-style: none;
 		scrollbar-width: none;
+	}
+
+	#friendScroll {
+		scrollbar-width: none;
+	}
+
+	#searchButton input {
+		transition: width 0.5s;
 	}
 
 	.disable-collapse.collapsed {

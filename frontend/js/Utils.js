@@ -33,7 +33,7 @@ async function toggleContentOnLogState() {
 function resetModalFormsInitListeners() {
 	var modals = document.querySelectorAll('.modal');
 	modals.forEach(function (modal) {
-		if (!modal.classList.contains('modal-no-reset')){
+		if (!modal.classList.contains('modal-no-reset')) {
 			var form = modal.querySelector('form');
 			if (!form) return;
 			modal.addEventListener('hide.bs.modal', function () {
@@ -70,14 +70,15 @@ async function disable42LoginElements() {
 }
 
 
-async function disableCollapsedSidebar() {
+async function disableCollapsedSidebar(forceDisable) {
+	console.log("disableCollapsedSidebar");
 	const sidebar = document.getElementById("sidebar");
 	const content = document.getElementById("content-container");
-	if (!(await isLoggedIn())) {
+	if (!(await isLoggedIn()) || forceDisable) {
 		sidebar.classList.remove("collapsed");
 		content.classList.remove("collapsed");
 
-		toggleSearchBar();
+		toggleSearchBar(forceDisable);
 		var sectionNames = document.querySelectorAll(".section-name");
 		sectionNames.forEach(function (name) {
 			name.classList.remove("section-name-collapsed");
@@ -85,15 +86,17 @@ async function disableCollapsedSidebar() {
 	}
 }
 
-function toggleSearchBar() {
-	const searchButton = document.querySelector("#searchButton");
+function toggleSearchBar(forceDisable) {
+	const searchInput = document.querySelector("#searchButton > input");
 
-	if (searchButton.classList.contains('hidden'))
+	if (searchInput.hidden == true || forceDisable) {
 		setTimeout(() => {
-			searchButton.classList.remove('hidden');
-		}, 200);
-	else
-		searchButton.classList.add('hidden');
+			searchInput.hidden = false;
+		}, 500);
+	}
+	else {
+		searchInput.hidden = true;
+	}
 }
 
 

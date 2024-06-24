@@ -1,5 +1,5 @@
 import { getModuleDiv } from "../../Modules.js";
-import { isLoggedIn, showAlert } from "../../Utils.js";
+import { disableCollapsedSidebar, isLoggedIn, showAlert, toggleSearchBar } from "../../Utils.js";
 import { friendsWebsocket } from "./friendsWs.js";
 import { sendFriendRequest } from "./friendsWs.js";
 import { acceptFriendRequest, declineFriendRequest } from "./friendsWs.js";
@@ -20,10 +20,29 @@ export async function init() {
 	if (await isLoggedIn())
 		friendsWebsocket();
 
+	var friendsNavbarBtns = module.querySelectorAll(".friendsNavbarBtn");
+	friendsNavbarBtns.forEach(btn => {
+		btn.addEventListener("click", async () => {
+			disableCollapsedSidebar(true);
+		});
+	});
 	var searchFriendForm = module.querySelector("#searchFriendForm");
 	searchFriendForm.addEventListener("submit", (event) => {
 		event.preventDefault();
-		searchFriend(event.target);
+		var input = searchFriendForm.querySelector("input");
+		if (input.hidden == true) {
+			disableCollapsedSidebar(true);
+			setTimeout(() => {
+				input.focus();
+				input.setSelectionRange(input.value.length, input.value.length); // Place cursor at the end
+			}, 800);
+		}
+		else if (input.value === "") {
+			input.focus();
+			input.setSelectionRange(input.value.length, input.value.length); // Place cursor at the end
+		}
+		else
+			searchFriend(event.target);
 	});
 
 

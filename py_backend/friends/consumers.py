@@ -168,8 +168,9 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             f['status'] = await self.get_status(f['username'])
             dict_friends_status.append({'username': f['username'], 'status': f['status']})
 
+        print('dict_friends_status', dict_friends_status)
         await self.send(text_data=json.dumps({
-            "type": "friendslist",
+            "type": "friends_online_status",
             "friends": dict_friends_status}))
 
 

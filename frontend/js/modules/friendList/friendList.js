@@ -90,6 +90,7 @@ async function fillInbox(data) {
 }
 
 async function fillFriendsList(data) {
+	console.log('data = ', data);
 	friendList = data.friends;
 	var friendScroll = module.querySelector("#friendScroll");
 

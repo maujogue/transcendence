@@ -13,12 +13,12 @@ export async function friendsWebsocket() {
 		currentUser = await getUserData('username');
 		auth();
 		getFriendsList();
+		getFriendsStatus();
 		getCurrentUserRequests();
 	}
 
 	wsFriends.onmessage = (event) => {
 		const data = JSON.parse(event.data);
-		console.log('data =', data);
 		wsMessageRouter(data);
 	};
 }
@@ -107,11 +107,10 @@ async function checkUserExist(username) {
 }
 
 
-async function getFriendsStatus(username) {
+async function getFriendsStatus() {
 	if (checkWs()) {
 		wsFriends.send(JSON.stringify({
-			'type': 'get_friends_online_status',
-			'friend': username,
+			'type': 'get_friends_online_status'
 		}));
 	}
 }
@@ -137,8 +136,11 @@ async function wsMessageRouter(data) {
 		'user_exist' : (data) => setUserExist(data),
 
 		'friend_accepted_from_user': (data) => showAlert(`${data.to_user} accepted your friend request !`, true),
+		// 'send_new_status': (data) =>
+		// 'friends_online_status': (data) => console.log(data),
 	};
 	const handler = notificationHandlers[data.type];
+	console.log(data.type);
 	if (handler && data) {
 		handler.call(this, data);
 	}

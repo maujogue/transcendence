@@ -31,5 +31,5 @@ def get_user_data(request, username=None):
         'is_42auth': user.is_42auth,
         'is_online': user.is_online,
     }
-    return JsonResponse({'status': 'success', 'user': user_datas, 'lang': user.lang }, status=200)
+    return JsonResponse({'status': 'success', 'user': user_datas}, status=200)
 

@@ -9,15 +9,15 @@ import json
 class FriendsConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
+        await self.set_online_status(True)
         await self.accept()
 
 
     async def disconnect(self, exit_code):
-        # await self.channel_layer.group_discard(
-        #     self.group_name,
-        #     self.channel_name,
-        # )
-        pass
+        await self.set_online_status(False)
+        await self.group_send(
+            self.scope['user'].username,
+            event = {'type': 'send_new_status', 'status': 'offline'})
 
 
     async def receive(self, text_data):
@@ -33,7 +33,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'remove_friend': self.remove_friend,
             'get_friendslist': self.send_friendslist,
             'get_current_user_requests': self.send_current_user_requests,
-            'get_friends_online_status': self.get_friends_online_status,
+            'get_friends_online_status': self.send_friends_online_status,
         }
         handler = handlers.get(message_type)
         if handler:
@@ -52,6 +52,11 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_add(
                 f.get('username'),
                 self.channel_name)
+        
+        await self.group_send(
+            self.scope['user'].username,
+            event = {'type': 'send_new_status', 'status': 'online'})
+
 
 
 #----------- friends functions ------------------------------------------------------------------------------------------------------------
@@ -133,14 +138,17 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         to_user = data.get('to_user')
         await self.delete_interaction_request(from_user, to_user)
         return await self.send(text_data=json.dumps({ "type": "request_declined"}))
-
+    
 
     @database_sync_to_async
     def get_friends(self):
         current_user = CustomUser.objects.get(username=self.scope['user'].username)
         friendslist = []
         friendslist = current_user.friends.all()
-        friends_list_data = [{'username': friend.username, 'status': friend.is_online, 'avatar': convert_image_to_base64(friend.avatar)} for friend in friendslist]
+        friends_list_data = [{'username': friend.username, 
+                            'status': friend.is_online, 
+                            'avatar': convert_image_to_base64(friend.avatar)}
+                            for friend in friendslist]
         return friends_list_data
 
 
@@ -152,23 +160,25 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             "friends": friends_list_data}))
 
 
-    async def get_friends_online_status(self, data):
+    async def send_friends_online_status(self, data):
         friends = await self.get_friends()
-        for friend in friends:
-            friend['status'] = await self.get_status(friend['username'])
+        dict_friends_status = []
+        for f in friends:
+            f['status'] = await self.get_status(f['username'])
+            dict_friends_status.append({'username': f['username'], 'status': f['status']})
 
-        # await self.send(text_data=json.dumps({ "type": "online_status", "status": "online"}))
-        # await self.send(text_data=json.dumps({ "type": "online_status", "status": "offline"}))
+        await self.send(text_data=json.dumps({
+            "type": "friendslist",
+            "friends": dict_friends_status}))
 
 
-    async def get_status(self, friend_username):
+    @database_sync_to_async
+    def get_status(self, friend_username):
         try:
-            friend_instance = await sync_to_async(CustomUser.objects.get)(username=friend_username)
+            friend_instance = CustomUser.objects.get(username=friend_username)
         except CustomUser.DoesNotExist:
-            return
-        if friend_instance.is_online:
-            return True
-        return False
+            return None
+        return friend_instance.is_online
 
 
     async def new_request_notification(self, event):
@@ -259,5 +269,19 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             "type": "get_current_user_requests",
             "friend_requests": requests}))
-    
+
+
+    @database_sync_to_async    
+    def set_online_status(self, status):
+        try:
+            user = CustomUser.objects.get(username=self.scope['user'].username)
+            user.is_online = status
+            user.save()
+        except CustomUser.DoesNotExist:
+            return False
+        
+
+    async def send_new_status(self, event):
+        await self.send(text_data=json.dumps({"type": "send_new_status", "status": event['status']}))
+        
     

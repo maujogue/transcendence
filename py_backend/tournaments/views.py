@@ -161,3 +161,27 @@ def check_if_tournament_joined(request, username):
 			return JsonResponse({"message": "User has joined a tournament.", "tournament": tournamentJSON, "joined": True},
 						status=200)
 	return JsonResponse({"message": "User has joined a tournament.", "joined": False}, status=200)
+
+@require_http_methods(["GET"])
+def return_all_user_tournaments(request, username):
+	try:
+		user = CustomUser.objects.get(username=username)
+	except CustomUser.DoesNotExist:
+		return JsonResponse({"errors": "User not found."},
+					status=404)
+	tournaments = Tournament.objects.filter(participants=user, finished=True)
+	if not tournaments:
+		return JsonResponse({"message": "User has not joined any tournament.", "joined": False},
+					status=200)
+	
+	tournaments_data = [{
+			"id": tournament.id,
+			"name": tournament.name,
+			"max_players": tournament.max_players,
+			"participants": [participant.username for participant in tournament.participants.all()],
+			"finished": tournament.finished
+		}
+		for tournament in tournaments
+	]
+	return JsonResponse({"tournaments": tournaments_data},
+					status=200)

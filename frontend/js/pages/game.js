@@ -17,6 +17,7 @@ import { createJoinTournamentMenu } from "../pong/joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "../pong/tournament.js";
 import { showAlert } from "../Utils.js";
 import { wsTournament } from "../pong/tournament.js";
+import { createTournamentHistoryMenu } from "../pong/tournamentHistory.js";
 import * as THREE from 'three';
 
 export var lobby;
@@ -152,6 +153,9 @@ export async function init(queryParams) {
 				div.classList.remove('hidden');
 			else
 				div.classList.add('hidden');
+		}
+		if (event.target.id == 'history') {
+			createTournamentHistoryMenu();
 		}
 	});
 

@@ -92,25 +92,36 @@ async function fillInbox(data) {
 async function fillFriendsList(data) {
 	console.log('data = ', data);
 	friendList = data.friends;
+	const onlineFriends = friendList.filter(friend => friend.status);
+	const offlineFriends = friendList.filter(friend => !friend.status);
+	console.log('onlineFriends = ', onlineFriends, 'offlineFriends = ', offlineFriends);
 	var friendScroll = module.querySelector("#friendScroll");
-
 	friendScroll.innerHTML = "";
-	friendList.forEach(friend => {
-		var friendListHtml = `
-		<li class="d-flex g-5">
-			<a class="userLink ms-2 align-items-center text-white" navlink>
-			<img width="30" height="30" class="rounded-circle me-3"  src="data:image/png;base64, ${friend.avatar}"/>
-			<span class="mt-1 section-name">${friend.username}</span>
-			</a>
-		</li>`;
-		friendScroll.innerHTML += friendListHtml;
+
+    var friendListHtml = (friend, isOnline) => {
+        return `
+        <li class="d-flex g-5" ${!isOnline ? 'style="opacity:0.5;"' : ''}>
+            <a class="userLink ms-2 align-items-center text-white" navlink>
+                <img width="30" height="30" class="rounded-circle me-3" src="data:image/png;base64, ${friend.avatar}"/>
+                <span class="mt-1 section-name">${friend.username}
+                ${isOnline ? '<i class="ms-2 bi bi-circle-fill" style="color:green;"></i>' : ''}
+				</span>
+            </a>
+        </li>`;
+    }
+	onlineFriends.forEach(friend => {
+		console.log( friendListHtml(friend, true));
+		friendScroll.innerHTML += friendListHtml(friend, true);
+	});
+	offlineFriends.forEach(friend => {
+		friendScroll.innerHTML += friendListHtml(friend, false);
 	});
 	await refreshManageFriendshipBtn();
 }
 
 async function refreshManageFriendshipBtn() {
 	var dashUser = userDash.querySelector(".usernameDynamic").innerText;
-	await initManageFriendshipBtn(dashUser);
+	initManageFriendshipBtn(dashUser);
 }
 
 async function displayUserPage(username) {

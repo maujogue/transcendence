@@ -175,6 +175,12 @@ class PongConsumer(AsyncWebsocketConsumer):
             print("Not connected")
             return
         try:
+            if (self.lobby.game_started == True):
+                print("disconnect: Game started")
+                await self.setGameOver()
+                await self.channel_layer.group_send(
+                    self.lobby_group_name, { 'type': 'pong.status', 'status': 'stop', 'message': f"Connection lost with {self.scope['user']}", 'name': self.player.name}
+                )
             print(self.player.name, " : Disconnected")
             if self.scope['user'] is not None:
                 print("User: ", self.scope['user'])
@@ -184,12 +190,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_send(
                 self.lobby_group_name, {  'type': 'pong.status', 'status': 'disconnected', 'message': f"{self.scope['user']} left the game", 'name': self.player.name}
             )
-            if (self.lobby.game_started == True):
-                print("disconnect: Game started")
-                await self.setGameOver()
-                await self.channel_layer.group_send(
-                    self.lobby_group_name, { 'type': 'pong.status', 'status': 'stop', 'message': f"Connection lost with {self.scope['user']}", 'name': self.player.name}
-                )
             await self.channel_layer.group_discard(
                 self.lobby_group_name,
                 self.channel_name
@@ -328,9 +328,12 @@ class PongConsumer(AsyncWebsocketConsumer):
 
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
         winner = player1.user.tournament_username if player1.score > player2.score else player2.user.tournament_username
+        print(f'player1: {self.lobby.player1}, player2: {self.lobby.player2}')
         if not self.lobby.player1:
+            print(f'player1: {self.lobby.player1} is not in the lobby')
             winner = player2.user.tournament_username
         elif not self.lobby.player2:
+            print(f'player2: {self.lobby.player2} is not in the lobby')
             winner = player1.user.tournament_username
         print(f'createHistoryMatch: lobby_id={self.lobby.uuid},  winner={winner}')   
         loser = player1.user.tournament_username if player1.user.tournament_username != winner else player2.user.tournament_username

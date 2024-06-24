@@ -2,7 +2,7 @@ import { getModuleDiv } from "../../Modules.js";
 import { runEndPoint } from "../../ApiUtils.js";
 import { getUserData } from "../../User.js";
 import { initPages } from '../../Router.js';
-import { isLoggedIn, showAlert } from '../../Utils.js';
+import { disableCollapsedSidebar, isLoggedIn, showAlert } from '../../Utils.js';
 
 export async function init() {
 	var module = getModuleDiv("translationsModule");
@@ -47,7 +47,8 @@ export async function init() {
 				if (await isLoggedIn())
 					await setLanguage(lang);
 				Cookies.set("lang", lang);
-				initPages();
+				await disableCollapsedSidebar(true);
+				await initPages();
 			});
 		});
 	}

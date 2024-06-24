@@ -71,7 +71,6 @@ async function disable42LoginElements() {
 
 
 async function disableCollapsedSidebar(forceDisable) {
-	console.log("disableCollapsedSidebar");
 	const sidebar = document.getElementById("sidebar");
 	const content = document.getElementById("content-container");
 	if (!(await isLoggedIn()) || forceDisable) {

@@ -4,6 +4,7 @@ import { getUserData,  } from "./User.js";
 import { get_csrf_token, runEndPoint, updateInfo } from "./ApiUtils.js"
 import { getSubmittedInput, toggleConfirmPasswordModal } from "./DashboardUtils.js";
 import { toggleContentOnLogState } from "./Utils.js";
+import { closeWs } from "./modules/friendList/friendsWs.js";
 
 async function register(registerForm) {
 	const userData = new FormData(registerForm);
@@ -52,6 +53,7 @@ async function login(loginForm) {
 async function logout() {
 	var response = await runEndPoint("users/logout/", "POST",);
 	if (response.statusCode === 200) {
+		closeWs();
 		await initPages();
 		await navigateTo("/dash");
 	}

@@ -146,4 +146,10 @@ async function wsMessageRouter(data) {
 	}
 }
 
-export { sendFriendRequest, getFriendsStatus, acceptFriendRequest, declineFriendRequest, checkUserExist, removeFriend };
+function closeWs () {
+	if (wsFriends) {
+		wsFriends.close();
+	}
+}
+
+export { sendFriendRequest, getFriendsStatus, acceptFriendRequest, declineFriendRequest, checkUserExist, removeFriend, closeWs };

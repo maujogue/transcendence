@@ -17,7 +17,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await self.set_online_status(False)
         await self.group_send(
             self.scope['user'].username,
-            event = {'type': 'send_new_status', 'status': 'offline'})
+            event = {'type': 'send_friendslist'})
 
 
     async def receive(self, text_data):
@@ -55,7 +55,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         
         await self.group_send(
             self.scope['user'].username,
-            event = {'type': 'send_new_status', 'status': 'online'})
+            event = {'type': 'send_friendslist'})
 
 
 
@@ -153,6 +153,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
 
     async def send_friendslist(self, data):
+        print("friendlist")
         friends_list_data = []
         friends_list_data = await self.get_friends()
         await self.send(text_data=json.dumps({
@@ -282,6 +283,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         
 
     async def send_new_status(self, event):
-        await self.send(text_data=json.dumps({"type": "send_new_status", "status": event['status']}))
+            print("Ok")
+            await self.send(text_data=json.dumps({"type": "send_new_status", "status": event['status']}))
         
     

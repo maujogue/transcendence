@@ -37,7 +37,6 @@ function createTournamentInfo(tournament, currentParticipants, maxParticipants) 
 	tournamentDiv.appendChild(div);
 	parent.appendChild(tournamentDiv);
     tournamentDiv.addEventListener("click", () => {
-        viewTournamentDetails(tournament);
         connectToTournament(tournament);
         
     });
@@ -64,10 +63,6 @@ function createDivTournamentHistory(parent) {
     document.getElementById("actualizeIcon").addEventListener("click", () => {
         displayUserTournaments();
     });
-}
-
-async function viewTournamentDetails(tournament) {
-    console.log("View details for tournament:", tournament);
 }
 
 async function displayUserTournaments() {

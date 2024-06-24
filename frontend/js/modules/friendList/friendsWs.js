@@ -128,7 +128,6 @@ async function wsMessageRouter(data) {
 		'friend_accepted_from_user': (data) => showAlert(`${data.to_user} accepted your friend request !`, true),
 	};
 	const handler = notificationHandlers[data.type];
-	console.log(data.type);
 	if (handler && data) {
 		handler.call(this, data);
 	}

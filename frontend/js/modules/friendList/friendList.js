@@ -90,11 +90,9 @@ async function fillInbox(data) {
 }
 
 async function fillFriendsList(data) {
-	console.log('data = ', data);
 	friendList = data.friends;
 	const onlineFriends = friendList.filter(friend => friend.status);
 	const offlineFriends = friendList.filter(friend => !friend.status);
-	console.log('onlineFriends = ', onlineFriends, 'offlineFriends = ', offlineFriends);
 	var friendScroll = module.querySelector("#friendScroll");
 	friendScroll.innerHTML = "";
 
@@ -110,7 +108,6 @@ async function fillFriendsList(data) {
         </li>`;
 	}
 	onlineFriends.forEach(friend => {
-		console.log(friendListHtml(friend, true));
 		friendScroll.innerHTML += friendListHtml(friend, true);
 	});
 	offlineFriends.forEach(friend => {

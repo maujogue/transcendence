@@ -5,8 +5,6 @@ async function injectUserData(divToFill = null, username = null) {
 	if (await isLoggedIn())
 	{
 		var userInfos = await getUserData(null, username);
-		if(username)
-			console.log(userInfos);
 		if(!divToFill)
 			divToFill = document;
 		Object.keys(userInfos).forEach((info) => {
@@ -22,7 +20,7 @@ async function injectUserData(divToFill = null, username = null) {
 
 async function getUserData(dataElement, username) {
 	if (username)
-		var route = "https://127.0.0.1:8000/api/users/get_user_data/" + username + "/";
+		var route = `https://127.0.0.1:8000/api/users/get_user_data/${username}/`;
 	else
 		var route = "https://127.0.0.1:8000/api/users/get_user_data/";
   return fetch(route, {

@@ -4,14 +4,13 @@ import { friendsWebsocket } from "./friendsWs.js";
 import { sendFriendRequest } from "./friendsWs.js";
 import { acceptFriendRequest, declineFriendRequest } from "./friendsWs.js";
 import { updateModule } from "../../Modules.js";
-import { injectUserData } from "../../User.js";
+import { getUserData, injectUserData } from "../../User.js";
 import { checkUserExist } from "./friendsWs.js";
 import { removeFriend } from "./friendsWs.js";
 import { injectTranslations } from "../translationsModule/translationsModule.js";
-
+import { checkInputAvailable } from "../../ApiCalls.js";
 var module;
 var friendList;
-var userExists = false;
 
 export async function init() {
 	module = getModuleDiv("friendList");
@@ -83,7 +82,7 @@ async function fillInbox(data) {
 	});
 	module.querySelectorAll(".userLink").forEach(userLink => {
 		userLink.addEventListener("click", async (e) => {
-			var fromUser = userLink.closest("li").querySelector("span").innerText;
+			var fromUser = userLink.closest("li").querySelector("span").innerText.trim();
 			await displayUserPage(fromUser);
 		});
 	});
@@ -122,18 +121,17 @@ async function refreshManageFriendshipBtn() {
 }
 
 async function displayUserPage(username) {
-	await checkUserExist(username);
-	await new Promise(resolve => setTimeout(() => {
-		if (userExists === false)
-			return showAlert("This user does not exist.");
-		resolve();
-	}, 200));
-
+	var userExists = await checkInputAvailable(username, "username");
+	if (userExists)
+		return showAlert("This user does not exist.");
+	if (username === await getUserData("username"))
+		return showAlert("You cannot visit your own profile.");
 	await waitThenInitDashButtons(username);
 	await injectDashData(username);
 }
 
 async function injectDashData(username, close) {
+	var userDash = document.getElementById("userDash");
 	setTimeout(async () => {
 		if (close) {
 			showDiv("#closeProfileBtn", false);
@@ -159,10 +157,6 @@ async function waitThenInitDashButtons(username) {
 		await initManageFriendshipBtn(username);
 		initCloseButton();
 	}, 500);
-}
-
-function setUserExist(data) {
-	userExists = data.exists;
 }
 
 function initCloseButton() {
@@ -212,4 +206,4 @@ function showDiv(btnSelector, show) {
 	btn.hidden = !show;
 }
 
-export { fillInbox, fillFriendsList, displayUserPage, setUserExist }
+export { fillInbox, fillFriendsList, displayUserPage }

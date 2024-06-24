@@ -175,7 +175,7 @@ async function checkInputAvailable(input, type) {
 		response = await runEndPoint("users/username_available/", "POST", JSON.stringify(fetchBody));
 	else if (type === "email")
 		response = await runEndPoint("users/email_available/", "POST", JSON.stringify(fetchBody));
-	if (response.statusCode === 200) {
+	if (response.data.status === "success") {
 		return (true)
 	} else {
 		return (false);

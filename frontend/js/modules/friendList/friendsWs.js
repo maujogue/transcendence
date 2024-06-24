@@ -2,7 +2,6 @@ import { getUserData } from "../../User.js"
 import { showAlert } from "../../Utils.js";
 import { fillInbox } from "./friendList.js";
 import { fillFriendsList } from "./friendList.js";
-import { setUserExist } from "./friendList.js";
 
 let currentUser;
 let wsFriends;
@@ -123,7 +122,6 @@ async function wsMessageRouter(data) {
 		'request_declined': () => getCurrentUserRequests(),
 		'friendslist': async (data) => await fillFriendsList(data),
 		'get_current_user_requests': (data) => fillInbox(data),
-		'user_exist' : (data) => setUserExist(data),
 
 		'friend_accepted_from_user': (data) => showAlert(`${data.to_user} accepted your friend request !`, true),
 	};

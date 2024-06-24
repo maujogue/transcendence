@@ -13,7 +13,6 @@ export async function friendsWebsocket() {
 		currentUser = await getUserData('username');
 		auth();
 		getFriendsList();
-		getFriendsStatus();
 		getCurrentUserRequests();
 	}
 
@@ -106,15 +105,6 @@ async function checkUserExist(username) {
 	}
 }
 
-
-async function getFriendsStatus() {
-	if (checkWs()) {
-		wsFriends.send(JSON.stringify({
-			'type': 'get_friends_online_status'
-		}));
-	}
-}
-
 async function wsMessageRouter(data) {
 	const notificationHandlers = {
 		'friend_request_to_user': (data) => {
@@ -136,8 +126,6 @@ async function wsMessageRouter(data) {
 		'user_exist' : (data) => setUserExist(data),
 
 		'friend_accepted_from_user': (data) => showAlert(`${data.to_user} accepted your friend request !`, true),
-		// 'send_new_status': (data) =>
-		// 'friends_online_status': (data) => console.log(data),
 	};
 	const handler = notificationHandlers[data.type];
 	console.log(data.type);
@@ -152,4 +140,4 @@ function closeWs () {
 	}
 }
 
-export { sendFriendRequest, getFriendsStatus, acceptFriendRequest, declineFriendRequest, checkUserExist, removeFriend, closeWs };
+export { sendFriendRequest, acceptFriendRequest, declineFriendRequest, checkUserExist, removeFriend, closeWs };

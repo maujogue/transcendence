@@ -33,7 +33,6 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'remove_friend': self.remove_friend,
             'get_friendslist': self.send_friendslist,
             'get_current_user_requests': self.send_current_user_requests,
-            'get_friends_online_status': self.send_friends_online_status,
         }
         handler = handlers.get(message_type)
         if handler:
@@ -161,27 +160,6 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             "friends": friends_list_data}))
 
 
-    async def send_friends_online_status(self, data):
-        friends = await self.get_friends()
-        dict_friends_status = []
-        for f in friends:
-            f['status'] = await self.get_status(f['username'])
-            dict_friends_status.append({'username': f['username'], 'status': f['status']})
-
-        await self.send(text_data=json.dumps({
-            "type": "friendslist",
-            "friends": dict_friends_status}))
-
-
-    @database_sync_to_async
-    def get_status(self, friend_username):
-        try:
-            friend_instance = CustomUser.objects.get(username=friend_username)
-        except CustomUser.DoesNotExist:
-            return None
-        return friend_instance.is_online
-
-
     async def new_request_notification(self, event):
         if self.scope['user'].username == event['from_user']:
             event['type'] = event['type_from_user']
@@ -280,10 +258,3 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             user.save()
         except CustomUser.DoesNotExist:
             return False
-        
-
-    async def send_new_status(self, event):
-            print("Ok")
-            await self.send(text_data=json.dumps({"type": "send_new_status", "status": event['status']}))
-        
-    

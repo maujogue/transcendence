@@ -936,16 +936,10 @@ border: 3px solid orange;  /* creates padding around scroll thumb */
 
 .endscreen h3 {
 	font-size: 2.5em;
-	/* position:relative;
-	right: 50%;
-	bottom: 90%; */
 }
 
 .btn-endscreen {
 	width: 40%!important;
-	/* bottom: 21%;
-	padding-left: 3%;
-	padding-right: 1%; */
 }
 
 .endscreen #winMsg {

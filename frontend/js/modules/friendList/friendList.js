@@ -1,17 +1,17 @@
 import { getModuleDiv } from "../../Modules.js";
-import { disableCollapsedSidebar, isLoggedIn, showAlert, toggleSearchBar } from "../../Utils.js";
-import { friendsWebsocket } from "./friendsWs.js";
+import { asyncTimeout, disableCollapsedSidebar, isLoggedIn, showAlert, toggleSearchBar } from "../../Utils.js";
+import { friendsWebsocket, getUserRequests } from "./friendsWs.js";
 import { sendFriendRequest } from "./friendsWs.js";
 import { acceptFriendRequest, declineFriendRequest } from "./friendsWs.js";
 import { updateModule } from "../../Modules.js";
 import { getUserData, injectUserData } from "../../User.js";
-import { checkUserExist } from "./friendsWs.js";
 import { removeFriend } from "./friendsWs.js";
 import { injectTranslations } from "../translationsModule/translationsModule.js";
 import { checkInputAvailable } from "../../ApiCalls.js";
 import { navigateTo } from "../../Router.js";
 var module;
 var friendList;
+var requestsList;
 
 export async function init() {
 	module = getModuleDiv("friendList");
@@ -60,7 +60,7 @@ export async function init() {
 }
 
 async function fillInbox(data) {
-	var requestsList = data.friend_requests;
+	requestsList = data.friend_requests;
 	var inboxDiv = document.querySelector("#friendRequestInbox");
 	var notifBadge = document.querySelector("#notificationsBadge");
 	var length = 0;
@@ -75,7 +75,7 @@ async function fillInbox(data) {
 		notifBadge.parentNode.setAttribute("data-bs-toggle", "dropdown");
 		notifBadge.parentNode.style.cursor = "pointer";
 	}
-	notifBadge.innerHTML = `<i class="bi bi-${requestsList.length}-circle-fill" ${requestsList.length > 0 ? 'style="color:green;"': ''}></i>`
+	notifBadge.innerHTML = `<i class="bi bi-${requestsList.length}-circle-fill" ${requestsList.length > 0 ? 'style="color:green;"' : ''}></i>`
 	requestsList.forEach(request => {
 		if (length++ > 10) {
 			if (!inboxDiv.querySelector(".finish"))
@@ -84,7 +84,7 @@ async function fillInbox(data) {
 		}
 		var friendRequestHtml = `
 		<li class="d-flex g-5">
-			<a class="userLink dropdown-item align-items-center text-white" navlink>
+			<a class="userLink dropdown-item align-items-center text-white">
 				<img width="30" height="30" class="rounded-circle me-1" src="data:image/png;base64, ${request.avatar}"/>
 				<span class="mt-1">${request.name}</span>
 			</a>
@@ -136,7 +136,7 @@ async function fillFriendsList(data) {
 	var friendListHtml = (friend, isOnline) => {
 		console.log(isOnline);
 		return `
-		<a class="ms-2 userLink py-1 position-relative" ${!isOnline ? 'style="opacity:0.5;"' : ''} navlink>
+		<a class="ms-2 userLink py-1 position-relative" ${!isOnline ? 'style="opacity:0.5;"' : ''}>
 			<img width="30" height="30" class="rounded-circle" src="data:image/png;base64, ${friend.avatar}"/>
 			${isOnline ? '<i class="bi bi-circle-fill"></i>' : ''}
 			<span class="ms-2 mt-1 section-name text-white">${friend.username}</span>
@@ -224,15 +224,23 @@ function initCloseButton() {
 	});
 }
 
-function initManageFriendshipBtn(username) {
+async function initManageFriendshipBtn(username) {
+	var currentUser = await getUserData("username");
 	var manageFriendshipBtn = userDash.querySelector("#manageFriendshipBtn");
+	var requestSent;
 
 	var friend = friendList.find(friend => friend.username === username);
+	if (username && username !== currentUser) {
+		getUserRequests(username);
+		await asyncTimeout(100);
+		requestSent = requestsList.find(request => request.name === currentUser);
+	}
 	if (friend)
-		manageFriendshipBtn.innerHTML = `<button class="btn btn-danger" disabled data-lang="unfriend">Unfriend</button>`;
+		manageFriendshipBtn.innerHTML = `<button class="btn btn-danger" data-lang="unfriend">Unfriend</button>`;
+	else if (requestSent)
+		manageFriendshipBtn.innerHTML = `<button class="btn btn-danger " disabled data-lang="friend_request_sent"></button>`;
 	else
-		manageFriendshipBtn.innerHTML = `<button class="btn btn-outline-success " disabled data-lang="add_friend">Add Friend</button>`;
-
+		manageFriendshipBtn.innerHTML = `<button class="btn btn-outline-success " data-lang="add_friend">Add Friend</button>`;
 	injectTranslations();
 	var btn = manageFriendshipBtn.querySelector("button");
 	btn.addEventListener("click", () => {
@@ -241,21 +249,12 @@ function initManageFriendshipBtn(username) {
 			btn.remove();
 			initManageFriendshipBtn(username);
 		}
-		else {
+		else if (!requestSent){
 			sendFriendRequest(username);
-			btn.classList.add("btn-success");
-			btn.classList.add("text-white");
-			btn.innerHTML = "<span data-lang='friend_request_sent'></span>";
+			manageFriendshipBtn.innerHTML = `<button class="btn btn-danger " disabled data-lang="friend_request_sent"></button>`;
 			injectTranslations();
-			setTimeout(() => {
-				btn.classList.remove("btn-success");
-				btn.classList.remove("text-white");
-				btn.innerHTML = "<span data-lang='add_friend'></span>";
-				injectTranslations();
-			}, 2000);
 		}
 	});
-	btn.disabled = false;
 }
 
 function showDiv(btnSelector, show) {
@@ -263,4 +262,8 @@ function showDiv(btnSelector, show) {
 	btn.hidden = !show;
 }
 
-export { fillInbox, fillFriendsList, displayUserPage }
+function initUserRequests(data) {
+	requestsList = data.friend_requests;
+}
+
+export { fillInbox, fillFriendsList, displayUserPage, initUserRequests }

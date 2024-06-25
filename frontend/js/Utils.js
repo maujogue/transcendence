@@ -161,6 +161,12 @@ function resetCheckPassword() {
 	checkPasswordLines.forEach((e) => (e.style.color = "black"));
 }
 
+const asyncTimeout = (number) => {
+	return new Promise((resolve) => {
+		setTimeout(resolve, number);
+	});
+};
+
 export {
 	toggleContentOnLogState,
 	showAlert,
@@ -173,4 +179,5 @@ export {
 	toggleSearchBar,
 	resetCheckPassword,
 	resetModalFormsInitListeners,
+	asyncTimeout,
 };

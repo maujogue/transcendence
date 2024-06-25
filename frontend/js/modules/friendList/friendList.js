@@ -111,14 +111,26 @@ async function fillFriendsList(data) {
 
 	var friendListHtml = (friend, isOnline) => {
 		return `
-        <li class="d-flex g-5" ${!isOnline ? 'style="opacity:0.5;"' : ''}>
-            <a class="userLink ms-2 align-items-center text-white" navlink>
-                <img width="30" height="30" class="rounded-circle me-3" src="data:image/png;base64, ${friend.avatar}"/>
-                <span class="mt-1 section-name">${friend.username}
-                ${isOnline ? '<i class="ms-2 bi bi-circle-fill" style="color:green;"></i>' : ''}
-				</span>
-            </a>
-        </li>`;
+		<a class="userLink" ${!isOnline ? 'style="opacity:0.5;"' : ''} navlink>
+			<img width="30" height="30" class="rounded-circle" src="data:image/png;base64, ${friend.avatar}"/>
+			${isOnline ? '<i class="bi bi-circle-fill"></i>' : ''}
+			<span class="ms-2 mt-1 section-name text-white">${friend.username}</span>
+		</a>
+
+		<style>
+		.userLink:hover {
+			cursor: pointer;
+			background-color: rgba(255, 255, 255, 0.1);
+		}
+		.bi-circle-fill {
+			font-size: 10px;
+			color: green;
+			position: absolute;
+			top: 0;
+			left: 0;
+			transform: translateY(-3px);
+		}
+		</style>`;
 	}
 	onlineFriends.forEach(friend => {
 		friendScroll.innerHTML += friendListHtml(friend, true);
@@ -129,7 +141,7 @@ async function fillFriendsList(data) {
 	await refreshManageFriendshipBtn();
 	module.querySelectorAll(".userLink").forEach(userLink => {
 		userLink.addEventListener("click", async () => {
-			var fromUser = userLink.closest("li").querySelector("span").innerText.trim();
+			var fromUser = userLink.querySelector(".section-name").innerText.trim();
 			await displayUserPage(fromUser);
 		});
 	});

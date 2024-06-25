@@ -9,6 +9,7 @@ import { checkUserExist } from "./friendsWs.js";
 import { removeFriend } from "./friendsWs.js";
 import { injectTranslations } from "../translationsModule/translationsModule.js";
 import { checkInputAvailable } from "../../ApiCalls.js";
+import { navigateTo } from "../../Router.js";
 var module;
 var friendList;
 
@@ -147,6 +148,7 @@ async function displayUserPage(username) {
 		return showAlert("You cannot visit your own profile.");
 	await waitThenInitDashButtons(username);
 	await injectDashData(username);
+	await navigateTo("/dash");
 }
 
 async function injectDashData(username, close) {

@@ -37,7 +37,7 @@ function getGameState(player1, player2, environment) {
 
 export async function loadAgentModel() {
     try {    
-		const model = await tf.loadLayersModel('../../../js/pong/AI/models/agent2_first_pong_model/model.json');
+		const model = await tf.loadLayersModel('../../../js/pong/AI/models/agent2___-0.20avg_ copy/model.json');
 		console.log('Model loaded : ', model);
 		return model;
     } catch (error) {
@@ -58,12 +58,18 @@ function performAction(action, player2, environment) {
 	}
 }
 
-function predictAction(player1, player2, environment, model) {
+const predict = async (gameState, model) => {
+	const result = model.predict(gameState, { batchSize: 64 });
+	const values = result.dataSync();
+	console.log("Prediction: ", values);
+	return values;
+}
+
+async function predictAction(player1, player2, environment, model) {
 	const gameState = getGameState(player1, player2, environment);
 	console.log("Game State: ", gameState.dataSync());
-	const prediction = model.predict(gameState);
-	console.log("Prediction: ", prediction.dataSync());
-	return (prediction.dataSync());
+	const predictions = await predict(gameState, model);
+	return predictions;
 }
 
 function checkElapsedTime(clock) {
@@ -78,9 +84,9 @@ function checkElapsedTime(clock) {
 	return true;
 }
 
-export function moveAI(player1, player2, environment, model) {
+export async function moveAI(player1, player2, environment, model) {
 	if (checkElapsedTime(clock) || firstPrediction) {
-		predictions = predictAction(player1, player2, environment, model);
+		predictions = await predictAction(player1, player2, environment, model);
 		firstPrediction = false;
 	}
 	const maxValue = Math.max(...predictions);

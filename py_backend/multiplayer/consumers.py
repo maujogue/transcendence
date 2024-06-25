@@ -15,6 +15,7 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def send_player_data(self):
         if not self.check_if_user_is_connected():
             return
+        print(f"self.player.name: {self.player.name}")
         await self.send(text_data=json.dumps({
             'type': 'player_data',
             'name': self.player.name,
@@ -314,7 +315,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             await self.createHistoryMatch()
             await self.lobby.stopGame()
         await self.channel_layer.group_send(
-            self.lobby_group_name, { 'type': 'pong.status', 'status': 'endGame', 'message': 'The game is over', 'name': self.player.name}
+            self.lobby_group_name, { 'type': 'pong.status', 'status': 'endGame', 'message': 'The game is over', 'name': self.scope['user'].tournament_username}
         )
 
     async def check_if_history_match_exists(self):
@@ -392,7 +393,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         print("multiplayer status: ", event["status"])
         message = event["message"]
         name = event["name"]
-        status = event["status"]   
+        print(f"name: {name}")
+        status = event["status"]
 
         if status == "endGame":
             self.resetGame()

@@ -100,12 +100,6 @@ async function fillInbox(data) {
 			e.stopPropagation();
 		});
 	});
-	module.querySelectorAll(".userLink").forEach(userLink => {
-		userLink.addEventListener("click", async (e) => {
-			var fromUser = userLink.closest("li").querySelector("span").innerText.trim();
-			await displayUserPage(fromUser);
-		});
-	});
 }
 
 async function fillFriendsList(data) {
@@ -133,6 +127,12 @@ async function fillFriendsList(data) {
 		friendScroll.innerHTML += friendListHtml(friend, false);
 	});
 	await refreshManageFriendshipBtn();
+	module.querySelectorAll(".userLink").forEach(userLink => {
+		userLink.addEventListener("click", async () => {
+			var fromUser = userLink.closest("li").querySelector("span").innerText.trim();
+			await displayUserPage(fromUser);
+		});
+	});
 }
 
 async function refreshManageFriendshipBtn() {

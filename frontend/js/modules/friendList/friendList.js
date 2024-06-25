@@ -86,7 +86,7 @@ async function fillInbox(data) {
 		<li class="d-flex g-5">
 			<a class="userLink dropdown-item align-items-center text-white">
 				<img width="30" height="30" class="rounded-circle me-1" src="data:image/png;base64, ${request.avatar}"/>
-				<span class="mt-1">${request.name}</span>
+				<span class="mt-1 request-name">${request.name}</span>
 			</a>
 			<div class="d-flex align-items-center">
 				<i class="fa-solid fa-check fa-lg accept-request" style="color: green;"></i>
@@ -110,18 +110,24 @@ async function fillInbox(data) {
 		</style>`;
 		inboxDiv.innerHTML += friendRequestHtml;
 	});
-	document.querySelectorAll(".accept-request").forEach(acceptButton => {
+	inboxDiv.querySelectorAll(".accept-request").forEach(acceptButton => {
 		acceptButton.addEventListener("click", (e) => {
 			var fromUser = acceptButton.closest("li").querySelector("span").innerText;
 			acceptFriendRequest(fromUser);
 			e.stopPropagation();
 		});
 	});
-	document.querySelectorAll(".decline-request").forEach(declineButton => {
+	inboxDiv.querySelectorAll(".decline-request").forEach(declineButton => {
 		declineButton.addEventListener("click", (e) => {
 			var fromUser = declineButton.closest("li").querySelector("span").innerText;
 			declineFriendRequest(fromUser);
 			e.stopPropagation();
+		});
+	});
+	inboxDiv.querySelectorAll(".userLink").forEach(userLink => {
+		userLink.addEventListener("click", async () => {
+			var fromUser = userLink.querySelector(".request-name").innerText.trim();
+			await displayUserPage(fromUser);
 		});
 	});
 }

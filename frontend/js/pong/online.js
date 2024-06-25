@@ -185,6 +185,7 @@ async function connectToLobby(username) {
             wsMatch.close();
         if (data['type'] == 'character_data') {
             if (data['name'] != player.name) {
+                console.log('displayCharacter:', data['character'], data['name'])
                 displayCharacter(opp, env, data['character'], data['name']).then((res) => {
                     opp = res;
                 });
@@ -195,8 +196,6 @@ async function connectToLobby(username) {
                 player.userInfo = setUserInfo(data);
             else 
                 oppInfo = setUserInfo(data);
-            if (player.userInfo && oppInfo)
-                console.log("player and oppInfo is set");
         }
         if (data['type'] == 'player_pos')
             movePaddle(data);

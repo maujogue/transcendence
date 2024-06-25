@@ -38,7 +38,6 @@ function removeSelectMenu() {
 async function initGame(player1, player2) {
 	const environment = createEnvironment("canvas");
 	const map = await createMap(environment);
-	createDivMenu("t");
 
 	let dirLight = new THREE.DirectionalLight(0xffffff, 0.1);
 	dirLight.position.set(0, 0, 1);

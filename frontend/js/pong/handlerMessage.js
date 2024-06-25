@@ -1,5 +1,5 @@
 import { actualizeScoreOnline } from './onlineCollision.js';
-import { createDivMenu, displayMainMenu } from './menu.js';
+import { createDivMenu, createIntroScene, displayMainMenu } from './menu.js';
 import { ClearAllEnv } from './createEnvironment.js';
 import { createEndScreen } from './createEndScreen.js';
 import { playersMove } from './online.js';
@@ -12,7 +12,6 @@ export function checkIfWebsocketIsOpen(webSocket) {
         return true;
     return false;
 }
-
 
 export function setBallData(data, env) {
     if (!env.ball)
@@ -80,10 +79,7 @@ function handlerPlayerDisconnect(data, env, webSocket) {
     handlerStopGame(webSocket, env, data.message);
 }
 
-export function displayIntroScreen(env, data) {
-    console.log("displayIntroScreen:", data);
-    document.getElementById("waitingScreen")?.remove();
-    ClearAllEnv(env);
+function addHtmlIntroScreen(data) {
     createDivMenu("introScreen");
     document.getElementById("introScreen").innerHTML = `\
         <div id="introScreen" class="intro-screen">
@@ -96,6 +92,14 @@ export function displayIntroScreen(env, data) {
                 <img src="data:image/jpeg;base64,${data.player2.avatar}" alt="avatar player2" class='avatar rounded-circle'>
             </div>
         </div>`;
+}
+
+export function displayIntroScreen(env, data) {
+    console.log("displayIntroScreen:", data);
+    document.getElementById("waitingScreen")?.remove();
+    ClearAllEnv(env);
+    createIntroScene(data.player1.character, data.player2.character);
+    addHtmlIntroScreen(data);
 }
 
 export function handlerStatusMessage(data, webSocket, env, status) {

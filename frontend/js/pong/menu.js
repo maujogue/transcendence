@@ -3,8 +3,8 @@ import { displayCharacter } from './displayCharacter.js';
 import { createLobbyLights, createLobbyScene } from './createField.js';
 import { isFullScreen } from './resize.js';
 import { winWidth, winHeight, charactersNames } from './varGlobal.js';
-import { createFormTournament } from "./createTournament.js";
 import { initSpaceBackground } from "./spaceBackground.js";
+import { characters } from "../pages/game.js";
 
 let width = winWidth;
 let height = winHeight;
@@ -177,6 +177,30 @@ function createInterfaceSelectMenu() {
 	createCursor("swatch0", "cursorP1", "P1");
 	createCursor("swatch1", "cursorP2", "P2");
 	addCrtEffect(document.getElementById("selectMenu"));
+}
+
+export function createIntroScene(p1Character, p2Character) {
+	console.log("createIntroScene");
+	console.log(p1Character);
+	console.log(p2Character);
+	// const env = createEnvironment("canvas");
+	// env.scene.add(createLobbyScene(env));
+	// createLobbyLights(env);
+	// const character1 = characters.get(p1Character).clone();
+	// const character2 = characters.get(p2Character).clone();
+	// console.log(character1);
+	// console.log(character2);
+	// character1.mesh.position.set(-0.8, 0, 0.9).unproject(env.camera);
+	// character2.mesh.position.set(0.8, 0, 0.9).unproject(env.camera);
+	// env.scene.add(character1.mesh);
+	// env.scene.add(character2.mesh);
+	// env.renderer.render(env.scene, env.camera);
+	// return {
+	// 	"renderer": env.renderer,
+	// 	"scene": env.scene,
+	// 	"camera": env.camera,
+	// 	"start": false
+	// };
 }
 
 function createSelectMenu(characters) {

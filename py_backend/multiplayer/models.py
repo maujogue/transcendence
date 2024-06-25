@@ -9,6 +9,8 @@ class Lobby(models.Model):
     game_started = models.BooleanField(default=False)
     player1 = models.CharField(max_length=100, default=None, null=True)
     player2 = models.CharField(max_length=100, default=None, null=True)
+    player1_character = models.CharField(max_length=100, default=None, null=True)
+    player2_character = models.CharField(max_length=100, default=None, null=True)
 
     async def setPlayerReady(self, isReady, player):
         if isReady == 'true':
@@ -42,7 +44,7 @@ class Lobby(models.Model):
         await self.asave(update_fields=['game_started'])
 
     def check_if_game_is_ready(self):
-        if self.player_ready == 2 and self.player1 is not None and self.player2 is not None and not self.game_started:
+        if self.player_ready == 2 and self.player1 is not None and self.player2 is not None and not self.game_started and self.player1_character is not None and self.player2_character is not None:
             return True
         return False
   

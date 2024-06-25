@@ -71,6 +71,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         # print('tournament: endGame')
         await self.set_match_info()
         await self.match_is_over()
+
         # print(f'{self.scope["user"].tournament_username} match is over, {self.match.winner} wins!')
         if self.match.winner == self.scope['user'].tournament_username:
             await self.send(text_data=json.dumps({'type': 'status', 'status': 'waiting'}))

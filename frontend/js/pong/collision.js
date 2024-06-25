@@ -2,23 +2,23 @@ import * as THREE from 'three'
 import { actualizeScore } from './score.js';
 
 function resetPos(ball, player1, player2, environment) {
-    ball.mesh.position.set(0, 0, 0.9).unproject(environment.camera);
+    ball.mesh.position.set(0, 0, -16.5);
     ball.direction.y = 0;
-    player1.paddle.mesh.position.set(-0.8, 0, 0.9).unproject(environment.camera);
-    player2.paddle.mesh.position.set(0.8, 0, 0.9).unproject(environment.camera);
+    player1.paddle.mesh.position.set(-9.5, 0, -16.5);
+    player2.paddle.mesh.position.set(9.5, 0, -16.5);
 }
 
 async function checkIfScored(ball, player1, player2, environment) {
     let bbox1 = new THREE.Box3().setFromObject(player1.paddle.mesh);
     let bbox2 = new THREE.Box3().setFromObject(player2.paddle.mesh);
 
-    if (ball.mesh.position.x < bbox1.min.x - 2) {
+    if (ball.mesh.position.x <= -12) {
         player2.score++;
         ball.direction.x = -0.055;
         resetPos(ball, player1, player2, environment);
         actualizeScore(player1, player2, environment, environment.font);
     }
-    if (ball.mesh.position.x > bbox2.max.x + 2) {
+    if (ball.mesh.position.x >= 12) {
         player1.score++; 
         ball.direction.x = 0.055;
         resetPos(ball, player1, player2, environment);
@@ -45,7 +45,7 @@ function checkCollisionWithBorder(ball, ballBox, environment) {
         if (ball.direction.x > 0)
             ball.direction.x += 0.02;
         else
-            ball.direction.x -= 0.02;
+             ball.direction.x -= 0.02;
         ball.direction.y *= -1;
         return (true);
     }

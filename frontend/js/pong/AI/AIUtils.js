@@ -37,7 +37,7 @@ function getGameState(player1, player2, environment) {
 
 export async function loadAgentModel() {
     try {    
-		const model = await tf.loadLayersModel('../../../js/pong/AI/models/json_models/model.json');
+		const model = await tf.loadLayersModel('../../../js/pong/AI/models/agent2_first_pong_model/model.json');
 		console.log('Model loaded : ', model);
 		return model;
     } catch (error) {
@@ -49,31 +49,33 @@ export async function loadAgentModel() {
 function performAction(action, player2, environment) {
 	var playerBox2 = new THREE.Box3().setFromObject(player2.paddle.mesh);
 	if (action == 1 && !environment.border.up.box.intersectsBox(playerBox2)) {
-		player2.paddle.mesh.translateY(0.15);
-		player2.light.position.y += 0.15;
+		player2.paddle.mesh.translateY(0.095);
+		player2.light.position.y += 0.095;
 	}
 	else if (action == 2 && !environment.border.down.box.intersectsBox(playerBox2)) {
-		player2.paddle.mesh.translateY(-0.15);
-		player2.light.position.y -= 0.15;
+		player2.paddle.mesh.translateY(-0.095);
+		player2.light.position.y -= 0.095;
 	}
 }
 
 function predictAction(player1, player2, environment, model) {
 	const gameState = getGameState(player1, player2, environment);
+	console.log("Game State: ", gameState.dataSync());
 	const prediction = model.predict(gameState);
+	console.log("Prediction: ", prediction.dataSync());
 	return (prediction.dataSync());
 }
 
 function checkElapsedTime(clock) {
-	const delta = clock.getDelta();
-	elapsedTime += delta;
-	console.log("Elapsed time: ", elapsedTime);
-	if (elapsedTime >= 1){
-		elapsedTime = 0;
-		return true;
-	}
-	else
-		return false;
+	// const delta = clock.getDelta();
+	// elapsedTime += delta;
+	// if (elapsedTime >= 1){
+	// 	elapsedTime = 0;
+	// 	return true;
+	// }
+	// else
+	// 	return false;
+	return true;
 }
 
 export function moveAI(player1, player2, environment, model) {

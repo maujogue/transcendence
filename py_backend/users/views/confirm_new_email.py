@@ -8,7 +8,7 @@ from django.shortcuts import redirect
 from users.tokens import email_update_token
 
 
-@require_http_methods(["POST"])
+@require_http_methods(["GET"])
 def confirm_new_email(request, uidb64, token, new_email):
     CustomUser = get_user_model()
     try:

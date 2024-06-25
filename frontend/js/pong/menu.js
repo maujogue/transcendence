@@ -4,7 +4,9 @@ import { createLobbyLights, createLobbyScene } from './createField.js';
 import { isFullScreen } from './resize.js';
 import { winWidth, winHeight, charactersNames } from './varGlobal.js';
 import { initSpaceBackground } from "./spaceBackground.js";
-import { characters } from "../pages/game.js";
+import { characters } from "../pages/game.js"
+import { colors } from "./varGlobal.js"; 
+import * as THREE from 'three';
 
 let width = winWidth;
 let height = winHeight;
@@ -179,28 +181,68 @@ function createInterfaceSelectMenu() {
 	addCrtEffect(document.getElementById("selectMenu"));
 }
 
+function setCharacterPosInIntroScene(env, character1, character2) {
+	character1.position.set(-0.3, -1.2, -0.7).unproject(env.camera);
+	character2.position.set(0.3, -1.2, -0.7).unproject(env.camera);
+	character1.scale.set(0.005, 0.005, 0.005);
+	character2.scale.set(0.005, 0.005, 0.005);
+	character1.rotateZ(Math.PI / -2);
+	character2.rotateZ(Math.PI / 2);
+}
+
+function addLights(env, color1, color2) {
+    const light1 = new THREE.PointLight(color1, 50);
+    const light2 = new THREE.PointLight(color2, 50);
+
+    // Positionner les lumières
+    light1.position.set(-2, 2, 2); // Ajustez les positions selon vos besoins
+    light2.position.set(2, 2, 2);
+
+    // Ajouter les lumières à la scène
+    env.scene.add(light1);
+    env.scene.add(light2);
+}
+
 export function createIntroScene(p1Character, p2Character) {
-	console.log("createIntroScene");
-	console.log(p1Character);
-	console.log(p2Character);
-	// const env = createEnvironment("canvas");
-	// env.scene.add(createLobbyScene(env));
-	// createLobbyLights(env);
-	// const character1 = characters.get(p1Character).clone();
-	// const character2 = characters.get(p2Character).clone();
-	// console.log(character1);
-	// console.log(character2);
-	// character1.mesh.position.set(-0.8, 0, 0.9).unproject(env.camera);
-	// character2.mesh.position.set(0.8, 0, 0.9).unproject(env.camera);
-	// env.scene.add(character1.mesh);
-	// env.scene.add(character2.mesh);
-	// env.renderer.render(env.scene, env.camera);
-	// return {
-	// 	"renderer": env.renderer,
-	// 	"scene": env.scene,
-	// 	"camera": env.camera,
-	// 	"start": false
-	// };
+	const env = createEnvironment("canvas");
+	env.scene.add(createLobbyScene(env));
+	addLights(env, colors.get(p1Character), colors.get(p2Character));
+	const character1 = characters.get(p1Character).clone();
+	const character2 = characters.get(p2Character).clone();
+	console.log(character1);
+	console.log(character2);
+	setCharacterPosInIntroScene(env, character1.mesh, character2.mesh);
+	env.scene.add(character1.mesh);
+	env.scene.add(character2.mesh);
+	moveCamera(env, character1.mesh, character2.mesh);
+	env.renderer.render(env.scene, env.camera);
+	return {
+		"renderer": env.renderer,
+		"scene": env.scene,
+		"camera": env.camera,
+		"start": false
+	};
+}
+
+function moveCamera(env, mesh1, mesh2) {
+    const radius = 1.35; // Réduire le rayon pour rapprocher la caméra
+    const time = Date.now() * 0.0005;
+    
+    // Calculer le centre des deux mesh
+    const centerX = (mesh1.position.x + mesh2.position.x) / 2;
+    const centerZ = (mesh1.position.z + mesh2.position.z) / 2;
+
+    // Déplacer la caméra en fonction du temps
+    env.camera.position.x = centerX + radius * Math.cos(time);
+    env.camera.position.z = centerZ + radius * Math.sin(time);
+	env.camera.fov = 45;
+
+    // Toujours regarder vers le centre des deux mesh
+    env.camera.lookAt(centerX, 0, centerZ);
+
+    // Rendre la scène
+    env.renderer.render(env.scene, env.camera);
+    requestAnimationFrame(() => moveCamera(env, mesh1, mesh2));
 }
 
 function createSelectMenu(characters) {

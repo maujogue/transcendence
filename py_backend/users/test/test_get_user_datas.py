@@ -12,7 +12,10 @@ class GetUserDatas(TestCase):
             email="osterga@gmail.com",
             password="UserPassword9+",
             bio="Bonjours a tous, c'est Osterga",
-            title='L\'Inusable')
+            title='L\'Inusable',
+            lang='en',
+            is_online=False,
+            email_is_verified=False)
         
         user = {
             'username': 'osterga',
@@ -30,13 +33,19 @@ class GetUserDatas(TestCase):
 
     def test_basic_get_user_data(self):
         self.client.login(username='osterga', password='UserPassword9+')
-        response = self.client.post(reverse('get_user_data_current'))
+        self.user.is_online = True
+        self.user.save()
+        self.user.refresh_from_db()
+        response = self.client.get(reverse('get_user_data_current'))
 
         self.assertEqual(response.status_code, 200)
 
     def test_get_user_data(self):
         self.client.login(username='osterga', password='UserPassword9+')
-        response = self.client.post(
+        self.user.is_online = True
+        self.user.save()
+        self.user.refresh_from_db()
+        response = self.client.get(
             reverse('get_user_data_current'))
         
         response_data = response.json()
@@ -52,12 +61,18 @@ class GetUserDatas(TestCase):
         self.assertEqual(response_data.get('user').get('rank'), None)
         self.assertEqual(response_data.get('user').get('n_games_played'), None),
         self.assertEqual(response_data.get('user').get('is_42auth'), False),
-        self.assertEqual(response_data.get('user').get('is_online'), False),
+        self.assertEqual(response_data.get('user').get('is_online'), True),
 
         self.assertEqual(response_data.get('user').get('n_games_played'), None)
         self.assertEqual(response_data.get('user').get('lang'), "en")
 
     def test_without_login(self):
-        self.client.logout()
-        response = self.client.post(reverse('get_user_data_current'))
-        self.assertEqual(response.status_code, 302)
+        self.client.login(username='osterga', password='UserPassword9+')
+        self.user.is_online = True
+        self.user.save()
+        self.user.refresh_from_db()
+        response = self.client.post(
+            reverse('logout'), 
+            content_type='application/json')
+        response = self.client.get(reverse('get_user_data_current'))
+        self.assertEqual(response.status_code, 404)

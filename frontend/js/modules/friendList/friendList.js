@@ -89,10 +89,25 @@ async function fillInbox(data) {
 				<span class="mt-1">${request.name}</span>
 			</a>
 			<div class="d-flex align-items-center">
-				<i class="bi bi-check-square-fill accept-request" style="color: green"></i>
-				<i class="ms-2 me-3 bi bi-x-square decline-request" style="color: red"></i>
+				<i class="fa-solid fa-check fa-lg accept-request" style="color: green;"></i>
+				<i class="ms-2 me-3 bi bi-x-lg decline-request" style="color: red;"></i>
 			</div>
-		</li>`;
+		</li>
+		<style>
+		.accept-request, .decline-request {
+			cursor: pointer;
+			transition: font-size 0.2s;
+		}
+		.accept-request:hover, .decline-request:hover {
+			font-size: 25px;
+		}
+		.accept-request:hover{
+			font-size: 32px;
+		}
+		.accept-request{
+			font-size: 20px;
+		}
+		</style>`;
 		inboxDiv.innerHTML += friendRequestHtml;
 	});
 	document.querySelectorAll(".accept-request").forEach(acceptButton => {

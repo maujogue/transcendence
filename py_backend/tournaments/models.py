@@ -155,4 +155,5 @@ class Tournament(models.Model):
 		
 	async def increase_round(self):
 		self.current_round += 1
+		print(f"increase: current_round: {self.current_round}")
 		self.asave()

@@ -40,25 +40,24 @@ export function removeGameScreen(env) {
 
 function handlerStopGame(webSocket, env, message) {
     console.log("handlerStopGame");
-    displayErrorPopUp(message, document.getElementById("hud"));
+    displayErrorPopUp(message, document.getElementsByClassName("menu")[0]);
     document.getElementById("errorPopUp").classList.add("match-error");
-    if (checkIfWebsocketIsOpen(wsTournament)) {
-        wsTournament.send(JSON.stringify({
-            'type': 'status',
-            'status': 'endGame'
-        }));
-    }
     webSocket.close();
     document.getElementById("PopUpCloseIcon").addEventListener("click", () => {
-        if (checkIfWebsocketIsOpen(wsTournament))
+        if (checkIfWebsocketIsOpen(wsTournament)) {
+            wsTournament.send(JSON.stringify({
+                'type': 'status',
+                'status': 'endGame'
+            }));
             removeGameScreen(env);
+        }
         else
             displayMainMenu();
     });
 }
 
-async function handlerEndGame(data, env, webSocket) {
-    if (!document.getElementById("endscreen") && !checkIfWebsocketIsOpen(wsTournament)) {
+export async function handlerEndGame(data, env, webSocket) {
+    if (!document.getElementById("endscreen") && !checkIfWebsocketIsOpen(wsTournament))
         createEndScreen(data['name']);
     }
     if (checkIfWebsocketIsOpen(wsTournament)) {

@@ -199,8 +199,8 @@ async function injectDashData(username, close) {
 		await updateModule("statisticsModule")
 		setTimeout(() => {
 			userDash.style.opacity = 1;
-		}, 200);
-	}, 500);
+		}, 50);
+	}, 100);
 }
 
 async function waitThenInitDashButtons(username) {
@@ -211,9 +211,9 @@ async function waitThenInitDashButtons(username) {
 		showDiv("#closeProfileBtn", true);
 		showDiv("#editProfileBtn", false);
 		showDiv("#manageFriendshipBtn", true);
-		await initManageFriendshipBtn(username);
+		initManageFriendshipBtn(username);
 		initCloseButton();
-	}, 500);
+	}, 100);
 }
 
 function initCloseButton() {

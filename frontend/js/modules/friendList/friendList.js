@@ -61,12 +61,21 @@ export async function init() {
 
 async function fillInbox(data) {
 	var requestsList = data.friend_requests;
-	var inboxDiv = module.querySelector("#friendRequestInbox");
+	var inboxDiv = document.querySelector("#friendRequestInbox");
+	var notifBadge = document.querySelector("#notificationsBadge");
 	var length = 0;
 
 	inboxDiv.innerHTML = "";
-	if (requestsList.length === 0)
-		inboxDiv.innerHTML = `<div class="mx-auto px-2" data-lang="no_friend_request"></div>`;
+	if (requestsList.length === 0) {
+		notifBadge.click();
+		notifBadge.parentNode.setAttribute("data-bs-toggle", "none");
+		notifBadge.parentNode.style.cursor = "default";
+	}
+	else {
+		notifBadge.parentNode.setAttribute("data-bs-toggle", "dropdown");
+		notifBadge.parentNode.style.cursor = "pointer";
+	}
+	notifBadge.innerHTML = `<i class="bi bi-${requestsList.length}-circle-fill" ${requestsList.length > 0 ? 'style="color:green;"': ''}></i>`
 	requestsList.forEach(request => {
 		if (length++ > 10) {
 			if (!inboxDiv.querySelector(".finish"))
@@ -86,14 +95,14 @@ async function fillInbox(data) {
 		</li>`;
 		inboxDiv.innerHTML += friendRequestHtml;
 	});
-	module.querySelectorAll(".accept-request").forEach(acceptButton => {
+	document.querySelectorAll(".accept-request").forEach(acceptButton => {
 		acceptButton.addEventListener("click", (e) => {
 			var fromUser = acceptButton.closest("li").querySelector("span").innerText;
 			acceptFriendRequest(fromUser);
 			e.stopPropagation();
 		});
 	});
-	module.querySelectorAll(".decline-request").forEach(declineButton => {
+	document.querySelectorAll(".decline-request").forEach(declineButton => {
 		declineButton.addEventListener("click", (e) => {
 			var fromUser = declineButton.closest("li").querySelector("span").innerText;
 			declineFriendRequest(fromUser);
@@ -110,13 +119,13 @@ async function fillFriendsList(data) {
 	friendScroll.innerHTML = "";
 
 	var friendListHtml = (friend, isOnline) => {
+		console.log(isOnline);
 		return `
-		<a class="userLink" ${!isOnline ? 'style="opacity:0.5;"' : ''} navlink>
+		<a class="ms-2 userLink py-1 position-relative" ${!isOnline ? 'style="opacity:0.5;"' : ''} navlink>
 			<img width="30" height="30" class="rounded-circle" src="data:image/png;base64, ${friend.avatar}"/>
 			${isOnline ? '<i class="bi bi-circle-fill"></i>' : ''}
 			<span class="ms-2 mt-1 section-name text-white">${friend.username}</span>
 		</a>
-
 		<style>
 		.userLink:hover {
 			cursor: pointer;
@@ -128,7 +137,7 @@ async function fillFriendsList(data) {
 			position: absolute;
 			top: 0;
 			left: 0;
-			transform: translateY(-3px);
+			transform: translateX(-2px);
 		}
 		</style>`;
 	}

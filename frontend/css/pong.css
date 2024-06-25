@@ -190,6 +190,25 @@ h1 {
 	right: 0;
 }
 
+.player-info {
+    display: flex;
+    align-items: center;
+    padding: 4%;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.avatar {
+	width: 100px;
+	height: 100px
+}
+
+.intro-screen {
+    z-index: 1;
+    display: flex;
+    justify-content: space-around;
+}
+
 .ranking-title {
 	width: 100%;
     border-bottom: 1px solid black;

@@ -1,5 +1,5 @@
 import { actualizeScoreOnline } from './onlineCollision.js';
-import { displayMainMenu } from './menu.js';
+import { createDivMenu, displayMainMenu } from './menu.js';
 import { ClearAllEnv } from './createEnvironment.js';
 import { createEndScreen } from './createEndScreen.js';
 import { playersMove } from './online.js';
@@ -59,7 +59,6 @@ function handlerStopGame(webSocket, env, message) {
 export async function handlerEndGame(data, env, webSocket) {
     if (!document.getElementById("endscreen") && !checkIfWebsocketIsOpen(wsTournament))
         createEndScreen(data['name']);
-    }
     if (checkIfWebsocketIsOpen(wsTournament)) {
         wsTournament.send(JSON.stringify({
             'type': 'status',
@@ -81,6 +80,24 @@ function handlerPlayerDisconnect(data, env, webSocket) {
     handlerStopGame(webSocket, env, data.message);
 }
 
+export function displayIntroScreen(env, data) {
+    console.log("displayIntroScreen:", data);
+    document.getElementById("waitingScreen")?.remove();
+    ClearAllEnv(env);
+    createDivMenu("introScreen");
+    document.getElementById("introScreen").innerHTML = `\
+        <div id="introScreen" class="intro-screen">
+            <div class="player-info">
+                <img src="data:image/jpeg;base64,${data.player1.avatar}" alt="avatar player1" class='avatar rounded-circle'>
+                <p>${data.player1.username}</p>
+            </div>
+            <div class="player-info">
+                <p>${data.player2.username}</p>
+                <img src="data:image/jpeg;base64,${data.player2.avatar}" alt="avatar player2" class='avatar rounded-circle'>
+            </div>
+        </div>`;
+}
+
 export function handlerStatusMessage(data, webSocket, env, status) {
     console.log("status", data);
     if (data['status'] == 'disconnected')
@@ -92,6 +109,6 @@ export function handlerStatusMessage(data, webSocket, env, status) {
     }
     if (data['status'] == 'start') {
         status.gameIsInit = true;
-        document.getElementById("waitingScreen")?.remove();
+        document.getElementsByClassName("menu")[0]?.remove();
     }
 }

@@ -4,7 +4,7 @@ import { handleMenuKeyPress} from "./handleKeyPress.js";
 import { ClearAllEnv } from "./createEnvironment.js";
 import { initGame } from "./initGame.js";
 import { translateBall} from "./onlineCollision.js";
-import { handlerScore, setBallData, handlerStatusMessage, removeGameScreen, checkIfWebsocketIsOpen } from "./handlerMessage.js";
+import { handlerScore, setBallData, handlerStatusMessage, removeGameScreen, checkIfWebsocketIsOpen, displayIntroScreen } from "./handlerMessage.js";
 import { sendCharacter} from "./sendMessage.js";
 import { characters } from "../pages/game.js";
 import { updateMixers } from "./displayCharacter.js";
@@ -177,6 +177,8 @@ async function connectToLobby(username) {
         }
         if (data['type'] && data['type'] == 'status')
             handlerStatusMessage(data, wsMatch, env, status);
+        if (data['type'] == 'match_info')
+            displayIntroScreen(env, data);
         if (data['type'] == 'ball_data')
             setBallData(data, env);
         if (data['type'] == 'auth' && data['status'] == 'failed') 
@@ -193,6 +195,8 @@ async function connectToLobby(username) {
                 player.userInfo = setUserInfo(data);
             else 
                 oppInfo = setUserInfo(data);
+            if (player.userInfo && oppInfo)
+                console.log("player and oppInfo is set");
         }
         if (data['type'] == 'player_pos')
             movePaddle(data);
@@ -273,9 +277,7 @@ async function sendIsReady(wsMatch) {
 async function setGameIsStart() {
     console.log("setGameIsStart");
     if (player && opp && oppInfo) {
-        console.log("player and opp is set");
         opp.userInfo = oppInfo;
-        ClearAllEnv(env);
         if (player.name == "player1")
             env = await initGame(player, opp);
         else

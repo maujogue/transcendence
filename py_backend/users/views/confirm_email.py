@@ -8,7 +8,7 @@ from django.shortcuts import redirect
 from users.tokens import account_activation_token
 
 
-@require_http_methods(["GET"])
+@require_http_methods(["POST"])
 def confirm_email(request, uidb64, token):
     CustomUser = get_user_model()
     try:

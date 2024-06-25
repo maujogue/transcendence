@@ -35,7 +35,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         await lobby.asave()
         return lobby
     
-    async def create_player(self): # TODO fix player name
+    async def create_player(self):
         name = 'player1' if not self.lobby.player1 else 'player2'
         oppName = 'player2' if name == 'player1' else 'player1'
         posX = -9.50 if name == 'player1' else 9.50
@@ -312,7 +312,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             await self.createHistoryMatch()
             await self.lobby.stopGame()
         await self.channel_layer.group_send(
-            self.lobby_group_name, { 'type': 'pong.status', 'status': 'endGame', 'message': 'The game is over', 'name': self.player.name}
+            self.lobby_group_name, { 'type': 'pong.status', 'status': 'endGame', 'message': 'The game is over', 'name': self.scope['user'].tournament_username}
         )
 
     def calculateAverageExchange(self, exchangeBeforePoint):
@@ -376,7 +376,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         print("multiplayer status: ", event["status"])
         message = event["message"]
         name = event["name"]
-        status = event["status"]   
+        print(f"name: {name}")
+        status = event["status"]
 
         if status == "endGame":
             self.resetGame()

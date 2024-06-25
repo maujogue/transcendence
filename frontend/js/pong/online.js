@@ -30,6 +30,7 @@ export let wsMatch = null;
 let oppInfo;
 let lobbyId = null;
 export const playersMove = new Map();
+export let tournament_username
 
 function setUserInfo(data) {
     let user = {
@@ -151,7 +152,8 @@ async function connectToLobby(username) {
     else {
         wsMatch = new WebSocket(`ws://${hostname}:8080/ws/lobby/${lobbyId}/`);
     }
-
+    
+    tournament_username = username;
     wsMatch.onopen = function() {
         console.log("Connected to the server mutliplayer");
         status.is_connected = true;

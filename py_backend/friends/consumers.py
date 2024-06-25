@@ -155,7 +155,6 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
 
     async def send_friendslist(self, data):
-        print("friendlist")
         friends_list_data = []
         friends_list_data = await self.get_friends()
         await self.send(text_data=json.dumps({

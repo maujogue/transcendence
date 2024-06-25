@@ -140,7 +140,6 @@ async function fillFriendsList(data) {
 	friendScroll.innerHTML = "";
 
 	var friendListHtml = (friend, isOnline) => {
-		console.log(isOnline);
 		return `
 		<a class="ms-2 userLink py-1 position-relative" ${!isOnline ? 'style="opacity:0.5;"' : ''}>
 			<img width="30" height="30" class="rounded-circle" src="data:image/png;base64, ${friend.avatar}"/>

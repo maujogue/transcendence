@@ -120,7 +120,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'type_to_user': None
         }
         await self.group_send(to_user.username, event)
-        await self.group_send(from_user.username, event = {'type': 'send_friendslist'})
+        await self.group_send(from_user.username, event = {'type': 'refresh_friends'})
 
 
     async def remove_friend(self, data):
@@ -130,7 +130,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await sync_to_async(from_user.friends.remove)(to_user)
         await sync_to_async(to_user.friends.remove)(from_user)
         
-        await self.group_send(from_user.username, event = {'type': 'send_friendslist'})
+        await self.group_send(from_user.username, event = {'type': 'refresh_friends'})
 
 
     async def decline_request(self, data):
@@ -160,6 +160,10 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             "type": "friendslist",
             "friends": friends_list_data}))
+        
+    async def refresh_friends(self, data):
+        await self.send(text_data=json.dumps({
+            "type": "refresh_friends"}))
 
 
     async def new_request_notification(self, event):

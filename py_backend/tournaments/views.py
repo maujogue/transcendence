@@ -120,7 +120,7 @@ def quit_tournament(request, tournament_id):
 					status=200)
 
 @login_required
-@require_http_methods(["POST"])
+@require_http_methods(["DELETE"])
 def delete_tournament(request, tournament_id):
 	try:
 		tournament = Tournament.objects.get(pk=tournament_id)

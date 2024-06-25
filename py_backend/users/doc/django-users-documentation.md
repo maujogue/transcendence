@@ -240,17 +240,16 @@ This function is used to retrieve data from the currently logged-in user. It ret
 - number of games played
 
 ### Entry point
-`POST /users/get_user_datas`
+`GET /users/get_user_datas`
 
 ### Parameters
-- `request`: The HTTP request object containing the POST data.
+- `request`: The HTTP request object containing the GET data.
 
 ### Returns
 - `success` and a dictionnary with all datas.
 
 ### Notes
 - This function is decorated with `@login_required` to ensure that the user in correctly login.
-- This function is decorated with `@require_http_methods(["POST"])` to ensure that it only accepts POST requests.
 - The `@requires_csrf_token` decorator is used to enforce CSRF protection on the view. 
 </details>
 <br>

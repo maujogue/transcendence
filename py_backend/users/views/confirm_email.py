@@ -9,7 +9,7 @@ from users.models import CustomUser
 from users.tokens import account_activation_token
 
 
-@require_http_methods(["GET"])
+@require_http_methods(["POST"])
 def confirm_email(request, uidb64, token):
     User = get_user_model()
     try:

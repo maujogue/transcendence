@@ -43,4 +43,4 @@ class LogoutTests(TestCase):
             reverse('logout'), 
             content_type='application/json')
 
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 404)

@@ -120,6 +120,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         }
         await self.group_send(to_user.username, event)
         await self.group_send(from_user.username, event = {'type': 'send_friendslist'})
+        await self.check_double_request(from_user, to_user)
 
 
     async def remove_friend(self, data):
@@ -258,3 +259,10 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             user.save()
         except CustomUser.DoesNotExist:
             return False
+        
+    
+    async def check_double_request(self, from_user, to_user):
+        request = InteractionRequest.objects.filter(from_user=to_user, to_user=from_user)
+        if request:
+            await sync_to_async(request.delete)()
+            await self.send(text_data=json.dumps({ "type": "double_request"}))

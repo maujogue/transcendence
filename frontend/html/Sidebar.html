@@ -48,7 +48,18 @@
 	</div>
 	<!-- DROPUP -->
 	<div class="logInContent mt-auto">
-		<a id="collapseButton" class="nav-link text-white ms-2" >
+		<div class="ms-2 mb-3 dropup d-flex align-items-center">
+			<ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+				<div id="friendRequestInbox" class="d-flex flex-column gap-3"></div>
+			</ul>
+			<a class="d-flex align-items-center text-white text-decoration-none friendsNavbarBtn" id="dropdownUser1"
+				navlink>
+				<div id="notificationsBadge"></div>
+				<span class="section-name ms-2" style="position: relative" data-lang="Notifications"></span>
+			</a>
+		</div>
+		<hr />
+		<a id="collapseButton" class="nav-link text-white ms-2">
 			<i class="bi bi-arrows-collapse-vertical text-white me-2"></i>
 			<span class="section-name ms-1" data-lang="collapse_button">Collapse</span>
 		</a>
@@ -64,9 +75,8 @@
 				data-bs-toggle="dropdown" navlink>
 				<img width="30" height="30" class="rounded-circle me-2 avatarDynamic" />
 			</a>
-			<span class="section-name ms-2 usernameDynamic" style="position: relative">Boula</span>
+			<span class="section-name ms-2 usernameDynamic" style="position: relative"></span>
 		</div>
-	</footer>
 </nav>
 <!-- LOGIN MODAL -->
 <div class="modal fade" id="login" tabindex="-1">

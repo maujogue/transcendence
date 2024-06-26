@@ -33,6 +33,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'remove_friend': self.remove_friend,
             'get_friendslist': self.send_friendslist,
             'get_current_user_requests': self.send_current_user_requests,
+            'get_user_requests': self.get_user_requests,
         }
         handler = handlers.get(message_type)
         if handler:
@@ -108,7 +109,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         if is_double_request:
             await self.group_send(to_user.username, event = {'type': 'send_current_user_requests'})
 
-        data['type'] = 'accept_request'
+        data['type'] = 'refresh_friends'
         await self.send_notification(data)
 
         await self.channel_layer.group_add(
@@ -122,7 +123,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'type_to_user': None
         }
         await self.group_send(to_user.username, event)
-        await self.group_send(from_user.username, event = {'type': 'send_friendslist'})
+        await self.group_send(from_user.username, event = {'type': 'refresh_friends'})
 
 
     async def remove_friend(self, data):
@@ -132,14 +133,16 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await sync_to_async(from_user.friends.remove)(to_user)
         await sync_to_async(to_user.friends.remove)(from_user)
         
-        await self.group_send(from_user.username, event = {'type': 'send_friendslist'})
+        await self.group_send(from_user.username, event = {'type': 'refresh_friends'})
 
 
     async def decline_request(self, data):
         from_user = data.get('from_user')
         to_user = data.get('to_user')
         await self.delete_interaction_request(from_user, to_user)
-        return await self.send(text_data=json.dumps({ "type": "request_declined"}))
+        await self.group_send(to_user, event = {'type': 'send_friendslist'})
+        return await self.send(text_data=json.dumps({ "type": "refresh_friends"}))
+        
     
 
     @database_sync_to_async
@@ -160,6 +163,10 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             "type": "friendslist",
             "friends": friends_list_data}))
+        
+    async def refresh_friends(self, data):
+        await self.send(text_data=json.dumps({
+            "type": "refresh_friends"}))
 
 
     async def new_request_notification(self, event):
@@ -238,10 +245,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_requests(self, data):
-        if data.get('type') == 'accept_request':
-            username = data.get('to_user')
-        else:
-            username = data.get('user')
+        username = data.get('user')
 
         all_requests = InteractionRequest.objects.all()
         requests_list = []
@@ -259,6 +263,13 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             "type": "get_current_user_requests",
             "friend_requests": requests}))
 
+    async def get_user_requests(self, data):
+        requests = []
+        requests = await self.get_requests(data)
+        await self.send(text_data=json.dumps({
+            "type": "get_user_requests",
+            "user": data.get('user'),
+            "friend_requests": requests}))
 
     @database_sync_to_async    
     def set_online_status(self, status):

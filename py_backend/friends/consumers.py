@@ -105,6 +105,9 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await sync_to_async(from_user.friends.add)(to_user)
         await sync_to_async(to_user.friends.add)(from_user)
         await self.delete_interaction_request(from_user, to_user)
+        is_double_request = await self.check_double_request(from_user, to_user)
+        if is_double_request:
+            await self.group_send(to_user.username, event = {'type': 'send_current_user_requests'})
 
         data['type'] = 'refresh_friends'
         await self.send_notification(data)
@@ -225,12 +228,19 @@ class FriendsConsumer(AsyncWebsocketConsumer):
     
     
     async def delete_interaction_request(self, from_user, to_user):
-        #delete the line below
         request = []
-
         request = await sync_to_async(InteractionRequest.objects.get)(from_user=from_user, to_user=to_user)
         if request:
             await sync_to_async(request.delete)()
+
+    
+    @database_sync_to_async
+    def check_double_request(self, from_user, to_user):
+        request = InteractionRequest.objects.filter(from_user=to_user, to_user=from_user)
+        if request:
+            request.delete()
+            return True
+        return False
 
 
     @database_sync_to_async
@@ -248,6 +258,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
     async def send_current_user_requests(self, data):
         requests = []
         requests = await self.get_requests(data)
+        
         await self.send(text_data=json.dumps({
             "type": "get_current_user_requests",
             "friend_requests": requests}))
@@ -268,3 +279,4 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             user.save()
         except CustomUser.DoesNotExist:
             return False
+        

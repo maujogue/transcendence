@@ -348,3 +348,46 @@ class ProfileUpdate(TestCase):
         self.user.refresh_from_db()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.user.lang, 'fr')
+
+    def test_update_tournament_name(self):
+        update_datas = {
+            'username': 'zebulon55'
+        }
+
+        response = self.client.post(
+            reverse('update_tournament_name'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(self.user.tournament_username, 'zebulon55')
+        self.assertEqual(response.status_code, 200)
+
+    def test_tournament_name_already_used(self):
+        update_datas = {
+            'username': 'ochoa'
+        }
+
+        response = self.client.post(
+            reverse('update_tournament_name'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_missing_tournament_name(self):
+        update_datas = {
+            'username': 'ochoa'
+        }
+
+        response = self.client.post(
+            reverse('update_tournament_name'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, 400)

@@ -1,5 +1,6 @@
 import { get_csrf_token } from "./ApiCalls.js";
 import { isLoggedIn } from "./Utils.js";
+import { hostname } from "./Router.js";
 
 async function injectUserData(divToFill = null, username = null) {
 	if (await isLoggedIn())

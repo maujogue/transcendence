@@ -8,7 +8,7 @@ import { createEndScreen, returnToMenu } from "./createEndScreen.js"
 import { actualizeScore } from "./score.js";
 import { createField } from "./createField.js";
 import { createOnlineSelectMenu } from "./online.js";
-import { ClearAllEnv, getSize } from "./createEnvironment.js";
+import { ClearAllEnv } from "./createEnvironment.js";
 import { loadAllModel } from "./loadModels.js"
 import { loadScene } from "./loadModels.js";
 import { getUserData } from "../../User.js";
@@ -17,12 +17,17 @@ import { createJoinTournamentMenu } from "./joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "./tournament.js";
 import { getModuleDiv, updateModule } from "../../Modules.js";
 
+import { wsTournament } from "../pong/tournament.js";
+import { createTournamentHistoryMenu } from "../pong/tournamentHistory.js";
 import * as THREE from 'three';
 import { injectGameTranslations } from "../translationsModule/translationsModule.js";
 
 export var lobby;
 export var clock;
 export var characters;
+
+var isGameLoaded = false;
+export const field = await createField();
 export var winWidth;
 export var winHeight;
 
@@ -43,6 +48,8 @@ export async function init() {
 		document.getElementById('reloadGame').hidden = true;
 		updateModule("gameModule");
 	});
+	if (isGameLoaded)
+		return;
 
 	var target = document.querySelector('#game');
 	var config = { attributes: true, childList: true, characterData: true };
@@ -66,28 +73,30 @@ export async function init() {
 	let userData;
 	let form;
 	const gameDiv = document.getElementById('game');
-	const field = await createField();
 
-	loadAllModel();
+	await loadAllModel();
 
+	window.addEventListener('resize', resize(environment));
+	
 	getUserData().then((data) => {
 		userData = data;
 		if (userData) {
 			checkIfUserIsInTournament(userData).then((response) => {
-				if (response && response['joined'])
+				if (response && response['joined'] && !wsTournament)
 					connectToTournament(response['tournament']);
 			});
 		}
 	})
+
 	async function goToLocalSelectMenu() {
 		divMenu = document.getElementById("menu");
 		divMenu.remove();
-		environment = createSelectMenu(field, characters);
+		environment = createSelectMenu(characters);
 		player1 = await displayCharacter(player1, environment, "chupacabra", "player1");
 		player2 = await displayCharacter(player2, environment, "elvis", "player2");
 	}
 
-	gameDiv.addEventListener("keydown", function (event) {
+	document.addEventListener("keydown", function (event) {
 		keysPressed[event.key] = true;
 		if (keysPressed['A'])
 			keysPressed['a'] = true;
@@ -101,30 +110,27 @@ export async function init() {
 		event.stopPropagation();
 	});
 
-	gameDiv.addEventListener("keyup", function (event) {
+	document.addEventListener("keyup", function (event) {
 		delete keysPressed[event.key];
 	});
 
+
 	gameDiv.addEventListener('click', function (event) {
 		document.body.style.overflow = 'hidden';
-		gameDiv.focus();
 		if (!gameDiv.contains(event.target)) {
 			document.body.style.overflow = 'auto';
 		}
 	});
 
-	gameDiv.addEventListener("click", function (event) {
+	gameDiv.addEventListener('click', function () {
+		document.body.style.overflow = 'hidden';
+	});
+
+	document.body.addEventListener("click", function (event) {
 		getUserData().then((data) => {
 			userData = data;
 		})
-
-		if (userData) {
-			checkIfUserIsInTournament(userData).then((response) => {
-				if (response && response['joined'])
-					connectToTournament(response['tournament']);
-			});
-		}
-
+		
 		if (event.target.id == 'restart' && !isOnline) {
 			document.getElementById("endscreen").remove();
 			actualizeScore(player1, player2, environment, environment.font);
@@ -143,10 +149,10 @@ export async function init() {
 		}
 		if (event.target.id == 'onlineGame' && userData) {
 			isOnline = true;
-			createOnlineMenu(field);
+			createOnlineMenu();
 		}
 		if (event.target.id == 'quick') {
-			createOnlineSelectMenu(field);
+			createOnlineSelectMenu(null);
 		}
 		if (event.target.id == 'create') {
 			createFormTournament();
@@ -172,25 +178,34 @@ export async function init() {
 			else
 				div.classList.add('hidden');
 		}
+		if (event.target.id == 'history') {
+			createTournamentHistoryMenu();
+		}
 	});
 
-	gameDiv.addEventListener('fullscreenchange', function () {
+	document.addEventListener('fullscreenchange', function () {
 		if (isFullScreen())
 			resize(environment);
 	});
 
 	function setIfGameIsEnd() {
-		if (player1.score < 5 && player2.score < 5)
+		if (player1.score < 1 && player2.score < 1)
 			return;
+
 		let winner = player1.name;
 		if (player2.score > player1.score)
 			winner = player2.name;
+
+		if (winner === "player1")
+			winner = "player 1";
+		else if (winner === "player2")
+			winner = "player 2";
+
 		createEndScreen(winner);
 		start = false;
 		player1.score = 0;
 		player2.score = 0;
 	}
-
 
 	async function localGameLoop() {
 		if (keyPress && !start) {
@@ -204,19 +219,18 @@ export async function init() {
 			environment = await initGame(player1, player2);
 		}
 		if (start) {
-			console.log("start");
 			if (keyPress)
 				handleKeyPress(keysPressed, player1, player2, environment);
-			checkCollision(environment.ball, player1, player2, environment);
-			setIfGameIsEnd();
-		}
-		if (player1 && player2)
-			updateMixers(player1, player2);
-		environment?.renderer.render(environment.scene, environment.camera);
-		if (localLoop)
-			requestAnimationFrame(localGameLoop);
-
+		checkCollision(environment.ball, player1, player2, environment);
+		setIfGameIsEnd();
 	}
+	if (player1 && player2)
+	updateMixers(player1, player2);
+	environment?.renderer.render(environment.scene, environment.camera);
+	if (localLoop)
+		requestAnimationFrame(localGameLoop);
+	}
+	isGameLoaded = true;
 }
 
 

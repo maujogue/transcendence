@@ -61,6 +61,7 @@ function resize(environment) {
 	resizeSpaceBackground();
 	const div = document.getElementsByClassName("menu")[0];
 	if (div) {
+		console.log("resize menu");
 		div.style.width = width + "px";
 		div.style.height = height + "px";
 		div.style.fontSize = width / 25 + "px";

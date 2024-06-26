@@ -2,12 +2,13 @@ import { createTournamentDiv} from "./menu.js";
 import { connectToTournament } from "./tournament.js";
 import { get_csrf_token } from "../../ApiUtils.js";
 import { displayErrorPopUp } from "./tournament.js";
+import { hostname } from "../Router.js";
 
 let allTournaments;
 
 async function getAllTournaments() {
     try {
-        const response = await fetch('https://127.0.0.1:8000/api/tournament/list/');
+        const response = await fetch(`https://${hostname}:8000/api/tournament/list/`);
         if (!response.ok) {
             throw new Error('Erreur HTTP: ' + response.status);
         }
@@ -61,7 +62,7 @@ function createDivJoinTournament(parent) {
 }
 
 async function joinTournament(tournament) {
-    fetch(`https://127.0.0.1:8000/api/tournament/join/${tournament.id}/`, {
+    fetch(`https://${hostname}:8000/api/tournament/join/${tournament.id}/`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -85,7 +86,8 @@ async function joinTournament(tournament) {
     
 
 async function displayAllTournaments() {
-    document.getElementById("tournamentsInfo").innerHTML = "";
+    if (document.getElementById("tournamentsInfo"))
+        document.getElementById("tournamentsInfo").innerHTML = "";
     try {
         const data = await getAllTournaments();
         allTournaments = data.tournaments;

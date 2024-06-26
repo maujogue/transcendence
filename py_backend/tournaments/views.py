@@ -171,7 +171,6 @@ def check_if_tournament_joined(request, username):
 						status=200)
 	return JsonResponse({"message": "User has joined a tournament.", "joined": False}, status=200)
 
-
 @login_required
 @require_http_methods(["POST"])
 def add_contract_address(request, tournament_id):

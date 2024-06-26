@@ -53,8 +53,8 @@ def username_is_valid(username):
 def username_is_unique(username):
 	if not username or username == '':
 		return False, f'Username cannot be empty.'
-	converted_usernane = username.lower()
-	response = CustomUser.objects.filter(username=converted_usernane).exists()
+	lower_username = username.lower()
+	response = CustomUser.objects.filter(username__iexact=lower_username).exists()
 	if response:
 		return False, f'Username is already used.'
 	return True, None

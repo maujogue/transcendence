@@ -17,8 +17,10 @@ def update_tournament_name(request):
     
     tournament_username = data.get('username')
     if tournament_username:
-        converted_username = tournament_username.lower()
-        response = CustomUser.objects.filter(tournament_username=converted_username).exists()
+        lower_username = tournament_username.lower()
+
+        response = CustomUser.objects.filter(tournament_username__iexact=lower_username)
+
         if response:
             return JsonResponse({'error': 'Username is already used.'}, status=400)
         request.user.tournament_username = tournament_username

@@ -17,13 +17,15 @@ class ProfileUpdate(TestCase):
             username="osterga",
             email="osterga@gmail.com",
             password="UserPassword9+",
-            bio="Bonjours a tous, c'est Osterga")
+            bio="Bonjours a tous, c'est Osterga",
+            tournament_username="osterga")
 
         self.user2 = CustomUser.objects.create_user(
             username="ochoa",
             email="ochoa@gmail.com",
             password="UserPassword9+",
-            bio="Bonjours a tous, c'est Ochoa")
+            bio="Bonjours a tous, c'est Ochoa",
+            tournament_username="Ochoa")
         
         self.user3 = CustomUser.objects.create_user(
             username="42boula",
@@ -366,7 +368,49 @@ class ProfileUpdate(TestCase):
 
     def test_tournament_name_already_used(self):
         update_datas = {
+            'username': 'Ochoa'
+        }
+
+        response = self.client.post(
+            reverse('update_tournament_name'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_tournament_name_already_used_lower(self):
+        update_datas = {
             'username': 'ochoa'
+        }
+
+        response = self.client.post(
+            reverse('update_tournament_name'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_tournament_name_already_used_upper(self):
+        update_datas = {
+            'username': 'OCHOA'
+        }
+
+        response = self.client.post(
+            reverse('update_tournament_name'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_tournament_name_already_used_random_set_of_upper_lower(self):
+        update_datas = {
+            'username': 'OcHoA'
         }
 
         response = self.client.post(
@@ -380,7 +424,7 @@ class ProfileUpdate(TestCase):
 
     def test_missing_tournament_name(self):
         update_datas = {
-            'username': 'ochoa'
+            'username': ''
         }
 
         response = self.client.post(

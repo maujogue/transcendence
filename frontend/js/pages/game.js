@@ -215,7 +215,7 @@ export async function init(queryParams) {
 		}
 		if (start) {
 			if (soloMode)
-				moveAI(player1, player2, environment, model);
+				moveAI(player2, environment, model);
 			if (keyPress)
 				handleKeyPress(keysPressed, player1, player2, environment);
 			checkCollision(environment.ball, player1, player2, environment);

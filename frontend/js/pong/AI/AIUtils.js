@@ -5,39 +5,32 @@ var elapsedTime = 0;
 var predictions;
 var firstPrediction = true;
 
-function getGameState(player1, player2, environment) {
+function getGameState(environment, player2) {
 	const gameState = {
-		"player1": {
-			"position": player1.paddle.mesh.position,
-			"score": player1.score
-		},
-		"player2": {
-			"position": player2.paddle.mesh.position,
-			"score": player2.score
+		"agent": {
+			"position": player2.paddle.mesh.position
 		},
 		"ball": {
 			"position": environment.ball.mesh.position,
 			"direction": environment.ball.direction
 		}
 	};
+	console.log("Ball position: ", gameState.ball.position);
 
 	const inputData = [
-		gameState.player1.position.x, gameState.player1.position.y,
-		gameState.player1.score,
-		gameState.player2.position.x, gameState.player2.position.y,
-		gameState.player2.score,
+		gameState.agent.position.x, gameState.agent.position.y,
 		gameState.ball.position.x, gameState.ball.position.y,
 		gameState.ball.direction.x, gameState.ball.direction.y
 	];
 
-	const inputTensor = tf.tensor2d(inputData, [1, 10]);
+	const inputTensor = tf.tensor2d(inputData, [1, 6]);
 
 	return inputTensor;
 }
 
 export async function loadAgentModel() {
     try {    
-		const model = await tf.loadLayersModel('../../../js/pong/AI/models/agent2___-0.20avg_ copy/model.json');
+		const model = await tf.loadLayersModel('../../../js/pong/AI/models/agent2____0.00avg_/model.json');
 		console.log('Model loaded : ', model);
 		return model;
     } catch (error) {
@@ -49,26 +42,25 @@ export async function loadAgentModel() {
 function performAction(action, player2, environment) {
 	var playerBox2 = new THREE.Box3().setFromObject(player2.paddle.mesh);
 	if (action == 1 && !environment.border.up.box.intersectsBox(playerBox2)) {
-		player2.paddle.mesh.translateY(0.095);
+		player2.paddle.mesh.position.y += 0.095;
 		player2.light.position.y += 0.095;
 	}
 	else if (action == 2 && !environment.border.down.box.intersectsBox(playerBox2)) {
-		player2.paddle.mesh.translateY(-0.095);
+		player2.paddle.mesh.position.y -= 0.095;
 		player2.light.position.y -= 0.095;
 	}
 }
 
-const predict = async (gameState, model) => {
-	const result = model.predict(gameState, { batchSize: 64 });
+const predict = async (environment, model, player2) => {
+	const gameState = getGameState(environment, player2);
+	const result = model.predict(gameState);
 	const values = result.dataSync();
 	console.log("Prediction: ", values);
 	return values;
 }
 
-async function predictAction(player1, player2, environment, model) {
-	const gameState = getGameState(player1, player2, environment);
-	console.log("Game State: ", gameState.dataSync());
-	const predictions = await predict(gameState, model);
+async function predictAction(environment, model, player2) {
+	const predictions = await predict(environment, model, player2);
 	return predictions;
 }
 
@@ -84,9 +76,9 @@ function checkElapsedTime(clock) {
 	return true;
 }
 
-export async function moveAI(player1, player2, environment, model) {
+export async function moveAI(player2, environment, model) {
 	if (checkElapsedTime(clock) || firstPrediction) {
-		predictions = await predictAction(player1, player2, environment, model);
+		predictions = await predictAction(environment, model, player2);
 		firstPrediction = false;
 	}
 	const maxValue = Math.max(...predictions);

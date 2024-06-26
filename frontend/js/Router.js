@@ -23,7 +23,6 @@ const routes = [
 	new Page("dashboard", "/dash", "html/Dashboard.html", true),
 	new Page("sidebar", "", "html/Sidebar.html", true),
 	new Page("about", "/about", "html/About.html"),
-	new Page("game", "/game", "html/Game.html", true),
 	new Page("emailVerified", "/emailVerified", "html/EmailVerified.html", true),
 ];
 
@@ -73,7 +72,7 @@ function toggleActiveTab(target) {
 		currentActive.classList.remove("active");
 	if (target == "/")
 		target = "/dash";
-	if (target == "/dash" || target == "/game" || (target == "/about" && !isLoggedIn()))
+	if (target == "/dash" || (target == "/about" && !isLoggedIn()))
 		document.querySelector("a[href='" + target + "']").classList.add("active");
 }
 
@@ -93,8 +92,6 @@ async function initPages() {
 	await toggleContentOnLogState();
 	await injectUserData();
 	for (const page of routes) {
-		if (page.name === "game")
-			contentContainer.querySelector("#game").setAttribute("tabindex", "0");
 		await execPageJavascript(page.name);
 	}
 	toggleActiveTab(location.pathname);

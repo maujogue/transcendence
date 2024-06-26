@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { createField, createBorder } from './createField.js';
-import { winWidth, winHeight } from './varGlobal.js';
+import { winWidth, winHeight } from "./gameModule.js";
 import { isFullScreen } from './resize.js';
 import { stopStep } from './spaceBackground.js';
 

@@ -1,5 +1,4 @@
 import { createDivMenu } from "./menu.js"
-import { ClearAllEnv } from "./createEnvironment.js"
 import { displayMainMenu } from "./menu.js"
 
 function setEndingDivStyle(div)

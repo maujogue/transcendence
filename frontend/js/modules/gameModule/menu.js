@@ -2,7 +2,8 @@ import { createEnvironment } from "./createEnvironment.js";
 import { displayCharacter } from './displayCharacter.js';
 import { createLobbyLights, createLobbyScene } from './createField.js';
 import { isFullScreen } from './resize.js';
-import { winWidth, winHeight, charactersNames } from './varGlobal.js';
+import { charactersNames } from './varGlobal.js';
+import { winWidth, winHeight } from "./gameModule.js";
 import { createFormTournament } from "./createTournament.js";
 import { initSpaceBackground } from "./spaceBackground.js";
 

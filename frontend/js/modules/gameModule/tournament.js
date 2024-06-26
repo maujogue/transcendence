@@ -1,4 +1,4 @@
-import { get_csrf_token} from "../ApiUtils.js";
+import { get_csrf_token } from "../../ApiUtils.js";
 import { returnToMenu } from "./createEndScreen.js";
 import { createJoinTournamentMenu } from "./joinTournament.js";
 import { createTournamentDiv } from "./menu.js";

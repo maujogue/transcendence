@@ -1,5 +1,5 @@
 import { connectToTournament } from "./tournament.js";
-import { get_csrf_token } from "../ApiUtils.js";
+import { get_csrf_token } from "../../ApiUtils.js";
 import { createTournamentDiv } from "./menu.js";
 import { displayErrorPopUp } from "./tournament.js";
 

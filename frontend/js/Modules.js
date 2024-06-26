@@ -19,6 +19,7 @@ const modules = [
 	new Module("friendList"),
 	new Module("statisticsModule"),
 	new Module("auth42"),
+	new Module("gameModule"),
 
 	new Module("translationsModule"), //leave it last so that it injects all modules before it
 ];
@@ -61,9 +62,16 @@ async function updateModule(moduleName) {
 }
 
 async function importFunction(modulePath, moduleName, run) {
+	var module;
 	if (modulePath && moduleName && run) {
 		try {
-			const module = await import(`${modulePath}${moduleName}.js`);
+			console.log(`${modulePath}${moduleName}.js`);
+			try {
+				 module = await import(`${modulePath}${moduleName}.js`);
+				console.log('Module loaded successfully:', module);
+			} catch (error) {
+				console.error('Error importing module:', error);
+			}
 			const func = module["init"];
 			if (typeof func === 'function') {
 				return func;

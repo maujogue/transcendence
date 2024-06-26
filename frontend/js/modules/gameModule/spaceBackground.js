@@ -1,5 +1,5 @@
 import { recreateCanvas } from "./createEnvironment.js";
-import { winWidth, winHeight } from "./varGlobal.js";
+import { winWidth, winHeight } from "./gameModule.js";
 import { isFullScreen } from "./resize.js";
 
 const STAR_COLOR = '#fff';

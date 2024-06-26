@@ -1,7 +1,6 @@
-import { init } from "../pages/game.js";
 import { recreateCanvas } from "./createEnvironment.js";
 import { initSpaceBackground, stopStep } from "./spaceBackground.js";
-import { winWidth, winHeight } from "./varGlobal.js";
+import { winWidth, winHeight } from "./gameModule.js";
 
 function isFullScreen() {
 	return (document.fullscreenElement);

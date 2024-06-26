@@ -1,38 +1,55 @@
-import { resize, isFullScreen } from "../pong/resize.js";
-import { checkCollision } from "../pong/collision.js";
-import { displayMainMenu, createSelectMenu, createOnlineMenu } from '../pong/menu.js';
-import { handleKeyPress, handleMenuKeyPress } from '../pong/handleKeyPress.js';
-import { displayCharacter, updateMixers } from '../pong/displayCharacter.js';
-import { initGame } from "../pong/initGame.js";
-import { createEndScreen, returnToMenu } from "../pong/createEndScreen.js"
-import { actualizeScore } from "../pong/score.js";
-import { createField } from "../pong/createField.js";
-import { createOnlineSelectMenu } from "../pong/online.js";
-import { ClearAllEnv, getSize } from "../pong/createEnvironment.js";
-import { loadAllModel } from "../pong/loadModels.js"
-import { loadScene } from "../pong/loadModels.js";
-import { getUserData } from "../User.js";
-import { sendTournamentForm, createFormTournament } from "../pong/createTournament.js";
-import { createJoinTournamentMenu } from "../pong/joinTournament.js";
-import { checkIfUserIsInTournament, connectToTournament } from "../pong/tournament.js";
-import { showAlert } from "../Utils.js";
+import { resize, isFullScreen } from "./resize.js";
+import { checkCollision } from "./collision.js";
+import { displayMainMenu, createSelectMenu, createOnlineMenu } from './menu.js';
+import { handleKeyPress, handleMenuKeyPress } from './handleKeyPress.js';
+import { displayCharacter, updateMixers } from './displayCharacter.js';
+import { initGame } from "./initGame.js";
+import { createEndScreen, returnToMenu } from "./createEndScreen.js"
+import { actualizeScore } from "./score.js";
+import { createField } from "./createField.js";
+import { createOnlineSelectMenu } from "./online.js";
+import { ClearAllEnv, getSize } from "./createEnvironment.js";
+import { loadAllModel } from "./loadModels.js"
+import { loadScene } from "./loadModels.js";
+import { getUserData } from "../../User.js";
+import { sendTournamentForm, createFormTournament } from "./createTournament.js";
+import { createJoinTournamentMenu } from "./joinTournament.js";
+import { checkIfUserIsInTournament, connectToTournament } from "./tournament.js";
+import { getModuleDiv, updateModule } from "../../Modules.js";
+
 import * as THREE from 'three';
-import { injectGameTranslations } from "../modules/translationsModule/translationsModule.js";
+import { injectGameTranslations } from "../translationsModule/translationsModule.js";
 
 export var lobby;
 export var clock;
 export var characters;
+export var winWidth;
+export var winHeight;
 
-export async function init(queryParams) {
-	if (queryParams && queryParams.get("message"))
-		showAlert(queryParams.get("message"), queryParams.get("success"));
+export async function init() {
+	var module = getModuleDiv("gameModule");
+	if (!module)
+		return;
+	
+	winWidth = window.innerWidth / 2;
+	winHeight = winWidth * 9 / 16;
+	console.log(winHeight);
+	var reloadBtn = document.getElementById('reloadGame');
+	window.addEventListener('resize', function () {
+		document.getElementById('reloadGame').hidden = false;
+		console.log("Resizing window", window.innerWidth, winWidth);
+	});
+	reloadBtn.addEventListener('click', function () {
+		document.getElementById('reloadGame').hidden = true;
+		updateModule("gameModule");
+	});
 
 	var target = document.querySelector('#game');
 	var config = { attributes: true, childList: true, characterData: true };
 	var observer = new MutationObserver(function (mutations) {
 		mutations.forEach(injectGameTranslations);
 	});
-	observer.observe(target, config);
+	// observer.observe(target, config);
 
 	lobby = await loadScene('lobbyTest');
 	clock = new THREE.Clock();
@@ -198,6 +215,7 @@ export async function init(queryParams) {
 		environment?.renderer.render(environment.scene, environment.camera);
 		if (localLoop)
 			requestAnimationFrame(localGameLoop);
+
 	}
 }
 

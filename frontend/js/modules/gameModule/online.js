@@ -6,10 +6,10 @@ import { initGame } from "./initGame.js";
 import { translateBall} from "./onlineCollision.js";
 import { handlerScore, setBallData, handlerStatusMessage } from "./handlerMessage.js";
 import { sendCharacter} from "./sendMessage.js";
-import { characters } from "../pages/game.js";
+import { characters } from "./gameModule.js";
 import { updateMixers } from "./displayCharacter.js";
 import { resize } from "./resize.js";
-import { getUserData } from "../User.js";
+import { getUserData } from "../../User.js";
 import * as THREE from 'three';
 
 let env;

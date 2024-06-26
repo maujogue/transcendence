@@ -12,13 +12,14 @@ import { ClearAllEnv } from "../pong/createEnvironment.js";
 import { loadAllModel } from "../pong/loadModels.js"
 import { loadScene } from "../pong/loadModels.js";
 import { getUserData } from "../User.js";
-import { sendTournamentForm, createFormTournament} from "../pong/createTournament.js";
+import { sendTournamentForm, createFormTournament } from "../pong/createTournament.js";
 import { createJoinTournamentMenu } from "../pong/joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "../pong/tournament.js";
 import { showAlert } from "../Utils.js";
 import { wsTournament } from "../pong/tournament.js";
 import { createTournamentHistoryMenu } from "../pong/tournamentHistory.js";
 import * as THREE from 'three';
+import { injectGameTranslations } from "../modules/translationsModule/translationsModule.js";
 
 export var lobby;
 export var clock;
@@ -32,6 +33,13 @@ export async function init(queryParams) {
 		showAlert(queryParams.get("message"), queryParams.get("success"));
 	if (isGameLoaded)
 		return;
+
+	var target = document.querySelector('#game');
+	var config = { attributes: true, childList: true, characterData: true };
+	var observer = new MutationObserver(function (mutations) {
+		mutations.forEach(injectGameTranslations);
+	});
+	observer.observe(target, config);
 
 	lobby = await loadScene('lobbyTest');
 	clock = new THREE.Clock();
@@ -203,7 +211,7 @@ export async function init(queryParams) {
 	updateMixers(player1, player2);
 	environment?.renderer.render(environment.scene, environment.camera);
 	if (localLoop)
-	requestAnimationFrame(localGameLoop);
+		requestAnimationFrame(localGameLoop);
 	}
 	isGameLoaded = true;
 }

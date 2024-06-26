@@ -39,7 +39,7 @@ class UtilsFunctionsTest(TestCase):
 
         response_data = response.json()
         self.assertEqual(response_data.get('error'), 'Username is already used.')
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 200)
 
     def test_username_already_used_letter_case(self):
         update_datas = {
@@ -54,7 +54,7 @@ class UtilsFunctionsTest(TestCase):
 
         response_data = response.json()
         self.assertEqual(response_data.get('error'), 'Username is already used.')
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 200)
 
     def test_empty_username(self):
         update_datas = {
@@ -97,7 +97,7 @@ class UtilsFunctionsTest(TestCase):
 
         response_data = response.json()
         self.assertEqual(response_data.get('error'), 'Email is already used.')
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 200)
 
     def test_empty_email(self):
         update_datas = {

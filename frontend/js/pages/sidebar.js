@@ -1,5 +1,6 @@
 import { register, login, logout } from "../ApiCalls.js";
-import { togglePasswordVisibility, checkPassword, showAlert, printQueryParamsMessage } from "../Utils.js";
+import { togglePasswordVisibility, checkPassword, showAlert, toggleSearchBar } from "../Utils.js";
+import { printQueryParamsMessage } from "../modules/translationsModule/translationsModule.js";
 
 export function init(queryParams) {
 	printQueryParamsMessage(queryParams);
@@ -41,4 +42,5 @@ function toggleSidebarCollapse() {
 	sectionNames.forEach(function (name) {
 		name.classList.toggle("section-name-collapsed");
 	});
+	toggleSearchBar();
 }

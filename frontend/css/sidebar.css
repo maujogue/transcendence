@@ -3,6 +3,7 @@
   height: 100%;
   position: fixed;
   transition: width 0.5s;
+  z-index: 1;
 }
 
 #sidebar.collapsed {
@@ -20,20 +21,20 @@
 }
 
 .section-name {
-  position: fixed;
+  position: absolute;
   opacity: 1;
-  transition: opacity 0.2s;
+  transition: opacity 0.5s;
 }
 
 .section-name-collapsed {
   opacity: 0;
 }
 
-#title {
-  position: static;
-}
-
 li.nav-item > a:hover {
   background-color: #1d2126;
   color: white;
+}
+
+a {
+	text-decoration: none;
 }

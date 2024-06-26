@@ -60,9 +60,9 @@ function handlerStopGame(webSocket, env, message) {
 
 export async function handlerEndGame(data, env, webSocket) {
     if (!document.getElementById("endscreen") && !checkIfWebsocketIsOpen(wsTournament))
-        createEndScreen(data['name']);
+        createEndScreen(data['winner']);
     if (checkIfWebsocketIsOpen(wsTournament)) {
-        createTournamentEndScreen(data['name']);
+        createTournamentEndScreen(data['winner']);
         webSocket.close();
         setTimeout(() => {
             wsTournament.send(JSON.stringify({

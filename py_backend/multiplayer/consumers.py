@@ -336,9 +336,10 @@ class PongConsumer(AsyncWebsocketConsumer):
         if self.player.name == 'player1' or (self.lobby.player1 is None and not await self.check_if_history_match_exists()):
             await self.createHistoryMatch()
             await self.lobby.stopGame()
-        await self.channel_layer.group_send(
-            self.lobby_group_name, { 'type': 'pong.status', 'status': 'endGame', 'message': 'The game is over', 'name': self.scope['user'].tournament_username}
-        )
+            print(f"multiplayer: {self.winner} won the game")
+            await self.channel_layer.group_send(
+                self.lobby_group_name, { 'type': 'pong.status', 'status': 'endGame', 'message': 'The game is over', 'name': self.scope['user'].tournament_username, 'winner': self.winner}
+            )
 
     async def check_if_history_match_exists(self):
         try:
@@ -358,18 +359,18 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
 
         if not self.lobby.player2:
-            winner = player1.user.tournament_username        
+            self.winner = player1.user.tournament_username        
         elif not self.lobby.player1 or (self.player.name == 'player1' and not self.is_connected):
-            winner = player2.user.tournament_username
+            self.winner = player2.user.tournament_username
         else:
-            winner = player1.user.tournament_username if player1.score > player2.score else player2.user.tournament_username
-        loser = player1.user.tournament_username if player1.user.tournament_username != winner else player2.user.tournament_username
+            self.winner = player1.user.tournament_username if player1.score > player2.score else player2.user.tournament_username
+        loser = player1.user.tournament_username if player1.user.tournament_username != self.winner else player2.user.tournament_username
         match = Match(  lobby_id=str(self.lobby.uuid),
                         player1=player1.user.tournament_username, 
                         player2=player2.user.tournament_username, 
                         player1_average_exchange=self.calculateAverageExchange(self.exchangeBeforePointsP1),
                         player2_average_exchange=self.calculateAverageExchange(self.exchangeBeforePointsP2),
-                        winner=winner,
+                        winner=self.winner,
                         loser=loser,
                         player1_score=player1.score, 
                         player2_score=player2.score)
@@ -412,6 +413,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 
         if status == "endGame":
             self.resetGame()
+            await self.send_data({"type": 'status', 'status': status ,"message": message, "name": name, "winner": event["winner"]})
+            return
         await self.send_data({"type": 'status', 'status': status ,"message": message, "name": name})
         if status == 'start':
             asyncio.create_task(self.gameLoop())

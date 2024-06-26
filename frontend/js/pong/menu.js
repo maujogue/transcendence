@@ -195,11 +195,9 @@ function addLights(env, color1, color2) {
     const light1 = new THREE.PointLight(color1, 50);
     const light2 = new THREE.PointLight(color2, 50);
 
-    // Positionner les lumières
-    light1.position.set(-2, 2, 2); // Ajustez les positions selon vos besoins
+    light1.position.set(-2, 2, 2);
     light2.position.set(2, 2, 2);
 
-    // Ajouter les lumières à la scène
     env.scene.add(light1);
     env.scene.add(light2);
 }
@@ -324,7 +322,6 @@ function createOnlineMenu() {
 	createSubmode('Tournament', "Join");
 	createSubmode('Tournament', "History");
 	createSubmode('1v1', "Quick Play");
-	createSubmode('1v1', "Private Game");
 }
 
 

@@ -1,6 +1,6 @@
 import { recreateCanvas } from "./createEnvironment.js";
 import { initSpaceBackground, stopStep } from "./spaceBackground.js";
-import { winWidth, winHeight } from "./gameModule.js";
+import { winHeight, winWidth } from "./varGlobal.js";
 
 function isFullScreen() {
 	return (document.fullscreenElement);
@@ -61,7 +61,6 @@ function resize(environment) {
 	resizeSpaceBackground();
 	const div = document.getElementsByClassName("menu")[0];
 	if (div) {
-		console.log("resize menu");
 		div.style.width = width + "px";
 		div.style.height = height + "px";
 		div.style.fontSize = width / 25 + "px";

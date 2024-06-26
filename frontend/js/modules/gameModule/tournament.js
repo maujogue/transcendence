@@ -1,10 +1,10 @@
 import { get_csrf_token } from "../../ApiUtils.js";
 import { returnToMenu } from "./createEndScreen.js";
-import { getUserData } from "../User.js";
+import { getUserData } from "../../User.js";
 import { clearOnlineVariables, createOnlineSelectMenu } from "./online.js";
 import { createTournamentDiv } from "./menu.js";
 import { createLeaveButton, drawBracket} from "./createBracket.js";
-import { hostname } from "../Router.js";
+import { hostname } from "../../Router.js";
 import { wsMatch } from "./online.js";
 import { checkIfWebsocketIsOpen, handlerEndGame } from "./handlerMessage.js";
 

@@ -2,7 +2,7 @@ import { createTournamentDiv} from "./menu.js";
 import { connectToTournament } from "./tournament.js";
 import { get_csrf_token } from "../../ApiUtils.js";
 import { displayErrorPopUp } from "./tournament.js";
-import { hostname } from "../Router.js";
+import { hostname } from "../../Router.js";
 
 let allTournaments;
 

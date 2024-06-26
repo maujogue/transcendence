@@ -30,23 +30,23 @@ async function initArray(array) {
 }
 
 async function injectModule(div) {
-    const regex = /^[ \n\t]*$/;
-    await initArray(modules);
+	const regex = /^[ \n\t]*$/;
+	await initArray(modules);
 
-    for (const moduleType of modules) {
+	for (const moduleType of modules) {
 		if (div) {
 			div = document.querySelector("." + div);
-        	var moduleDivs = div.querySelectorAll("." + moduleType.name);
+			var moduleDivs = div.querySelectorAll("." + moduleType.name);
 		}
 		else
 			var moduleDivs = document.querySelectorAll("." + moduleType.name);
-        for (const div of moduleDivs) {
-            if (regex.test(div.innerHTML)) {
-                div.innerHTML = moduleType.html;
-                await moduleType.init();
-            }
-        }
-    }
+		for (const div of moduleDivs) {
+			if (regex.test(div.innerHTML)) {
+				div.innerHTML = moduleType.html;
+				await moduleType.init();
+			}
+		}
+	}
 }
 
 async function updateModule(moduleName) {
@@ -54,8 +54,12 @@ async function updateModule(moduleName) {
 	if (module) {
 		const moduleDivs = document.querySelectorAll("." + moduleName);
 		for (const div of moduleDivs) {
-			div.removeAttribute("id");
-			div.innerHTML = module.html;
+			var divClone = document.createElement("div");
+			var divParent = div.parentNode;
+			divClone.innerHTML = module.html;
+			divClone.classList.add(module.name);
+			div.remove();
+			divParent.insertBefore(divClone, divParent.firstChild);
 			await module.init();
 		}
 	}
@@ -65,13 +69,7 @@ async function importFunction(modulePath, moduleName, run) {
 	var module;
 	if (modulePath && moduleName && run) {
 		try {
-			console.log(`${modulePath}${moduleName}.js`);
-			try {
-				 module = await import(`${modulePath}${moduleName}.js`);
-				console.log('Module loaded successfully:', module);
-			} catch (error) {
-				console.error('Error importing module:', error);
-			}
+			module = await import(`${modulePath}${moduleName}.js`);
 			const func = module["init"];
 			if (typeof func === 'function') {
 				return func;
@@ -104,4 +102,4 @@ function getModuleDiv(moduleName) {
 	return null
 }
 
-export { initArray, injectModule, getModuleDiv, importFunction, updateModule};
+export { initArray, injectModule, getModuleDiv, importFunction, updateModule };

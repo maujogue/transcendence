@@ -3,10 +3,10 @@ import { displayCharacter } from './displayCharacter.js';
 import { createLobbyLights, createLobbyScene } from './createField.js';
 import { isFullScreen } from './resize.js';
 import { charactersNames } from './varGlobal.js';
-import { winWidth, winHeight } from "./gameModule.js";
+import { winHeight, winWidth } from "./varGlobal.js";
 import { createFormTournament } from "./createTournament.js";
 import { initSpaceBackground } from "./spaceBackground.js";
-import { characters } from "../pages/game.js"
+import { characters } from "./gameModule.js"
 import { colors } from "./varGlobal.js"; 
 import * as THREE from 'three';
 

@@ -2,7 +2,7 @@ import { connectToTournament } from "./tournament.js";
 import { get_csrf_token } from "../../ApiUtils.js";
 import { createTournamentDiv } from "./menu.js";
 import { displayErrorPopUp } from "./tournament.js";
-import { hostname } from "../Router.js";
+import { hostname } from "../../Router.js";
 
 export async function sendTournamentForm(form) {
 	const formData = new FormData(form);

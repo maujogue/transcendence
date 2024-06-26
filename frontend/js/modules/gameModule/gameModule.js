@@ -17,39 +17,28 @@ import { createJoinTournamentMenu } from "./joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "./tournament.js";
 import { getModuleDiv, updateModule } from "../../Modules.js";
 
-import { wsTournament } from "../pong/tournament.js";
-import { createTournamentHistoryMenu } from "../pong/tournamentHistory.js";
+import { wsTournament } from "./tournament.js";
+import { createTournamentHistoryMenu } from "./tournamentHistory.js";
 import * as THREE from 'three';
 import { injectGameTranslations } from "../translationsModule/translationsModule.js";
-
+import { initPages } from "../../Router.js";
+import { updateWinVariables } from "./varGlobal.js";
 export var lobby;
 export var clock;
 export var characters;
 
-var isGameLoaded = false;
 export const field = await createField();
-export var winWidth;
-export var winHeight;
 
 export async function init() {
 	var module = getModuleDiv("gameModule");
 	if (!module)
 		return;
-	
-	winWidth = window.innerWidth / 2;
-	winHeight = winWidth * 9 / 16;
-	console.log(winHeight);
+
+	updateWinVariables();
 	var reloadBtn = document.getElementById('reloadGame');
-	window.addEventListener('resize', function () {
-		document.getElementById('reloadGame').hidden = false;
-		console.log("Resizing window", window.innerWidth, winWidth);
-	});
 	reloadBtn.addEventListener('click', function () {
-		document.getElementById('reloadGame').hidden = true;
-		updateModule("gameModule");
+		initPages();
 	});
-	if (isGameLoaded)
-		return;
 
 	var target = document.querySelector('#game');
 	var config = { attributes: true, childList: true, characterData: true };
@@ -230,7 +219,6 @@ export async function init() {
 	if (localLoop)
 		requestAnimationFrame(localGameLoop);
 	}
-	isGameLoaded = true;
 }
 
 

@@ -6,7 +6,6 @@ import {createTournamentEndScreen } from './createEndScreen.js';
 import { playersMove } from './online.js';
 import { displayErrorPopUp } from './tournament.js';
 import { wsTournament } from './tournament.js';
-import { updateModule } from '../../Modules.js';
 import { toggleContentOnLogState } from '../../Utils.js';
 import { injectModule, updateModule } from '../../Modules.js';
 import { updatePage } from '../../Router.js';

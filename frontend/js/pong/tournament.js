@@ -20,6 +20,11 @@ export async function connectToTournament(tournament) {
         currentTournament = tournament;
         wsTournament = new WebSocket(`ws://${hostname}:8080/ws/tournament/${tournament.id}/`);
     
+        wsTournament.onopen = () => {
+            createWaitingScreenTournament(tournament);
+            fillUserData().then(sendUsername);
+        };
+
         wsTournament.onmessage = (event) => {
             const data = JSON.parse(event.data);
             console.log("Received data:", data);
@@ -255,9 +260,6 @@ export function createWaitingScreenTournament(tournament) {
     createUnsubscribeButton(tournamentDiv);
 	tournamentDiv.appendChild(header);
     tournamentDiv.appendChild(playerList);
-    tournament.participants.map((participant) => { 
-        insertPlayer(participant);
-    });
 }
 
 export function insertPlayer(player) {

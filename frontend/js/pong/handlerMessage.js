@@ -2,6 +2,7 @@ import { actualizeScoreOnline } from './onlineCollision.js';
 import { createDivMenu, createIntroScene, displayMainMenu } from './menu.js';
 import { ClearAllEnv } from './createEnvironment.js';
 import { createEndScreen } from './createEndScreen.js';
+import {createTournamentEndScreen } from './createEndScreen.js';
 import { playersMove } from './online.js';
 import { displayErrorPopUp } from './tournament.js';
 import { wsTournament } from './tournament.js';
@@ -61,12 +62,16 @@ export async function handlerEndGame(data, env, webSocket) {
     if (!document.getElementById("endscreen") && !checkIfWebsocketIsOpen(wsTournament))
         createEndScreen(data['name']);
     if (checkIfWebsocketIsOpen(wsTournament)) {
-        wsTournament.send(JSON.stringify({
-            'type': 'status',
-            'status': 'endGame'
-        }));
-        removeGameScreen(env);
+        createTournamentEndScreen(data['name']);
         webSocket.close();
+        setTimeout(() => {
+            wsTournament.send(JSON.stringify({
+                'type': 'status',
+                'status': 'endGame'
+            }));
+            document.getElementById("endscreen")?.remove();
+            removeGameScreen(env);
+        }, 5000);
     }
     playersMove.clear();
     env.ball.direction.x = 0;

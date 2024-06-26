@@ -484,7 +484,7 @@ class TournamentModeTest(TestCase):
 		self.assertEqual(response.status_code, 400)
 
 # try to delete a non existing tournament
-	def test_delete_no_host(self):
+	def test_delete_non_existing_tournament(self):
 		name = "Hi there"
 		max_players = 2
 

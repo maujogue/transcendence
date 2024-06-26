@@ -1,7 +1,8 @@
 import { actualizeScoreOnline } from './onlineCollision.js';
-import { displayMainMenu } from './menu.js';
+import { createDivMenu, createIntroScene, displayMainMenu } from './menu.js';
 import { ClearAllEnv } from './createEnvironment.js';
 import { createEndScreen } from './createEndScreen.js';
+import {createTournamentEndScreen } from './createEndScreen.js';
 import { playersMove } from './online.js';
 import { displayErrorPopUp } from './tournament.js';
 import { wsTournament } from './tournament.js';
@@ -12,7 +13,6 @@ export function checkIfWebsocketIsOpen(webSocket) {
         return true;
     return false;
 }
-
 
 export function setBallData(data, env) {
     if (!env.ball)
@@ -40,33 +40,38 @@ export function removeGameScreen(env) {
 
 function handlerStopGame(webSocket, env, message) {
     console.log("handlerStopGame");
-    displayErrorPopUp(message, document.getElementById("hud"));
+    if (!document.getElementsByClassName("menu")[0])
+        createDivMenu("menu");
+    displayErrorPopUp(message, document.getElementsByClassName("menu")[0]);
     document.getElementById("errorPopUp").classList.add("match-error");
-    if (checkIfWebsocketIsOpen(wsTournament)) {
-        wsTournament.send(JSON.stringify({
-            'type': 'status',
-            'status': 'endGame'
-        }));
-    }
     webSocket.close();
     document.getElementById("PopUpCloseIcon").addEventListener("click", () => {
-        if (checkIfWebsocketIsOpen(wsTournament))
+        if (checkIfWebsocketIsOpen(wsTournament)) {
+            wsTournament.send(JSON.stringify({
+                'type': 'status',
+                'status': 'endGame'
+            }));
             removeGameScreen(env);
+        }
         else
             displayMainMenu();
     });
 }
 
-async function handlerEndGame(data, env, webSocket) {
+export async function handlerEndGame(data, env, webSocket) {
     if (!document.getElementById("endscreen") && !checkIfWebsocketIsOpen(wsTournament))
-        createEndScreen(data['name']);
+        createEndScreen(data['winner']);
     if (checkIfWebsocketIsOpen(wsTournament)) {
-        wsTournament.send(JSON.stringify({
-            'type': 'status',
-            'status': 'endGame'
-        }));
-        removeGameScreen(env);
+        createTournamentEndScreen(data['winner']);
         webSocket.close();
+        setTimeout(() => {
+            wsTournament.send(JSON.stringify({
+                'type': 'status',
+                'status': 'endGame'
+            }));
+            document.getElementById("endscreen")?.remove();
+            removeGameScreen(env);
+        }, 5000);
     }
     playersMove.clear();
     env.ball.direction.x = 0;
@@ -81,6 +86,29 @@ function handlerPlayerDisconnect(data, env, webSocket) {
     handlerStopGame(webSocket, env, data.message);
 }
 
+function addHtmlIntroScreen(data) {
+    createDivMenu("introScreen");
+    document.getElementById("introScreen").innerHTML = `\
+        <div id="introScreen" class="intro-screen">
+            <div class="player-info">
+                <img src="data:image/jpeg;base64,${data.player1.avatar}" alt="avatar player1" class='avatar rounded-circle'>
+                <p>${data.player1.username}</p>
+            </div>
+            <div class="player-info">
+                <p>${data.player2.username}</p>
+                <img src="data:image/jpeg;base64,${data.player2.avatar}" alt="avatar player2" class='avatar rounded-circle'>
+            </div>
+        </div>`;
+}
+
+export function displayIntroScreen(env, data) {
+    console.log("displayIntroScreen:", data);
+    document.getElementById("waitingScreen")?.remove();
+    ClearAllEnv(env);
+    env = createIntroScene(data.player1.character, data.player2.character);
+    addHtmlIntroScreen(data);
+}
+
 export function handlerStatusMessage(data, webSocket, env, status) {
     console.log("status", data);
     if (data['status'] == 'disconnected')
@@ -92,6 +120,6 @@ export function handlerStatusMessage(data, webSocket, env, status) {
     }
     if (data['status'] == 'start') {
         status.gameIsInit = true;
-        document.getElementById("waitingScreen")?.remove();
+        document.getElementsByClassName("menu")[0]?.remove();
     }
 }

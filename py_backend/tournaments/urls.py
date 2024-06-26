@@ -11,4 +11,5 @@ urlpatterns = [
     path('check-subscribed/<str:username>/', views.check_if_tournament_joined, name='check_if_tournament_joined'),
     path('contract/create/<int:tournament_id>/', views.add_contract_address, name='add_contract_address'),
     path('contract/send/<int:tournament_id>/', views.send_data_to_blockchain, name='send_data_to_blockchain')
+    path('history/<str:username>/', views.return_all_user_tournaments, name='return_all_user_tournaments')
 ]

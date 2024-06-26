@@ -6,6 +6,7 @@ import { createTournamentDiv } from "./menu.js";
 import { createLeaveButton, drawBracket} from "./createBracket.js";
 import { hostname } from "../Router.js";
 import { wsMatch } from "./online.js";
+import { checkIfWebsocketIsOpen, handlerEndGame } from "./handlerMessage.js";
 
 export let wsTournament
 export let tournamentStatus;
@@ -17,13 +18,13 @@ export async function connectToTournament(tournament) {
     try {
         console.log("Connecting to tournament:", tournament);
         currentTournament = tournament;
-        wsTournament = new WebSocket(`wss://${hostname}:8000/ws/tournament/${tournament.id}/`);
+        wsTournament = new WebSocket(`ws://${hostname}:8080/ws/tournament/${tournament.id}/`);
     
         wsTournament.onopen = () => {
             createWaitingScreenTournament(tournament);
             fillUserData().then(sendUsername);
         };
-    
+
         wsTournament.onmessage = (event) => {
             const data = JSON.parse(event.data);
             console.log("Received data:", data);
@@ -69,9 +70,28 @@ function handlerMessageStatus(data) {
     }
     if (data.status == "start")
         tournamentStatus = "started";
-    if (data.status == "waiting")
+    if (data.status == "waiting") {
         tournamentStatus = "waiting";
-} 
+        ask_tournament_status();
+    }
+    if (data.status == "cancelled") {
+        if (checkIfWebsocketIsOpen(wsMatch)) {
+            console.log("Closing wsMatch");
+            wsMatch.close();
+            clearOnlineVariables();
+        }
+    }
+}
+
+async function ask_tournament_status() {
+    setInterval(() => {
+        if (tournamentStatus != "waiting" || !checkIfWebsocketIsOpen(wsTournament) || playerStatus == "disqualified")
+            return ;
+        wsTournament.send(JSON.stringify({
+            'type': 'ask_status',
+        }));
+    }, 60000)
+}
 
 function displayRankingScreen(data) {
     if (!document.getElementsByClassName("tournament")[0])
@@ -87,18 +107,30 @@ function displayTournamentRanking(ranking) {
     console.log("displayTournamentRanking: ", ranking);
     const rankingDiv = document.createElement("div");
     rankingDiv.className = "ranking";
-    rankingDiv.innerHTML = "<h2>Ranking</h2>";
+    rankingDiv.innerHTML = "<h2 class='ranking-title'>Ranking</h2>";
+    const podiumDiv = document.createElement("div");
+    podiumDiv.className = "podium";
+    const podium = ["🥇", "🥈", "🥉"]
+    const otherDiv = document.createElement("div"); 
+    otherDiv.className = "other";
     let pos = 1;
     ranking.reverse();
     ranking.map((player) => {
         if (player != null) {
             const playerDiv = document.createElement("div");
             playerDiv.className = "player";
-            playerDiv.innerHTML = `<p>${pos}. ${player}</p>`;
-            rankingDiv.appendChild(playerDiv);
+            if (pos < 4) {
+                playerDiv.innerHTML = `<p>${podium[pos - 1]} ${player}</p>`;
+                podiumDiv.appendChild(playerDiv);
+            } else {
+                playerDiv.innerHTML = `<p>${pos}. ${player}</p>`;
+                otherDiv.appendChild(playerDiv);
+            }
             pos++;
         }
     });
+    rankingDiv.appendChild(podiumDiv);
+    rankingDiv.appendChild(otherDiv);
     document.getElementsByClassName("tournament")[0].appendChild(rankingDiv);
 }
 
@@ -230,9 +262,6 @@ export function createWaitingScreenTournament(tournament) {
     createUnsubscribeButton(tournamentDiv);
 	tournamentDiv.appendChild(header);
     tournamentDiv.appendChild(playerList);
-    tournament.participants.map((participant) => { 
-        insertPlayer(participant);
-    });
 }
 
 export function insertPlayer(player) {

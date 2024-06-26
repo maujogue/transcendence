@@ -17,6 +17,7 @@ import { createJoinTournamentMenu } from "../pong/joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "../pong/tournament.js";
 import { showAlert } from "../Utils.js";
 import { wsTournament } from "../pong/tournament.js";
+import { createTournamentHistoryMenu } from "../pong/tournamentHistory.js";
 import * as THREE from 'three';
 
 export var lobby;
@@ -91,7 +92,6 @@ export async function init(queryParams) {
 
 	gameDiv.addEventListener('click', function (event) {
 		document.body.style.overflow = 'hidden';
-		gameDiv.focus();
 		if (!gameDiv.contains(event.target)) {
 			document.body.style.overflow = 'auto';
 		}
@@ -153,6 +153,9 @@ export async function init(queryParams) {
 			else
 				div.classList.add('hidden');
 		}
+		if (event.target.id == 'history') {
+			createTournamentHistoryMenu();
+		}
 	});
 
 	document.addEventListener('fullscreenchange', function () {
@@ -161,11 +164,18 @@ export async function init(queryParams) {
 	});
 
 	function setIfGameIsEnd() {
-		if (player1.score < 5 && player2.score < 5)
+		if (player1.score < 1 && player2.score < 1)
 			return;
+
 		let winner = player1.name;
 		if (player2.score > player1.score)
 			winner = player2.name;
+
+		if (winner === "player1")
+			winner = "player 1";
+		else if (winner === "player2")
+			winner = "player 2";
+
 		createEndScreen(winner);
 		start = false;
 		player1.score = 0;
@@ -184,9 +194,8 @@ export async function init(queryParams) {
 			environment = await initGame(player1, player2);
 		}
 		if (start) {
-			console.log("start");
 			if (keyPress)
-			handleKeyPress(keysPressed, player1, player2, environment);
+				handleKeyPress(keysPressed, player1, player2, environment);
 		checkCollision(environment.ball, player1, player2, environment);
 		setIfGameIsEnd();
 	}

@@ -1,36 +1,33 @@
 import { createDivMenu } from "./menu.js"
 import { ClearAllEnv } from "./createEnvironment.js"
 import { displayMainMenu } from "./menu.js"
-
-function setEndingDivStyle(div)
-{
-    // div.style.position = 'absolute';
-    // div.style.color = 'white';
-    // div.style.textAlign = 'center';
-    // div.style.padding = '10% 0';
-    // div.style.fontSize = '1em';
-    // div.style.top = '0';
-}
+import { tournament_username } from "./online.js";
 
 function createEndScreen(winnerName) {
     createDivMenu("endscreen");
     const div = document.getElementById("endscreen");
-    setEndingDivStyle(div);
+    div.classList.add('endscreen');
+
     const h3 = document.createElement('h3');
     h3.innerText = winnerName + " WIN";
-    div.append(h3);
+    const titleDiv = document.createElement('div');
+    div.append(titleDiv);
+    titleDiv.append(h3);
+
     const restartBtn = document.createElement('button');
-    restartBtn.className = 'btn';
+    restartBtn.className = 'btn btn-endscreen';
     restartBtn.id = 'restart';
     restartBtn.innerText = 'Play again';
-    const backToTheMenuBtn = document.createElement('button');
-    backToTheMenuBtn.className = 'btn';
-    backToTheMenuBtn.id = 'backMenu';
-    backToTheMenuBtn.innerText = 'Back to the menu';
 
-    div.append(restartBtn);
-    div.append(document.createElement('br'));
-    div.append(backToTheMenuBtn);
+    const backToMenuBtn = document.createElement('button');
+    backToMenuBtn.className = 'btn btn-endscreen';
+    backToMenuBtn.id = 'backMenu';
+    backToMenuBtn.innerText = 'Back to menu';
+
+    const btnDiv = document.createElement('div');
+    div.append(btnDiv);
+    btnDiv.append(restartBtn);
+    btnDiv.append(backToMenuBtn);
 }
 
 function returnToMenu() {
@@ -41,3 +38,30 @@ function returnToMenu() {
 }
 
 export {createEndScreen, returnToMenu }
+
+export function createTournamentEndScreen(winnerName) {
+    console.log("inside createTournamentEndScree.\nwinnerName:" + winnerName);
+    console.log("tournament username: " + tournament_username);
+    createDivMenu("endscreen");
+    const div = document.getElementById("endscreen");
+    div.classList.add('endscreen');
+    
+    const h3 = document.createElement('h3');
+    h3.innerText = winnerName + " WIN";
+    const titleDiv = document.createElement('div');
+    div.append(titleDiv);
+    titleDiv.append(h3);
+
+    const h2 = document.createElement('h2');
+    if (tournament_username === winnerName) {
+        h2.id = 'winMsg';
+        h2.innerText = "Congratulations !";
+    }
+    else {
+        h2.id = 'loseMsg';
+        h2.innerText = "You lost.\nIt happens... more to some than to others...";
+    }
+    const msgDiv = document.createElement('div');
+    div.append(msgDiv);
+    msgDiv.append(h2);
+}

@@ -190,6 +190,44 @@ h1 {
 	right: 0;
 }
 
+.player-info {
+    display: flex;
+    align-items: center;
+    padding: 4%;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.avatar {
+	width: 100px;
+	height: 100px
+}
+
+.intro-screen {
+    z-index: 1;
+    display: flex;
+    justify-content: space-around;
+}
+
+.ranking-title {
+	width: 100%;
+    border-bottom: 1px solid black;
+    padding: 0 0 2% 0;
+}
+
+.podium {
+	display: flex;
+    flex-direction: column;
+    align-items: start;
+    width: 50%;
+}
+
+.other {
+	width: 50%;
+}
+
+
+
 .timer {
 	z-index: 1;
     position: absolute;
@@ -197,16 +235,15 @@ h1 {
 }
 
 .ranking {
-	align-self: start;
-	overflow-y: auto;
+    flex-wrap: wrap;
+    align-self: start;
+    overflow-y: auto;
     display: flex;
-    flex-direction: column;
     justify-content: start;
     align-items: start;
     font-size: 1.1em;
-    background: beige;
     margin: 1% 6%;
-    padding: 5%;
+    padding: 3% 5%;
     width: 87%;
     height: 68%;
 }
@@ -908,3 +945,27 @@ border: 3px solid orange;  /* creates padding around scroll thumb */
 	}
   }
 
+.endscreen {
+	position: absolute;
+	color: white;
+	text-align: center;
+	font-size: 2.5em;
+	z-index: 1;
+}
+
+.endscreen h3 {
+	font-size: 2.5em;
+}
+
+.btn-endscreen {
+	width: 40%!important;
+}
+
+.endscreen #winMsg {
+	top: 10%;
+}
+
+.endscreen #lostMsg {
+	top: 10%;
+	font-size: 1.5em;
+}

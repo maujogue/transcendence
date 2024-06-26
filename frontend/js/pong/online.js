@@ -4,7 +4,7 @@ import { handleMenuKeyPress} from "./handleKeyPress.js";
 import { ClearAllEnv } from "./createEnvironment.js";
 import { initGame } from "./initGame.js";
 import { translateBall} from "./onlineCollision.js";
-import { handlerScore, setBallData, handlerStatusMessage, removeGameScreen, checkIfWebsocketIsOpen } from "./handlerMessage.js";
+import { handlerScore, setBallData, handlerStatusMessage, removeGameScreen, checkIfWebsocketIsOpen, displayIntroScreen } from "./handlerMessage.js";
 import { sendCharacter} from "./sendMessage.js";
 import { characters } from "../pages/game.js";
 import { updateMixers } from "./displayCharacter.js";
@@ -30,6 +30,7 @@ export let wsMatch = null;
 let oppInfo;
 let lobbyId = null;
 export const playersMove = new Map();
+export let tournament_username
 
 function setUserInfo(data) {
     let user = {
@@ -52,8 +53,8 @@ export function clearOnlineVariables() {
     }
     keyUp = false;
     oppInfo = null;
-    playersMove.clear();
     lobbyId = null;
+    playersMove.clear();
     ClearAllEnv(env)
 }
 
@@ -147,11 +148,12 @@ async function connectToLobby(username) {
         return ;
     console.log(`Connecting to the server with username: ${username} and lobbyId: ${lobbyId}`);
     if (!lobbyId)
-        wsMatch = new WebSocket(`wss://${hostname}:8000/ws/lobby/`);
+        wsMatch = new WebSocket(`ws://${hostname}:8080/ws/lobby/`);
     else {
-        wsMatch = new WebSocket(`wss://${hostname}:8000/ws/lobby/${lobbyId}/`);
+        wsMatch = new WebSocket(`ws://${hostname}:8080/ws/lobby/${lobbyId}/`);
     }
-
+    
+    tournament_username = username;
     wsMatch.onopen = function() {
         console.log("Connected to the server mutliplayer");
         status.is_connected = true;
@@ -163,6 +165,7 @@ async function connectToLobby(username) {
         createWaitingScreen();
         cancelAnimationFrame(requestId);
         onlineGameLoop(wsMatch);
+        send_ping();
     }
     
     document.addEventListener('click', clickHandler);
@@ -177,12 +180,15 @@ async function connectToLobby(username) {
         }
         if (data['type'] && data['type'] == 'status')
             handlerStatusMessage(data, wsMatch, env, status);
+        if (data['type'] == 'match_info')
+            displayIntroScreen(env, data);
         if (data['type'] == 'ball_data')
             setBallData(data, env);
         if (data['type'] == 'auth' && data['status'] == 'failed') 
             wsMatch.close();
         if (data['type'] == 'character_data') {
             if (data['name'] != player.name) {
+                console.log('displayCharacter:', data['character'], data['name'])
                 displayCharacter(opp, env, data['character'], data['name']).then((res) => {
                     opp = res;
                 });
@@ -216,7 +222,6 @@ async function connectToLobby(username) {
     wsMatch.onclose = function(e) {
         console.log('Connection closed', e.code, e.reason);
         status.is_connected = false;
-        lobbyId = null;
         if (status.start)
             clearOnlineVariables();
     }
@@ -229,8 +234,19 @@ async function connectToLobby(username) {
         div.innerHTML = "Error while connecting to the server";
         selectMenu.appendChild(div);
         wsMatch = null;
-        lobbyId = null;
     }
+}
+
+async function send_ping() {
+    setInterval(() => {
+        if (checkIfWebsocketIsOpen(wsMatch)) {
+            wsMatch.send(JSON.stringify({
+                'type': 'ping'
+            }));
+        }
+        if (status.start)
+            return ;
+    }, 1000);
 }
 
 function movePaddle(data) {
@@ -275,9 +291,7 @@ async function sendIsReady(wsMatch) {
 async function setGameIsStart() {
     console.log("setGameIsStart");
     if (player && opp && oppInfo) {
-        console.log("player and opp is set");
         opp.userInfo = oppInfo;
-        ClearAllEnv(env);
         if (player.name == "player1")
             env = await initGame(player, opp);
         else

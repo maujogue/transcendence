@@ -212,4 +212,28 @@ def send_data_to_blockchain(request, tournament_id):
 					status=400)
 	logger.info(f"Data sent to blockchain successfully for tournament_id: {tournament_id}")
 	return JsonResponse({"message": "Transaction initiated."},
+					 status=200)
+
+@require_http_methods(["GET"])
+def return_all_user_tournaments(request, username):
+	try:
+		user = CustomUser.objects.get(username=username)
+	except CustomUser.DoesNotExist:
+		return JsonResponse({"errors": "User not found."},
+					status=404)
+	tournaments = Tournament.objects.filter(participants=user, finished=True)
+	if not tournaments:
+		return JsonResponse({"message": "User has not joined any tournament.", "joined": False},
+					status=200)
+	
+	tournaments_data = [{
+			"id": tournament.id,
+			"name": tournament.name,
+			"max_players": tournament.max_players,
+			"participants": [participant.username for participant in tournament.participants.all()],
+			"finished": tournament.finished
+		}
+		for tournament in tournaments
+	]
+	return JsonResponse({"tournaments": tournaments_data},
 					status=200)

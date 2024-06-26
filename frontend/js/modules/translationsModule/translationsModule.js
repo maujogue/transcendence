@@ -2,7 +2,7 @@ import { getModuleDiv } from "../../Modules.js";
 import { runEndPoint } from "../../ApiUtils.js";
 import { getUserData } from "../../User.js";
 import { initPages } from '../../Router.js';
-import { isLoggedIn, showAlert } from '../../Utils.js';
+import { disableCollapsedSidebar, isLoggedIn, showAlert } from '../../Utils.js';
 
 export async function init() {
 	var module = getModuleDiv("translationsModule");
@@ -47,20 +47,21 @@ export async function init() {
 				if (await isLoggedIn())
 					await setLanguage(lang);
 				Cookies.set("lang", lang);
-				initPages();
+				await disableCollapsedSidebar(true);
+				await initPages();
 			});
 		});
 	}
+}
 
-	async function injectTranslations() {
-		var json = await getJsonFromLang();
-		const elmDivs = document.querySelectorAll("[data-lang]");
-		elmDivs.forEach((elm) => {
-			const key = elm.getAttribute("data-lang");
-			if (json[key])
-				elm.innerHTML = json[key];
-		});
-	}
+async function injectTranslations() {
+	var json = await getJsonFromLang();
+	const elmDivs = document.querySelectorAll("[data-lang]");
+	elmDivs.forEach((elm) => {
+		const key = elm.getAttribute("data-lang");
+		if (json[key])
+			elm.innerHTML = json[key];
+	});
 }
 
 async function getJsonFromLang() {
@@ -94,4 +95,4 @@ async function printQueryParamsMessage(queryParams) {
 	history.replaceState(null, null, window.location.pathname);
 }
 
-export { setLanguage, injectGameTranslations, printQueryParamsMessage }
+export { setLanguage, injectGameTranslations, printQueryParamsMessage, injectTranslations }

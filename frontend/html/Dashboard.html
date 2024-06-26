@@ -1,6 +1,15 @@
 <section>
 	<!-- LOGGED IN DASHBOARD -->
-	<div class="container-fluid logInContent">
+	<div id="userDash" class="container-fluid logInContent position-relative" style="transition: opacity 0.1s;">
+		<div class="d-flex mb-2 ms-0">
+			<div id="closeProfileBtn" hidden>
+				<button class="btn btn-warning">
+					<i class="pt-1 fa-solid fa-arrow-left text-white"></i>
+					<span class="pt-1 ms-2 text-white" data-lang="back"></span>
+				</button>
+			</div>
+			<div id="manageFriendshipBtn" class="ms-2" hidden></div>
+		</div>
 		<div class="row">
 			<!-- PROFILE SECTION -->
 			<div class="col-3 ps-0" style="min-width:100px; max-width: 400px;">
@@ -12,13 +21,13 @@
 			<div
 				class="col-9 bg-dark rounded text-white px-5 pb-5 pt-4 text-start d-flex flex-column justify-content-center">
 				<!-- EDIT PROFILE BUTTON -->
-				<button type="button" class="btn btn-outline-secondary mt-auto mb-2 ms-auto" data-bs-toggle="modal"
-					data-bs-target="#updateProfileModal" data-lang="edit_profile_button">
+				<button id="editProfileBtn" type="button" class="btn btn-outline-secondary mt-auto mb-2 ms-auto"
+					data-bs-toggle="modal" data-bs-target="#updateProfileModal" data-lang="edit_profile_button">
 					Edit
 				</button>
 				<div class="d-flex justify-content-between">
 					<h3 class="text-info" data-lang="username_label">Username</h3>
-					<h3 class="usernameDynamic">Boula</h3>
+					<h3 class="usernameDynamic"></h3>
 				</div>
 				<div class="d-flex justify-content-between">
 					<h3 class="text-info" data-lang="email_label">Email</h3>
@@ -116,7 +125,7 @@
 				<!-- CLOSE BUTTON -->
 				<div>
 					<button type="button" class="btn btn-secondary" data-bs-toggle="modal"
-						data-bs-target="#updateProfileModal">
+						data-bs-target="#updateProfileModal" data-lang="back">
 						Back
 					</button>
 					<button type="button" id="confirmPasswordButton" class="btn btn-primary"

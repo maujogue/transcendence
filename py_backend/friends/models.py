@@ -1,19 +1,13 @@
 from django.db import models
 from users.models import CustomUser
+from py_backend import settings
 
 class InteractionRequest(models.Model):
 
-    PENDING = 'pending'
-    ACCEPTED = 'accepted'
-
-    STATUS_CHOICES = [
-        (PENDING, 'pending'),
-        (ACCEPTED, 'accepted'),
-    ]
-
-    from_user = models.ForeignKey(CustomUser, related_name='from_user', on_delete=models.CASCADE)
-    to_user = models.ForeignKey(CustomUser, related_name='to_user', on_delete=models.CASCADE)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=PENDING)
+    from_user = models.CharField(max_length=settings.MAX_LEN_USERNAME, unique=False, default='')
+    to_user = models.CharField(max_length=settings.MAX_LEN_USERNAME, unique=False, default='')
 
     def isFriend(self):
-        return self.to_user.friends.filter(id=self.from_user.id).exists() or self.from_user.friends.filter(id=self.to_user.id).exists()
+        from_user = CustomUser.objects.get(username=self.from_user)
+        to_user = CustomUser.objects.get(username=self.to_user)
+        return from_user.friends.filter(username=to_user.username).exists()

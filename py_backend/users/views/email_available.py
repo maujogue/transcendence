@@ -18,5 +18,5 @@ def email_available(request):
         is_unique, response = email_is_unique(email)
         if is_unique:
             return JsonResponse({'status': 'success'}, status=200)
-        return JsonResponse({'status': 'failure', 'error': response}, status=400)
+        return JsonResponse({'status': 'failure', 'error': response}, status=200)
     return JsonResponse({'status': "Missing email."}, status=400)

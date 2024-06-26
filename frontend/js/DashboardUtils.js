@@ -1,4 +1,7 @@
+import { updateModule } from "./Modules.js";
 import { injectUserData, getUserData } from "./User.js";
+import { initListenersEmail } from "./modules/emailInputModule/emailInputModule.js";
+import { initListenersUsername } from "./modules/usernameInputModule/usernameInputModule.js";
 
 function inputInitListeners() {
 	var modal = document.getElementById("updateProfileModal");
@@ -8,12 +11,13 @@ function inputInitListeners() {
 		input.parentNode.replaceChild(inputClone, input);
 		inputClone.addEventListener("input", enableDisableSaveButtonOnInput);
 	});
+	initListenersUsername();
+	initListenersEmail();
 }
 
 async function enableDisableSaveButtonOnInput(input) {
 	var userData = await getUserData();
 	input = input.target;
-	console.log(input.value, userData[input.name]);
 	if (userData && input.value !== userData[input.name]) {
 		disableFormInputs(input);
 		disableSaveChangesButton(input);
@@ -94,11 +98,12 @@ function toggleConfirmPasswordModal(modalToDismiss) {
 	}
 }
 
+
 export {
 	enableDisableSaveButtonOnInput,
 	disableSaveChangesButton,
 	getSubmittedInput,
 	resetForm,
 	toggleConfirmPasswordModal,
-	inputInitListeners
+	inputInitListeners,
 };

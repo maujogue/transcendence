@@ -252,7 +252,7 @@ class ProfileUpdate(TestCase):
         self.assertEqual(response.status_code, 200)
 
         url = reverse('confirm_new_email', kwargs={'uidb64': self.uid, 'token': self.token, 'new_email': new_email})
-        response_confirm = self.client.post(url)
+        response_confirm = self.client.get(url)
         self.assertEqual(response_confirm.status_code, 302)
         self.user.refresh_from_db()
         self.assertEqual(self.user.email, new_email)

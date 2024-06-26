@@ -82,7 +82,7 @@ class ConfirmEmailViewTest(TestCase):
         self.assertFalse(self.user.email_is_verified)
         url = reverse('confirm_email', kwargs={'uidb64': self.uid, 'token': self.token})
         
-        response = self.client.post(url)
+        response = self.client.get(url)
 
         self.assertEqual(response.status_code, 302)
         self.user.refresh_from_db()
@@ -93,7 +93,7 @@ class ConfirmEmailViewTest(TestCase):
         invalid_token = 'invalidtoken'
         url = reverse('confirm_email', kwargs={'uidb64': self.uid, 'token': invalid_token})
         
-        response = self.client.post(url)
+        response = self.client.get(url)
 
         self.assertEqual(response.status_code, 400)
         self.user.refresh_from_db()
@@ -105,7 +105,7 @@ class ConfirmEmailViewTest(TestCase):
         invalid_uid = 'invaliduid'
         url = reverse('confirm_email', kwargs={'uidb64': invalid_uid, 'token': self.token})
         
-        response = self.client.post(url)
+        response = self.client.get(url)
 
         self.assertEqual(response.status_code, 400)
         self.user.refresh_from_db()
@@ -117,7 +117,7 @@ class ConfirmEmailViewTest(TestCase):
         non_existent_uid = urlsafe_base64_encode(force_bytes(9999))
         url = reverse('confirm_email', kwargs={'uidb64': non_existent_uid, 'token': self.token})
         
-        response = self.client.post(url)
+        response = self.client.get(url)
 
         self.assertEqual(response.status_code, 400)
         self.assertFalse(CustomUser.objects.filter(pk=9999).exists())

@@ -27,7 +27,7 @@ async function getUserTournaments(username) {
     }
 }
 
-function createTournamentInfo(tournament, currentParticipants, maxParticipants) {
+function createTournamentInfo(tournament) {
 	const parent = document.getElementById("tournamentsInfo");
 	const tournamentDiv = document.createElement("div");
 	tournamentDiv.className = "tournament-info";
@@ -38,7 +38,6 @@ function createTournamentInfo(tournament, currentParticipants, maxParticipants) 
 	parent.appendChild(tournamentDiv);
     tournamentDiv.addEventListener("click", () => {
         connectToTournament(tournament);
-        
     });
 }
 

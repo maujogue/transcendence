@@ -6,7 +6,6 @@ import { winWidth, winHeight, charactersNames } from './varGlobal.js';
 import { initSpaceBackground } from "./spaceBackground.js";
 import { characters } from "../pages/game.js"
 import { colors } from "./varGlobal.js"; 
-import { clock } from '../pages/game.js';
 import * as THREE from 'three';
 
 let width = winWidth;
@@ -43,7 +42,7 @@ function createWaitingScreen() {
 	
 }
 
-function createSwatchPanel(leftPos, nb, character) {
+function createSwatchPanel(nb, character) {
 	const newDiv = document.createElement("div");
 	newDiv.classList.add("swatch");
 	newDiv.id = "swatch" + nb;
@@ -160,7 +159,6 @@ function createDivInputImg(playerName) {
 
 function createInterfaceSelectMenu() {
 	getSize();
-	let leftPos = 0;
 	let i = 0;
 	
 	createDivMenu("selectMenu");
@@ -173,8 +171,7 @@ function createInterfaceSelectMenu() {
 	createDivInputImg("P2");
 	createDivInputImg("Start");
 	charactersNames.forEach(character => {
-		createSwatchPanel(leftPos, i, character);
-		leftPos += (width - 11) / charactersNames.length;
+		createSwatchPanel(i, character);
 		i++;
 	});
 	createCursor("swatch0", "cursorP1", "P1");

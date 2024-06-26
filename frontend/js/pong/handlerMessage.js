@@ -39,6 +39,8 @@ export function removeGameScreen(env) {
 
 function handlerStopGame(webSocket, env, message) {
     console.log("handlerStopGame");
+    if (!document.getElementsByClassName("menu")[0])
+        createDivMenu("menu");
     displayErrorPopUp(message, document.getElementsByClassName("menu")[0]);
     document.getElementById("errorPopUp").classList.add("match-error");
     webSocket.close();

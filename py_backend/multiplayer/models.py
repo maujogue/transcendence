@@ -44,7 +44,9 @@ class Lobby(models.Model):
         await self.asave(update_fields=['game_started'])
 
     def check_if_game_is_ready(self):
-        if self.player_ready == 2 and self.player1 is not None and self.player2 is not None and not self.game_started and self.player1_character is not None and self.player2_character is not None:
+        if self.player_ready == 2 and not self.game_started and self.player1_character is not None and self.player2_character is not None:
+            print('Game is ready')
             return True
+        # print(f'Game is not ready, player_ready: {self.player_ready}, player1: {self.player1}, player2: {self.player2}, game_started: {self.game_started}, player1_character: {self.player1_character}, player2_character: {self.player2_character}')
         return False
   

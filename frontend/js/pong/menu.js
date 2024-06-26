@@ -6,6 +6,7 @@ import { winWidth, winHeight, charactersNames } from './varGlobal.js';
 import { initSpaceBackground } from "./spaceBackground.js";
 import { characters } from "../pages/game.js"
 import { colors } from "./varGlobal.js"; 
+import { clock } from '../pages/game.js';
 import * as THREE from 'three';
 
 let width = winWidth;
@@ -209,12 +210,12 @@ export function createIntroScene(p1Character, p2Character) {
 	addLights(env, colors.get(p1Character), colors.get(p2Character));
 	const character1 = characters.get(p1Character).clone();
 	const character2 = characters.get(p2Character).clone();
-	console.log(character1);
-	console.log(character2);
 	setCharacterPosInIntroScene(env, character1.mesh, character2.mesh);
 	env.scene.add(character1.mesh);
 	env.scene.add(character2.mesh);
-	moveCamera(env, character1.mesh, character2.mesh);
+	character1.setAnimation(0);
+	character2.setAnimation(0);
+	moveCamera(env, character1, character2);
 	env.renderer.render(env.scene, env.camera);
 	return {
 		"renderer": env.renderer,
@@ -224,25 +225,23 @@ export function createIntroScene(p1Character, p2Character) {
 	};
 }
 
-function moveCamera(env, mesh1, mesh2) {
-    const radius = 1.35; // Réduire le rayon pour rapprocher la caméra
+function moveCamera(env, character1, character2) {
+    const radius = 1.50;
     const time = Date.now() * 0.0005;
     
-    // Calculer le centre des deux mesh
-    const centerX = (mesh1.position.x + mesh2.position.x) / 2;
-    const centerZ = (mesh1.position.z + mesh2.position.z) / 2;
+    const centerX = (character1.mesh.position.x + character2.mesh.position.x) / 2;
+    const centerZ = (character1.mesh.position.z + character2.mesh.position.z) / 2;
 
-    // Déplacer la caméra en fonction du temps
     env.camera.position.x = centerX + radius * Math.cos(time);
     env.camera.position.z = centerZ + radius * Math.sin(time);
 	env.camera.fov = 45;
 
-    // Toujours regarder vers le centre des deux mesh
     env.camera.lookAt(centerX, 0, centerZ);
 
-    // Rendre la scène
+	character1.mixer.update(0.01);
+	character2.mixer.update(0.01);
     env.renderer.render(env.scene, env.camera);
-    requestAnimationFrame(() => moveCamera(env, mesh1, mesh2));
+    requestAnimationFrame(() => moveCamera(env, character1, character2));
 }
 
 function createSelectMenu(characters) {

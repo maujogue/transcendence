@@ -163,6 +163,7 @@ async function connectToLobby(username) {
         createWaitingScreen();
         cancelAnimationFrame(requestId);
         onlineGameLoop(wsMatch);
+        send_ping();
     }
     
     document.addEventListener('click', clickHandler);
@@ -232,6 +233,18 @@ async function connectToLobby(username) {
         selectMenu.appendChild(div);
         wsMatch = null;
     }
+}
+
+async function send_ping() {
+    setInterval(() => {
+        if (checkIfWebsocketIsOpen(wsMatch)) {
+            wsMatch.send(JSON.stringify({
+                'type': 'ping'
+            }));
+        }
+        if (status.start)
+            return ;
+    }, 1000);
 }
 
 function movePaddle(data) {

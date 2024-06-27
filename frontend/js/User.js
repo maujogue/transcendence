@@ -5,7 +5,6 @@ async function injectUserData(divToFill = null, username = null) {
 	if (await isLoggedIn())
 	{
 		var userInfos = await getUserData(null, username);
-    console.log(userInfos);
 		if(!divToFill)
 			divToFill = document;
 		Object.keys(userInfos).forEach((info) => {

@@ -66,10 +66,13 @@ def validation_register(data):
 	email = data.get('email')
 	
 	valid_username, response_username = username_is_valid(username)
+	already_used_username, response_already_used_username = username_is_unique(username)
 	valid_email, response_email = email_is_unique(email)
 
 	if not valid_username:
 		validation_errors.append(response_username)
+	if not already_used_username:
+		validation_errors.append(response_already_used_username)
 	if not valid_email:
 		validation_errors.append(response_email)
 	return validation_errors

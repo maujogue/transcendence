@@ -56,10 +56,21 @@ function resizeGame(environment) {
 	environment.renderer.render(environment.scene, environment.camera);
 }
 
+function resizeCrt() {
+	const crt = document.getElementsByClassName("crt-effect")[0];
+	if (crt) {
+		console.log("resize crt: ", width, height);
+		crt.style.width = width + "px";
+		crt.style.height = height + "px";
+	} 
+}
+
 function resize(environment) {
 	console.log("resize: ", width, height);
 	setSize();
 	resizeSpaceBackground();
+	resizeCrt();
+
 	const div = document.getElementsByClassName("menu")[0];
 	if (div) {
 		console.log("resize menu");

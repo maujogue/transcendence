@@ -351,6 +351,8 @@ export function addCrtEffect(parent) {
 	const crtEffect = document.createElement("img");
 	crtEffect.src = "../assets/img/fx/crt_effect.png";
 	crtEffect.className = "crt-effect";
+	crtEffect.style.width = width + "px";
+	crtEffect.style.height = height + "px";
 	parent.appendChild(crtEffect);
 }
 

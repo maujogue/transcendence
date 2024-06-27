@@ -284,7 +284,7 @@ class ProfileUpdate(TestCase):
     def test_42auth_email(self):
         update_datas = {
             'email': '42boulanew@gmail.com'
-		}
+        }
 
         response = self.client2.post(
             reverse('update_email'), 
@@ -297,7 +297,7 @@ class ProfileUpdate(TestCase):
     def test_42auth_username(self):
         update_datas = {
             'username': 'zebulon55'
-		}
+        }
 
         response = self.client2.post(
             reverse('update_username'), 
@@ -311,7 +311,7 @@ class ProfileUpdate(TestCase):
         update_datas = {
             'new_password1': 'Zxcvbnm98+',
             'new_password2': 'Zxcvbnm98+'
-		}
+        }
 
         response = self.client2.post(
             reverse('update_password'), 
@@ -320,3 +320,17 @@ class ProfileUpdate(TestCase):
         )
         self.user.refresh_from_db()
         self.assertEqual(response.status_code, 400)
+        
+    def test_update_lang(self):
+        update_datas = {
+            'lang': 'fr'
+        }
+        
+        response = self.client.post(
+            reverse('update_lang'), 
+            data=update_datas,
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.user.lang, 'fr')

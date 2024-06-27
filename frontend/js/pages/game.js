@@ -12,13 +12,14 @@ import { ClearAllEnv } from "../pong/createEnvironment.js";
 import { loadAllModel } from "../pong/loadModels.js"
 import { loadScene } from "../pong/loadModels.js";
 import { getUserData } from "../User.js";
-import { sendTournamentForm, createFormTournament} from "../pong/createTournament.js";
+import { sendTournamentForm, createFormTournament } from "../pong/createTournament.js";
 import { createJoinTournamentMenu } from "../pong/joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "../pong/tournament.js";
 import { showAlert } from "../Utils.js";
 import { wsTournament } from "../pong/tournament.js";
 import { createTournamentHistoryMenu } from "../pong/tournamentHistory.js";
 import * as THREE from 'three';
+import { injectGameTranslations } from "../modules/translationsModule/translationsModule.js";
 
 export var lobby;
 export var clock;
@@ -32,6 +33,13 @@ export async function init(queryParams) {
 		showAlert(queryParams.get("message"), queryParams.get("success"));
 	if (isGameLoaded)
 		return;
+
+	var target = document.querySelector('#game');
+	var config = { attributes: true, childList: true, characterData: true };
+	var observer = new MutationObserver(function (mutations) {
+		mutations.forEach(injectGameTranslations);
+	});
+	observer.observe(target, config);
 
 	lobby = await loadScene('lobbyTest');
 	clock = new THREE.Clock();
@@ -108,8 +116,10 @@ export async function init(queryParams) {
 		
 		if (event.target.id == 'restart' && !isOnline) {
 			document.getElementById("endscreen").remove();
-			actualizeScore(player1, player2, environment, environment.font);
+			player1.score = 0;
+			player2.score = 0;
 			start = true;
+			actualizeScore(player1, player2, environment, environment.font);
 		}
 		if (event.target.id == 'backMenu' || event.target.id == 'backIcon') {
 			localLoop = false;
@@ -159,12 +169,12 @@ export async function init(queryParams) {
 	});
 
 	document.addEventListener('fullscreenchange', function () {
-		if (isFullScreen())
+		if (!isOnline)
 			resize(environment);
 	});
 
 	function setIfGameIsEnd() {
-		if (player1.score < 1 && player2.score < 1)
+		if (player1.score < 5 && player2.score < 5)
 			return;
 
 		let winner = player1.name;
@@ -178,8 +188,6 @@ export async function init(queryParams) {
 
 		createEndScreen(winner);
 		start = false;
-		player1.score = 0;
-		player2.score = 0;
 	}
 
 	async function localGameLoop() {
@@ -192,6 +200,8 @@ export async function init(queryParams) {
 			ClearAllEnv(environment);
 			divMenu.remove();
 			environment = await initGame(player1, player2);
+			player1.score = 0;
+			player2.score = 0;
 		}
 		if (start) {
 			if (keyPress)
@@ -203,7 +213,7 @@ export async function init(queryParams) {
 	updateMixers(player1, player2);
 	environment?.renderer.render(environment.scene, environment.camera);
 	if (localLoop)
-	requestAnimationFrame(localGameLoop);
+		requestAnimationFrame(localGameLoop);
 	}
 	isGameLoaded = true;
 }

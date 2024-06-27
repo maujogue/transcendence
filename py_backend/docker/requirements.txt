@@ -11,8 +11,8 @@ websocket
 requests-toolbelt
 mimetypes-magic
 six
+django-friendship
 # for blockchain module
 web3
 py-solc-x
 eth_tester
-# channels-redis==4.2.0

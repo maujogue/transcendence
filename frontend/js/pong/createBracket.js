@@ -1,23 +1,24 @@
 import { displayMainMenu } from "./menu.js";
 import { createUnsubscribeButton, playerStatus, tournamentStatus } from "./tournament.js";
 import { wsTournament } from "./tournament.js";
+import { winHeight, winWidth } from "./varGlobal.js";
 
 let canvas;
 let ctx;
 const startX = 75;
 const startY = 20;
-const boxWidth = 125;
-const boxHeight = 44;
-const horizontalSpacing = 175;
+let boxWidth;
+let boxHeight;
+let horizontalSpacing;
 
 function drawMatchBox(x, y, match) {
     ctx.fillStyle = 'white';
     ctx.fillRect(x, y, boxWidth, boxHeight);
 
     ctx.strokeRect(x, y, boxWidth, boxHeight);
-    ctx.font = '14px Arial';
-    writePlayerName(x + 10, y + 20, match.player1, match.player1_score, match.winner);
-    writePlayerName(x + 10, y + 40, match.player2, match.player2_score, match.winner);
+    ctx.font = '0.8em Arial';
+    writePlayerName(x + 10 ,y + 20, match.player1, match.player1_score, match.winner);
+    writePlayerName(x + 10, y + (boxHeight - 10), match.player2, match.player2_score, match.winner);
 }
 
 function writePlayerName(x, y, playerName, score, winner) {
@@ -50,11 +51,12 @@ function drawConnectingLine(x1, y1, x2, y2) {
 function createBracketCanvas() {
     if (document.getElementById('bracketCanvas'))
         document.getElementById('bracketCanvas').remove();
+    const tournamentDiv = document.getElementsByClassName('tournament')[0];
     const canvas = document.createElement('canvas');
     canvas.id = 'bracketCanvas';
-    canvas.width = 800;
-    canvas.height = 600;
-    document.getElementsByClassName('tournament')[0]?.appendChild(canvas);
+    canvas.width = tournamentDiv.offsetWidth - 20;
+    canvas.height = tournamentDiv.offsetHeight - 20;
+    tournamentDiv?.appendChild(canvas);
 }
 
 function updateButtonWithStatus() {
@@ -95,12 +97,21 @@ function displayWaitingText() {
     }, interval);
 }
 
+function setDimensions() {
+    const tournamentDiv = document.getElementsByClassName('tournament')[0];
+    boxWidth =  tournamentDiv.offsetWidth / 5;
+    boxHeight = tournamentDiv.offsetHeight / 10;
+    horizontalSpacing = tournamentDiv.offsetWidth / 3.5;
+}
+
 export function drawBracket(bracket) {
     const tournamentName = document.createElement('h1');
     tournamentName.textContent = bracket.tournament.name;
     document.getElementsByClassName('tournament')[0].appendChild(tournamentName);
     updateButtonWithStatus();
     createBracketCanvas(bracket.tournament.name);
+    setDimensions();
+    console.log(`boxWidth: ${boxWidth}, boxHeight: ${boxHeight}, horizontalSpacing: ${horizontalSpacing}`);
     canvas = document.getElementById('bracketCanvas');
     ctx = canvas.getContext('2d');
     ctx.font = '12px Arial';
@@ -114,23 +125,20 @@ export function drawBracket(bracket) {
         const roundX = startX + roundIndex * horizontalSpacing;
         const prevRoundX = (startX + (roundIndex - 1) * horizontalSpacing) + boxWidth;
 
-        ctx.font = '20px Arial';
+        ctx.font = '1em Arial';
         ctx.fillStyle = 'black';
         ctx.fillText(round.name, roundX + (boxHeight / 2), startY);
         round.matches.forEach((match, matchIndex) => {
-    
-    
-    
             let matchY;
 
             if (roundIndex === 0) {
                 const verticalSpacing = 8;
-        
                 matchY = (startY + 40) + matchIndex * (boxHeight + verticalSpacing);
             }
             else {
-        
-                const verticalSpacing = prevRoundMatchesPosY[indexMatchesPosY + 1] - (prevRoundMatchesPosY[indexMatchesPosY] + boxHeight);
+                let verticalSpacing = prevRoundMatchesPosY[indexMatchesPosY + 1] - (prevRoundMatchesPosY[indexMatchesPosY] + boxHeight);
+                if (prevRoundMatchesPosY[indexMatchesPosY + 1] === undefined)
+                    verticalSpacing = (prevRoundMatchesPosY[indexMatchesPosY] - boxHeight) / 2;
                 const twoBoxHeight = (boxHeight * 2) + (verticalSpacing / 2);
                 matchY = (prevRoundMatchesPosY[indexMatchesPosY]  + (twoBoxHeight / 2)) - (boxHeight / 2);
             }

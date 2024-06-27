@@ -5,16 +5,17 @@ from django.views.decorators.http import require_http_methods
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
 
+from users.models import CustomUser
 from users.tokens import account_activation_token
 
 
 @require_http_methods(["GET"])
 def confirm_email(request, uidb64, token):
-    CustomUser = get_user_model()
+    User = get_user_model()
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
-        user = CustomUser.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, CustomUser.DoesNotExist):
+        user = User.objects.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     
     if user is not None and account_activation_token.check_token(user, token):

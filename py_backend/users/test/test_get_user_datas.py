@@ -1,6 +1,7 @@
 from django.test import TestCase
 from users.models import CustomUser
 from django.urls import reverse
+import json
 
 from users.utils import convert_image_to_base64
 
@@ -13,15 +14,31 @@ class GetUserDatas(TestCase):
             bio="Bonjours a tous, c'est Osterga",
             title='L\'Inusable')
         
-        self.client.login(username='osterga', password='UserPassword9+')
+        user = {
+            'username': 'osterga',
+            'password': 'UserPassword9+'
+        }
+
+        self.client.post(
+            reverse('login'), 
+            data=json.dumps(user), 
+            content_type='application/json')
+        
+        self.user.email_is_verified = True
+        self.user.save()
+        self.user.refresh_from_db()
 
     def test_basic_get_user_data(self):
-        response = self.client.post(reverse('get_user_data'))
+        self.client.login(username='osterga', password='UserPassword9+')
+        response = self.client.post(reverse('get_user_data_current'))
 
         self.assertEqual(response.status_code, 200)
 
     def test_get_user_data(self):
-        response = self.client.post(reverse('get_user_data'))
+        self.client.login(username='osterga', password='UserPassword9+')
+        response = self.client.post(
+            reverse('get_user_data_current'))
+        
         response_data = response.json()
 
         encoded_string = convert_image_to_base64(self.user.avatar)
@@ -33,9 +50,14 @@ class GetUserDatas(TestCase):
         self.assertEqual(response_data.get('user').get('title'), 'L\'Inusable')
         self.assertEqual(response_data.get('user').get('winrate'), None)
         self.assertEqual(response_data.get('user').get('rank'), None)
+        self.assertEqual(response_data.get('user').get('n_games_played'), None),
+        self.assertEqual(response_data.get('user').get('is_42auth'), False),
+        self.assertEqual(response_data.get('user').get('is_online'), False),
+
         self.assertEqual(response_data.get('user').get('n_games_played'), None)
+        self.assertEqual(response_data.get('user').get('lang'), "en")
 
     def test_without_login(self):
         self.client.logout()
-        response = self.client.post(reverse('get_user_data'))
+        response = self.client.post(reverse('get_user_data_current'))
         self.assertEqual(response.status_code, 302)

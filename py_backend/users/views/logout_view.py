@@ -9,5 +9,9 @@ from django.http import JsonResponse
 @login_required
 @requires_csrf_token
 def logout_view(request):
+    user = request.user
+    user.is_online = False
+    user.save()
+    
     logout(request)
     return JsonResponse({'status': "You are now logout !"}, status=200)

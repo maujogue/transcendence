@@ -33,7 +33,7 @@ async function toggleContentOnLogState() {
 function resetModalFormsInitListeners() {
 	var modals = document.querySelectorAll('.modal');
 	modals.forEach(function (modal) {
-		if (!modal.classList.contains('modal-no-reset')){
+		if (!modal.classList.contains('modal-no-reset')) {
 			var form = modal.querySelector('form');
 			if (!form) return;
 			modal.addEventListener('hide.bs.modal', function () {
@@ -69,12 +69,15 @@ async function disable42LoginElements() {
 	}
 }
 
-async function disableCollapsedSidebar() {
+
+async function disableCollapsedSidebar(forceDisable) {
 	const sidebar = document.getElementById("sidebar");
 	const content = document.getElementById("content-container");
-	if (!(await isLoggedIn())) {
+	if (!(await isLoggedIn()) || forceDisable) {
 		sidebar.classList.remove("collapsed");
 		content.classList.remove("collapsed");
+
+		toggleSearchBar(forceDisable);
 		var sectionNames = document.querySelectorAll(".section-name");
 		sectionNames.forEach(function (name) {
 			name.classList.remove("section-name-collapsed");
@@ -82,34 +85,34 @@ async function disableCollapsedSidebar() {
 	}
 }
 
+function toggleSearchBar(forceDisable) {
+	const searchInput = document.querySelector("#searchButton > input");
+
+	if (searchInput.hidden == true || forceDisable) {
+		setTimeout(() => {
+			searchInput.hidden = false;
+		}, 500);
+	}
+	else {
+		searchInput.hidden = true;
+	}
+}
+
 function showAlert(message, success) {
-	var alertDiv = document.createElement("div");
 	success = success === true || success === 'true';
 	var bgColor = success ? "alert-success" : "alert-danger";
-	alertDiv.className = "alert d-flex align-items-center";
-	alertDiv.classList.add(bgColor);
-	alertDiv.setAttribute("role", "alert");
-	var messageDiv = document.createElement("div");
-	messageDiv.textContent = message;
-	var button = document.createElement("div");
-	button.innerHTML = `<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>`;
-
-	alertDiv.appendChild(messageDiv);
-	alertDiv.appendChild(button);
-
-	alertDiv.style.position = "fixed";
-	alertDiv.style.top = "20px";
-	alertDiv.style.left = "50%";
-	alertDiv.style.transform = "translateX(-50%)";
-	alertDiv.style.transition = 'top 0.5s ease-in-out';
-	alertDiv.style.zIndex = "1060";
-
-	button.style.marginLeft = '20px';
-
-	document.body.insertBefore(alertDiv, document.body.firstChild);
+	var alertDiv = document.getElementById("alert");
+	var alertItem = document.createElement("div");
+	alertItem.innerHTML = `
+	<div class="alert ${bgColor} d-flex align-items-center ">
+		<span> ${message} </span>
+		<button type="button" class="ms-3 btn-close showAlertDiv" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+	`;
+	alertDiv.appendChild(alertItem);
 	setTimeout(function () {
-		alertDiv.remove();
-	}, 5000);
+		alertItem.remove();
+	}, 3000);
 }
 
 function togglePasswordVisibility(togglePasswordInputId, passwordFieldId) {
@@ -158,6 +161,12 @@ function resetCheckPassword() {
 	checkPasswordLines.forEach((e) => (e.style.color = "black"));
 }
 
+const asyncTimeout = (number) => {
+	return new Promise((resolve) => {
+		setTimeout(resolve, number);
+	});
+};
+
 export {
 	toggleContentOnLogState,
 	showAlert,
@@ -166,6 +175,9 @@ export {
 	togglePasswordVisibility,
 	checkPassword,
 	printQueryParamsMessage,
+	disableCollapsedSidebar,
+	toggleSearchBar,
 	resetCheckPassword,
 	resetModalFormsInitListeners,
+	asyncTimeout,
 };

@@ -16,6 +16,7 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 import multiplayer.routing
 import tournaments.routing
+import friends.routing
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'py_backend.settings')
 
@@ -25,7 +26,8 @@ application = ProtocolTypeRouter({
     "websocket": AuthMiddlewareStack(
         URLRouter(
                 multiplayer.routing.websocket_urlpatterns \
-            +   tournaments.routing.websocket_urlpatterns
+            +   tournaments.routing.websocket_urlpatterns \
+            +   friends.routing.websocket_urlpatterns \
         )
     ),
 })

@@ -23,9 +23,9 @@ class CustomUser(AbstractUser):
 		verbose_name = 'Custom User'
 
 	username = models.CharField(max_length=settings.MAX_LEN_USERNAME, unique=True)
-	tournament_username = models.CharField(max_length=settings.MAX_LEN_USERNAME, unique=True, default='')
+	tournament_username = models.CharField(max_length=9, unique=True, default='')
 	email = models.EmailField(max_length=settings.MAX_LEN_EMAIL, unique=True)
-	email_is_verified = models.BooleanField(default=True) #TODO make at False
+	email_is_verified = models.BooleanField(default=True)
 	title = models.CharField(max_length=50, null=True)
 	avatar = models.ImageField(default='avatar.jpg', upload_to='profile_avatars')
 	bio = models.TextField(max_length=settings.MAX_LEN_TEXT, default="")
@@ -35,10 +35,12 @@ class CustomUser(AbstractUser):
 	n_games_played = models.IntegerField(null=True)
 	friends = models.ManyToManyField("self", blank=True)
 	is_42auth = models.BooleanField(default=False)
+	is_online = models.BooleanField(default=False)
+	lang = models.CharField(max_length=2, default='en')
 	
 	def save(self, *args, **kwargs):
 		if not self.tournament_username:
-			self.tournament_username = generate_random_pseudo(random.randint(4, 8))
+			self.tournament_username = generate_random_pseudo(random.randint(3, 5))
 		super().save(*args, **kwargs)
 		img = Image.open(self.avatar.path)
 		if img.height > 300 or img.width > 300:

@@ -1,5 +1,5 @@
 import random
-from .models import Tournament, TournamentMatch, Lobby
+from .models import TournamentMatch, Lobby
 
 def create_tournament_match(tournament, playerList):
     match_lobby = Lobby.objects.create()

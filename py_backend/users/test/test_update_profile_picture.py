@@ -9,6 +9,9 @@ class UpdateProfilePictureTest(TestCase):
         self.client = Client()
         self.user = CustomUser.objects.create_user(username='testuser', password='testpass', bio='Hello !')
         self.client.login(username='testuser', password='testpass')
+        self.user.is_online = True
+        self.user.email_is_verified = True
+        self.user.save()
 
 
     def test_update_profile_picture(self):

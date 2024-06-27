@@ -11,6 +11,7 @@ class ProfileUpdate(TestCase):
     def setUp(self):
         self.client = Client()
         self.client2  = Client()
+        self.client3 = Client()
 
         self.user = CustomUser.objects.create_user(
             username="osterga",
@@ -32,7 +33,20 @@ class ProfileUpdate(TestCase):
             is_42auth=True)
         
         self.client.login(username='osterga', password='UserPassword9+')
-        self.client2.login(username='42boula', password='UserPassword9+')
+        self.user.is_online = True
+        self.user.email_is_verified = True
+        self.user.save()
+
+        self.user2.is_online = True
+        self.user2.email_is_verified = True
+        self.user2.save()
+
+        self.client3.login(username='42boula', password='UserPassword9+')
+        self.user3.is_online = True
+        self.user3.email_is_verified = True
+        self.user3.save()
+
+
         self.uid = urlsafe_base64_encode(force_bytes(self.user.pk))
         self.token = email_update_token.make_token(self.user)
 
@@ -286,7 +300,7 @@ class ProfileUpdate(TestCase):
             'email': '42boulanew@gmail.com'
         }
 
-        response = self.client2.post(
+        response = self.client3.post(
             reverse('update_email'), 
             data=update_datas, 
             content_type='application/json'
@@ -299,7 +313,7 @@ class ProfileUpdate(TestCase):
             'username': 'zebulon55'
         }
 
-        response = self.client2.post(
+        response = self.client3.post(
             reverse('update_username'), 
             data=update_datas, 
             content_type='application/json'
@@ -313,7 +327,7 @@ class ProfileUpdate(TestCase):
             'new_password2': 'Zxcvbnm98+'
         }
 
-        response = self.client2.post(
+        response = self.client3.post(
             reverse('update_password'), 
             data=update_datas, 
             content_type='application/json'

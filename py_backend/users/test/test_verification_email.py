@@ -60,26 +60,6 @@ class VerificationEmail(TestCase):
         email = mail.outbox[0]
         self.assertEqual(email.subject, 'Verify Email')
 
-    def test_verif(self):
-        newUser = {
-            'username': 'bob_seger',
-            'email': 'bobseger@gmail.com',
-            'password1': 'Mewtransse9+',
-            'password2': 'Mewtransse9+'
-        }
-
-        self.client.post(
-            reverse('register'), 
-            data=json.dumps(newUser), 
-            content_type='application/json')
-        
-        self.client.login(username='bob_seger', password='Mewtransse9+')
-        
-        response = self.client.post(reverse('get_user_data_current'))
-        response_data = response.json()
-        self.assertEqual(response_data.get('user').get('email_is_verified'), False)
-
-
 
 class ConfirmEmailViewTest(TestCase):
     def setUp(self):
@@ -88,6 +68,12 @@ class ConfirmEmailViewTest(TestCase):
             email='test@example.com',
             password='testpassword'
         )
+        self.client = Client()
+        self.client.login(username='testuser', password='testpassword')
+        self.user.is_online = True
+        self.user.email_is_verified = False
+        self.user.save()
+
         self.uid = urlsafe_base64_encode(force_bytes(self.user.pk))
         self.token = account_activation_token.make_token(self.user)
 

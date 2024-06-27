@@ -13,7 +13,7 @@ def update_lang(request):
 
         lang = data.get('lang')
 
-        if lang and request.user.is_authenticated:
+        if lang and request.user.is_online:
             user = request.user
             if len(lang) > 2:
                 lang = lang[:2]

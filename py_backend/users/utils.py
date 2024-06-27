@@ -99,24 +99,22 @@ def convert_image_to_base64(image_field):
 
 
 def send_confirmation_email(user, request):
-	if user.is_authenticated:
-		if user.email_is_verified != True:
-			current_site = get_current_site(request)
-			email = user.email
-			subject = "Verify Email"
-			message = render_to_string('../templates/verification_email_message.html', {
-				'request': request,
-				'username': user.username,
-				'domain': current_site.domain,
-				'uid':urlsafe_base64_encode(force_bytes(user.pk)),
-				'token':account_activation_token.make_token(user),
-			})
-			email = EmailMessage(
-				subject, message, to=[email]
-			)
-			email.content_subtype = 'html'
-			return email.send()
-		return False
+	if user.email_is_verified != True:
+		current_site = get_current_site(request)
+		email = user.email
+		subject = "Verify Email"
+		message = render_to_string('../templates/verification_email_message.html', {
+			'request': request,
+			'username': user.username,
+			'domain': current_site.domain,
+			'uid':urlsafe_base64_encode(force_bytes(user.pk)),
+			'token':account_activation_token.make_token(user),
+		})
+		email = EmailMessage(
+			subject, message, to=[email]
+		)
+		email.content_subtype = 'html'
+		return email.send()
 	return False
 
 

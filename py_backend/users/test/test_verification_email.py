@@ -39,7 +39,6 @@ class VerificationEmail(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(CustomUser.objects.count(), initial_user_count + 1)
 
-
     def test_email_confirmation(self):
         newUser = {
             'username': 'bob_seger',

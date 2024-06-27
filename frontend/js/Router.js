@@ -2,7 +2,7 @@ import { isLoggedIn, toggleContentOnLogState, resetModalFormsInitListeners } fro
 import { injectUserData } from "./User.js";
 import { initArray, importFunction, injectModule } from "./Modules.js";
 
-export const hostname = window && window.location && window.location.hostname;
+export const hostname = window && window.location && window.location.hostname; 
 
 class Page {
 	constructor(name, urlPath, filePath, importJs) {
@@ -79,12 +79,6 @@ function toggleActiveTab(target) {
 }
 
 async function initPages() {
-	// Clone the document
-	const clonedDocument = document.documentElement.cloneNode(true);
-
-	// Replace the current document with the cloned one
-	document.replaceChild(clonedDocument, document.documentElement);
-
 	var contentContainer = document.getElementById("content-container");
 	contentContainer.innerHTML = "";
 	setLoading(true);
@@ -130,7 +124,7 @@ function setLoading(state) {
 	if (state) {
 		if (currentPage)
 			currentPage.hidden = true;
-		contentContainer.innerHTML +=
+		contentContainer.innerHTML += 
 			`<div id="loadingScreen" class="position-absolute top-0 left-0 w-75 h-100 d-flex justify-content-center align-items-center">
 			<div class="spinner-border" role="status"></div>
 		</div>

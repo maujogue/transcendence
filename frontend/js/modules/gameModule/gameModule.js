@@ -45,7 +45,7 @@ export async function init() {
 	var observer = new MutationObserver(function (mutations) {
 		mutations.forEach(injectGameTranslations);
 	});
-	// observer.observe(target, config);
+	observer.observe(target, config);
 
 	lobby = await loadScene('lobbyTest');
 	clock = new THREE.Clock();

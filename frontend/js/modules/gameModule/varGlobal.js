@@ -1,4 +1,4 @@
-export var winWidth = window.innerWidth / 2;
+export var winWidth;
 export var winHeight = winWidth * 9 / 16;
 export const charactersNames = ['chupacabra', 'elvis', 'granny', 'peasant'];
 export const colors = new Map();
@@ -10,6 +10,6 @@ export const lobbyCharPos = -0.5;
 export const lobbyPaddlePos = -0.3;
 
 export function updateWinVariables() {
-	winWidth = window.innerWidth / 2;
+	winWidth = document.getElementById("content-container").getBoundingClientRect().width * 3/5;
 	winHeight = winWidth * 9 / 16;
 }

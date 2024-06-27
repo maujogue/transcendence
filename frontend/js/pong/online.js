@@ -74,6 +74,11 @@ document.addEventListener("keyup", function(event) {
     event.stopPropagation();
 });
 
+document.addEventListener('fullscreenchange', function () {
+    if (!status.exit)
+        resize(env);
+});
+
 function leaveMatchmaking() {
     if (wsMatch)
         wsMatch.close();
@@ -148,9 +153,9 @@ async function connectToLobby(username) {
         return ;
     console.log(`Connecting to the server with username: ${username} and lobbyId: ${lobbyId}`);
     if (!lobbyId)
-        wsMatch = new WebSocket(`ws://${hostname}:8080/ws/lobby/`);
+        wsMatch = new WebSocket(`wss://${hostname}:8000/ws/lobby/`);
     else {
-        wsMatch = new WebSocket(`ws://${hostname}:8080/ws/lobby/${lobbyId}/`);
+        wsMatch = new WebSocket(`wss://${hostname}:8000/ws/lobby/${lobbyId}/`);
     }
     
     tournament_username = username;

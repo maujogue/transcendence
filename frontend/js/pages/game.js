@@ -167,7 +167,8 @@ export async function init(queryParams) {
 	});
 
 	document.addEventListener('fullscreenchange', function () {
-		resize(environment);
+		if (!isOnline)
+			resize(environment);
 	});
 
 	function setIfGameIsEnd() {

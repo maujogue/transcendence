@@ -1,6 +1,8 @@
 import { init } from "../pages/game.js";
 import { recreateCanvas } from "./createEnvironment.js";
+import { checkIfWebsocketIsOpen } from "./handlerMessage.js";
 import { initSpaceBackground, stopStep } from "./spaceBackground.js";
+import { wsTournament } from "./tournament.js";
 import { winWidth, winHeight } from "./varGlobal.js";
 
 function isFullScreen() {
@@ -65,11 +67,32 @@ function resizeCrt() {
 	} 
 }
 
+function resizeBracket() {
+	if (checkIfWebsocketIsOpen(wsTournament)) {
+		wsTournament.send(JSON.stringify({
+			'type': 'bracket',
+		}));
+	}
+}
+
+function resizeCanvas() {
+	const canvas = document.getElementById("canvas");
+	if (canvas) {
+		canvas.width = width;
+		canvas.height = height;
+	}
+
+}
+
 function resize(environment) {
 	console.log("resize: ", width, height);
 	setSize();
 	resizeSpaceBackground();
 	resizeCrt();
+	if (document.getElementById("bracketCanvas"))
+		resizeBracket();
+	if (document.getElementById("canvas"))
+		resizeCanvas();
 
 	const div = document.getElementsByClassName("menu")[0];
 	if (div) {

@@ -75,4 +75,4 @@ class GetUserDatas(TestCase):
             reverse('logout'), 
             content_type='application/json')
         response = self.client.get(reverse('get_user_data_current'))
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 302)

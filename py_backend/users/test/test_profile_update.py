@@ -17,13 +17,15 @@ class ProfileUpdate(TestCase):
             username="osterga",
             email="osterga@gmail.com",
             password="UserPassword9+",
-            bio="Bonjours a tous, c'est Osterga")
+            bio="Bonjours a tous, c'est Osterga",
+            tournament_username="osterga")
 
         self.user2 = CustomUser.objects.create_user(
-            username="ochoa",
+            username="Ochoa",
             email="ochoa@gmail.com",
             password="UserPassword9+",
-            bio="Bonjours a tous, c'est Ochoa")
+            bio="Bonjours a tous, c'est Ochoa",
+            tournament_username="Ochoa")
         
         self.user3 = CustomUser.objects.create_user(
             username="42boula",
@@ -80,7 +82,6 @@ class ProfileUpdate(TestCase):
         self.assertEqual(self.user.username, 'damien')
         self.assertEqual(response.status_code, 200)
 
-
     def test_change_username_is_already_used(self):
         update_datas = {
             'username': 'ochoa'
@@ -97,6 +98,47 @@ class ProfileUpdate(TestCase):
         self.assertEqual(response_data.get('error'), 'Username is already used.')
         self.assertEqual(response.status_code, 400)
 
+    def test_name_already_used_lower(self):
+        update_datas = {
+            'username': 'ochoa'
+        }
+
+        response = self.client.post(
+            reverse('update_username'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_name_already_used_upper(self):
+        update_datas = {
+            'username': 'OCHOA'
+        }
+
+        response = self.client.post(
+            reverse('update_username'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_name_already_used_random_set_of_upper_lower(self):
+        update_datas = {
+            'username': 'OcHoA'
+        }
+
+        response = self.client.post(
+            reverse('update_username'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, 400)
 
     def test_change_username_camelcase(self):
         update_datas = {
@@ -348,3 +390,88 @@ class ProfileUpdate(TestCase):
         self.user.refresh_from_db()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(self.user.lang, 'fr')
+
+    def test_update_tournament_name(self):
+        update_datas = {
+            'username': 'zebulon55'
+        }
+
+        response = self.client.post(
+            reverse('update_tournament_name'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(self.user.tournament_username, 'zebulon55')
+        self.assertEqual(response.status_code, 200)
+
+    def test_tournament_name_already_used(self):
+        update_datas = {
+            'username': 'Ochoa'
+        }
+
+        response = self.client.post(
+            reverse('update_tournament_name'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_tournament_name_already_used_lower(self):
+        update_datas = {
+            'username': 'ochoa'
+        }
+
+        response = self.client.post(
+            reverse('update_tournament_name'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_tournament_name_already_used_upper(self):
+        update_datas = {
+            'username': 'OCHOA'
+        }
+
+        response = self.client.post(
+            reverse('update_tournament_name'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_tournament_name_already_used_random_set_of_upper_lower(self):
+        update_datas = {
+            'username': 'OcHoA'
+        }
+
+        response = self.client.post(
+            reverse('update_tournament_name'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_missing_tournament_name(self):
+        update_datas = {
+            'username': ''
+        }
+
+        response = self.client.post(
+            reverse('update_tournament_name'), 
+            data=update_datas, 
+            content_type='application/json'
+        )
+        self.user.refresh_from_db()
+
+        self.assertEqual(response.status_code, 400)

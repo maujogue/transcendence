@@ -9,6 +9,7 @@ import json
 class FriendsConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
+        await sync_to_async(print)('connected')
         await self.set_online_status(True)
         await self.accept()
 

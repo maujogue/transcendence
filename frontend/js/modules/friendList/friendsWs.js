@@ -7,9 +7,11 @@ let currentUser;
 let wsFriends;
 
 export async function friendsWebsocket() {
-	wsFriends = new WebSocket("wss://127.0.0.1:8000/ws/friends/");
+	wsFriends = new WebSocket("ws://127.0.0.1:8080/ws/friends/");
 	wsFriends.onopen = async function () {
 		currentUser = await getUserData('username');
+		if (currentUser === null)
+			return;
 		auth();
 		getCurrentUserRequests();
 		getFriendsList();

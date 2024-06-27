@@ -111,6 +111,7 @@ function createTitle(div) {
 	const logo = document.createElement("img");
 	logo.src = "./assets/img/pong.svg";
 	logo.classList.add("logo");
+	logo.style.opacity = "0";
 	div.appendChild(logo);
 }
 

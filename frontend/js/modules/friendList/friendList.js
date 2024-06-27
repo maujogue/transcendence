@@ -1,5 +1,5 @@
 import { getModuleDiv } from "../../Modules.js";
-import { asyncTimeout, disableCollapsedSidebar, isLoggedIn, showAlert, toggleSearchBar } from "../../Utils.js";
+import { asyncTimeout, disableCollapsedSidebar, isLoggedIn, showAlert } from "../../Utils.js";
 import { friendsWebsocket, getUserRequests } from "./friendsWs.js";
 import { sendFriendRequest } from "./friendsWs.js";
 import { acceptFriendRequest, declineFriendRequest } from "./friendsWs.js";
@@ -196,8 +196,7 @@ async function injectDashData(username, close) {
 	var userDash = document.getElementById("userDash");
 	setTimeout(async () => {
 		if (close) {
-			showDiv("#closeProfileBtn", false);
-			showDiv("#manageFriendshipBtn", false);
+			showDiv("#onProfileButtonsDiv", false);
 			showDiv("#editProfileBtn", true);
 		}
 		await injectUserData(userDash, username);
@@ -213,9 +212,8 @@ async function waitThenInitDashButtons(username) {
 	userDash.style.opacity = 0;
 
 	setTimeout(async () => {
-		showDiv("#closeProfileBtn", true);
+		showDiv("#onProfileButtonsDiv", true);
 		showDiv("#editProfileBtn", false);
-		showDiv("#manageFriendshipBtn", true);
 		initManageFriendshipBtn(username);
 		initCloseButton();
 	}, 100);

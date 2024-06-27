@@ -1,42 +1,36 @@
-<section>
+<section class="ms-3">
 	<!-- LOGGED IN DASHBOARD -->
-	<div class="gameModule"></div>
-	<div id="userDash" class="container-fluid logInContent position-relative" style="transition: opacity 0.1s;">
-		<div class="d-flex mb-2 ms-0">
-			<div id="closeProfileBtn" hidden>
-				<button class="btn btn-warning">
-					<i class="pt-1 fa-solid fa-arrow-left text-white"></i>
-					<span class="pt-1 ms-2 text-white" data-lang="back"></span>
-				</button>
+	<div id="userDash" class="container-fluid logInContent position-relative pt-0" style="transition: opacity 0.1s;">
+		<div></div>
+		<div id="onProfileButtonsDiv" hidden>
+			<div class="d-flex mb-2 ms-0">
+				<div id="closeProfileBtn">
+					<button class="btn btn-warning">
+						<i class="pt-1 fa-solid fa-arrow-left text-white"></i>
+						<span class="pt-1 ms-2 text-white" data-lang="back"></span>
+					</button>
+				</div>
+				<div id="manageFriendshipBtn" class="ms-2"></div>
 			</div>
-			<div id="manageFriendshipBtn" class="ms-2" hidden></div>
 		</div>
 		<div class="row">
+			<div class="gameModule col-8 p-0 bg-transparent"></div>
 			<!-- PROFILE SECTION -->
-			<div class="col-3 ps-0" style="min-width:100px; max-width: 400px;">
-				<div class="d-flex bg-dark rounded text-white p-4 h-100 justify-content-center">
-					<img class="col rounded-circle avatarDynamic" width="50" heigth="50" src="" alt="profile image"
-						data-lang="profile_image_alt" />
-				</div>
-			</div>
-			<div
-				class="col-9 bg-dark rounded text-white px-5 pb-5 pt-4 text-start d-flex flex-column justify-content-center">
-				<!-- EDIT PROFILE BUTTON -->
-				<button id="editProfileBtn" type="button" class="btn btn-outline-secondary mt-auto mb-2 ms-auto"
-					data-bs-toggle="modal" data-bs-target="#updateProfileModal" data-lang="edit_profile_button">
-					Edit
-				</button>
-				<div class="d-flex justify-content-between">
-					<h3 class="text-info" data-lang="username_label">Username</h3>
-					<h3 class="usernameDynamic"></h3>
-				</div>
-				<div class="d-flex justify-content-between">
-					<h3 class="text-info" data-lang="email_label">Email</h3>
-					<h3 class="emailDynamic"></h3>
-				</div>
-				<div class="d-flex justify-content-between">
-					<h3 class="text-info" data-lang="bio_label">Bio</h3>
-					<h3 class="bioDynamic"></h3>
+			<div id="profileCard"
+				class="col ms-3 rounded-4 w-100 d-flex justify-content-center align-items-center bg-black">
+				<div class="wrapper">
+					<div class="position-relative d-flex flex-column align-items-center">
+						<button id="editProfileBtn" type="button" class="btn btn-primary text-white " data-bs-toggle="modal"
+							data-bs-target="#updateProfileModal" data-lang="edit_profile_button">
+						</button>
+						<img src="../assets/img/sky-banner.jpg" class="banner rounded-3" alt="sky-banner" />
+						<img class="rounded-circle avatarDynamic" src="" alt="profile image"
+							data-lang="profile_image_alt" />
+					</div>
+					<div class="footer">
+						<h1 class="usernameDynamic text-white mb-4"></h1>
+						<h6 class="bioDynamic text-white"></h6>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -73,9 +67,10 @@
 					<!-- BIO INPUT -->
 					<div class="mb-3">
 						<label for="bio" class="col-form-label" data-lang="bio_label">Bio</label>
-						<textarea maxlength="250" rows="4" type="text" name="bio"
+						<textarea maxlength="150" rows="3" cols="50" wrap="hard" type="text" name="bio"
 							class="form-control bioDynamic formInputs" id="bio" placeholder="What about you ?"
-							autocomplete="off" style="resize: none;" data-lang="bio_placeholder"></textarea>
+							autocomplete="off" style="resize: none; overflow-wrap: break-word;"
+							data-lang="bio_placeholder"></textarea>
 					</div>
 					<!-- AVATAR INPUT -->
 					<div class="mb-3">

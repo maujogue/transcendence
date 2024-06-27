@@ -35,10 +35,6 @@ export async function init() {
 		return;
 
 	updateWinVariables();
-	var reloadBtn = document.getElementById('reloadGame');
-	reloadBtn.addEventListener('click', function () {
-		initPages();
-	});
 
 	var target = document.querySelector('#game');
 	var config = { attributes: true, childList: true, characterData: true };

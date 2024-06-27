@@ -88,13 +88,17 @@ async function disableCollapsedSidebar(forceDisable) {
 function toggleSearchBar(forceDisable) {
 	const searchInput = document.querySelector("#searchButton > input");
 
-	if (searchInput.hidden == true || forceDisable) {
+	if (searchInput.style.opacity == 0 || forceDisable) {
+		searchInput.style.opacity = 1;
 		setTimeout(() => {
 			searchInput.hidden = false;
-		}, 500);
+		}, 100);
 	}
 	else {
-		searchInput.hidden = true;
+		setTimeout(() => {
+			searchInput.hidden = true;
+		}, 200);
+		searchInput.style.opacity = 0;
 	}
 }
 

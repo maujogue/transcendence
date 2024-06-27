@@ -14,6 +14,10 @@ h3 {
   font-family: "Satoshi-Bold", Arial, Helvetica, sans-serif;
 }
 
+body{
+    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
+}
+	
 p {
   font-family: "Satoshi-regular", Arial, Helvetica, sans-serif;
 }
@@ -23,10 +27,6 @@ p {
 }
 .logInContent {
   display: none;
-}
-
-#game:not(:focus) {
-    opacity: 0.90;
 }
 
 img {

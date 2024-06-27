@@ -16,6 +16,7 @@ function getGameState(environment, player2) {
 		}
 	};
 	console.log("Ball position: ", gameState.ball.position);
+	console.log("Agent: ", gameState.agent.position);
 
 	const inputData = [
 		gameState.agent.position.x, gameState.agent.position.y,
@@ -30,7 +31,7 @@ function getGameState(environment, player2) {
 
 export async function loadAgentModel() {
     try {    
-		const model = await tf.loadLayersModel('../../../js/pong/AI/models/agent2____0.00avg_/model.json');
+		const model = await tf.loadLayersModel('../../../js/pong/AI/models/agent2___-2.00avg_/model.json');
 		console.log('Model loaded : ', model);
 		return model;
     } catch (error) {

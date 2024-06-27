@@ -196,6 +196,7 @@ async function connectToLobby(username) {
                 console.log('displayCharacter:', data['character'], data['name'])
                 displayCharacter(opp, env, data['character'], data['name']).then((res) => {
                     opp = res;
+                    opp.character.removeCharacterFromLobby(env);
                 });
             }
         }

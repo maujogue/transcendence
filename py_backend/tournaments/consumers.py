@@ -26,18 +26,21 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         await self.check_tournament_status()
 
     async def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        if text_data_json.get('type') == 'auth':
-            await self.auth(text_data_json)
-        if text_data_json.get('type') == 'status':
-            await self.handler_status(text_data_json.get('status'))
-        if text_data_json.get('type') == 'bracket':
-            await self.send_self_bracket()
-        if text_data_json.get('type') == 'getRanking':
-            await self.send_tournament_ranking()
-        # if text_data_json.get('type') == 'ask_status':
-        #     if self.check_if_all_matches_finished():
-        #         await self.advance_in_tournament()
+        try:
+            text_data_json = json.loads(text_data)
+            if text_data_json.get('type') == 'auth':
+                await self.auth(text_data_json)
+            if text_data_json.get('type') == 'status':
+                await self.handler_status(text_data_json.get('status'))
+            if text_data_json.get('type') == 'bracket':
+                await self.send_self_bracket()
+            if text_data_json.get('type') == 'getRanking':
+                await self.send_tournament_ranking()
+            # if text_data_json.get('type') == 'ask_status':
+            #     if self.check_if_all_matches_finished():
+            #         await self.advance_in_tournament()
+        except Exception as e:
+            print('error: ', e)
 
     async def disconnect(self, close_code):
         # print(f'{self.scope["user"].username} disconnected')

@@ -183,6 +183,8 @@ class PongConsumer(AsyncWebsocketConsumer):
                     await self.getPlayerMove(text_data_json)
         except Lobby.DoesNotExist:
             print("Lobby does not exist")
+        except Exception as e:
+            print("Error: ", e)
 
     async def disconnect(self, close_code):
         if self.is_connected == False:

@@ -230,7 +230,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         while self.lobby.game_started and self.is_connected:
             await self.movePlayer()
             if self.player.name == 'player1':
-                await self.checkAllCollisions()
+                self.checkAllCollisions()
             self.ball.translate()
             if (self.ball.checkIfScored(self.player) or self.ball.checkIfScored(self.opp)):
                 await self.isScored()
@@ -292,17 +292,17 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.ball.dirX = ballDirX
         await self.sendBallData()
 
-    async def collision(self, player):
+    def collision(self, player):
         self.countExchange += 1
         self.ball.collisionPaddle(player)
 
-    async def checkAllCollisions(self):
+    def checkAllCollisions(self):
         if self.ball.checkCollisionBorder():
             self.ball.collisionBorder()
         elif self.ball.checkCollisionPaddle(self.player):
-            await self.collision(self.player)
+            self.collision(self.player)
         elif self.ball.checkCollisionPaddle(self.opp):
-            await self.collision(self.opp)
+            self.collision(self.opp)
 
     async def setGameOver(self):
         print("Game Over")

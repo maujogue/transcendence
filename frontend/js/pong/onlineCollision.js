@@ -22,12 +22,12 @@ function sendIfScored(ball, player, webSocket, env) {
     let bbox = new THREE.Box3().setFromObject(player.paddle.mesh);
     let isScored = false;
 
-    if (player.name == 'player1' && ball.mesh.position.x < bbox.min.x - 2) {
-        ball.direction.x = -0.1;
+    if (player.name == 'player1' && ball.mesh.position.x <= -12) {
+        ball.direction.x = -0.055;
         isScored = true;
     }
-    if (player.name == 'player2' && ball.mesh.position.x > bbox.max.x + 2) {
-        ball.direction.x = 0.1;
+    if (player.name == 'player2' && ball.mesh.position.x >= 12) {
+        ball.direction.x = 0.055;
         isScored = true;
     }
     if (!isScored)

@@ -18,9 +18,9 @@ class Ball:
         return False
     
     def collisionBorder(self):
-        if self.dirX > 0:
+        if self.dirX > 0 and self.dirX < 0.3:
             self.dirX += 0.02
-        else:
+        elif self.dirX < 0 and self.dirX > -0.3:
             self.dirX -= 0.02
         self.dirY *= -1
 
@@ -39,9 +39,9 @@ class Ball:
     
     def collisionPaddle(self, player):
         self.dirX *= -1
-        if self.dirX > 0 and self.dirX < 0.55:
+        if self.dirX > 0 and self.dirX < 0.3:
             self.dirX += 0.009
-        elif self.dirX < 0 and self.dirX > -0.55:
+        elif self.dirX < 0 and self.dirX > -0.3:
             self.dirX -= 0.009
         center = player.posY
         self.dirY += 0.08 * (self.posY - center)

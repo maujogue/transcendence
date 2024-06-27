@@ -314,6 +314,8 @@ async function onlineGameLoop(wsMatch) {
         translateBall(env.ball);
         sendMove(wsMatch);
     }
+	if (env.ball)
+		console.log("Ball in js : ", env.ball.mesh.position.x, env.ball.mesh.position.y, env.ball.direction.x, env.ball.direction.y);
     env.renderer.render(env.scene, env.camera);
     updateMixers(player, opp);
     if (!status.exit)

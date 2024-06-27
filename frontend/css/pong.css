@@ -957,6 +957,11 @@ border: 3px solid orange;  /* creates padding around scroll thumb */
 	font-size: 2.5em;
 }
 
+.endscreen-btn {
+	display: flex;
+	flex-direction: column;
+}
+
 .btn-endscreen {
 	width: 40%!important;
 }

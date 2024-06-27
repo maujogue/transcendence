@@ -106,7 +106,7 @@ class Tournament(models.Model):
 					}
 					round_info["matches"].append(match_info)
 			else:
-				num_matches = 2 ** (total_rounds - round_number)
+				num_matches = 2 * (total_rounds - round_number)
 				for _ in range(num_matches):
 					match_info = {
 						"match_id": None,

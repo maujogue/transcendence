@@ -311,6 +311,7 @@ async function onlineGameLoop(wsMatch) {
     }
     if (keysPressed[' '] && !status.is_connected) {
         keysPressed[' '] = false;
+        console.log("Connecting to the server");
         getUserData('tournament_username').then((res) => {
             connectToLobby(res, null)
         })

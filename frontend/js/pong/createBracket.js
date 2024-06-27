@@ -118,19 +118,16 @@ export function drawBracket(bracket) {
         ctx.fillStyle = 'black';
         ctx.fillText(round.name, roundX + (boxHeight / 2), startY);
         round.matches.forEach((match, matchIndex) => {
-    
-    
-    
             let matchY;
 
             if (roundIndex === 0) {
                 const verticalSpacing = 8;
-        
                 matchY = (startY + 40) + matchIndex * (boxHeight + verticalSpacing);
             }
             else {
-        
-                const verticalSpacing = prevRoundMatchesPosY[indexMatchesPosY + 1] - (prevRoundMatchesPosY[indexMatchesPosY] + boxHeight);
+                let verticalSpacing = prevRoundMatchesPosY[indexMatchesPosY + 1] - (prevRoundMatchesPosY[indexMatchesPosY] + boxHeight);
+                if (prevRoundMatchesPosY[indexMatchesPosY + 1] === undefined)
+                    verticalSpacing = (prevRoundMatchesPosY[indexMatchesPosY] - boxHeight) / 2;
                 const twoBoxHeight = (boxHeight * 2) + (verticalSpacing / 2);
                 matchY = (prevRoundMatchesPosY[indexMatchesPosY]  + (twoBoxHeight / 2)) - (boxHeight / 2);
             }

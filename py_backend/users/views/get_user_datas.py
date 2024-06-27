@@ -1,14 +1,13 @@
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import requires_csrf_token
-from django.contrib.auth.decorators import login_required
+from users.decorators import custom_login_required as login_required
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 from stats.views import *
 from users.models import CustomUser
 from users.utils import convert_image_to_base64, utils_get_friendslist_data
 
-
-@require_http_methods(["POST"])
+@require_http_methods(["GET"])
 @login_required
 @requires_csrf_token
 def get_user_data(request, username=None):

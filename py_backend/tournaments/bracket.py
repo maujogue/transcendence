@@ -29,12 +29,11 @@ def get_round_winners(tournament):
     return winners
 
 def generate_bracket(tournament):
-    print('generate bracket:', tournament.name)
     if tournament.current_round == 1:
         participants = list(tournament.participants.values_list('tournament_username', flat=True))
+        random.shuffle(participants)
     else:
         participants = get_round_winners(tournament)
-    random.shuffle(participants)
 
     while len(participants) >= 1:
         create_tournament_match(tournament, participants)

@@ -16,6 +16,7 @@ class Module {
 const modules = [
 	new Module("usernameInputModule"),
 	new Module("emailInputModule"),
+	new Module("friendList"),
 	new Module("statisticsModule"),
 	new Module("auth42"),
 

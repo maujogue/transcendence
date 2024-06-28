@@ -35,6 +35,7 @@ class CustomUser(AbstractUser):
 	n_games_played = models.IntegerField(null=True)
 	friends = models.ManyToManyField("self", blank=True)
 	is_42auth = models.BooleanField(default=False)
+	is_online = models.BooleanField(default=False)
 	lang = models.CharField(max_length=2, default='en')
 	
 	def save(self, *args, **kwargs):

@@ -65,7 +65,7 @@
     "log_in_button": "Log In",
     "sign_up_button": "Sign up",
 	"close_button": "Close",
-    "collapse_button": "collapse",
+    "collapse_button": "Collapse",
     "sign_out_button": "Sign out",
     "login_modal_title": "Login",
     "login_username_label": "Username",
@@ -122,5 +122,13 @@
 	"42_auth_error": "An error occurred while trying to log in using your 42 account. Please try again later.",
 	"username_not_unique": "This username is already taken.",
 	"email_not_unique": "This email is already taken.",
-	"unexpected_error": "An unexpected error occurred. Please try again later."
+	"unexpected_error": "An unexpected error occurred. Please try again later.",
+	"back": "Back",
+	"Notifications": "Notifications",
+	"search": "Search",
+	"friends": "Friends",
+	"no_friend_request": "No friend request",
+	"add_friend": "Add friend",
+	"unfriend": "Unfriend",
+	"friend_request_sent": "Friend request sent"
 }

@@ -65,7 +65,7 @@
 	"log_in_button": "Se connecter",
 	"sign_up_button": "S'inscrire",
 	"close_button": "Fermer",
-	"collapse_button": "réduire",
+	"collapse_button": "Réduire",
 	"sign_out_button": "Se déconnecter",
 	"login_modal_title": "Connexion",
 	"login_username_label": "Nom d'utilisateur",
@@ -122,5 +122,13 @@
 	"42_auth_error": "Une erreur s'est produite lors de la tentative de connexion avec votre compte 42. Veuillez réessayer plus tard.",
 	"username_not_unique": "Ce nom d'utilisateur est déjà pris.",
 	"email_not_unique": "Cet e-mail est déjà pris.",
-	"unexpected_error": "Une erreur inattendue s'est produite. Veuillez réessayer plus tard."
+	"unexpected_error": "Une erreur inattendue s'est produite. Veuillez réessayer plus tard.",
+	"back": "Retour",
+	"Notifications": "Notifications",
+	"search": "Recherche",
+	"friends": "Amis",
+	"no_friend_request": "Aucune demande d'ami",
+	"add_friend": "Ajouter un ami",
+	"unfriend": "Supprimer l'ami",
+	"friend_request_sent": "Demande d'ami envoyée"	
 }

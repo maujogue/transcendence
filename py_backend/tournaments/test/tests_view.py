@@ -29,6 +29,26 @@ class TournamentModeTest(TestCase):
 		self.user5 = CustomUser.objects.create_user(username='testuser5',
 										 email='testuser5@gmail.com',
 										 password='Password5+')
+		
+		self.user_host.is_online = True
+		self.user_host.email_is_verified = True
+		self.user_host.save()
+
+		self.user2.is_online = True
+		self.user2.email_is_verified = True
+		self.user2.save()
+
+		self.user3.is_online = True
+		self.user3.email_is_verified = True
+		self.user3.save()
+
+		self.user4.is_online = True
+		self.user4.email_is_verified = True
+		self.user4.save()
+
+		self.user5.is_online = True
+		self.user5.email_is_verified = True
+		self.user5.save()
 
 	def create_test_tournament(self, name, max_players):
 		data = {
@@ -445,30 +465,18 @@ class TournamentModeTest(TestCase):
 		self.client.login(username='testuser1', password='Password1+')
 		tournament = self.create_test_tournament(name, max_players)
 		id = self.find_tournament_id(tournament)
-		response = self.client.post(reverse("delete_tournament", args=[id]))
+		response = self.client.delete(reverse("delete_tournament", args=[id]))
 		self.assertEqual(response.status_code, 200)
 		response = self.client.post(reverse("join_tournament", args=[id]))
 		self.assertEqual(response.status_code, 404)
 
 
-# no host try to delete
-	def test_delete_no_host(self):
-		name = "Hi there"
-		max_players = 2
-
-		self.client.login(username='testuser1', password='Password1+')
-		tournament = self.create_test_tournament(name, max_players)
-		id = self.find_tournament_id(tournament)
-		self.client.login(username='testuser2', password='Password2+')
-		response = self.client.post(reverse("delete_tournament", args=[id]))
-		self.assertEqual(response.status_code, 400)
-
 # try to delete a non existing tournament
-	def test_delete_no_host(self):
+	def test_delete_non_existing_tournament(self):
 		name = "Hi there"
 		max_players = 2
 
 		self.client.login(username='testuser1', password='Password1+')
 		id = 99
-		response = self.client.post(reverse("delete_tournament", args=[id]))
+		response = self.client.delete(reverse("delete_tournament", args=[id]))
 		self.assertEqual(response.status_code, 404)

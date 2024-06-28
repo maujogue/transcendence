@@ -38,8 +38,8 @@ prod_fclean: prod_clean
 dev_fclean: dev_clean
 
 prod_re:
-	$(DOCKER_COMPOSE_PROD) build --no-cache
-	$(DOCKER_COMPOSE_PROD) up -d
+	$(DOCKER_COMPOSE_PROD) build --build-arg CACHEBUST=$(shell date +%s)
+	$(DOCKER_COMPOSE_PROD) up -d 
 
 dev_re:
 	$(DOCKER_COMPOSE_DEV) build --no-cache

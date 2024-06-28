@@ -53,8 +53,7 @@ def username_is_valid(username):
 def username_is_unique(username):
 	if not username or username == '':
 		return False, f'Username cannot be empty.'
-	converted_usernane = username.lower()
-	response = CustomUser.objects.filter(username=converted_usernane).exists()
+	response = CustomUser.objects.filter(username__iexact=username).exists()
 	if response:
 		return False, f'Username is already used.'
 	return True, None
@@ -137,3 +136,13 @@ def send_update_email(request, new_email):
 	)
 	email.content_subtype = 'html'
 	return email.send()
+
+
+def utils_get_friendslist_data(user):
+	friendslist = []
+	friendslist = user.friends.all()
+	friends_count = len(friendslist)
+	friends_list_data = [{'username': friend.username, 'avatar': convert_image_to_base64(friend.avatar)} for friend in friendslist]
+	if friends_count == 0:
+		return False
+	return friends_list_data

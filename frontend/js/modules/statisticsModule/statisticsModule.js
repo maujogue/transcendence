@@ -9,7 +9,12 @@ export async function init() {
 	if (!module)
 		return;
 
-	var username = await getUserData("username");
+	var usernameDiv = module.parentElement.querySelector(".usernameDynamic");
+	var username;
+	if (usernameDiv && usernameDiv.innerText.length > 0)
+		username = usernameDiv.innerText;
+	else
+		username = await getUserData("username");
 	if (!username)
 		return;
 	var response = await runEndPoint("stats/" + username + "/matchs", "GET");

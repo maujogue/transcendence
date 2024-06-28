@@ -11,4 +11,6 @@ websocket
 requests-toolbelt
 mimetypes-magic
 six
+django-friendship
+
 # channels-redis==4.2.0

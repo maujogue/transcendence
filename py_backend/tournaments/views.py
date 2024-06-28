@@ -3,7 +3,7 @@ import random
 import string
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.decorators import login_required
+from users.decorators import custom_login_required as login_required
 from django.views.decorators.http import require_http_methods
 
 from django.core.exceptions import ValidationError
@@ -131,7 +131,7 @@ def quit_tournament(request, tournament_id):
 					status=200)
 
 @login_required
-@require_http_methods(["POST"])
+@require_http_methods(["DELETE"])
 def delete_tournament(request, tournament_id):
 	try:
 		tournament = Tournament.objects.get(pk=tournament_id)

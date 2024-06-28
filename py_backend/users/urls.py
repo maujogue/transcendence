@@ -21,4 +21,5 @@ urlpatterns = [
     path('confirm_email/<uidb64>/<token>/', confirm_email, name='confirm_email'),
     path('confirm_new_email/<uidb64>/<token>/<new_email>/', confirm_new_email, name='confirm_new_email'),
 	path('check_user_logged_in/', check_user_logged_in_view, name='check_user_logged_in'),
+    path('update_tournament_name/', update_tournament_name, name='update_tournament_name'),
 ]

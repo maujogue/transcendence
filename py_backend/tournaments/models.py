@@ -147,9 +147,9 @@ class Tournament(models.Model):
 	
 	def get_round_name(self, round_number):
 		if round_number == self.max_round:
-			return "Finale"
+			return "Final"
 		elif round_number == self.max_round - 1:
-			return "semi-Finale"
+			return "semi-Final"
 		else:
 			return f"Round {round_number}"
 		

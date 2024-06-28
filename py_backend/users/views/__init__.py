@@ -12,3 +12,4 @@ from .check_user_logged_in import *
 from .email_available import *
 from .confirm_email import *
 from .confirm_new_email import *
+from .update_tournament_name import *

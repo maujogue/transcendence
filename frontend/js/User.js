@@ -25,7 +25,7 @@ async function getUserData(dataElement, username) {
 	else
 		var route = "https://127.0.0.1:8000/api/users/get_user_data/";
   return fetch(route, {
-    method: "POST",
+    method: "GET",
     headers: {
       "X-CSRFToken": await get_csrf_token(),
       "Content-Type": "application/x-www-form-urlencoded",

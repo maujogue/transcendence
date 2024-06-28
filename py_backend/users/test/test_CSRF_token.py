@@ -11,6 +11,9 @@ class CSRFTokenTest(TestCase):
             password="UserPassword9+",
             bio="Bonjours a tous, c'est Osterga")
         self.client.login(username='osterga', password='UserPassword9+')
+        self.user.is_online = True
+        self.user.email_is_verified = True
+        self.user.save()
 
     def test_get_csrf_token(self):
     

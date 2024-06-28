@@ -153,7 +153,7 @@ class TournamentModeTest(TestCase):
 		max_players = 8
 		
 		response = self.create_test_tournament(name, max_players)
-		self.assertEqual(response.status_code, 302)
+		self.assertEqual(response.status_code, 401)
 
 # create tournament with same name
 	def test_create_duplicate_name(self):
@@ -291,7 +291,7 @@ class TournamentModeTest(TestCase):
 		id = self.find_tournament_id(tournament)
 		self.client.logout()
 		response = self.client.post(reverse("join_tournament", args=[id]))
-		self.assertEqual(response.status_code, 302)
+		self.assertEqual(response.status_code, 401)
 
 # # join multiple tournaments
 # 	def test_join_multiple_tournaments(self):
@@ -423,7 +423,7 @@ class TournamentModeTest(TestCase):
 		self.client.logout()
 
 		response = self.client.post(reverse("quit_tournament", args=[id]))
-		self.assertEqual(response.status_code, 302)
+		self.assertEqual(response.status_code, 401)
 
 # a user try to join a full tournament, another quit, he try to join again 
 	def test_quit_after_tournament_full_then_join(self):

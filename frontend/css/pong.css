@@ -471,16 +471,19 @@ h1 {
 
 .pop-up {
 	position: absolute;
-	top: 40%;
+	top: 25%;
 	border: 1px solid black;
 	padding: 2%;
+	margin: 5%;
 	width: 60%;
 	color: white;
-
+	/* font-size: 2em; */
 }
 
 .error-pop-up {
-	background-color: rgb(120, 2, 2);
+    background-color: rgba(120, 2, 2, 0.7);
+    z-index: 2;
+    justify-self: center;
 }
 
 .matchup-pop-up {

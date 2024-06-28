@@ -113,6 +113,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def create_history_match(self, lobby):
         try:
             self.match = await Match.objects.aget(lobby_id=str(lobby.uuid))
+            return self.match
         except Match.DoesNotExist:
             winner = lobby.player1 if lobby.player1 else lobby.player2
             if not winner:
@@ -128,6 +129,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                             player1_score=0,
                             player2_score=0)
             await match.asave()
+            return match
     
     
     async def check_if_match_is_started(self, match, wait=True):
@@ -135,27 +137,39 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             match.timer = timezone.now()
             await match.asave()
             if match.player1 == self.scope['user'].tournament_username:
-                await asyncio.sleep(30)
+                await asyncio.sleep(5)
             if match.player2 == self.scope['user'].tournament_username:
-                await asyncio.sleep(32)
+                await asyncio.sleep(8)
         try:
             lobby = await Lobby.objects.aget(pk=match.lobby_id)
 
             if lobby.game_started:
                 return True
             if wait:
-                await self.create_history_match(lobby)
-                await self.send(text_data=json.dumps({'type': 'status', 'status': 'cancelled'}))
+                res_match = await self.create_history_match(lobby)
+                print(f'{self.scope["user"].tournament_username}: match cancelled, not started')
+                await self.send(text_data=json.dumps({'type': 'status', 'status': 'cancelled', 'message': f'Match not started in time, {res_match.winner} wins!'}))
+                await asyncio.sleep(6)
                 await self.endGame()
             return False
         except Lobby.DoesNotExist:
             try:
                 if wait:
-                    await TournamentMatch.objects.aget(lobby_id=match.lobby_id)
-                    await self.send(text_data=json.dumps({'type': 'status', 'status': 'cancelled'}))
+                    res_match = await TournamentMatch.objects.aget(lobby_id=match.lobby_id)
+                    print('match cancelled, lobby not found')
+                    await self.send(text_data=json.dumps({'type': 'status', 'status': 'cancelled', 'message': f'Match not started in time, {res_match.winner} wins!'}))
+                    print('match cancelled, after send')
+                    await asyncio.sleep(6)
                     await self.endGame()
             except TournamentMatch.DoesNotExist:
+                print('match cancelled, match not found')
                 return
+            except Exception as e:
+                print('error: ', e)
+                return
+        except Exception as e:
+            print('error: ', e)
+            return
         
     async def check_tournament_status(self):
         if self.tournament.finished:
@@ -359,7 +373,11 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({'type': 'status', 'status': 'endTournament'}))
             await self.send_tournament_ranking()
         else:
-            await self.send(text_data=json.dumps({'type': 'status', 'status': event['status']}))
+            try:
+                message = event.get('message')
+            except:
+                message = None
+            await self.send(text_data=json.dumps({'type': 'status', 'status': event['status'], 'message': message}))
 
 
 

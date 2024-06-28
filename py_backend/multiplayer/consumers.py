@@ -171,7 +171,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                 await self.lobby.setPlayerReady(text_data_json.get("ready"), self.player)
             if text_data_json.get("character"):
                 await self.set_character(text_data_json)
-            # print(f'lobby, player_ready: {self.lobby.player_ready}, player1: {self.lobby.player1}, player2: {self.lobby.player2}, game_started: {self.lobby.game_started}, player1_character: {self.lobby.player1_character}, player2_character: {self.lobby.player2_character}')
             if self.lobby.check_if_game_is_ready():
                 await self.startGame()
             if text_data_json.get("type") == "user_info":

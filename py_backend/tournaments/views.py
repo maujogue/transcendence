@@ -43,7 +43,7 @@ def create_tournament(request):
 		return JsonResponse({"errors": "Name must be alphanumeric."},
 					status=400)
 
-	if not max_players in range(2, 17):
+	if not max_players in range(2, 9):
 		return JsonResponse({"errors": "Invalid number of players."}, status=400)
 
 	try:

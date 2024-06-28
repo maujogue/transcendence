@@ -3,6 +3,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async
+from django.utils import timezone
 
 from users.models import CustomUser
 from stats.models import Match
@@ -25,21 +26,20 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         await self.check_tournament_status()
 
     async def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        if text_data_json.get('type') == 'auth':
-            await self.auth(text_data_json)
-        if text_data_json.get('type') == 'status':
-            await self.handler_status(text_data_json.get('status'))
-        if text_data_json.get('type') == 'bracket':
-            await self.send_self_bracket()
-        if text_data_json.get('type') == 'getRanking':
-            await self.send_tournament_ranking()
-        # if text_data_json.get('type') == 'ask_status':
-        #     if self.check_if_all_matches_finished():
-        #         await self.advance_in_tournament()
+        try:
+            text_data_json = json.loads(text_data)
+            if text_data_json.get('type') == 'auth':
+                await self.auth(text_data_json)
+            if text_data_json.get('type') == 'status':
+                await self.handler_status(text_data_json.get('status'))
+            if text_data_json.get('type') == 'bracket':
+                await self.send_self_bracket()
+            if text_data_json.get('type') == 'getRanking':
+                await self.send_tournament_ranking()
+        except Exception as e:
+            print('error: ', e)
 
     async def disconnect(self, close_code):
-        # print(f'{self.scope["user"].username} disconnected')
         if not self.tournament.started:
             participants = await self.get_tournament_participants()
             await self.channel_layer.group_send(
@@ -49,29 +49,18 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     'participants': participants
                 }
             )
-        await self.channel_layer.group_discard(
-        self.tournament.name,
-        self.channel_name
-        )
-
-    async def disqualified(self):
-        if await self.check_if_match_is_started(self.match, False):
-            pass
-            
+        await self.channel_layer.group_discard(self.tournament.name, self.channel_name)
 
     async def handler_status(self, status):
-        # print('tournament status: ', status)
         if status == 'endGame':
             await self.endGame()
 
     async def endGame(self):
         if not await self.validate_foreign_keys():
             return
-        # print('tournament: endGame')
         await self.set_match_info()
         await self.match_is_over()
 
-        # print(f'{self.scope["user"].tournament_username} match is over, {self.match.winner} wins!')
         if self.match.winner == self.scope['user'].tournament_username:
             await self.send(text_data=json.dumps({'type': 'status', 'status': 'waiting'}))
         if self.match.winner == self.scope['user'].tournament_username and await self.check_if_all_matches_finished():
@@ -80,10 +69,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.send_self_bracket()
 
     async def match_is_over(self):
-        # print(f'{self.scope["user"].tournament_username} match is over,  {self.match}')
         if not self.match:
             self.match = await self.get_player_match(self.scope['user'].tournament_username)
-        # print(f'match is over: {self.match}')
         self.match.finished = True
         await self.match.asave()
 
@@ -100,7 +87,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({"type":"auth", "status": "failed"}))
 
     async def set_tournament_over(self):
-        # print('tournament is over')
         self.tournament.finished = True
         await self.tournament.asave()
         await self.send_tournament_end()
@@ -144,12 +130,14 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await match.asave()
     
     
-    async def check_if_match_is_started(self, match ,wait=True):
+    async def check_if_match_is_started(self, match, wait=True):
         if wait:
+            match.timer = timezone.now()
+            await match.asave()
             if match.player1 == self.scope['user'].tournament_username:
-                await asyncio.sleep(20)
+                await asyncio.sleep(30)
             if match.player2 == self.scope['user'].tournament_username:
-                await asyncio.sleep(22)
+                await asyncio.sleep(32)
         try:
             lobby = await Lobby.objects.aget(pk=match.lobby_id)
             if lobby.game_started:
@@ -189,20 +177,16 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.send_disqualified(loser)
             await self.remove_lobby()
         except Match.DoesNotExist:
-            # print("set match info: Match does not exist")
             return
         
     async def remove_lobby(self):
         try:
             lobby = await Lobby.objects.aget(pk=self.match.lobby_id)
             await lobby.adelete()
-            # print('lobby deleted')
         except Lobby.DoesNotExist:
-            # print("remove_lobby: lobby does not exist")
             return
         
     async def launch_tournament(self):
-        # print('launch tournament')
         await self.channel_layer.group_send(
             self.tournament.name,
             {
@@ -221,11 +205,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         return False
     
     async def check_tournament_start(self):
-        # print('check tournament start')
         if await self.is_tournament_full() and not self.tournament.started:
             await self.launch_tournament()
         elif self.tournament.started and not self.tournament.finished:
-            # print('tournament already started')
             if self.match and not self.match.finished and self.match.player2:
                 if not await self.check_if_match_is_started(self.match, False):
                     await self.send_self_matchup()
@@ -240,10 +222,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             match = await TournamentMatch.objects.aget(lobby_id=self.match.lobby_id)
             return True
         except Tournament.DoesNotExist:
-            # print("Tournament does not exist")
             return False
         except TournamentMatch.DoesNotExist:
-            # print("Match does not exist")
             return False
         
     async def check_if_disqualified(self):
@@ -274,6 +254,11 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_tournament_participants(self):
         return [p.tournament_username for p in self.tournament.participants.all()]
+
+    def get_elapsed_time(self, timer):
+        current_time = timezone.now()
+
+        return (current_time - timer).seconds
     
     @database_sync_to_async
     def authenticate_user_with_username(self, username):
@@ -288,10 +273,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def send_self_matchup(self):
         self.match = await self.get_player_match(self.scope['user'].tournament_username)
-        # print(f'{self.scope["user"].tournament_username} matchup: ', self.match)
         if self.match and not self.match.finished and self.match.player2:
             match_infos = self.get_match_infos(self.match)
-            await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos}))
+            timer = 30 - self.get_elapsed_time(self.match.timer)
+            await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos, 'timer': timer}))
 
     async def send_all_matchups(self):
         await self.channel_layer.group_send(
@@ -355,8 +340,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if self.match:
             if not self.match.finished and self.match.player2:
                 match_infos = self.get_match_infos(self.match)
-                await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos}))
-                # print(f'{self.scope["user"].tournament_username} matchup: ', match_infos)
+                await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos, 'timer': 30}))
+    
                 if self.task:
                     self.task.cancel()
                 self.task = asyncio.create_task(self.check_if_match_is_started(self.match))
@@ -367,7 +352,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def tournament_status(self, event):
         if event['status'] == 'disqualified':
             if event['username'] == self.scope['user'].tournament_username:
-                # print('disqualified: ', event['username'])
+    
                 await self.send(text_data=json.dumps({'type': 'status', 'status': 'disqualified'}))
         elif event['status'] == 'endTournament':
             await self.send(text_data=json.dumps({'type': 'status', 'status': 'endTournament'}))

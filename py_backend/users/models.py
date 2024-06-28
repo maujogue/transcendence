@@ -49,7 +49,3 @@ class CustomUser(AbstractUser):
 			img.save(self.avatar.path)
 
 
-class UserSession(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_sessions', on_delete=models.CASCADE)
-    session = models.OneToOneField(Session, related_name='user_sessions', on_delete=models.CASCADE)
-

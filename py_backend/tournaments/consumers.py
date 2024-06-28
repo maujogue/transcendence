@@ -49,10 +49,14 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     'participants': participants
                 }
             )
+        if self.task:
+            self.task.cancel()
         await self.channel_layer.group_discard(self.tournament.name, self.channel_name)
 
     async def handler_status(self, status):
         if status == 'endGame':
+            if self.task:
+                self.task.cancel()
             await self.endGame()
 
     async def endGame(self):
@@ -137,9 +141,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             match.timer = timezone.now()
             await match.asave()
             if match.player1 == self.scope['user'].tournament_username:
-                await asyncio.sleep(5)
+                await asyncio.sleep(30)
             if match.player2 == self.scope['user'].tournament_username:
-                await asyncio.sleep(8)
+                await asyncio.sleep(32)
         try:
             lobby = await Lobby.objects.aget(pk=match.lobby_id)
 

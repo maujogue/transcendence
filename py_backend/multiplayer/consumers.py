@@ -194,12 +194,10 @@ class PongConsumer(AsyncWebsocketConsumer):
             if (self.lobby.game_started == True):
                 print("disconnect: Game started")
                 await self.channel_layer.group_send(
-                    self.lobby_group_name, { 'type': 'pong.status', 'status': 'stop', 'message': f"Connection lost with {self.scope['user']}", 'name': self.player.name}
+                    self.lobby_group_name, { 'type': 'pong.status', 'status': 'stop', 'message': f"Connection lost with {self.scope['user'].tournament_username}", 'name': self.player.name}
                 )
                 await self.setGameOver()
             print(self.player.name, " : Disconnected")
-            if self.scope['user'] is not None:
-                print("User: ", self.scope['user'])
             self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
             await self.lobby.disconnectUser(self.player)
             await self.channel_layer.group_send(
@@ -223,10 +221,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             return
 
     async def startGame(self):
-        print("multiplayer: Game started")
         await self.lobby.startGame()
-        print(f'Player1: {self.lobby.player1} VS Player2: {self.lobby.player2}')
-        print(f'playerCharacter: {self.player.character}, oppCharacter: {self.opp.character}')
         await self.channel_layer.group_send(
             self.lobby_group_name, { 
                 'type': 'pong.match_info',

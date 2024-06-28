@@ -100,16 +100,25 @@ export async function init() {
 
 			const cellDate = row.insertCell(0);
 			const cellScore = row.insertCell(1);
-			const cellResult = row.insertCell(2);
 
-			cellResult.innerHTML = username === match.winner
-				? '<i class="fas fa-trophy result-icon" style="color: #28a745;"></i>'
-				: '<i class="fas fa-times result-icon" style="color: #dc3545;"></i>';
+			var p1Color = match.player1 === match.winner ? 'green' : 'red';
+			var p2Color = match.player2 === match.winner ? 'green' : 'red';
 			if (username == match.player1)
-				cellScore.innerHTML = '<span class="fs-5" >' + match.player1 + " " + match.player1_score + " - " + match.player2_score + " " + match.player2 + '</span>';
+				cellScore.innerHTML =
+					`<span class="fs-5" >
+					<span style="color: ${p1Color}"> ${match.player1} </span>
+					${match.player1_score} - ${match.player2_score}
+					<span style="color: ${p2Color}"> ${match.player2} </span>
+				</span>`;
 			else
-				cellScore.innerHTML = '<span class="fs-5" >' + match.player2 + " " + match.player2_score + " - " + match.player1_score + " " + match.player1 + '</span>';
-
+				cellScore.innerHTML = `
+				<span class="fs-5" >
+					<span style="color: ${p2Color}"> ${match.player2} </span>
+					${match.player2_score} - ${match.player1_score}
+					<span style="color: ${p1Color}"> ${match.player1} </span>
+				</span>
+				`;
+			console.log(cellScore.innerHTML);
 			cellDate.innerHTML = '<span class="fs-6" >' + new Date(match.date).toLocaleString() + '</span>';
 		});
 	}

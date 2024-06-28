@@ -16,22 +16,21 @@
 		<div class="row">
 			<div class="gameModule col-8 p-0 bg-transparent"></div>
 			<!-- PROFILE SECTION -->
-			<div id="profileCard"
-				class="col ms-3 rounded-4 w-100 d-flex justify-content-center align-items-center bg-black">
-				<div class="wrapper">
-					<div class="position-relative d-flex flex-column align-items-center">
-						<button id="editProfileBtn" type="button" class="btn btn-primary text-white "
-							data-bs-toggle="modal" data-bs-target="#updateProfileModal" data-lang="edit_profile_button">
-						</button>
-						<img src="" class="banner rounded-3 bannerDynamic" alt="sky-banner" />
+			<div id="profileCard" class="col p-0 card ms-3 rounded-4 w-100 bg-black position-relative">
+				<img src="" class="card-img-top rounded-4 bannerDynamic" alt="sky-banner" />
+				<div class="card-body flex-column justify-content-center align-items-center">
+					<div class="mb-3 position-relative d-flex flex-column align-items-center">
 						<img class="rounded-circle avatarDynamic" src="" alt="profile image"
 							data-lang="profile_image_alt" />
 					</div>
-					<div class="footer">
+					<div class="profileInfo">
 						<h1 class="usernameDynamic text-white mb-4"></h1>
 						<h6 class="bioDynamic text-white"></h6>
 					</div>
 				</div>
+				<button id="editProfileBtn" type="button" class="btn btn-primary text-white" data-bs-toggle="modal"
+					data-bs-target="#updateProfileModal"><i class="bi bi-pencil-square"></i>
+				</button>
 			</div>
 		</div>
 		<div class="row statisticsModule">
@@ -95,8 +94,8 @@
 						data-lang="update_password_button">Update Password</a>
 					<a id="discardChangesButton" type="button" class="btn btn-outline-danger d-none"
 						data-lang="discard_changes_button">Discard Changes</a>
-					<button id="saveChangesButton" class="btn btn-primary"
-						data-lang="save_changes_button" disabled>Save Changes</button>
+					<button id="saveChangesButton" class="btn btn-primary" data-lang="save_changes_button" disabled>Save
+						Changes</button>
 				</div>
 			</form>
 		</div>

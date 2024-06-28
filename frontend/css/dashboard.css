@@ -1,27 +1,22 @@
 #profileCard {
-	/* background: -webkit-linear-gradient(left, #3931af, #00c6ff); */
 	padding: 20px;
 	box-shadow: 3px 3px 15px black;
 	min-width: 200px;
 }
 
-#profileCard .banner {
-	width: 100%;
-	max-width: 500px;
-	max-height: 350px;
-	border: 1px solid #E0EFFE;
+#profileCard .profileInfo {
+	transform: translateY(-100px);
 }
-
 #profileCard .avatarDynamic {
+	transform: translateY(-100px);
 	width: 50%;
 	max-width: 250px;
-	transform: translate(0, -100px);
 }
 
 #editProfileBtn {
+	margin-right:15px;
 	margin-left: auto;
 	margin-bottom: 15px;
-	transform: skew(-10deg);
 	transition: all 0.5s ease;
 }
 

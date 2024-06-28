@@ -4,6 +4,7 @@ from django.contrib.auth import authenticate, login as auth_login
 
 from users.utils import decode_json_body, convert_image_to_base64
 from users import forms
+from users.models import UserSession
 
 
 @require_http_methods(["POST"])
@@ -24,6 +25,15 @@ def login_view(request):
                 return JsonResponse({'error': "Your email is not verified yet."}, status=400)
 
             auth_login(request, user)
+
+            existing_session = UserSession.objects.filter(user=user).first()
+            if existing_session:
+                existing_session.session.delete()
+                existing_session.delete()
+            request.session.save()
+            new_session = UserSession(user=user, session=request.session)
+            new_session.save()
+
             user.is_42auth = False
             user.is_online = True
             user.save()

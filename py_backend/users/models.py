@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.core.exceptions import ValidationError
+from django.contrib.sessions.models import Session
 from py_backend import settings
 from PIL import Image
 import random
@@ -47,3 +47,9 @@ class CustomUser(AbstractUser):
 			output_size = (300, 300)
 			img.thumbnail(output_size)
 			img.save(self.avatar.path)
+
+
+class UserSession(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='user_sessions', on_delete=models.CASCADE)
+    session = models.OneToOneField(Session, related_name='user_sessions', on_delete=models.CASCADE)
+

@@ -19,9 +19,11 @@ def get_user_data(request, username=None):
     try:
         user_datas = {
             'username': user.username,
+            'tournament_username': user.tournament_username,
             'email': user.email,
             'email_is_verified': user.email_is_verified,
             'avatar': convert_image_to_base64(user.avatar),
+            'banner': convert_image_to_base64(user.banner),
             'bio': user.bio,
             'title': user.title,
             'winrate': user.winrate,

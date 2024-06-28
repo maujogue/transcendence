@@ -59,6 +59,15 @@ def username_is_unique(username):
 	return True, None
 
 
+def tournament_username_is_unique(tournament_username):
+	if not tournament_username or tournament_username == '':
+		return False, f'Username cannot be empty.'
+	response = CustomUser.objects.filter(tournament_username=tournament_username).exists()
+	if response:
+		return False, f'Username is already used.'
+	return True, None
+
+
 def validation_register(data):
 	validation_errors = []
 
@@ -87,7 +96,7 @@ def extension_is_valid(image_name):
 	name, ext = os.path.splitext(image_name)
 	if ext == '.png':
 		return True
-	if ext == '.jpg':
+	if ext == '.jpg' or '.jpeg' or '.JPG' or '.JPEG':
 		return True
 	return False
 

@@ -137,9 +137,15 @@ function updateProfile() {
 	var inputName = getSubmittedInput().getAttribute("name");
 	var formData = new FormData(updateProfileForm);
 	var fileInput = document.getElementById("avatar");
-
+	var fileInput = document.getElementById("banner");
 	if (inputName == "username" || inputName == "email") {
 		toggleConfirmPasswordModal("confirmPasswordModal");
+	}
+	else if (inputName == "tournament_username") {
+		const fetchBody = {
+			tournament_username: formData.get("tournament_username"),
+		};
+		updateInfo("users/update_tournament_name/", JSON.stringify(fetchBody));
 	}
 	else if (inputName == "bio") {
 		const fetchBody = {
@@ -150,6 +156,10 @@ function updateProfile() {
 	else if (inputName == "avatar" && fileInput.files.length == 1) {
 		formData.append("image", fileInput.files[0]);
 		updateInfo("users/update_profile_picture/", formData);
+	}
+	else if (inputName == "banner" && fileInput.files.length == 1) {
+		formData.append("image", fileInput.files[0]);
+		updateInfo("users/update_profile_banner/", formData);
 	}
 }
 
@@ -175,6 +185,8 @@ async function checkInputAvailable(input, type) {
 		response = await runEndPoint("users/username_available/", "POST", JSON.stringify(fetchBody));
 	else if (type === "email")
 		response = await runEndPoint("users/email_available/", "POST", JSON.stringify(fetchBody));
+	else if (type === "tournament_username")
+		response = await runEndPoint("users/tournament_username_available/", "POST", JSON.stringify(fetchBody));
 	if (response.data.status === "success") {
 		return (true)
 	} else {

@@ -37,7 +37,9 @@
     "update_profile_modal_title": "Update Profile",
     "bio_placeholder": "What about you?",
     "avatar_label": "Avatar",
+	"banner_label": "Banner",
     "avatar_placeholder": "avatar photo",
+	"banner_placeholder": "banner photo",
     "update_password_button": "Update Password",
     "discard_changes_button": "Discard Changes",
     "save_changes_button": "Save Changes",
@@ -130,5 +132,8 @@
 	"no_friend_request": "No friend request",
 	"add_friend": "Add friend",
 	"unfriend": "Unfriend",
-	"friend_request_sent": "Friend request sent"
+	"friend_request_sent": "Friend request sent",
+
+	"username_input_label": "Username",
+	"tournament_username_input_label": "Tournament username"
 }

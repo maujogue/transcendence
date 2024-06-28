@@ -20,10 +20,10 @@
 				class="col ms-3 rounded-4 w-100 d-flex justify-content-center align-items-center bg-black">
 				<div class="wrapper">
 					<div class="position-relative d-flex flex-column align-items-center">
-						<button id="editProfileBtn" type="button" class="btn btn-primary text-white " data-bs-toggle="modal"
-							data-bs-target="#updateProfileModal" data-lang="edit_profile_button">
+						<button id="editProfileBtn" type="button" class="btn btn-primary text-white "
+							data-bs-toggle="modal" data-bs-target="#updateProfileModal" data-lang="edit_profile_button">
 						</button>
-						<img src="../assets/img/sky-banner.jpg" class="banner rounded-3" alt="sky-banner" />
+						<img src="" class="banner rounded-3 bannerDynamic" alt="sky-banner" />
 						<img class="rounded-circle avatarDynamic" src="" alt="profile image"
 							data-lang="profile_image_alt" />
 					</div>
@@ -64,9 +64,12 @@
 					<!-- EMAIL INPUT -->
 					<div class="mb-3 emailInputModule auth-42-disable">
 					</div>
+					<!-- TOURNAMENT USERNAME INPUT -->
+					<div class="mb-3 tournamentUsernameInputModule">
+					</div>
 					<!-- BIO INPUT -->
 					<div class="mb-3">
-						<label for="bio" class="col-form-label" data-lang="bio_label">Bio</label>
+						<label for="bio" class="col-form-label text-primary" data-lang="bio_label">Bio</label>
 						<textarea maxlength="150" rows="3" cols="50" wrap="hard" type="text" name="bio"
 							class="form-control bioDynamic formInputs" id="bio" placeholder="What about you ?"
 							autocomplete="off" style="resize: none; overflow-wrap: break-word;"
@@ -74,9 +77,15 @@
 					</div>
 					<!-- AVATAR INPUT -->
 					<div class="mb-3">
-						<label for="avatar" class="col-form-label" data-lang="avatar_label">Avatar</label>
+						<label for="avatar" class="col-form-label text-primary" data-lang="avatar_label"></label>
 						<input type="file" accept=".jpg,.png" name="avatar" class="form-control formInputs" id="avatar"
 							placeholder="avatar photo" autocomplete="off" data-lang="avatar_placeholder" />
+					</div>
+					<!-- BANNER INPUT -->
+					<div class="mb-3">
+						<label for="banner" class="col-form-label text-primary" data-lang="banner_label"></label>
+						<input type="file" accept=".jpg,.png" name="banner" class="form-control formInputs" id="banner"
+							placeholder="banner photo" autocomplete="off" data-lang="banner_placeholder" />
 					</div>
 					<!-- SUBMIT FORM -->
 				</div>
@@ -86,8 +95,8 @@
 						data-lang="update_password_button">Update Password</a>
 					<a id="discardChangesButton" type="button" class="btn btn-outline-danger d-none"
 						data-lang="discard_changes_button">Discard Changes</a>
-					<a id="saveChangesButton" type="button" class="saveChangesButton btn btn-primary disabled"
-						data-lang="save_changes_button">Save Changes</a>
+					<button id="saveChangesButton" class="btn btn-primary"
+						data-lang="save_changes_button" disabled>Save Changes</button>
 				</div>
 			</form>
 		</div>

@@ -28,7 +28,7 @@ async function enableDisableSaveButtonOnInput(input) {
 
 function resetForm(input) {
 	var formInputs = document.querySelectorAll(".formInputs");
-	var saveChangesButton = document.querySelector(".saveChangesButton");
+	var saveChangesButton = document.querySelector("#saveChangesButton");
 	var discardChangesButton = document.getElementById("discardChangesButton");
 	var updatePasswordButton = document.getElementById("updatePassword");
 	var closeButton = document.getElementById("closeButtonUpdateProfile");
@@ -44,19 +44,19 @@ function resetForm(input) {
 	});
 	discardChangesButton.classList.add("d-none");
 	updatePasswordButton.classList.remove("d-none");
-	saveChangesButton.classList.add("disabled");
+	saveChangesButton.disabled = true;
 	closeButton.classList.remove("d-none");
 
 }
 
 function disableSaveChangesButton(input) {
 	var modal = input.closest(".modal");
-	var saveChangesButton = modal.querySelector(".saveChangesButton");
+	var saveChangesButton = modal.querySelector("#saveChangesButton");
 	if (saveChangesButton) {
 		if (!input.classList.contains("is-invalid"))
-			saveChangesButton.classList.remove("disabled");
+			saveChangesButton.disabled = false;
 		else
-			saveChangesButton.classList.add("disabled");
+			saveChangesButton.disabled = true;
 	}
 }
 

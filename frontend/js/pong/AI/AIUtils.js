@@ -31,7 +31,7 @@ function getGameState(environment, player2) {
 
 export async function loadAgentModel() {
     try {    
-		const model = await tf.loadLayersModel('../../../js/pong/AI/models/agent2___-2.00avg_/model.json');
+		const model = await tf.loadLayersModel('../../../js/pong/AI/models/agent2____2.10avg_/model.json');
 		console.log('Model loaded : ', model);
 		return model;
     } catch (error) {

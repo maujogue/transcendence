@@ -143,7 +143,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if match.player2 == self.scope['user'].tournament_username:
             await asyncio.sleep(32)
 
-    async def match_is_cancelled(self, match):
+    async def cancel_match(self, match):
         await self.send(text_data=json.dumps({'type': 'status', 'status': 'cancelled', 'message': f'Match not started in time, {match.winner} wins!'}))
         await asyncio.sleep(5)
         await self.endGame()
@@ -152,7 +152,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         try:
             lobby = await Lobby.objects.aget(pk=match.lobby_id)
 
-            if lobby.game_started:
+            if lobby.game_started or lobby.finished:
                 return True
             return False
         except Lobby.DoesNotExist:
@@ -160,15 +160,15 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def check_if_match_started_in_time(self, match): 
         try:
-                await self.launch_match_timer(match)
-                if not await self.check_if_match_is_started(match):
-                    lobby = await Lobby.objects.aget(pk=match.lobby_id)
-                    res_match = await self.create_history_match(lobby)
-                    await self.match_is_cancelled(res_match)
+            await self.launch_match_timer(match)
+            if not await self.check_if_match_is_started(match):
+                lobby = await Lobby.objects.aget(pk=match.lobby_id)
+                res_match = await self.create_history_match(lobby)
+                await self.cancel_match(res_match)
         except Lobby.DoesNotExist:
             try:
                 res_match = await TournamentMatch.objects.aget(lobby_id=match.lobby_id)
-                await self.match_is_cancelled(res_match)
+                await self.cancel_match(res_match)
             except TournamentMatch.DoesNotExist:
                 return
         except Exception as e:
@@ -295,7 +295,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if self.match and not self.match.finished and self.match.player2:
             match_infos = self.get_match_infos(self.match)
             timer = 30 - self.get_elapsed_time(self.match.timer)
-            await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos, 'timer': timer}))
+            if timer > 0:
+                await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos, 'timer': timer}))
+            else:
+                await self.send(text_data=json.dumps({'type': 'status', 'status': 'waiting'}))
 
     async def send_all_matchups(self):
         await self.channel_layer.group_send(

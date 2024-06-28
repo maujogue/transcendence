@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
                 ('username', models.CharField(max_length=25, unique=True)),
                 ('tournament_username', models.CharField(default='', max_length=25, unique=True)),
                 ('email', models.EmailField(max_length=50, unique=True)),
-                ('email_is_verified', models.BooleanField(default=True)),
+                ('email_is_verified', models.BooleanField(default=False)),
                 ('title', models.CharField(max_length=50, null=True)),
                 ('avatar', models.ImageField(default='avatar.jpg', upload_to='profile_avatars')),
                 ('bio', models.TextField(default='', max_length=500)),

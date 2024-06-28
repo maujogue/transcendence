@@ -48,13 +48,10 @@ class Tournament(models.Model):
 		super().save(*args, **kwargs)
 
 	def get_matches_by_player(self, username):
-		print(f"current_round: {self.current_round}")
-		print(f"username = {username}")
 		match = self.matchups.filter(
 			(models.Q(player1=username) | models.Q(player2=username)),
 			round=self.current_round
 			).first()
-		print(f"match: {match}")
 
 		return match
 	
@@ -92,7 +89,8 @@ class Tournament(models.Model):
 				"name": self.get_round_name(round_number),
 				"matches": []
 			}
-
+			print("get tournament bracket")
+			print(f"Round {round_number}: {matches}")
 			if matches.exists():
 				for match in matches:
 					player1 = self.get_player_tournament_username(match.player1) if match.player1 else None

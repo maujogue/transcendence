@@ -194,8 +194,8 @@ class PongConsumer(AsyncWebsocketConsumer):
                 )
                 await self.setGameOver()
             print(self.player.name, " : Disconnected")
-            if self.scope['user'] is not None:
-                print("User: ", self.scope['user'])
+            # if self.scope['user'] is not None:
+            #     print("User: ", self.scope['user'])
             self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
             await self.lobby.disconnectUser(self.player)
             await self.channel_layer.group_send(
@@ -324,7 +324,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             await self.collision(self.opp)
 
     async def setGameOver(self):
-        print("multiplayer: Game Over")
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
         if self.player.name == 'player1' or (self.lobby.player1 is None and not await self.check_if_history_match_exists()):
             await self.createHistoryMatch()
@@ -332,7 +331,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                 self.lobby_group_name, { 'type': 'pong.status', 'status': 'endGame', 'message': 'The game is over', 'name': self.scope['user'].tournament_username, 'winner': self.winner}
             )
             await self.lobby.stopGame()
-            print(f"multiplayer: {self.winner} won the game")
 
     async def check_if_history_match_exists(self):
         try:

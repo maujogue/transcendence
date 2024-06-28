@@ -3,6 +3,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async
+from django.utils import timezone
 
 from users.models import CustomUser
 from stats.models import Match
@@ -131,11 +132,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     
     async def check_if_match_is_started(self, match, wait=True):
         if wait:
-
+            match.timer = timezone.now()
+            await match.asave()
             if match.player1 == self.scope['user'].tournament_username:
-                await asyncio.sleep(20)
+                await asyncio.sleep(30)
             if match.player2 == self.scope['user'].tournament_username:
-                await asyncio.sleep(22)
+                await asyncio.sleep(32)
         try:
             lobby = await Lobby.objects.aget(pk=match.lobby_id)
 
@@ -253,6 +255,11 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_tournament_participants(self):
         return [p.tournament_username for p in self.tournament.participants.all()]
+
+    def get_elapsed_time(self, timer):
+        current_time = timezone.now()
+
+        return (current_time - timer).seconds
     
     @database_sync_to_async
     def authenticate_user_with_username(self, username):
@@ -269,7 +276,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         self.match = await self.get_player_match(self.scope['user'].tournament_username)
         if self.match and not self.match.finished and self.match.player2:
             match_infos = self.get_match_infos(self.match)
-            await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos}))
+            timer = 30 - self.get_elapsed_time(self.match.timer)
+            await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos, 'timer': timer}))
 
     async def send_all_matchups(self):
         await self.channel_layer.group_send(
@@ -333,7 +341,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if self.match:
             if not self.match.finished and self.match.player2:
                 match_infos = self.get_match_infos(self.match)
-                await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos}))
+                await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos, 'timer': 30}))
     
                 if self.task:
                     self.task.cancel()

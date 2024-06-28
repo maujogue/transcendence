@@ -96,7 +96,7 @@ def extension_is_valid(image_name):
 	name, ext = os.path.splitext(image_name)
 	if ext == '.png':
 		return True
-	if ext == '.jpg' or '.jpeg' or '.JPG' or '.JPEG':
+	if ext == '.jpg' or ext == '.jpeg' or ext == '.JPG' or ext == '.JPEG':
 		return True
 	return False
 

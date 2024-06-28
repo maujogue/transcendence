@@ -213,14 +213,12 @@ export function displayErrorPopUp (message, parent) {
     const errorPopUp = document.createElement("div");
     errorPopUp.id = "errorPopUp";
     errorPopUp.className = "error-pop-up pop-up";
-    errorPopUp.innerHTML = ` \
-    <i id="PopUpCloseIcon" class="fa-solid fa-xmark close-icon icon"></i> \
-    <p>${message}</p> `;
+    errorPopUp.innerHTML = `<p>${message}</p>`;
     parent.appendChild(errorPopUp);
-    document.getElementById("PopUpCloseIcon").addEventListener("click", () => {
-        document.getElementById("PopUpCloseIcon").removeEventListener("click", () => {});
-        errorPopUp.remove();
-    });
+    setTimeout(() => {
+        if (document.getElementById("errorPopUp"))
+            document.getElementById("errorPopUp").remove();
+    }, 3000);
 }
 
 export function createShowBracketButton(parent) {

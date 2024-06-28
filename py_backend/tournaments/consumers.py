@@ -149,7 +149,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 res_match = await self.create_history_match(lobby)
                 print(f'{self.scope["user"].tournament_username}: match cancelled, not started')
                 await self.send(text_data=json.dumps({'type': 'status', 'status': 'cancelled', 'message': f'Match not started in time, {res_match.winner} wins!'}))
-                await asyncio.sleep(6)
+                await asyncio.sleep(5)
                 await self.endGame()
             return False
         except Lobby.DoesNotExist:
@@ -159,7 +159,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     print('match cancelled, lobby not found')
                     await self.send(text_data=json.dumps({'type': 'status', 'status': 'cancelled', 'message': f'Match not started in time, {res_match.winner} wins!'}))
                     print('match cancelled, after send')
-                    await asyncio.sleep(6)
+                    await asyncio.sleep(5)
                     await self.endGame()
             except TournamentMatch.DoesNotExist:
                 print('match cancelled, match not found')

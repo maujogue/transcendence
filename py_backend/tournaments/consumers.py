@@ -12,7 +12,6 @@ from .bracket import generate_bracket
 
 class TournamentConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        # print('connected: ', self.scope['user'])
         self.match = None
         self.task = None
         self.tournament = await self.get_tournament()
@@ -107,7 +106,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         await self.send_tournament_end()
 
     async def generate_round(self):
-        # print(f'{self.scope["user"].tournament_username}: generating round {self.tournament.current_round}')
         await sync_to_async(generate_bracket)(self.tournament)
         await self.send_bracket(True)
         await self.send_all_matchups()
@@ -115,17 +113,13 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def advance_in_tournament(self):
         if self.tournament.current_round < self.tournament.max_round:
             await self.tournament.increase_round()
-            # print(f'{self.scope["user"].tournament_username} advancing to round {self.tournament.current_round}')
             await self.generate_round()
         else:
-            # print('tournament is over')
             await self.set_tournament_over()
 
     async def check_if_all_matches_finished(self):
         self.tournament = await self.get_tournament()
         all_matches = await sync_to_async(list)(self.tournament.matchups.filter(round=self.tournament.current_round))
-        # print(f'all_matches: {all_matches}, are finished: {all(matches.finished for matches in all_matches)}')
-        # print(f'len(all_matches): {len(all_matches)}')
         if all(matches.finished for matches in all_matches) and len(all_matches) > 0:
             return True
         return False
@@ -152,31 +146,26 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     
     async def check_if_match_is_started(self, match ,wait=True):
         if wait:
-            # print(f'{self.scope["user"].tournament_username} waiting for match to start')
             if match.player1 == self.scope['user'].tournament_username:
                 await asyncio.sleep(20)
             if match.player2 == self.scope['user'].tournament_username:
                 await asyncio.sleep(22)
         try:
             lobby = await Lobby.objects.aget(pk=match.lobby_id)
-            # print(f'lobby: {lobby}\n is_started = {lobby.game_started}, wait = {wait}\n player1 = {lobby.player1}, player2 = {lobby.player2}')
             if lobby.game_started:
                 return True
             if wait:
-                # print(f'{match} cancelled')
                 await self.create_history_match(lobby)
                 await self.send(text_data=json.dumps({'type': 'status', 'status': 'cancelled'}))
                 await self.endGame()
             return False
         except Lobby.DoesNotExist:
-            # print("check_if_match_is_started: lobby does not exist")
             try:
                 if wait:
                     await TournamentMatch.objects.aget(lobby_id=match.lobby_id)
                     await self.send(text_data=json.dumps({'type': 'status', 'status': 'cancelled'}))
                     await self.endGame()
             except TournamentMatch.DoesNotExist:
-                # print("check_if_match_is_started: match does not exist")
                 return
         
     async def check_tournament_status(self):

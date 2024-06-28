@@ -1,5 +1,5 @@
 import random
-from .models import Tournament, TournamentMatch, Lobby
+from .models import TournamentMatch, Lobby
 
 def create_tournament_match(tournament, playerList):
     match_lobby = Lobby.objects.create()
@@ -15,7 +15,6 @@ def create_tournament_match(tournament, playerList):
         lobby_id=match_lobby.uuid,
         finished=finished
     )
-    print("create tournament match: ", match)
     tournament.matchups.add(match)
     tournament.save()
 
@@ -26,15 +25,16 @@ def get_round_winners(tournament):
             winners.append(match.player1)
         else:
             winners.append(match.player2)
+    print(f"winners: {winners}")
+    winners.reverse()
     return winners
 
 def generate_bracket(tournament):
-    print('generate bracket:', tournament.name)
     if tournament.current_round == 1:
         participants = list(tournament.participants.values_list('tournament_username', flat=True))
+        random.shuffle(participants)
     else:
         participants = get_round_winners(tournament)
-    random.shuffle(participants)
 
     while len(participants) >= 1:
         create_tournament_match(tournament, participants)

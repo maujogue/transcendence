@@ -74,6 +74,11 @@ document.addEventListener("keyup", function(event) {
     event.stopPropagation();
 });
 
+document.addEventListener('fullscreenchange', function () {
+    if (!status.exit)
+        resize(env);
+});
+
 function leaveMatchmaking() {
     if (wsMatch)
         wsMatch.close();
@@ -110,21 +115,6 @@ async function goToOnlineSelectMenu() {
     removeP2Cursor();
 }
 
-function displayTimer() {
-    const timerDiv = document.createElement("div");
-    timerDiv.id = "timer";
-    timerDiv.classList.add("timer");
-    let time = 30;
-    timerDiv.innerHTML = `Time left: ${time}`;
-    document.getElementById("selectMenu").appendChild(timerDiv);
-    setInterval(() => {
-        if (time == 0)
-            return ;
-        time--;
-        timerDiv.innerHTML = `Time left: ${time}`;
-    }, 1000);
-}
-
 async function createOnlineSelectMenu(id) {
     if (wsMatch)
         wsMatch.close();
@@ -139,8 +129,6 @@ async function createOnlineSelectMenu(id) {
         paddle.position.x = 2.5;
         onlineGameLoop(wsMatch);
     });
-    if (checkIfWebsocketIsOpen(wsTournament)) 
-        displayTimer();
 }
 
 async function connectToLobby(username) {
@@ -191,6 +179,7 @@ async function connectToLobby(username) {
                 console.log('displayCharacter:', data['character'], data['name'])
                 displayCharacter(opp, env, data['character'], data['name']).then((res) => {
                     opp = res;
+                    opp.character.removeCharacterFromLobby(env);
                 });
             }
         }
@@ -311,6 +300,7 @@ async function onlineGameLoop(wsMatch) {
     }
     if (keysPressed[' '] && !status.is_connected) {
         keysPressed[' '] = false;
+        console.log("Connecting to the server");
         getUserData('tournament_username').then((res) => {
             connectToLobby(res, null)
         })

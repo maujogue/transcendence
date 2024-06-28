@@ -25,6 +25,10 @@ export class Character {
 		this.setAnimation(0)
 		environment.scene.add(this.mesh);
 	}
+
+	removeCharacterFromLobby(environment) {
+		environment.scene.remove(this.mesh);
+	}
 	
 	setAnimation(animationIndex) {
 		const animation = this.animations[animationIndex];

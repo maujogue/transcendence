@@ -118,8 +118,10 @@ export async function init() {
 		
 		if (event.target.id == 'restart' && !isOnline) {
 			document.getElementById("endscreen").remove();
-			actualizeScore(player1, player2, environment, environment.font);
+			player1.score = 0;
+			player2.score = 0;
 			start = true;
+			actualizeScore(player1, player2, environment, environment.font);
 		}
 		if (event.target.id == 'backMenu' || event.target.id == 'backIcon') {
 			localLoop = false;
@@ -169,12 +171,12 @@ export async function init() {
 	});
 
 	document.addEventListener('fullscreenchange', function () {
-		if (isFullScreen())
+		if (!isOnline)
 			resize(environment);
 	});
 
 	function setIfGameIsEnd() {
-		if (player1.score < 1 && player2.score < 1)
+		if (player1.score < 5 && player2.score < 5)
 			return;
 
 		let winner = player1.name;
@@ -188,8 +190,6 @@ export async function init() {
 
 		createEndScreen(winner);
 		start = false;
-		player1.score = 0;
-		player2.score = 0;
 	}
 
 	async function localGameLoop() {
@@ -202,6 +202,8 @@ export async function init() {
 			ClearAllEnv(environment);
 			divMenu.remove();
 			environment = await initGame(player1, player2);
+			player1.score = 0;
+			player2.score = 0;
 		}
 		if (start) {
 			if (keyPress)

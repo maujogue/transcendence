@@ -30,6 +30,7 @@ function createEndScreen(winnerName) {
     backToMenuBtn.innerText = 'Back to menu';
 
     const btnDiv = document.createElement('div');
+    btnDiv.classList.add('endscreen-btn');
     div.append(btnDiv);
     btnDiv.append(restartBtn);
     btnDiv.append(backToMenuBtn);

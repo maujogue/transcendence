@@ -400,7 +400,6 @@ class TournamentModeTest(TestCase):
 		response = self.client.post(reverse("join_tournament", args=[id]))
 		self.assertEqual(response.status_code, 404)
 
-
 # try to delete a non existing tournament
 	def test_delete_non_existing_tournament(self):
 		name = "Hi there"

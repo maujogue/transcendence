@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Max
 from django.conf import settings
 import uuid
+import django.utils.timezone as timezone
 
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
@@ -20,6 +21,7 @@ class TournamentMatch(models.Model):
 	score_player_1 = models.IntegerField(default=0)
 	score_player_2 = models.IntegerField(default=0)
 	finished = models.BooleanField(default=False)
+	timer = models.DateTimeField(default=timezone.now)
 
 	def __str__(self):
 		return f"{self.round}: {self.player1} vs {self.player2}: {self.winner} wins! finished: {self.finished}"
@@ -106,7 +108,7 @@ class Tournament(models.Model):
 					}
 					round_info["matches"].append(match_info)
 			else:
-				num_matches = 2 ** (total_rounds - round_number)
+				num_matches = 2 * (total_rounds - round_number)
 				for _ in range(num_matches):
 					match_info = {
 						"match_id": None,
@@ -147,9 +149,9 @@ class Tournament(models.Model):
 	
 	def get_round_name(self, round_number):
 		if round_number == self.max_round:
-			return "Finale"
+			return "Final"
 		elif round_number == self.max_round - 1:
-			return "semi-Finale"
+			return "semi-Final"
 		else:
 			return f"Round {round_number}"
 		

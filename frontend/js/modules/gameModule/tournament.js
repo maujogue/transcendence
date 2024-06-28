@@ -30,8 +30,10 @@ export async function connectToTournament(tournament) {
             console.log("Received data:", data);
             if (data.type == "participants")
                 displayPlayerList(data.participants);
-            if (data.type == "matchup")
+            if (data.type == "matchup") {
                 createOnlineSelectMenu(data.match.lobby_id);
+                displayTimer(data.timer)
+            }
             if (data.type == "status")
                 handlerMessageStatus(data);
             if (data.type == "ranking")
@@ -57,6 +59,19 @@ export async function connectToTournament(tournament) {
     }
 }
 
+function displayTimer(time) {
+    const timerDiv = document.createElement("div");
+    timerDiv.id = "timer";
+    timerDiv.classList.add("timer");
+    timerDiv.innerHTML = `Time left: ${time}`;
+    document.getElementById("selectMenu").appendChild(timerDiv);
+    setInterval(() => {
+        if (time == 0)
+            return ;
+        time--;
+        timerDiv.innerHTML = `Time left: ${time}`;
+    }, 1000);
+}
 
 function handlerMessageStatus(data) {
     console.log("Status:", data.status);

@@ -22,6 +22,7 @@ class TournamentMatch(models.Model):
 	score_player_2 = models.IntegerField(default=0)
 	finished = models.BooleanField(default=False)
 	timer = models.DateTimeField(default=timezone.now)
+	position = models.IntegerField(default=1) #TODO use that with .order_by(…) to stop random bracket
 
 	def __str__(self):
 		return f"{self.round}: {self.player1} vs {self.player2}: {self.winner} wins! finished: {self.finished}"

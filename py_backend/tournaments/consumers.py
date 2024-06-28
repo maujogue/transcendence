@@ -73,7 +73,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.send_self_bracket()
             asyncio.create_task(self.tournament_state())
 
-    async def tournament_state():
+    async def tournament_state(self):
         while not self.tournament.finished:
             await asyncio.sleep(10)
             if await self.check_if_all_matches_finished():

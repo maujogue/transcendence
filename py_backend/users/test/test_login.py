@@ -202,10 +202,11 @@ class SessionKeyTests(TestCase):
         self.user.refresh_from_db()
         self.assertEqual(self.user.session_key, self.client.session.session_key)
 
-        self.client.post(
+        response = self.client.post(
             reverse('login'), 
             data=json.dumps(user), 
             content_type='application/json')
+        self.assertEqual(response.status_code, 400)
 
 
     def test_session_key_is_deleted_when_logout(self):

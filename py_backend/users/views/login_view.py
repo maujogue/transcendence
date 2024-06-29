@@ -28,7 +28,6 @@ def login_view(request):
             if hasattr(request.user, 'session_key') and user.session_key != None:
                 user.session_key = None
                 user.save()
-                # redirect to logout ?
                 return JsonResponse({'error': "You are already logged in somewhere else."}, status=400)
 
             user.session_key = request.session.session_key

@@ -23,12 +23,12 @@ def login_view(request):
             if not user.email_is_verified:
                 return JsonResponse({'error': "Your email is not verified yet."}, status=400)
 
-            auth_login(request, user)
-
-            if hasattr(request.user, 'session_key') and user.session_key != None:
-                user.session_key = None
-                user.save()
+            if hasattr(request.user, 'session_key') and user.session_key != None or user.is_online:
+                # user.session_key = None
+                # user.save()
                 return JsonResponse({'error': "You are already logged in somewhere else."}, status=400)
+            
+            auth_login(request, user)
 
             user.session_key = request.session.session_key
             user.is_42auth = False

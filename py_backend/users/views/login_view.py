@@ -2,7 +2,7 @@ from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login as auth_login
 
-from users.utils import decode_json_body, convert_image_to_base64, check_active_session
+from users.utils import decode_json_body, convert_image_to_base64
 from users import forms
 
 
@@ -13,7 +13,7 @@ def login_view(request):
         return data
     
     form = forms.LoginForm(data)
-
+    
     if form.is_valid():
         username = form.cleaned_data['username']
         password = form.cleaned_data['password']

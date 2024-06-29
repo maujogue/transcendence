@@ -47,6 +47,7 @@ def login_view(request):
                 'n_games_played': user.n_games_played,
                 'is_42auth': user.is_42auth,
                 'is_online': user.is_online,
+                'lang': user.lang,
             }
             return JsonResponse({'status': "You are now logged in !", "user": user_info}, status=200)
     return JsonResponse({'error': "Wrong username or password."}, status=400)

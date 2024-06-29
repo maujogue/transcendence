@@ -25,6 +25,10 @@ def login_view(request):
 
             auth_login(request, user)
 
+            if hasattr(request.user, 'session_key') and user.session_key != None:
+                print("Already have a session key: ", user.session_key)
+
+            user.session_key = request.session.session_key
             user.is_42auth = False
             user.is_online = True
             user.save()

@@ -10,6 +10,7 @@ from django.http import JsonResponse
 @requires_csrf_token
 def logout_view(request):
     user = request.user
+    user.session_key = None
     user.is_online = False
     user.save()
     

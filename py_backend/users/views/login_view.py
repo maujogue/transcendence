@@ -2,7 +2,7 @@ from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
 from django.contrib.auth import authenticate, login as auth_login
 
-from users.utils import decode_json_body, convert_image_to_base64
+from users.utils import decode_json_body, convert_image_to_base64, check_active_session
 from users import forms
 
 
@@ -28,6 +28,7 @@ def login_view(request):
             
             auth_login(request, user)
 
+            request.session['active_session'] = True
             user.session_key = request.session.session_key
             user.is_42auth = False
             user.is_online = True

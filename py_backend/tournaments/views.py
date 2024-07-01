@@ -3,7 +3,7 @@ import random
 import string
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.decorators import login_required
+from users.decorators import custom_login_required as login_required
 from django.views.decorators.http import require_http_methods
 
 from django.core.exceptions import ValidationError
@@ -51,7 +51,7 @@ def create_tournament(request):
 		return JsonResponse({"errors": "Name must be alphanumeric."},
 					status=400)
 
-	if not max_players in range(2, 17):
+	if not max_players in range(2, 9):
 		return JsonResponse({"errors": "Invalid number of players."}, status=400)
 
 	try:
@@ -140,7 +140,7 @@ def quit_tournament(request, tournament_id):
 					status=200)
 
 @login_required
-@require_http_methods(["POST"])
+@require_http_methods(["DELETE"])
 def delete_tournament(request, tournament_id):
 	try:
 		tournament = Tournament.objects.get(pk=tournament_id)

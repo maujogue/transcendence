@@ -32,6 +32,26 @@ class TournamentModeTest(TestCase):
 		self.user5 = CustomUser.objects.create_user(username='testuser5',
 										 email='testuser5@gmail.com',
 										 password='Password5+')
+		
+		self.user_host.is_online = True
+		self.user_host.email_is_verified = True
+		self.user_host.save()
+
+		self.user2.is_online = True
+		self.user2.email_is_verified = True
+		self.user2.save()
+
+		self.user3.is_online = True
+		self.user3.email_is_verified = True
+		self.user3.save()
+
+		self.user4.is_online = True
+		self.user4.email_is_verified = True
+		self.user4.save()
+
+		self.user5.is_online = True
+		self.user5.email_is_verified = True
+		self.user5.save()
 
 	def create_test_tournament(self, name, max_players):
 		data = {
@@ -375,30 +395,18 @@ class TournamentModeTest(TestCase):
 		self.client.login(username='testuser1', password='Password1+')
 		tournament = self.create_test_tournament(name, max_players)
 		id = self.find_tournament_id(tournament)
-		response = self.client.post(reverse("delete_tournament", args=[id]))
+		response = self.client.delete(reverse("delete_tournament", args=[id]))
 		self.assertEqual(response.status_code, 200)
 		response = self.client.post(reverse("join_tournament", args=[id]))
+
 		self.assertEqual(response.status_code, 404)
 
-### tests smart contract view ###
+# try to delete a non existing tournament
+	def test_delete_non_existing_tournament(self):
+		name = "Hi there"
+		max_players = 2
 
-@patch('tournaments.views.deploy_tournament_contract')
-def test_add_tournament_contract(self, mock_deploy_contract):
-	name = "Hi there"
-	max_players = 2
-
-	self.client.login(username='testuser1', password='Password1+')
-	tournament = self.create_test_tournament(name, max_players)
-	id = self.find_tournament_id(tournament)
-
-	mock_deploy_contract.return_value = "0x123456789abcdef"
-
-	response = self.client.post(reverse('add_tournament_contract', args=[id]))
-	self.assertEqual(response.status_code, 200)
-
-	self.tournament.refresh_from_db()
-	self.assertEqual(self.tournament.contract_address, "0x123456789abcdef")
-
-	response_data = response.json()
-	self.assertEqual(response_data['message'], "Contract address added successfully.")
-	self.assertEqual(response_data['contract_address'], "0x123456789abcdef")
+		self.client.login(username='testuser1', password='Password1+')
+		id = 99
+		response = self.client.delete(reverse("delete_tournament", args=[id]))
+		self.assertEqual(response.status_code, 404)

@@ -115,21 +115,6 @@ async function goToOnlineSelectMenu() {
     removeP2Cursor();
 }
 
-function displayTimer() {
-    const timerDiv = document.createElement("div");
-    timerDiv.id = "timer";
-    timerDiv.classList.add("timer");
-    let time = 30;
-    timerDiv.innerHTML = `Time left: ${time}`;
-    document.getElementById("selectMenu").appendChild(timerDiv);
-    setInterval(() => {
-        if (time == 0)
-            return ;
-        time--;
-        timerDiv.innerHTML = `Time left: ${time}`;
-    }, 1000);
-}
-
 async function createOnlineSelectMenu(id) {
     if (wsMatch)
         wsMatch.close();
@@ -144,8 +129,6 @@ async function createOnlineSelectMenu(id) {
         paddle.position.x = 2.5;
         onlineGameLoop(wsMatch);
     });
-    if (checkIfWebsocketIsOpen(wsTournament)) 
-        displayTimer();
 }
 
 async function connectToLobby(username) {

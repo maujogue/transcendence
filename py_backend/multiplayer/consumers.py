@@ -15,7 +15,6 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def send_player_data(self):
         if not self.check_if_user_is_connected():
             return
-        print(f"self.player.name: {self.player.name}")
         await self.send(text_data=json.dumps({
             'type': 'player_data',
             'name': self.player.name,
@@ -24,7 +23,6 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def join_lobby(self):
         if self.scope['url_route']['kwargs'].get('lobby_id') is not None:
-            print("Lobby ID: ", self.scope['url_route']['kwargs']['lobby_id'])
             try:
                 return await Lobby.objects.aget(uuid=self.scope['url_route']['kwargs']['lobby_id'])
             except Lobby.DoesNotExist:
@@ -138,7 +136,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         if self.player.name == 'player1':
             self.lobby.player1_character = self.player.character
         else:
-            print("Setting player2 character")
             self.lobby.player2_character = self.player.character
         await self.lobby.asave()
         await self.channel_layer.group_send(
@@ -171,7 +168,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                 await self.lobby.setPlayerReady(text_data_json.get("ready"), self.player)
             if text_data_json.get("character"):
                 await self.set_character(text_data_json)
-            # print(f'lobby, player_ready: {self.lobby.player_ready}, player1: {self.lobby.player1}, player2: {self.lobby.player2}, game_started: {self.lobby.game_started}, player1_character: {self.lobby.player1_character}, player2_character: {self.lobby.player2_character}')
             if self.lobby.check_if_game_is_ready():
                 await self.startGame()
             if text_data_json.get("type") == "user_info":
@@ -183,6 +179,8 @@ class PongConsumer(AsyncWebsocketConsumer):
                     await self.getPlayerMove(text_data_json)
         except Lobby.DoesNotExist:
             print("Lobby does not exist")
+        except Exception as e:
+            print("Error: ", e)
 
     async def disconnect(self, close_code):
         if self.is_connected == False:
@@ -191,14 +189,11 @@ class PongConsumer(AsyncWebsocketConsumer):
         try:
             self.is_connected = False
             if (self.lobby.game_started == True):
-                print("disconnect: Game started")
                 await self.channel_layer.group_send(
-                    self.lobby_group_name, { 'type': 'pong.status', 'status': 'stop', 'message': f"Connection lost with {self.scope['user']}", 'name': self.player.name}
+                    self.lobby_group_name, { 'type': 'pong.status', 'status': 'stop', 'message': f"Connection lost with {self.scope['user'].tournament_username}", 'name': self.player.name}
                 )
                 await self.setGameOver()
             print(self.player.name, " : Disconnected")
-            if self.scope['user'] is not None:
-                print("User: ", self.scope['user'])
             self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
             await self.lobby.disconnectUser(self.player)
             await self.channel_layer.group_send(
@@ -216,16 +211,12 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def close_lobby(self):
         try:
             self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
-            print("Closing lobby")
             await self.lobby.adelete()
         except Lobby.DoesNotExist:
             return
 
     async def startGame(self):
-        print("multiplayer: Game started")
         await self.lobby.startGame()
-        print(f'Player1: {self.lobby.player1} VS Player2: {self.lobby.player2}')
-        print(f'playerCharacter: {self.player.character}, oppCharacter: {self.opp.character}')
         await self.channel_layer.group_send(
             self.lobby_group_name, { 
                 'type': 'pong.match_info',
@@ -331,7 +322,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             await self.collision(self.opp)
 
     async def setGameOver(self):
-        print("multiplayer: Game Over")
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
         if self.player.name == 'player1' or (self.lobby.player1 is None and not await self.check_if_history_match_exists()):
             await self.createHistoryMatch()
@@ -339,7 +329,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                 self.lobby_group_name, { 'type': 'pong.status', 'status': 'endGame', 'message': 'The game is over', 'name': self.scope['user'].tournament_username, 'winner': self.winner}
             )
             await self.lobby.stopGame()
-            print(f"multiplayer: {self.winner} won the game")
 
     async def check_if_history_match_exists(self):
         try:

@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Max
 from django.conf import settings
 import uuid
+import django.utils.timezone as timezone
 
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
@@ -13,6 +14,7 @@ from math import log2, ceil
 
 class TournamentMatch(models.Model):
 	lobby_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+	num = models.IntegerField(default=0)
 	round = models.IntegerField(default=1)
 	player1 = models.CharField(max_length=100, default='')
 	player2 = models.CharField(max_length=100, default='', null=True, blank=True)
@@ -20,6 +22,7 @@ class TournamentMatch(models.Model):
 	score_player_1 = models.IntegerField(default=0)
 	score_player_2 = models.IntegerField(default=0)
 	finished = models.BooleanField(default=False)
+	timer = models.DateTimeField(default=timezone.now)
 
 	def __str__(self):
 		return f"{self.round}: {self.player1} vs {self.player2}: {self.winner} wins! finished: {self.finished}"
@@ -47,13 +50,10 @@ class Tournament(models.Model):
 		super().save(*args, **kwargs)
 
 	def get_matches_by_player(self, username):
-		print(f"current_round: {self.current_round}")
-		print(f"username = {username}")
 		match = self.matchups.filter(
 			(models.Q(player1=username) | models.Q(player2=username)),
 			round=self.current_round
 			).first()
-		print(f"match: {match}")
 
 		return match
 	
@@ -86,12 +86,11 @@ class Tournament(models.Model):
 		}
 		}
 		for round_number in range(1, total_rounds + 1):
-			matches = self.matchups.filter(round=round_number)
+			matches = self.matchups.filter(round=round_number).order_by('num')
 			round_info = {
 				"name": self.get_round_name(round_number),
 				"matches": []
 			}
-
 			if matches.exists():
 				for match in matches:
 					player1 = self.get_player_tournament_username(match.player1) if match.player1 else None
@@ -121,7 +120,6 @@ class Tournament(models.Model):
 			bracket["tournament"]["rounds"].append(round_info)
 		return bracket
 
-
 	def get_ranking(self):
 		ranking = []
 		i = 1
@@ -148,13 +146,12 @@ class Tournament(models.Model):
 	
 	def get_round_name(self, round_number):
 		if round_number == self.max_round:
-			return "Finale"
+			return "Final"
 		elif round_number == self.max_round - 1:
-			return "semi-Finale"
+			return "semi-Final"
 		else:
 			return f"Round {round_number}"
 		
 	async def increase_round(self):
 		self.current_round += 1
-		print(f"increase: current_round: {self.current_round}")
 		self.asave()

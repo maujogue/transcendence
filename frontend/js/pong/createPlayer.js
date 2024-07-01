@@ -14,7 +14,6 @@ function createSpotLight(left, color, environment) {
 	return (light);
 }
 
-
 async function createPaddle(left, top, depth, color, environment) {
 	const paddleGeometry = new THREE.BoxGeometry(0.2, 2, 1);
 	const material = new THREE.MeshToonMaterial({ color: color });

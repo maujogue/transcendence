@@ -150,7 +150,7 @@ h1 {
 	padding: 2%;
 }
 
-#tournamentMenu, #onlineMenu, #createTournament, #joinTournamentMenu {
+#tournamentMenu, #onlineMenu, #createTournament, #joinTournamentMenu, #localMenu {
 	display: flex;
 	flex-direction: row;
 	background-color: black;

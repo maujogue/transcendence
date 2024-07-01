@@ -1,6 +1,6 @@
 import { resize, isFullScreen } from "../pong/resize.js";
 import { checkCollision } from "../pong/collision.js";
-import { displayMainMenu, createSelectMenu, createOnlineMenu } from '../pong/menu.js';
+import { displayMainMenu, createSelectMenu, createOnlineMenu, createLocalMenu} from '../pong/menu.js';
 import { handleKeyPress, handleMenuKeyPress } from '../pong/handleKeyPress.js';
 import { displayCharacter, updateMixers } from '../pong/displayCharacter.js';
 import { initGame } from "../pong/initGame.js";
@@ -16,6 +16,7 @@ import { sendTournamentForm, createFormTournament } from "../pong/createTourname
 import { createJoinTournamentMenu } from "../pong/joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "../pong/tournament.js";
 import { showAlert } from "../Utils.js";
+import { loadAgentModel, moveAI} from '../pong/AI/AIUtils.js';
 import { wsTournament } from "../pong/tournament.js";
 import { createTournamentHistoryMenu } from "../pong/tournamentHistory.js";
 import * as THREE from 'three';
@@ -27,6 +28,9 @@ export var characters;
 
 var isGameLoaded = false;
 export const field = await createField();
+export var soloMode;
+export var environment;
+export var model;
 
 export async function init(queryParams) {
 	if (queryParams && queryParams.get("message"))
@@ -46,7 +50,6 @@ export async function init(queryParams) {
 	characters = new Map();
 	let start = false;
 	let divMenu = document.getElementById("menu");
-	let environment;
 	let player1;
 	let player2;
 	let keyPress = false;
@@ -58,6 +61,7 @@ export async function init(queryParams) {
 	const gameDiv = document.getElementById('game');
 
 	await loadAllModel();
+	soloMode = false;
 
 	window.addEventListener('resize', resize(environment));
 	
@@ -72,23 +76,28 @@ export async function init(queryParams) {
 	})
 
 	async function goToLocalSelectMenu() {
-		divMenu = document.getElementById("menu");
+		divMenu = document.getElementById("localMenu");
 		divMenu.remove();
 		environment = createSelectMenu(characters);
 		player1 = await displayCharacter(player1, environment, "chupacabra", "player1");
 		player2 = await displayCharacter(player2, environment, "elvis", "player2");
 	}
 
+	async function createAISelectMenu(field) {
+		document.getElementById("localMenu").remove();
+		environment = createSelectMenu(field, characters);
+		document.getElementById("cursorP2").remove();
+		document.getElementsByClassName("inputP2")[0].remove();
+		environment.renderer.render(environment.scene, environment.camera);
+		player1 = await displayCharacter(player1, environment, "chupacabra", "player1");
+		player2 = await displayCharacter(player2, environment, "elvis", "player2");
+		}
+
 	document.addEventListener("keydown", function (event) {
-		keysPressed[event.key] = true;
-		if (keysPressed['A'])
-			keysPressed['a'] = true;
-		if (keysPressed['D'])
-			keysPressed['d'] = true;
-		if (keysPressed['W'])
-			keysPressed['w'] = true;
-		if (keysPressed['S'])
-			keysPressed['s'] = true;
+		let key = event.key;
+		if (event.key.match(/^[aqwd]$/))
+			key = event.key.toLowerCase();
+		keysPressed[key] = true;
 		keyPress = true;
 		event.stopPropagation();
 	});
@@ -128,9 +137,19 @@ export async function init(queryParams) {
 			returnToMenu();
 		}
 		if (event.target.id == 'localGame') {
+			createLocalMenu(field);
+		}
+		if (event.target.id == '1v1') {
 			localLoop = true;
+			soloMode = false;
 			localGameLoop();
 			goToLocalSelectMenu();
+		}
+		if (event.target.id == 'easy') {
+			localLoop = true;
+			soloMode = true;
+			localGameLoop();
+			createAISelectMenu(field);
 		}
 		if (event.target.id == 'onlineGame' && userData) {
 			isOnline = true;
@@ -198,12 +217,17 @@ export async function init(queryParams) {
 		if (keysPressed[" "] && document.getElementById("selectMenu") && player1 && player2 && !start) {
 			start = true;
 			ClearAllEnv(environment);
-			divMenu.remove();
+			if (!soloMode)
+				divMenu.remove();
+			else
+				model = await loadAgentModel();
 			environment = await initGame(player1, player2);
 			player1.score = 0;
 			player2.score = 0;
 		}
 		if (start) {
+			if (soloMode)
+				moveAI(player2, environment, model);
 			if (keyPress)
 				handleKeyPress(keysPressed, player1, player2, environment);
 		checkCollision(environment.ball, player1, player2, environment);
@@ -219,4 +243,4 @@ export async function init(queryParams) {
 }
 
 
-export { displayMainMenu }
+export { displayMainMenu } ;

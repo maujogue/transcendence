@@ -41,17 +41,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.player = Player(name, character='chupacabra', lobby_id=self.lobby.uuid, posX=posX)
         self.opp = Player(oppName, character='chupacabra', lobby_id=self.lobby.uuid, posX=oppPosX)
         await self.lobby.asave()
-    
-    async def sendCharacter(self, text_data_json):
-        character = text_data_json["character"]
-        await self.channel_layer.group_send(
-            self.lobby_group_name, {
-                'type': 'pong.data',
-                'character': character,
-                'sender': self.channel_name,
-                'name': self.player.name
-                }
-        )
 
     async def set_environment(self):
         self.max_points = 3
@@ -138,20 +127,12 @@ class PongConsumer(AsyncWebsocketConsumer):
         else:
             self.lobby.player2_character = self.player.character
         await self.lobby.asave()
-        await self.channel_layer.group_send(
-            self.lobby_group_name, {
-                'type': 'pong.character_data',
-                'character': self.player.character,
-                'sender': self.channel_name,
-                'name': self.player.name
-            }
-        )
+        await self.sendCharacter(self.player.character)
 
-    async def sendCharacter(self, text_data_json):
-        character = text_data_json["character"]
+    async def sendCharacter(self, character):
         await self.channel_layer.group_send(
             self.lobby_group_name, {
-                'type': 'pong.data', 
+                'type': 'pong.character_data', 
                 'character': character, 
                 'sender': self.channel_name, 
                 'name': self.player.name

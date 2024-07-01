@@ -14,6 +14,7 @@ from math import log2, ceil
 
 class TournamentMatch(models.Model):
 	lobby_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+	num = models.IntegerField(default=0)
 	round = models.IntegerField(default=1)
 	player1 = models.CharField(max_length=100, default='')
 	player2 = models.CharField(max_length=100, default='', null=True, blank=True)
@@ -22,7 +23,6 @@ class TournamentMatch(models.Model):
 	score_player_2 = models.IntegerField(default=0)
 	finished = models.BooleanField(default=False)
 	timer = models.DateTimeField(default=timezone.now)
-	position = models.IntegerField(default=1) #TODO use that with .order_by(…) to stop random bracket
 
 	def __str__(self):
 		return f"{self.round}: {self.player1} vs {self.player2}: {self.winner} wins! finished: {self.finished}"
@@ -85,7 +85,7 @@ class Tournament(models.Model):
 		}
 		}
 		for round_number in range(1, total_rounds + 1):
-			matches = self.matchups.filter(round=round_number)
+			matches = self.matchups.filter(round=round_number).order_by('num')
 			round_info = {
 				"name": self.get_round_name(round_number),
 				"matches": []
@@ -120,7 +120,6 @@ class Tournament(models.Model):
 					round_info["matches"].append(match_info)
 			bracket["tournament"]["rounds"].append(round_info)
 		return bracket
-
 
 	def get_ranking(self):
 		ranking = []

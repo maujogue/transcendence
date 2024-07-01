@@ -1,7 +1,7 @@
 import random
 from .models import TournamentMatch, Lobby
 
-def create_tournament_match(tournament, playerList):
+def create_tournament_match(tournament, playerList, num):
     match_lobby = Lobby.objects.create()
     player1 = playerList.pop()
     player2 = playerList.pop() if len(playerList) > 0 else None
@@ -9,6 +9,7 @@ def create_tournament_match(tournament, playerList):
     finished = False if player2 is not None else True
 
     match = TournamentMatch.objects.create(
+        num = num,
         round=tournament.current_round,
         player1=player1,
         player2=player2,
@@ -38,6 +39,8 @@ def generate_bracket(tournament):
     else:
         participants = get_round_winners(tournament)
 
+    num_matches = 1
     while len(participants) >= 1:
-        create_tournament_match(tournament, participants)
+        create_tournament_match(tournament, participants, num_matches)
+        num_matches += 1
     tournament.save()

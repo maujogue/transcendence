@@ -90,8 +90,6 @@ class Tournament(models.Model):
 				"name": self.get_round_name(round_number),
 				"matches": []
 			}
-			print("get tournament bracket")
-			print(f"Round {round_number}: {matches}")
 			if matches.exists():
 				for match in matches:
 					player1 = self.get_player_tournament_username(match.player1) if match.player1 else None
@@ -155,5 +153,4 @@ class Tournament(models.Model):
 		
 	async def increase_round(self):
 		self.current_round += 1
-		print(f"increase: current_round: {self.current_round}")
 		self.asave()

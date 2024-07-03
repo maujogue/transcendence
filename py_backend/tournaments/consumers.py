@@ -28,6 +28,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         try:
             text_data_json = json.loads(text_data)
+            print('text_data_json: ', text_data_json)
             if text_data_json.get('type') == 'auth':
                 await self.auth(text_data_json)
             if text_data_json.get('type') == 'status':
@@ -40,6 +41,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             print('error: ', e)
 
     async def disconnect(self, close_code):
+        if self.tournament is None:
+            return
         if not self.tournament.started:
             participants = await self.get_tournament_participants()
             await self.channel_layer.group_send(
@@ -88,6 +91,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         await self.match.asave()
 
     async def auth(self, text_data_json):
+        print('auth')
         username = text_data_json.get('username')
         user = await self.authenticate_user_with_username(username)
         if user:
@@ -289,6 +293,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def authenticate_user_with_username(self, username):
         try:
+            print('username: ', username)
             return CustomUser.objects.get(username=username)
         except CustomUser.DoesNotExist:
             return None
@@ -356,6 +361,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         )
 
     async def send_tournament_ranking(self):
+        if self.tournament.finished is False:
+            return
         winner = await sync_to_async(self.tournament.get_winner)()
         ranking = await sync_to_async(self.tournament.get_ranking)()
         await self.send(text_data=json.dumps({'type': 'ranking', 'winner': winner, 'ranking': ranking}))

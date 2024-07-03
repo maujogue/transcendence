@@ -46,6 +46,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.max_points = 3
         self.is_connected = False
         self.is_ready = False
+        self.scope['user'] = None
         
         self.exchangeBeforePointsP1 = []
         self.exchangeBeforePointsP2 = []
@@ -112,12 +113,12 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.scope['user'] = user
             await self.set_player_in_lobby(user)
             await self.send_data({ "type": "auth", "status": "success"})
+            await self.channel_layer.group_send(
+                self.lobby_group_name, { 'type': 'pong.user_info', 'user': self.scope['user'], 'name': self.player.name}
+            )
         else:
             await self.send_data({ "type": "auth", "status": "failed"})
-            self.close()
-        await self.channel_layer.group_send(
-            self.lobby_group_name, { 'type': 'pong.user_info', 'user': self.scope['user'], 'name': self.player.name}
-        )
+            await self.close()
 
 
     async def set_character(self, text_data_json):
@@ -161,10 +162,11 @@ class PongConsumer(AsyncWebsocketConsumer):
         except Lobby.DoesNotExist:
             print("Lobby does not exist")
         except Exception as e:
-            print("Error: ", e)
+            await self.send_data({ "type": "error", "message": 'An error occurred'})
 
     async def disconnect(self, close_code):
         try:
+            print("Disconnected")
             if self.is_connected == False:
                 return
             self.is_connected = False
@@ -180,7 +182,8 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def disconnect_user(self):
         self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
         await self.lobby.disconnectUser(self.player)
-        await self.send_status('disconnected', f"{self.scope['user'].tournament_username} left the game")
+        if self.scope['user'] is not None:
+            await self.send_status('disconnected', f"{self.scope['user'].tournament_username} left the game")
         await self.channel_layer.group_discard(
             self.lobby_group_name,
             self.channel_name

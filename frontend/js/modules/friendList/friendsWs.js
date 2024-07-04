@@ -7,7 +7,7 @@ let currentUser;
 let wsFriends;
 
 export async function friendsWebsocket() {
-	wsFriends = new WebSocket("wss://127.0.0.1:8000/ws/friends/");
+	wsFriends = new WebSocket("ws://127.0.0.1:8080/ws/friends/");
 	wsFriends.onopen = async function () {
 		currentUser = await getUserData('username');
 		auth();
@@ -35,6 +35,17 @@ async function auth() {
 			'username': currentUser,
 		}));
 	}
+}
+
+async function sendReload() {
+	console.log('before');
+	if (checkWs()) {
+		console.log('middle');
+		wsFriends.send(JSON.stringify({
+			'type': 'actua',
+		}));
+	}
+	console.log('after');
 }
 
 async function getFriendsList() {

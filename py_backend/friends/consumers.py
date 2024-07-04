@@ -14,6 +14,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
 
     async def disconnect(self, exit_code):
+        await sync_to_async(print)('DISCONNECT with code :', exit_code, '\n')
         await self.group_send(
             self.scope['user'].username,
             event = {'type': 'send_friendslist'})
@@ -59,6 +60,9 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
 
 #----------- friends functions ------------------------------------------------------------------------------------------------------------
+
+    async def actua(self, data):
+        await sync_to_async(print)('ACTUA')
 
 
     async def create_friend_request(self, data):
@@ -279,3 +283,11 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         except CustomUser.DoesNotExist:
             return False
         
+    @database_sync_to_async
+    def get_online_status(self):
+        try:
+            user = CustomUser.objects.get(username=self.scope['user'].username)
+            print('status =', user.is_online)
+            return user.is_online
+        except CustomUser.DoesNotExist:
+            return False

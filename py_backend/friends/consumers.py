@@ -14,7 +14,6 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
 
     async def disconnect(self, exit_code):
-        await self.set_online_status(False)
         await self.group_send(
             self.scope['user'].username,
             event = {'type': 'send_friendslist'})

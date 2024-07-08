@@ -2,25 +2,25 @@ import * as THREE from 'three'
 import { actualizeScore } from './score.js';
 
 function resetPos(ball, player1, player2, environment) {
-    ball.mesh.position.set(0, 0, -16.5);
+    ball.mesh.position.set(0, 0, 0.9).unproject(environment.camera);
     ball.direction.y = 0;
-    player1.paddle.mesh.position.set(-9.5, 0, -16.5);
-    player2.paddle.mesh.position.set(9.5, 0, -16.5);
+    player1.paddle.mesh.position.set(-0.8, 0, 0.9).unproject(environment.camera);
+    player2.paddle.mesh.position.set(0.8, 0, 0.9).unproject(environment.camera);
 }
 
 async function checkIfScored(ball, player1, player2, environment) {
     let bbox1 = new THREE.Box3().setFromObject(player1.paddle.mesh);
     let bbox2 = new THREE.Box3().setFromObject(player2.paddle.mesh);
 
-    if (ball.mesh.position.x <= -12) {
+    if (ball.mesh.position.x < bbox1.min.x - 2) {
         player2.score++;
-        ball.direction.x = -0.055;
+        ball.direction.x = -0.1;
         resetPos(ball, player1, player2, environment);
         actualizeScore(player1, player2, environment, environment.font);
     }
-    if (ball.mesh.position.x >= 12) {
+    if (ball.mesh.position.x > bbox2.max.x + 2) {
         player1.score++; 
-        ball.direction.x = 0.055;
+        ball.direction.x = 0.1;
         resetPos(ball, player1, player2, environment);
         actualizeScore(player1, player2, environment, environment.font);
     }
@@ -30,7 +30,6 @@ function physicsBall(ball, paddleBox) {
     let center = new THREE.Vector3();
     paddleBox.getCenter(center);
 
-	console.log("Center : ", center.y);
     ball.direction.x *= -1;
     if (ball.direction.x < 0 && ball.direction.x > -0.55)
         ball.direction.x -= 0.009;
@@ -45,39 +44,24 @@ function checkCollisionWithBorder(ball, ballBox, environment) {
         if (ball.direction.x > 0)
             ball.direction.x += 0.02;
         else
-             ball.direction.x -= 0.02;
+            ball.direction.x -= 0.02;
         ball.direction.y *= -1;
         return (true);
     }
     return (false);
 }
 
-function checkCollisionsWithPaddles(ball, player1, player2, environment) {
-	if (ball.mesh.position.x >=  player2.paddle.mesh.position.x && ball.mesh.position.x <= player2.paddle.mesh.position.x + 0.5) {
-		if (ball.mesh.position.y <= player2.paddle.mesh.position.y + 1 && ball.mesh.position.y >= player2.paddle.mesh.position.y - 1)
-			return (true);
-	}
-	else if (ball.mesh.position.x <= player1.paddle.mesh.position.x && ball.mesh.position.x >= player1.paddle.mesh.position.x - 0.5) {
-		if (ball.mesh.position.y <= player1.paddle.mesh.position.y + 1 && ball.mesh.position.y >= player1.paddle.mesh.position.y - 1)
-			return (true);
-	}
-	return (false);
-}
-
 function checkCollision(ball, player1, player2, environment) {
     let bbox1 = new THREE.Box3().setFromObject(player1.paddle.mesh);
     let bbox2 = new THREE.Box3().setFromObject(player2.paddle.mesh);
     let ballBox = new THREE.Box3();
-	console.log("Paddle player 1 : ", player1.paddle.mesh.position.y);
     
     ball.mesh.geometry.computeBoundingBox();
     ballBox.copy(ball.mesh.geometry.boundingBox).applyMatrix4(ball.mesh.matrixWorld);
-	if (checkCollisionsWithPaddles(ball, player1, player2, environment)) {
-		if (ball.mesh.position.x > 0)
-			physicsBall(ball, bbox2);
-		else
-			physicsBall(ball, bbox1);
-	}
+    if (bbox1.intersectsBox(ballBox))
+        physicsBall(ball, bbox1);
+    if (bbox2.intersectsBox(ballBox))
+        physicsBall(ball, bbox2);
     checkCollisionWithBorder(ball, ballBox, environment);
     ball.mesh.translateX(ball.direction.x);
     ball.mesh.translateY(ball.direction.y);

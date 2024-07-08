@@ -9,15 +9,16 @@ import json
 class FriendsConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
-        await self.set_online_status(True)
+        # await self.set_online_status(True)
         await self.accept()
 
 
     async def disconnect(self, exit_code):
-        await sync_to_async(print)('DISCONNECT with code :', exit_code, '\n')
+        await sync_to_async(print)('DISCONNECT\n')
+        await self.set_online_status(False)
         await self.group_send(
             self.scope['user'].username,
-            event = {'type': 'send_friendslist'})
+            event = {'type': 'send_friendslist'})        
 
 
     async def receive(self, text_data):
@@ -41,11 +42,14 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
 
     async def auth(self, data):
+        await sync_to_async(print)('AUTH\n')
         username = data.get('username')
         await self.authenticate_user(username)
         await self.channel_layer.group_add(
             self.scope['user'].username,
             self.channel_name)
+        
+        await self.set_online_status(True)
         
         friends = await self.get_friends()
         for f in friends:
@@ -60,9 +64,6 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
 
 #----------- friends functions ------------------------------------------------------------------------------------------------------------
-
-    async def actua(self, data):
-        await sync_to_async(print)('ACTUA')
 
 
     async def create_friend_request(self, data):
@@ -287,7 +288,6 @@ class FriendsConsumer(AsyncWebsocketConsumer):
     def get_online_status(self):
         try:
             user = CustomUser.objects.get(username=self.scope['user'].username)
-            print('status =', user.is_online)
             return user.is_online
         except CustomUser.DoesNotExist:
             return False

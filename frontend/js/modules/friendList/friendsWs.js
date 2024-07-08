@@ -2,6 +2,7 @@ import { getUserData } from "../../User.js"
 import { showAlert } from "../../Utils.js";
 import { fillInbox, initUserRequests } from "./friendList.js";
 import { fillFriendsList } from "./friendList.js";
+import { logout } from "../../ApiCalls.js";
 
 let currentUser;
 let wsFriends;
@@ -21,6 +22,7 @@ export async function friendsWebsocket() {
 	};
 }
 
+
 function checkWs() {
 	if (wsFriends && wsFriends.readyState === wsFriends.OPEN) {
 		return true;
@@ -37,16 +39,6 @@ async function auth() {
 	}
 }
 
-async function sendReload() {
-	console.log('before');
-	if (checkWs()) {
-		console.log('middle');
-		wsFriends.send(JSON.stringify({
-			'type': 'actua',
-		}));
-	}
-	console.log('after');
-}
 
 async function getFriendsList() {
 	if (checkWs()) {
@@ -117,7 +109,8 @@ async function removeFriend(toUser) {
 }
 
 async function wsMessageRouter(data) {
-	const notificationHandlers = {
+	console.log('type =', data['type']);
+	const handlers = {
 		'friend_request_to_user': (data) => {
 			getCurrentUserRequests();
 			showAlert(`You just receive a friend request from ${data.from_user} !`, true)
@@ -135,8 +128,9 @@ async function wsMessageRouter(data) {
 		'get_current_user_requests': (data) => fillInbox(data),
 		'get_user_requests': (data) => initUserRequests(data),
 		'friend_accepted_from_user': (data) => showAlert(`${data.to_user} accepted your friend request !`, true),
+		'disco': () => showAlert('DISCONNECT', true),
 	};
-	const handler = notificationHandlers[data.type];
+	const handler = handlers[data.type];
 	if (handler && data) {
 		handler.call(this, data);
 	}

@@ -55,12 +55,8 @@ async function updateModule(moduleName) {
 	if (module) {
 		const moduleDivs = document.querySelectorAll("." + moduleName);
 		for (const div of moduleDivs) {
-			var divClone = document.createElement("div");
-			var divParent = div.parentNode;
-			divClone.innerHTML = module.html;
-			divClone.classList.add(module.name);
-			div.remove();
-			divParent.insertBefore(divClone, divParent.firstChild);
+			div.removeAttribute("id");
+			div.innerHTML = module.html;
 			await module.init();
 		}
 	}

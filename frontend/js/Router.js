@@ -48,7 +48,6 @@ async function router() {
 	if (previousPage)
 		previousPage.hidden = true;
 	var newPageDiv = allPages.find(page => page.id === newPage.name);
-	toggleActiveTab(location.pathname);
 	if (newPageDiv)
 		newPageDiv.hidden = false;
 };
@@ -66,16 +65,6 @@ async function navigateOnClick(e) {
 		e.preventDefault();
 		await navigateTo(target.getAttribute("href"));
 	}
-}
-
-function toggleActiveTab(target) {
-	var currentActive = document.querySelector(".active");
-	if (currentActive != null)
-		currentActive.classList.remove("active");
-	if (target == "/")
-		target = "/dash";
-	if (target == "/dash" || (target == "/about" && !isLoggedIn()))
-		document.querySelector("a[href='" + target + "']").classList.add("active");
 }
 
 async function initPages() {
@@ -96,7 +85,6 @@ async function initPages() {
 	for (const page of routes) {
 		await execPageJavascript(page.name);
 	}
-	toggleActiveTab(location.pathname);
 	router();
 	setLoading(false);
 }

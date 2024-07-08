@@ -13,12 +13,13 @@
 	max-width: 250px;
 }
 
-#editProfileBtn {
+#editProfileBtn{
 	margin-right:15px;
 	margin-left: auto;
 	margin-bottom: 15px;
 	transition: all 0.5s ease;
 }
+
 
 #profileCard .footer {
 	transform: translate(0, -90px);

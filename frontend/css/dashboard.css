@@ -29,7 +29,9 @@
 	text-wrap: wrap;
 }
 
-.bioDynamic {
+textarea {
+	text-wrap: wrap;
+	overflow: hidden;
     overflow-wrap: break-word;
     word-wrap: break-word;
 }

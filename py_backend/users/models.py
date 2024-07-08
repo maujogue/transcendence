@@ -25,7 +25,7 @@ class CustomUser(AbstractUser):
 	username = models.CharField(max_length=settings.MAX_LEN_USERNAME, unique=True)
 	tournament_username = models.CharField(max_length=settings.MAX_LEN_USERNAME, unique=True)
 	email = models.EmailField(max_length=settings.MAX_LEN_EMAIL, unique=True)
-	email_is_verified = models.BooleanField(default=False)
+	email_is_verified = models.BooleanField(default=True)
 	title = models.CharField(max_length=50, null=True)
 	avatar = models.ImageField(default='avatar.jpg', upload_to='profile_avatars')
 	bio = models.TextField(max_length=settings.MAX_LEN_TEXT, default="")

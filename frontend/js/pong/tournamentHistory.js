@@ -74,6 +74,9 @@ async function displayUserTournaments() {
             return ;
         }
         const data = await getUserTournaments(username);
+        if (!Array.isArray(data.tournaments)) {
+            return ;
+        }
         data.tournaments.map((tournament) => {
             createTournamentInfo(tournament, tournament.participants.length, tournament.maxParticipants);
         });

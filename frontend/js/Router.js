@@ -24,7 +24,6 @@ class Page {
 const routes = [
 	new Page("dashboard", "/dash", "html/Dashboard.html", true),
 	new Page("sidebar", "", "html/Sidebar.html", true),
-	new Page("about", "/about", "html/About.html"),
 	new Page("emailVerified", "/emailVerified", "html/EmailVerified.html", true),
 ];
 

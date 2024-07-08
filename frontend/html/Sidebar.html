@@ -2,20 +2,29 @@
 
 <nav id="sidebar" class="sidebar opened-sidebar d-flex flex-column flex-shrink-0 p-3 text-white">
 	<div class="friendList">
-		
+
 	</div>
 
 	<!-- LOGIN BUTTON / REGISTER BUTTON -->
+	<div class="logOutContent">
+		<div class="d-flex flex-column align-items-center">
+			<img src="../../../assets/img/pong-cropped.svg" alt="Pong" class="img-fluid" />
+			<div class="text-primary" style="font-size: 100px;"><i class="fas fa-sign-in-alt"></i></div>
+		</div>
+	</div>
+
 	<div class="logOutContent mt-auto">
 		<div class="translationsModule"></div>
-		<button class="btn btn-outline-secondary mb-2" data-bs-toggle="modal" data-bs-target="#login"
-			data-lang="log_in_button">
-			Log In
-		</button>
-		<button class="btn btn-outline-info mb-2" data-bs-toggle="modal" data-lang="sign_up_button"
-			data-bs-target="#register">
-			Sign up
-		</button>
+		<div class="d-flex">
+			<button class="btn btn-outline-secondary mb-2 w-100 me-1" data-bs-toggle="modal" data-bs-target="#login"
+				data-lang="log_in_button">
+				Log In
+			</button>
+			<button class="btn btn-outline-info mb-2 w-100" data-bs-toggle="modal" data-lang="sign_up_button"
+				data-bs-target="#register">
+				Sign up
+			</button>
+		</div>
 	</div>
 	<!-- DROPUP -->
 	<div class="logInContent mt-auto">
@@ -64,7 +73,7 @@
 			<div class="modal-body">
 				<div class="auth42 px-0"></div>
 				<div class="mb-3">
-					<label for="usernameLogin" class="col-form-label" data-lang="login_username_label">Username</label>
+					<label for="usernameLogin" class="col-form-label text-primary" data-lang="login_username_label">Username</label>
 					<input type="text" name="username" class="form-control" id="usernameLogin" placeholder="Tazz1998"
 						autocomplete="username" required />
 				</div>
@@ -171,8 +180,7 @@
 						Close
 					</button>
 					<!-- SUBMIT FORM  -->
-					<button type="submit" class="btn btn-info text-white disabled" navlink
-						data-lang="register_button">
+					<button type="submit" class="btn btn-info text-white disabled" navlink data-lang="register_button">
 						Sign up
 					</button>
 				</div>

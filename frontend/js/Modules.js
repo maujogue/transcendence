@@ -21,6 +21,7 @@ const modules = [
 	new Module("statisticsModule"),
 	new Module("auth42"),
 	new Module("gameModule"),
+	new Module("aboutModule"),
 
 	new Module("translationsModule"), //leave it last so that it injects all modules before it
 ];

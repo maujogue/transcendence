@@ -25,7 +25,11 @@
 	transform: translate(0, -90px);
 }
 
-#profileCard .bioDynamic {
+#profileCard .bioDynamic{
+	text-wrap: wrap;
+}
+
+.aboutModule p{
 	text-wrap: wrap;
 }
 

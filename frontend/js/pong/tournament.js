@@ -64,7 +64,7 @@ function displayTimer(time) {
     timerDiv.id = "timer";
     timerDiv.classList.add("timer");
     timerDiv.innerHTML = `Time left: ${time}`;
-    document.getElementById("selectMenu").appendChild(timerDiv);
+    document.getElementById("selectMenu")?.appendChild(timerDiv);
     setInterval(() => {
         if (time == 0)
             return ;

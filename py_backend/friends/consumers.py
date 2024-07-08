@@ -9,12 +9,11 @@ import json
 class FriendsConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
-        # await self.set_online_status(True)
         await self.accept()
 
 
     async def disconnect(self, exit_code):
-        await sync_to_async(print)('DISCONNECT\n')
+        await sync_to_async(print)('DISCONNECT with exit code =', exit_code, '\n')
         await self.set_online_status(False)
         await self.group_send(
             self.scope['user'].username,
@@ -35,6 +34,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'get_friendslist': self.send_friendslist,
             'get_current_user_requests': self.send_current_user_requests,
             'get_user_requests': self.get_user_requests,
+            'reload': self.reload,
         }
         handler = handlers.get(message_type)
         if handler:
@@ -42,13 +42,12 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
 
     async def auth(self, data):
-        await sync_to_async(print)('AUTH\n')
         username = data.get('username')
         await self.authenticate_user(username)
         await self.channel_layer.group_add(
             self.scope['user'].username,
             self.channel_name)
-        
+ 
         await self.set_online_status(True)
         
         friends = await self.get_friends()
@@ -291,3 +290,6 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             return user.is_online
         except CustomUser.DoesNotExist:
             return False
+        
+    async def reload(self):
+        await sync_to_async(print)('RELOAD\n')

@@ -108,8 +108,8 @@ async function removeFriend(toUser) {
 	}
 }
 
+
 async function wsMessageRouter(data) {
-	console.log('type =', data['type']);
 	const handlers = {
 		'friend_request_to_user': (data) => {
 			getCurrentUserRequests();
@@ -128,7 +128,6 @@ async function wsMessageRouter(data) {
 		'get_current_user_requests': (data) => fillInbox(data),
 		'get_user_requests': (data) => initUserRequests(data),
 		'friend_accepted_from_user': (data) => showAlert(`${data.to_user} accepted your friend request !`, true),
-		'disco': () => showAlert('DISCONNECT', true),
 	};
 	const handler = handlers[data.type];
 	if (handler && data) {

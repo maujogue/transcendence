@@ -1,13 +1,14 @@
 <div id="statisticsCard" class="mt-4 card p-0 rounded-4">
-	<div class="card-header">
-		<h2 data-lang="statistics">Statistics</h2>
+	<div class="card-header d-flex align-items-center">
+		<i class="bi bi-bar-chart-fill me-2 text-warning"></i>
+		<h3 data-lang="statistics">Statistics</h3>
 	</div>
 	<div class="card-body">
 		<div class="accordion accordion-flush" id="accordionFlushExample">
 			<div class="accordion-item">
 				<h2 class="accordion-header">
 					<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-						data-bs-target="#flush-collapseOne">
+						data-bs-target="#flush-collapseOne" data-lang="statistics_general">
 						General
 					</button>
 				</h2>
@@ -53,7 +54,7 @@
 			<div class="accordion-item">
 				<h2 class="accordion-header">
 					<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-						data-bs-target="#flush-collapseTwo">
+						data-bs-target="#flush-collapseTwo" data-lang="statistics_history">
 						History
 					</button>
 				</h2>
@@ -128,7 +129,7 @@
 			<div class="accordion-item">
 				<h2 class="accordion-header">
 					<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-						data-bs-target="#flush-collapseThree">
+						data-bs-target="#flush-collapseThree" data-lang="statistics_performance">
 						Performance
 					</button>
 				</h2>
@@ -200,7 +201,7 @@
 	#statisticsCard {
 		padding: 20px;
 		box-shadow: 3px 3px 15px black;
-		background-color: black;
+		background-color:#141419;
 		color: white;
 	}
 

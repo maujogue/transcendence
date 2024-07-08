@@ -3,9 +3,10 @@
   position: fixed;
   transition: width 0.5s;
   z-index: 1;
-  background-color: black;
+  background-color: #141419;
   border-radius: 20px;
   margin:20px;
+  box-shadow: 3px 3px 15px black;
 }
 
 #sidebar.collapsed {

@@ -17,8 +17,8 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await self.set_online_status(False)
         await self.group_send(
             self.scope['user'].username,
-            event = {'type': 'send_friendslist'})        
-
+            event = {'type': 'send_friendslist'})
+            
 
     async def receive(self, text_data):
         data = json.loads(text_data)
@@ -34,7 +34,6 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             'get_friendslist': self.send_friendslist,
             'get_current_user_requests': self.send_current_user_requests,
             'get_user_requests': self.get_user_requests,
-            'reload': self.reload,
         }
         handler = handlers.get(message_type)
         if handler:
@@ -290,6 +289,3 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             return user.is_online
         except CustomUser.DoesNotExist:
             return False
-        
-    async def reload(self):
-        await sync_to_async(print)('RELOAD\n')

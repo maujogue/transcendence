@@ -9,14 +9,14 @@ function setLight(posX, env, player) {
 	const color = colors.get(player.character.name);
 	let light = new THREE.PointLight(color, 100);
 
-	light.position.set(posX, 0, -16.5);
+	light.position.set(posX, 0, 0.9).unproject(env.camera);
 	player.light = light;
 	env.scene.add(player.light);
 }
 
 function setPositionPaddle(PlayerName, posX, environment, player) {
 	let paddle = environment.scene.getObjectByName("paddle_" + PlayerName);
-	paddle.position.set(posX, 0, -16.5);
+	paddle.position.set(posX, 0, 0.9).unproject(environment.camera);
 	paddle.rotation.set(0, 0, 0);
 	paddle.scale.set(1, 1, 1);
 	setLight(posX, environment, player);
@@ -44,8 +44,8 @@ async function initGame(player1, player2) {
 	environment.scene.add(dirLight);
 	environment.scene.add(player1.paddle.mesh);
 	environment.scene.add(player2.paddle.mesh);
-	setPositionPaddle("player1", -9.5, environment, player1);
-	setPositionPaddle("player2", 9.5, environment, player2);
+	setPositionPaddle("player1", -0.8, environment, player1);
+	setPositionPaddle("player2", 0.8, environment, player2);
 	removeSelectMenu();
 	let ball = createBall(environment);
 	environment.scene.add(ball.mesh);

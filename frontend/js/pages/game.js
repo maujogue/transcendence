@@ -18,10 +18,13 @@ import { checkIfUserIsInTournament, connectToTournament } from "../pong/tourname
 import { showAlert } from "../Utils.js";
 import * as THREE from 'three';
 import { injectGameTranslations } from "../modules/translationsModule/translationsModule.js";
+import { createTournamentHistoryMenu } from "../pong/tournamentHistory.js"
 
 export var lobby;
 export var clock;
 export var characters;
+var isGameLoaded = false;
+export const field = await createField();
 
 export async function init(queryParams) {
 	if (queryParams && queryParams.get("message"))

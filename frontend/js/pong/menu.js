@@ -4,6 +4,7 @@ import { createLobbyLights, createLobbyScene } from './createField.js';
 import { isFullScreen } from './resize.js';
 import { winWidth, winHeight, charactersNames } from './varGlobal.js';
 import { initSpaceBackground } from "./spaceBackground.js";
+import { characters } from "../pages/game.js";
 import { colors } from "./varGlobal.js"; 
 import * as THREE from 'three';
 

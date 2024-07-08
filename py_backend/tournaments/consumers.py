@@ -1,6 +1,7 @@
 import asyncio
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from django.core.exceptions import MultipleObjectsReturned
 from channels.db import database_sync_to_async
 from asgiref.sync import sync_to_async
 from django.utils import timezone
@@ -194,10 +195,21 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         elif not self.tournament.started:
             await self.send_participants_list()
 
+    @database_sync_to_async
+    def get_match_result(self):
+        match = None
+        try:
+            match = Match.objects.get(lobby_id=str(self.match.lobby_id))
+        except MultipleObjectsReturned:
+            match = Match.objects.filter(lobby_id=str(self.match.lobby_id)).first()
+        if match is None:
+            raise Exception('match not found')
+        return match
+
 
     async def set_match_info(self):
         try:
-            match = await Match.objects.aget(lobby_id=str(self.match.lobby_id))
+            match = await self.get_match_result()
             self.match.player1 = match.player1
             self.match.player2 = match.player2
             self.match.score_player_1 = match.player1_score
@@ -207,9 +219,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             loser = match.player1 if match.winner == match.player2 else match.player2
             await self.match.asave()
             await self.send_disqualified(loser)
-            await self.remove_lobby()
-        except Match.DoesNotExist:
-            return
+        except Exception as e:
+            print('Error:', e)
+        await self.remove_lobby()
         
     async def remove_lobby(self):
         try:

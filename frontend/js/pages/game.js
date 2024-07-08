@@ -19,6 +19,7 @@ import { showAlert } from "../Utils.js";
 import * as THREE from 'three';
 import { injectGameTranslations } from "../modules/translationsModule/translationsModule.js";
 import { createTournamentHistoryMenu } from "../pong/tournamentHistory.js"
+import { wsTournament } from "../pong/tournament.js";
 
 export var lobby;
 export var clock;

@@ -18,7 +18,7 @@ export async function connectToTournament(tournament) {
     try {
         console.log("Connecting to tournament:", tournament);
         currentTournament = tournament;
-        wsTournament = new WebSocket(`wss://${hostname}:8000/ws/tournament/${tournament.id}/`);
+        wsTournament = new WebSocket(`ws://${hostname}:8080/ws/tournament/${tournament.id}/`);
     
         wsTournament.onopen = () => {
             createWaitingScreenTournament(tournament);
@@ -81,7 +81,11 @@ function handlerMessageStatus(data) {
     }
     if (data.status == "endTournament" && tournamentStatus != "finished") {
         tournamentStatus = "finished";
-        sendTournamentOnBlockchain();
+        console.log("tournament_username in handlermessagestatus:" + userData.tournament_username);
+        console.log("winner in handlermessagestatus: " + data.winner);
+        if (userData.tournament_username === data.winner)
+            console.log("on rentre dans condition send tournamentblockchain")
+            sendTournamentOnBlockchain();
     }
     if (data.status == "start")
         tournamentStatus = "started";
@@ -274,8 +278,8 @@ export function insertPlayer(player) {
 }
 
 async function sendTournamentOnBlockchain() {
-    console.log("sendTournamentOnBlockchain called");
     try {
+        console.log("sendTournamentOnBlockchain called");
         const response = await fetch(`https://${hostname}:8000/api/tournament/contract/send/${currentTournament.id}/`, {
             method: "POST",
             headers: {

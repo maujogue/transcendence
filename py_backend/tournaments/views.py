@@ -53,7 +53,6 @@ def create_tournament(request):
 
 	if not max_players in range(2, 9):
 		return JsonResponse({"errors": "Invalid number of players."}, status=400)
-
 	try:
 		tournament = Tournament.objects.create(
 			name=name,

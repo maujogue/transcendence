@@ -35,7 +35,7 @@ def deploy_tournament_contract(tournament_name):
 
         signed_transaction = w3.eth.account.sign_transaction(transaction, PRIVATE_KEY)
         transaction_hash = w3.eth.send_raw_transaction(signed_transaction.rawTransaction)
-        print("Waiting for transaction to finish...")
+        print("Waiting for transaction for deploying contract to finish...")
         transaction_receipt = w3.eth.wait_for_transaction_receipt(transaction_hash)
         print("Done! Contract deployed.")
 

@@ -1,3 +1,4 @@
+import { logout } from "../../ApiCalls.js";
 import { getUserData } from "../../User.js"
 import { showAlert } from "../../Utils.js";
 import { fillInbox, initUserRequests } from "./friendList.js";

@@ -12,6 +12,7 @@ def logout_view(request):
     user = request.user
     user.session_key = None
     user.is_online = False
+    user.is_logged_in = False
     user.save()
     
     logout(request)

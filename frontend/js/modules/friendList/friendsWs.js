@@ -1,3 +1,4 @@
+import { logout } from "../../ApiCalls.js";
 import { getUserData } from "../../User.js"
 import { showAlert } from "../../Utils.js";
 import { fillInbox, initUserRequests } from "./friendList.js";
@@ -19,6 +20,10 @@ export async function friendsWebsocket() {
 		const data = JSON.parse(event.data);
 		wsMessageRouter(data);
 	};
+
+	wsFriends.onclose = (event) => {
+		logout()
+	}
 }
 
 function checkWs() {

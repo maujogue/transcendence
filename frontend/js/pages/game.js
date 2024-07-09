@@ -18,13 +18,15 @@ import { checkIfUserIsInTournament, connectToTournament } from "../pong/tourname
 import { showAlert } from "../Utils.js";
 import * as THREE from 'three';
 import { injectGameTranslations } from "../modules/translationsModule/translationsModule.js";
-import { train } from "../pong/AI/AI.js"
+import { train, storeData } from "../pong/AI/AI.js"
 
 export var lobby;
 export var clock;
 export var characters;
 export var soloMode;
 export var environment;
+export var states = [];
+export var actions = [];
 
 export async function init(queryParams) {
 	if (queryParams && queryParams.get("message"))
@@ -66,7 +68,7 @@ export async function init(queryParams) {
 		}
 	})
 	async function goToLocalSelectMenu() {
-		divMenu = document.getElementById("localMmenu");
+		divMenu = document.getElementById("localMenu");
 		divMenu.remove();
 		environment = createSelectMenu(field, characters);
 		player1 = await displayCharacter(player1, environment, "chupacabra", "player1");
@@ -198,6 +200,8 @@ export async function init(queryParams) {
 		start = false;
 		player1.score = 0;
 		player2.score = 0;
+		actions.save('downloads://actions');
+		states.save('downloads://states');
 	}
 
 
@@ -215,14 +219,17 @@ export async function init(queryParams) {
 			}
 			else {	   
 				environment = await initGame(player1, player2);
-				train(player1, player2);
+				await train(player1, player2);
 			}
 		}
 		if (start) {
-			if (soloMode)
-				// move the AI here
+			// if (soloMode)
+			// 	move the AI here
+			let action = 0;
 			if (keyPress)
-				handleKeyPress(keysPressed, player1, player2, environment);
+				action = handleKeyPress(keysPressed, player1, player2, environment);
+			console.log('ACtion : ', action);
+			storeData(environment, player1, player2, action);
 			checkCollision(environment.ball, player1, player2, environment);
 			setIfGameIsEnd();
 		}

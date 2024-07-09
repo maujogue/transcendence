@@ -25,7 +25,9 @@ async function handleMenuKeyPress(keysPressed, player1, player2, env) {
 function handleKeyPress(keysPressed, player1, player2, environment) {
 	let playerBox1;
 	let playerBox2;
+	let action = 0;
 	
+	console.log("Here");
 	if (!player1)
 		return;
 	playerBox1 = new THREE.Box3().setFromObject(player1.paddle.mesh);
@@ -42,13 +44,17 @@ function handleKeyPress(keysPressed, player1, player2, environment) {
 		return;
 	playerBox2 = new THREE.Box3().setFromObject(player2.paddle.mesh);
 	if (keysPressed["ArrowUp"] && !environment.border.up.box.intersectsBox(playerBox2)) {
+		action = 1;
 		player2.paddle.mesh.translateY(0.15);
 		player2.light.position.y += 0.15;
 	}
-	if (keysPressed["ArrowDown"] && !environment.border.down.box.intersectsBox(playerBox2)) {
+	else if (keysPressed["ArrowDown"] && !environment.border.down.box.intersectsBox(playerBox2)) {
+		action = 2
 		player2.paddle.mesh.translateY(-0.15);
 		player2.light.position.y -= 0.15;
 	}
+
+	return (action);
 }
 
 export { handleKeyPress, handleMenuKeyPress};

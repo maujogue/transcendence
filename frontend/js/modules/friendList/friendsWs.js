@@ -2,7 +2,6 @@ import { getUserData } from "../../User.js"
 import { showAlert } from "../../Utils.js";
 import { fillInbox, initUserRequests } from "./friendList.js";
 import { fillFriendsList } from "./friendList.js";
-import { logout } from "../../ApiCalls.js";
 
 let currentUser;
 let wsFriends;
@@ -107,7 +106,6 @@ async function removeFriend(toUser) {
 		}));
 	}
 }
-
 
 async function wsMessageRouter(data) {
 	const handlers = {

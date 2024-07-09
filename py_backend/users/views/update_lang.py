@@ -10,6 +10,8 @@ from users.utils import decode_json_body
 def update_lang(request):
     try:
         data = decode_json_body(request)
+        if isinstance(data, JsonResponse):
+            return data
 
         lang = data.get('lang')
 

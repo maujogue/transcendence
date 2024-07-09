@@ -393,7 +393,7 @@ class ProfileUpdate(TestCase):
 
     def test_update_tournament_name(self):
         update_datas = {
-            'username_tournament': 'zebulon55'
+            'tournament_username': 'zebulon55'
         }
 
         response = self.client.post(

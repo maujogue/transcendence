@@ -5,11 +5,9 @@ import { isFullScreen } from './resize.js';
 import { winWidth, winHeight, charactersNames } from './varGlobal.js';
 import { createFormTournament } from "./createTournament.js";
 import { initSpaceBackground } from "./spaceBackground.js";
-import { characters } from "../pages/game.js";
 
 let width = winWidth;
 let height = winHeight;
-let env;
 
 function getSize() {
 	if (isFullScreen()) {
@@ -250,16 +248,6 @@ function createOnlineMenu() {
 	createSubmode('1v1', "Private Game");
 }
 
-export function createLocalMenu() {
-	document.getElementById("menu").remove();
-	createDivMenu("localMenu");
-	const parent = document.getElementById("localMenu");
-	parent.innerHTML = '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>';
-	createGamemodeDiv("Multiplayer", parent);
-	createGamemodeDiv("Solo", parent);
-	createSubmode('Multiplayer', "1v1");
-	createSubmode('Solo', "Easy");
-}
 
 export function createSubmode(listName, text) {
 	const firstWord = text.split(' ')[0].toLowerCase();
@@ -296,4 +284,4 @@ export function createTournamentDiv() {
 
 export { displayMainMenu, createSelectMenu, moveCursor, createDivMenu,
 		displayLobby, createWaitingScreen, createInterfaceSelectMenu, 
-		createOnlineMenu };
+		createOnlineMenu};

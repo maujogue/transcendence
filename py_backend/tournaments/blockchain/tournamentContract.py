@@ -4,13 +4,7 @@ import json
 
 # reset-up your env with the new libraries in the requirements.txt
 
-# constants
-CHAIN_ID = 11155111  # Sepolia chain ID
-WALLET = '0x08Cad489Ad4542AF82Ee81eC949776775dea23be'
-PRIVATE_KEY = 'c38331b12e562919c0d636d90d526accf9e1b442f31cb6cd6254e1c231b97859'
-PROVIDER_URL = "https://sepolia.infura.io/v3/098a45a55c344ef8ac3da0ba6270fd1f"
-
-def deploy_tournament_contract(tournament_name):
+def deploy_tournament_contract():
     try:
         script_dir = os.path.dirname(os.path.abspath(__file__))
         json_path = os.path.join(script_dir, "compiledSolidity.json")
@@ -26,7 +20,7 @@ def deploy_tournament_contract(tournament_name):
 
         nonce = w3.eth.get_transaction_count(WALLET)
 
-        transaction = contract.constructor(tournament_name).build_transaction({
+        transaction = contract.constructor().build_transaction({
             'gasPrice': w3.eth.gas_price,
             'chainId': CHAIN_ID,
             'from': WALLET,

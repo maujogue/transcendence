@@ -18,9 +18,8 @@ contract StoreTournamentData {
 	string public tournamentWinner;
 	Match[] public matches;
 
-	constructor(string memory _tournamentName) {
+	constructor() {
 		owner = msg.sender;
-		tournamentName = _tournamentName;
 	}
 
 	modifier onlyOwner() {
@@ -28,8 +27,11 @@ contract StoreTournamentData {
 		_;
 	}
 
-	function addMatchesAndWinner(
-		string calldata _tournamentWinner, Match[] calldata _matches) public onlyOwner {
+	function addTournament(
+			string calldata _tournamentName,
+			string calldata _tournamentWinner,
+			Match[] calldata _matches) public onlyOwner {
+		tournamentName = _tournamentName;
 		tournamentWinner = _tournamentWinner;
 		for (uint i = 0; i < _matches.length; i++) {
 			matches.push(_matches[i]);

@@ -2,7 +2,6 @@ from web3 import Web3, HTTPProvider
 from django.conf import settings
 import os
 import json
-import time
 
 def load_contract_abi():
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -13,19 +12,10 @@ def load_contract_abi():
 
     return abi
 
-def set_data_on_blockchain(tournament):
+def set_data_on_blockchain(tournament, contract_address):
     try:
-        # print("into set data on blockchain")
-        # timeout = 30
-        # start_time = time.time()
-
-        # while tournament.contract_address == "0x0":
-        #     if time.time() - start_time > timeout:
-        #         raise TimeoutError("Timeout waiting for contract address to be set.")
-        #     print("Waiting for contract to be created")
-        #     time.sleep(3)
-        contract_address = tournament.contract_address
         tournament_winner = tournament.get_winner()
+        tournament_name = tournament.name
 
         abi = load_contract_abi()
         w3 = Web3(HTTPProvider(settings.PROVIDER_URL))
@@ -43,7 +33,9 @@ def set_data_on_blockchain(tournament):
                 'matchWinner': match.winner
             })
 
-        transaction = contract.functions.addMatchesAndWinner(tournament_winner, matches
+        transaction = contract.functions.addTournament(tournament_name,
+                                                             tournament_winner,
+                                                             matches
         ).build_transaction({
             'gasPrice': w3.eth.gas_price,
             'chainId': settings.CHAIN_ID,
@@ -55,7 +47,7 @@ def set_data_on_blockchain(tournament):
         print("Waiting for transaction to finish...")
         transaction_receipt = w3.eth.wait_for_transaction_receipt(transaction_hash)
         print("Done! Matches and winner set.")
-        return "Transaction successful."
+        return transaction_receipt
     except Exception as e:
         print(f"Error deploying contract: {e}")
         return f"Failed to initiate transaction: {str(e)}"

@@ -36,7 +36,7 @@ class Tournament(models.Model):
 	matchups = models.ManyToManyField(TournamentMatch, blank=True)
 	max_round = models.IntegerField(default=1)
 	current_round = models.IntegerField(default=1)
-	contract_address = models.CharField(max_length=100, default='0x0')
+	receipt_address = models.CharField(max_length=100, default='0x0')
 
 	def __str__(self):
 		return f'{self.name}'

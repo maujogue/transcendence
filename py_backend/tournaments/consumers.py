@@ -348,18 +348,11 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         )
 
     async def send_tournament_end(self):
-        last_round_match = await sync_to_async(self.tournament.matchups.filter)(round=self.max_round).first()
-        if last_round_match:
-            winner = last_round_match.winner
-        else:
-            raise ValueError("Last match not found.")
-        print(f"winner in send tournament end: {winner}")
         await self.channel_layer.group_send(
             self.tournament.name,
             {
                 'type': 'tournament.status',
                 'status': 'endTournament',
-                'winner': winner
             }
         )
 

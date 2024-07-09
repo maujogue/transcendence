@@ -9,8 +9,8 @@ from django.views.decorators.http import require_http_methods
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
-from .models import Tournament
-from .blockchain.tournamentContract import deploy_tournament_contract
+from .models import Tournament, SmartContract
+# from .blockchain.tournamentContract import deploy_tournament_contract
 from .blockchain.blockchain import set_data_on_blockchain
 
 import json
@@ -170,26 +170,6 @@ def check_if_tournament_joined(request, username):
 						status=200)
 	return JsonResponse({"message": "User has joined a tournament.", "joined": False}, status=200)
 
-@login_required
-@require_http_methods(["POST"])
-def add_contract_address(request, tournament_id):
-	try:
-		tournament = Tournament.objects.get(pk=tournament_id)
-	except Tournament.DoesNotExist:
-		return JsonResponse({"errors": "Tournament not found."},
-					status=404)
-
-	contract_address = deploy_tournament_contract(tournament.name)
-	if contract_address is None:
-		return JsonResponse({"errors": "Failed to deploy contract."},
-					status=400)
-
-	tournament.contract_address = contract_address
-	tournament.save()
-	return JsonResponse({"message": "Contract address added successfully.",
-					"contract_address": contract_address},
-					status=200)
-
 @require_http_methods(["POST"])
 def send_data_to_blockchain(request, tournament_id):
 	try:
@@ -197,12 +177,13 @@ def send_data_to_blockchain(request, tournament_id):
 	except Tournament.DoesNotExist:
 		return JsonResponse({"errors": "Tournament not found."},
 					status=404)
-	if tournament.contract_address == "0x0":
+	contract_address = SmartContract.objects.all().first()
+	if contract_address == "0x0":
 		return JsonResponse({"errors": "Contract is not deployed."},
 					status=400)
-	result = set_data_on_blockchain(tournament)
-	if "Failed" in result:
-		return JsonResponse({"errors": result},
+	tournament.receipt_address = set_data_on_blockchain(tournament, contract_address)
+	if "Failed" in tournament.receipt_address:
+		return JsonResponse({"errors": tournament.receip},
 					status=400)
 	return JsonResponse({"message": "Transaction initiated."},
 					 status=200)

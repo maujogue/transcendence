@@ -81,11 +81,7 @@ function handlerMessageStatus(data) {
     }
     if (data.status == "endTournament" && tournamentStatus != "finished") {
         tournamentStatus = "finished";
-        console.log("tournament_username in handlermessagestatus:" + userData.tournament_username);
-        console.log("winner in handlermessagestatus: " + data.winner);
-        if (userData.tournament_username === data.winner)
-            console.log("on rentre dans condition send tournamentblockchain")
-            sendTournamentOnBlockchain();
+        sendTournamentOnBlockchain();
     }
     if (data.status == "start")
         tournamentStatus = "started";

@@ -24,7 +24,6 @@ export async function sendTournamentForm(form) {
 	.then((data) => {
 		if (data.errors)
 			throw new Error(data.errors);
-		createTournamentContract(data.tournament);
 		connectToTournament(data.tournament);
 	})
 	.catch((error) => {
@@ -51,24 +50,4 @@ export function createFormTournament() {
 		<button class="form-btn tournament-btn" id="form-btn" type="submit">Create</button>\
 	</div>\
 	</form>';
-}
-
-async function createTournamentContract(tournament) {
-	fetch(`https://${hostname}:8000/api/tournament/contract/create/${tournament.id}/`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-			"X-CSRFToken": await get_csrf_token(),
-		},
-		credentials: "include"
-	})
-	.then((response) => response.json())
-	.then((data) => {
-		if (data.errors)
-			throw new Error(data.errors);
-		console.log(data);
-	})
-	.catch((error) => {
-		console.error('Error: ', error);
-	});
 }

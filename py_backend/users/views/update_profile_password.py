@@ -10,8 +10,8 @@ from users.utils import decode_json_body
 
 
 @require_http_methods(["POST"])
-@login_required
 @requires_csrf_token
+@login_required
 def update_profile_password(request):
     data = decode_json_body(request)
     if isinstance(data, JsonResponse):

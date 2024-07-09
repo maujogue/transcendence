@@ -10,8 +10,8 @@ import magic
 
 
 @require_http_methods(["POST"])
-@login_required
 @requires_csrf_token
+@login_required
 def update_profile_picture(request):
     uploaded_file = request.FILES.get("image")
     

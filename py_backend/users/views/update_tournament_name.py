@@ -8,8 +8,8 @@ from users.decorators import custom_login_required as login_required
 
 
 @require_http_methods(["POST"])
-@login_required
 @requires_csrf_token
+@login_required
 def update_tournament_name(request):
     data = decode_json_body(request)
     if isinstance(data, JsonResponse):

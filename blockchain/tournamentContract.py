@@ -4,6 +4,12 @@ import json
 
 # reset-up your env with the new libraries in the requirements.txt
 
+#blockchain constants
+CHAIN_ID = 11155111  # Sepolia chain ID
+WALLET = '0x08Cad489Ad4542AF82Ee81eC949776775dea23be'
+PRIVATE_KEY = 'c38331b12e562919c0d636d90d526accf9e1b442f31cb6cd6254e1c231b97859'
+PROVIDER_URL = "https://sepolia.infura.io/v3/098a45a55c344ef8ac3da0ba6270fd1f"
+
 def deploy_tournament_contract():
     try:
         script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -47,5 +53,4 @@ def deploy_tournament_contract():
         return None
 
 if __name__ == "__main__":
-    tournament_name = "tournamentName"
-    deploy_tournament_contract(tournament_name)
+    deploy_tournament_contract()

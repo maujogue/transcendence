@@ -1,7 +1,12 @@
 from web3 import Web3, HTTPProvider
-from django.conf import settings
 import os
 import json
+
+CHAIN_ID = os.environ.get("CHAIN_ID")
+WALLET = os.environ.get("WALLET")
+PRIVATE_KEY = os.environ.get("PRIVATE_KEY")
+PROVIDER_URL = os.environ.get("PROVIDER_URL")
+CONTRACT_ADDRESS = os.environ.get("CONTRACT_ADDRESS")
 
 def load_contract_abi():
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -12,15 +17,15 @@ def load_contract_abi():
 
     return abi
 
-def set_data_on_blockchain(tournament, contract_address):
+def set_data_on_blockchain(tournament):
     try:
         tournament_winner = tournament.get_winner()
         tournament_name = tournament.name
 
         abi = load_contract_abi()
-        w3 = Web3(HTTPProvider(settings.PROVIDER_URL))
-        contract = w3.eth.contract(address=contract_address, abi=abi)
-        nonce = w3.eth.get_transaction_count(settings.WALLET, 'pending')
+        w3 = Web3(HTTPProvider(PROVIDER_URL))
+        contract = w3.eth.contract(address=CONTRACT_ADDRESS, abi=abi)
+        nonce = w3.eth.get_transaction_count(WALLET, 'pending')
 
         matches = []
         for match in tournament.matchups.all():
@@ -38,11 +43,11 @@ def set_data_on_blockchain(tournament, contract_address):
                                                              matches
         ).build_transaction({
             'gasPrice': w3.eth.gas_price,
-            'chainId': settings.CHAIN_ID,
-            'from': settings.WALLET,
+            'chainId': CHAIN_ID,
+            'from': WALLET,
             'nonce': nonce
         })
-        signed_transaction = w3.eth.account.sign_transaction(transaction, settings.PRIVATE_KEY)
+        signed_transaction = w3.eth.account.sign_transaction(transaction, PRIVATE_KEY)
         transaction_hash = w3.eth.send_raw_transaction(signed_transaction.rawTransaction)
         print("Waiting for transaction to finish...")
         transaction_receipt = w3.eth.wait_for_transaction_receipt(transaction_hash)
@@ -52,22 +57,22 @@ def set_data_on_blockchain(tournament, contract_address):
         print(f"Error deploying contract: {e}")
         return f"Failed to initiate transaction: {str(e)}"
 
-def get_matches_by_player(tournament, player_name):
-    contract_address = tournament.contract_address
+# def get_matches_by_player(tournament, player_name):
+#     contract_address = CONTRACT_ADDRESS
 
-    abi = load_contract_abi()
-    w3 = Web3(HTTPProvider(settings.PROVIDER_URL))
-    contract = w3.eth.contract(address=contract_address, abi=abi)
-    matches = contract.functions.getMatches().call()
+#     abi = load_contract_abi()
+#     w3 = Web3(HTTPProvider(PROVIDER_URL))
+#     contract = w3.eth.contract(address=contract_address, abi=abi)
+#     matches = contract.functions.getMatches().call()
 
-    player_matches = [{
-            'round': match[1],
-            'player1': match[2],
-            'score_player_1': match[3],
-            'player2': match[4],
-            'score_player_2': match[5],
-            'match_winner': match[6],
-        }
-        for match in matches if match[2] == player_name or match[4] == player_name
-    ]
-    return player_matches
+#     player_matches = [{
+#             'round': match[1],
+#             'player1': match[2],
+#             'score_player_1': match[3],
+#             'player2': match[4],
+#             'score_player_2': match[5],
+#             'match_winner': match[6],
+#         }
+#         for match in matches if match[2] == player_name or match[4] == player_name
+#     ]
+#     return player_matches

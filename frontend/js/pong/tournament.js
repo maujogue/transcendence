@@ -81,7 +81,8 @@ function handlerMessageStatus(data) {
     }
     if (data.status == "endTournament" && tournamentStatus != "finished") {
         tournamentStatus = "finished";
-        sendTournamentOnBlockchain();
+        // if (userData.tournament_username === data.winner)
+        //     sendTournamentOnBlockchain();
     }
     if (data.status == "start")
         tournamentStatus = "started";
@@ -273,24 +274,24 @@ export function insertPlayer(player) {
     playerList?.appendChild(div);
 }
 
-async function sendTournamentOnBlockchain() {
-    try {
-        console.log("sendTournamentOnBlockchain called");
-        const response = await fetch(`https://${hostname}:8000/api/tournament/contract/send/${currentTournament.id}/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRFToken": await get_csrf_token(),
-            },
-        });
-        const data = await response.json();
+// async function sendTournamentOnBlockchain() {
+//     try {
+//         console.log("sendTournamentOnBlockchain called");
+//         const response = await fetch(`https://${hostname}:8000/api/tournament/contract/send/${currentTournament.id}/`, {
+//             method: "POST",
+//             headers: {
+//                 "Content-Type": "application/json",
+//                 "X-CSRFToken": await get_csrf_token(),
+//             },
+//         });
+//         const data = await response.json();
 
-        if (!response.ok) {
-            console.error("Error sending tournament to blockchain:", data.errors);
-            throw new Error("Error sending tournament to blockchain: " + data.errors);
-        }
-        console.log(data.message);
-    } catch(error) {
-        console.error(error);
-    }
-}
+//         if (!response.ok) {
+//             console.error("Error sending tournament to blockchain:", data.errors);
+//             throw new Error("Error sending tournament to blockchain: " + data.errors);
+//         }
+//         console.log(data.message);
+//     } catch(error) {
+//         console.error(error);
+//     }
+// }

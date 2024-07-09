@@ -32,12 +32,3 @@ p {
 img {
 	pointer-events: none;
 }
-
-#alert {
-	position: fixed;
-	top: 20px;
-	left: 50%;
-	transform: translateX(-50%);
-	transition: top 0.5s ease-in-out;
-	z-index: 1060;
-}

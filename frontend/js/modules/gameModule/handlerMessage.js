@@ -47,7 +47,7 @@ function handlerStopGame(webSocket, env, message) {
     displayErrorPopUp(message, document.getElementsByClassName("menu")[0]);
     document.getElementById("errorPopUp").classList.add("match-error");
     webSocket.close();
-    document.getElementById("PopUpCloseIcon").addEventListener("click", () => {
+    setTimeout(() => {
         if (checkIfWebsocketIsOpen(wsTournament)) {
             wsTournament.send(JSON.stringify({
                 'type': 'status',
@@ -57,7 +57,7 @@ function handlerStopGame(webSocket, env, message) {
         }
         else
             displayMainMenu();
-    });
+    }, 5000);
 }
 
 export async function handlerEndGame(data, env, webSocket) {

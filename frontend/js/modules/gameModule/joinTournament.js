@@ -78,9 +78,6 @@ async function joinTournament(tournament) {
     })
     .catch((error) => {
         displayErrorPopUp(error, document.getElementsByClassName("tournament")[0]);
-        document.getElementById("PopUpCloseIcon")?.addEventListener("click", () => {
-            displayAllTournaments();
-        });
     })
 }
     

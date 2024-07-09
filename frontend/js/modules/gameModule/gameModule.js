@@ -21,7 +21,6 @@ import { wsTournament } from "./tournament.js";
 import { createTournamentHistoryMenu } from "./tournamentHistory.js";
 import * as THREE from 'three';
 import { injectGameTranslations } from "../translationsModule/translationsModule.js";
-import { initPages } from "../../Router.js";
 import { updateWinVariables } from "./varGlobal.js";
 export var lobby;
 export var clock;
@@ -81,16 +80,11 @@ export async function init() {
 		player2 = await displayCharacter(player2, environment, "elvis", "player2");
 	}
 
-	document.addEventListener("keydown", function (event) {
-		keysPressed[event.key] = true;
-		if (keysPressed['A'])
-			keysPressed['a'] = true;
-		if (keysPressed['D'])
-			keysPressed['d'] = true;
-		if (keysPressed['W'])
-			keysPressed['w'] = true;
-		if (keysPressed['S'])
-			keysPressed['s'] = true;
+	gameDiv.addEventListener("keydown", function (event) {
+		let key = event.key;
+		if (event.key.match(/^[aqwd]$/))
+			key = event.key.toLowerCase();
+		keysPressed[key] = true;
 		keyPress = true;
 		event.stopPropagation();
 	});
@@ -206,6 +200,7 @@ export async function init() {
 			player2.score = 0;
 		}
 		if (start) {
+			console.log("start");
 			if (keyPress)
 				handleKeyPress(keysPressed, player1, player2, environment);
 		checkCollision(environment.ball, player1, player2, environment);

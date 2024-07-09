@@ -14,6 +14,7 @@ from math import log2, ceil
 
 class TournamentMatch(models.Model):
 	lobby_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+	num = models.IntegerField(default=0)
 	round = models.IntegerField(default=1)
 	player1 = models.CharField(max_length=100, default='')
 	player2 = models.CharField(max_length=100, default='', null=True, blank=True)
@@ -48,13 +49,10 @@ class Tournament(models.Model):
 		super().save(*args, **kwargs)
 
 	def get_matches_by_player(self, username):
-		print(f"current_round: {self.current_round}")
-		print(f"username = {username}")
 		match = self.matchups.filter(
 			(models.Q(player1=username) | models.Q(player2=username)),
 			round=self.current_round
 			).first()
-		print(f"match: {match}")
 
 		return match
 	
@@ -87,12 +85,11 @@ class Tournament(models.Model):
 		}
 		}
 		for round_number in range(1, total_rounds + 1):
-			matches = self.matchups.filter(round=round_number)
+			matches = self.matchups.filter(round=round_number).order_by('num')
 			round_info = {
 				"name": self.get_round_name(round_number),
 				"matches": []
 			}
-
 			if matches.exists():
 				for match in matches:
 					player1 = self.get_player_tournament_username(match.player1) if match.player1 else None
@@ -121,7 +118,6 @@ class Tournament(models.Model):
 					round_info["matches"].append(match_info)
 			bracket["tournament"]["rounds"].append(round_info)
 		return bracket
-
 
 	def get_ranking(self):
 		ranking = []
@@ -157,5 +153,4 @@ class Tournament(models.Model):
 		
 	async def increase_round(self):
 		self.current_round += 1
-		print(f"increase: current_round: {self.current_round}")
 		self.asave()

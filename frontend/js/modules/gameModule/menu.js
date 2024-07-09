@@ -323,6 +323,7 @@ function createOnlineMenu() {
 	createSubmode('Tournament', "Join");
 	createSubmode('Tournament', "History");
 	createSubmode('1v1', "Quick Play");
+	createSubmode('1v1', "Private Game");
 }
 
 

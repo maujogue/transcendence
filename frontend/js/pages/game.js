@@ -8,7 +8,7 @@ import { createEndScreen, returnToMenu } from "../pong/createEndScreen.js"
 import { actualizeScore } from "../pong/score.js";
 import { createField } from "../pong/createField.js";
 import { createOnlineSelectMenu } from "../pong/online.js";
-import { ClearAllEnv, getSize } from "../pong/createEnvironment.js";
+import { ClearAllEnv } from "../pong/createEnvironment.js";
 import { loadAllModel } from "../pong/loadModels.js"
 import { loadScene } from "../pong/loadModels.js";
 import { getUserData } from "../User.js";
@@ -18,14 +18,20 @@ import { checkIfUserIsInTournament, connectToTournament } from "../pong/tourname
 import { showAlert } from "../Utils.js";
 import * as THREE from 'three';
 import { injectGameTranslations } from "../modules/translationsModule/translationsModule.js";
+import { createTournamentHistoryMenu } from "../pong/tournamentHistory.js"
+import { wsTournament } from "../pong/tournament.js";
 
 export var lobby;
 export var clock;
 export var characters;
+var isGameLoaded = false;
+export const field = await createField();
 
 export async function init(queryParams) {
 	if (queryParams && queryParams.get("message"))
 		showAlert(queryParams.get("message"), queryParams.get("success"));
+	if (isGameLoaded)
+		return;
 
 	var target = document.querySelector('#game');
 	var config = { attributes: true, childList: true, characterData: true };
@@ -49,69 +55,65 @@ export async function init(queryParams) {
 	let userData;
 	let form;
 	const gameDiv = document.getElementById('game');
-	const field = await createField();
 
-	loadAllModel();
+	await loadAllModel();
 
+	window.addEventListener('resize', resize(environment));
+	
 	getUserData().then((data) => {
 		userData = data;
 		if (userData) {
 			checkIfUserIsInTournament(userData).then((response) => {
-				if (response && response['joined'])
+				if (response && response['joined'] && !wsTournament)
 					connectToTournament(response['tournament']);
 			});
 		}
 	})
+
 	async function goToLocalSelectMenu() {
 		divMenu = document.getElementById("menu");
 		divMenu.remove();
-		environment = createSelectMenu(field, characters);
+		environment = createSelectMenu(characters);
 		player1 = await displayCharacter(player1, environment, "chupacabra", "player1");
 		player2 = await displayCharacter(player2, environment, "elvis", "player2");
 	}
 
 	gameDiv.addEventListener("keydown", function (event) {
-		keysPressed[event.key] = true;
-		if (keysPressed['A'])
-			keysPressed['a'] = true;
-		if (keysPressed['D'])
-			keysPressed['d'] = true;
-		if (keysPressed['W'])
-			keysPressed['w'] = true;
-		if (keysPressed['S'])
-			keysPressed['s'] = true;
+		let key = event.key;
+		if (event.key.match(/^[aqwd]$/))
+			key = event.key.toLowerCase();
+		keysPressed[key] = true;
 		keyPress = true;
 		event.stopPropagation();
 	});
 
-	gameDiv.addEventListener("keyup", function (event) {
+	document.addEventListener("keyup", function (event) {
 		delete keysPressed[event.key];
 	});
 
+
 	gameDiv.addEventListener('click', function (event) {
 		document.body.style.overflow = 'hidden';
-		gameDiv.focus();
 		if (!gameDiv.contains(event.target)) {
 			document.body.style.overflow = 'auto';
 		}
 	});
 
-	gameDiv.addEventListener("click", function (event) {
+	gameDiv.addEventListener('click', function () {
+		document.body.style.overflow = 'hidden';
+	});
+
+	document.body.addEventListener("click", function (event) {
 		getUserData().then((data) => {
 			userData = data;
 		})
-
-		if (userData) {
-			checkIfUserIsInTournament(userData).then((response) => {
-				if (response && response['joined'])
-					connectToTournament(response['tournament']);
-			});
-		}
-
+		
 		if (event.target.id == 'restart' && !isOnline) {
 			document.getElementById("endscreen").remove();
-			actualizeScore(player1, player2, environment, environment.font);
+			player1.score = 0;
+			player2.score = 0;
 			start = true;
+			actualizeScore(player1, player2, environment, environment.font);
 		}
 		if (event.target.id == 'backMenu' || event.target.id == 'backIcon') {
 			localLoop = false;
@@ -126,10 +128,10 @@ export async function init(queryParams) {
 		}
 		if (event.target.id == 'onlineGame' && userData) {
 			isOnline = true;
-			createOnlineMenu(field);
+			createOnlineMenu();
 		}
 		if (event.target.id == 'quick') {
-			createOnlineSelectMenu(field);
+			createOnlineSelectMenu(null);
 		}
 		if (event.target.id == 'create') {
 			createFormTournament();
@@ -155,25 +157,32 @@ export async function init(queryParams) {
 			else
 				div.classList.add('hidden');
 		}
+		if (event.target.id == 'history') {
+			createTournamentHistoryMenu();
+		}
 	});
 
-	gameDiv.addEventListener('fullscreenchange', function () {
-		if (isFullScreen())
+	document.addEventListener('fullscreenchange', function () {
+		if (!isOnline)
 			resize(environment);
 	});
 
 	function setIfGameIsEnd() {
 		if (player1.score < 5 && player2.score < 5)
 			return;
+
 		let winner = player1.name;
 		if (player2.score > player1.score)
 			winner = player2.name;
+
+		if (winner === "player1")
+			winner = "player 1";
+		else if (winner === "player2")
+			winner = "player 2";
+
 		createEndScreen(winner);
 		start = false;
-		player1.score = 0;
-		player2.score = 0;
 	}
-
 
 	async function localGameLoop() {
 		if (keyPress && !start) {
@@ -185,20 +194,23 @@ export async function init(queryParams) {
 			ClearAllEnv(environment);
 			divMenu.remove();
 			environment = await initGame(player1, player2);
+			player1.score = 0;
+			player2.score = 0;
 		}
 		if (start) {
 			console.log("start");
 			if (keyPress)
 				handleKeyPress(keysPressed, player1, player2, environment);
-			checkCollision(environment.ball, player1, player2, environment);
-			setIfGameIsEnd();
-		}
-		if (player1 && player2)
-			updateMixers(player1, player2);
-		environment?.renderer.render(environment.scene, environment.camera);
-		if (localLoop)
-			requestAnimationFrame(localGameLoop);
+		checkCollision(environment.ball, player1, player2, environment);
+		setIfGameIsEnd();
 	}
+	if (player1 && player2)
+	updateMixers(player1, player2);
+	environment?.renderer.render(environment.scene, environment.camera);
+	if (localLoop)
+		requestAnimationFrame(localGameLoop);
+	}
+	isGameLoaded = true;
 }
 
 

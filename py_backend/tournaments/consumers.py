@@ -92,7 +92,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         await self.match.asave()
 
     async def auth(self, text_data_json):
-        print('auth')
         username = text_data_json.get('username')
         user = await self.authenticate_user_with_username(username)
         if user:

@@ -23,9 +23,10 @@ def login_view(request):
             if not user.email_is_verified:
                 return JsonResponse({'error': "Your email is not verified yet."}, status=400)
 
+            if user.is_online:
+                return JsonResponse({'error': "You are already logged in somewhere else."}, status=400)
             auth_login(request, user)
             user.is_42auth = False
-            user.is_online = True
             user.save()
 
             user_info = {
@@ -39,6 +40,7 @@ def login_view(request):
                 'n_games_played': user.n_games_played,
                 'is_42auth': user.is_42auth,
                 'is_online': user.is_online,
+                'lang': user.lang,
             }
             return JsonResponse({'status': "You are now logged in !", "user": user_info}, status=200)
     return JsonResponse({'error': "Wrong username or password."}, status=400)

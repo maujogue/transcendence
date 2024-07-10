@@ -10,14 +10,14 @@ export async function init() {
 		return;
 
 	var userData = await getUserData();
-	var input = module.querySelector(".usernameInput");
+	var input = module.querySelector(".tournamentUsernameInput");
 
 	input.addEventListener("input", () => {
 		checkUsername(input, userData);
 	});
 }
 
-async function checkUsername(input, userData) {
+async function checkTournamentUsername(input, userData) {
 	if (userData && input.value !== userData[input.name]) {
 		await invalidateUsernameIfUnavailable(input, userData[input.name]);
 	}
@@ -26,7 +26,7 @@ async function checkUsername(input, userData) {
 }
 
 async function invalidateUsernameIfUnavailable(input, userInput) {
-	const inputFeedback = input.parentNode.querySelector('.usernameInput ~ div');
+	const inputFeedback = input.parentNode.querySelector('.tournamentUsernameInput ~ div');
 	clearTimeout(debounceTimer);
 
 	debounceTimer = setTimeout(async () => {
@@ -52,13 +52,13 @@ async function invalidateUsernameIfUnavailable(input, userInput) {
 	}, 300);
 }
 
-export async function initListenersUsername() {
+export async function initListenersTournamentUsername() {
 	var userData = await getUserData();
-	var inputs = document.querySelectorAll(".usernameInput");
+	var inputs = document.querySelectorAll(".tournamentUsernameInput");
 
 	inputs.forEach((input) => {
 		input.addEventListener("input", () => {
-			checkUsername(input, userData);
+			checkTournamentUsername(input, userData);
 		});
 	});
 }

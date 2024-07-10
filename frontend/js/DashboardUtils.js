@@ -1,6 +1,7 @@
 import { updateModule } from "./Modules.js";
 import { injectUserData, getUserData } from "./User.js";
 import { initListenersEmail } from "./modules/emailInputModule/emailInputModule.js";
+import { initListenersTournamentUsername } from "./modules/tournamentUsernameInputModule/tournamentUsernameInputModule.js";
 import { initListenersUsername } from "./modules/usernameInputModule/usernameInputModule.js";
 
 function inputInitListeners() {
@@ -12,6 +13,7 @@ function inputInitListeners() {
 		inputClone.addEventListener("input", enableDisableSaveButtonOnInput);
 	});
 	initListenersUsername();
+	initListenersTournamentUsername();
 	initListenersEmail();
 }
 

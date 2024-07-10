@@ -149,8 +149,8 @@ function updateProfile() {
 	var updateProfileForm = document.getElementById("updateProfileForm");
 	var inputName = getSubmittedInput().getAttribute("name");
 	var formData = new FormData(updateProfileForm);
-	var fileInput = document.getElementById("avatar");
-	var fileInput = document.getElementById("banner");
+	var avatarInput = document.getElementById("avatar");
+	var bannerInput = document.getElementById("banner");
 	if (inputName == "username" || inputName == "email") {
 		toggleConfirmPasswordModal("confirmPasswordModal");
 	}
@@ -166,12 +166,12 @@ function updateProfile() {
 		};
 		updateInfo("users/update_bio/", JSON.stringify(fetchBody));
 	}
-	else if (inputName == "avatar" && fileInput.files.length == 1) {
-		formData.append("image", fileInput.files[0]);
+	else if (inputName == "avatar" && avatarInput.files.length == 1) {
+		formData.append("image", avatarInput.files[0]);
 		updateInfo("users/update_profile_picture/", formData);
 	}
-	else if (inputName == "banner" && fileInput.files.length == 1) {
-		formData.append("image", fileInput.files[0]);
+	else if (inputName == "banner" && bannerInput.files.length == 1) {
+		formData.append("image", bannerInput.files[0]);
 		updateInfo("users/update_profile_banner/", formData);
 	}
 }

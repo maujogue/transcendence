@@ -118,7 +118,7 @@ function showAlert(message, success) {
 		<small>${datetime}</small>
 		<button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
 		</div>
-		<div class="toast-body">
+		<div class="toast-body" style="text-wrap: wrap;">
 		${message}
 		</div>
 	</div>

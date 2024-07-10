@@ -28,7 +28,7 @@ class LogoutTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
         self.user.refresh_from_db()
-        self.assertTrue(self.user.is_online)
+        self.assertFalse(self.user.is_online)
 
         response = self.client.post(
             reverse('logout'), 

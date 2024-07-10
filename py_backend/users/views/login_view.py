@@ -24,16 +24,13 @@ def login_view(request):
             if not user.email_is_verified:
                 return JsonResponse({'error': "Your email is not verified yet."}, status=400)
 
-            if user.is_logged_in and user.is_online:
+            if user.is_online:
                 return JsonResponse({'error': "You are already logged in somewhere else."}, status=400)
-            
             auth_login(request, user)
 
             request.session['active_session'] = True
             user.session_key = request.session.session_key
             user.is_42auth = False
-            user.is_online = True
-            user.is_logged_in = True
             user.save()
 
             user_info = {

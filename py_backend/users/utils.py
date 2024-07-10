@@ -17,6 +17,7 @@ import os
 SPECIAL_CHARS = "+/*.,!#%^&\{}[]=:;\'\"`~"
 SPECIAL_CHARS_EMAIL = "+/*,!#%^&\{}[]=:;\'\"`~"
 
+
 def email_is_valid(email):
 	if not email or email == '':
 		return False, f'Missing email.'
@@ -45,8 +46,6 @@ def username_is_valid(username):
 		return False, f'Username is too long.'
 	if any(char in SPECIAL_CHARS for char in username):
 		return False, f'Username contains forbidden characters.'
-	if CustomUser.objects.filter(username=username).exists():
-		return False, f'Username already exists.'
 	return True, None
 
 
@@ -154,3 +153,13 @@ def utils_get_friendslist_data(user):
 	if friends_count == 0:
 		return False
 	return friends_list_data
+
+
+def lang_is_valid(lang):
+	if not lang or lang == '':
+		return False
+	if len(lang) > 2 or lang.isnumeric() or lang.isspace():
+		return False
+	if lang not in settings.LANGUAGES:
+		return False
+	return True

@@ -64,7 +64,7 @@ class ProfileUpdate(TestCase):
             content_type='application/json'
         )
         self.user.refresh_from_db()
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 401)
 
 
     def test_change_username(self):

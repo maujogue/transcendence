@@ -1,6 +1,6 @@
 import { navigateTo, initPages } from "./Router.js";
 import { showAlert } from "./Utils.js";
-import { getUserData,  } from "./User.js";
+import { getUserData, injectUserData,  } from "./User.js";
 import { get_csrf_token, runEndPoint, updateInfo } from "./ApiUtils.js"
 import { getSubmittedInput, toggleConfirmPasswordModal } from "./DashboardUtils.js";
 import { toggleContentOnLogState } from "./Utils.js";
@@ -67,7 +67,7 @@ async function updatePassword(updatePasswordForm) {
 		password: userData.get("password"),
 	};
 
-	var response = await runEndPoint("users/login/", "POST", JSON.stringify(fetchBody));
+	var response = await runEndPoint("users/check_password/", "POST", JSON.stringify(fetchBody));
 
 	if (response.statusCode === 200) {
 		const fetchBody = {
@@ -94,7 +94,7 @@ async function updateUsername(updateUsernameForm) {
 		password: userData.get("password"),
 	};
 
-	var response = await runEndPoint("users/login/", "POST", JSON.stringify(fetchBody));
+	var response = await runEndPoint("users/check_password/", "POST", JSON.stringify(fetchBody));
 
 	if (response.statusCode === 200) {
 		const fetchBody = {
@@ -117,7 +117,7 @@ async function updateEmail(updateEmailForm) {
 		password: userData.get("password"),
 	};
 
-	var response = await runEndPoint("users/login/", "POST", JSON.stringify(fetchBody));
+	var response = await runEndPoint("users/check_password/", "POST", JSON.stringify(fetchBody));
 
 	if (response.statusCode === 200) {
 		const fetchBody = {
@@ -128,10 +128,23 @@ async function updateEmail(updateEmailForm) {
 			JSON.stringify(fetchBody),
 			"confirmPasswordModal"
 		);
+		checkEmailValidation5minutes();
 	} else {
 		showAlert("Password Incorrect, try again.");
 	}
 }
+
+async function checkEmailValidation5minutes() {
+	var currentEmail = await getUserData("email");
+	var intervalId = setInterval(async () => {
+		if (currentEmail !== await getUserData("email")) {
+			injectUserData();
+			clearInterval(intervalId);
+	}
+	}, 1000);
+	setTimeout(() => clearInterval(intervalId), 60000 * 5);
+}
+
 function updateProfile() {
 	var updateProfileForm = document.getElementById("updateProfileForm");
 	var inputName = getSubmittedInput().getAttribute("name");

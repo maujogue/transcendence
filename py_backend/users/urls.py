@@ -4,6 +4,7 @@ from users.views.tournament_username_available import tournament_username_availa
 from users.views.username_available import username_available
 from users.views.update_profile_banner import update_profile_banner
 from users.views.update_lang import update_lang
+from users.views.check_password import check_password
 
 urlpatterns = [
     path('register/', register, name='register'),
@@ -26,5 +27,6 @@ urlpatterns = [
     path('confirm_new_email/<uidb64>/<token>/<new_email>/', confirm_new_email, name='confirm_new_email'),
 	path('check_user_logged_in/', check_user_logged_in_view, name='check_user_logged_in'),
     path('update_tournament_name/', update_tournament_name, name='update_tournament_name'),
+	path('check_password/', check_password, name='check_password'),
     path('tournament_username_available/', tournament_username_available, name='tournament_username_available'),
 ]

@@ -15,7 +15,7 @@ import json
 import os
 
 SPECIAL_CHARS = "+/*.,!#%^&\{}[]=:;\'\"`~"
-SPECIAL_CHARS_EMAIL = "+/*,!#%^&\{}[]=:;\'\"`~"
+SPECIAL_CHARS_EMAIL = "/*,!#%^&\{}[]=:;\'\"`~"
 
 def email_is_valid(email):
 	if not email or email == '':

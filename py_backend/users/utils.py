@@ -14,8 +14,8 @@ import base64
 import json
 import os
 
-SPECIAL_CHARS = "+/*.,!#%^&\{}[]=:;\'\"`~"
-SPECIAL_CHARS_EMAIL = "+/*,!#%^&\{}[]=:;\'\"`~"
+SPECIAL_CHARS = "+/*.,!?#%^&\{}[]=:;\'\"`~"
+SPECIAL_CHARS_EMAIL = "+/*,!?#%^&\{}[]=:;\'\"`~"
 
 
 def email_is_valid(email):

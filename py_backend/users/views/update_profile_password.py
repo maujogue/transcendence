@@ -3,7 +3,6 @@ from django.views.decorators.csrf import requires_csrf_token
 from users.decorators import custom_login_required as login_required
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import update_session_auth_hash
-from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ValidationError
 
 from django.http import JsonResponse
@@ -13,8 +12,7 @@ from users.validators import PasswordValidators
 
 
 @require_http_methods(["POST"])
-# @requires_csrf_token
-@csrf_exempt
+@requires_csrf_token
 @login_required
 def update_profile_password(request):
     data = decode_json_body(request)

@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from py_backend import settings
 
-SPECIAL_CHARS = "@+/*.,!#%^&\{}[]=:;\'\"`~"
+SPECIAL_CHARS = "@+/*.,!?#%^&\{}[]=:;\'\"`~"
 
 def contains_special_char(string):
 	for char in SPECIAL_CHARS:

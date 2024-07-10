@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ['*']
 # Define for backend
 
 MIN_LEN_USERNAME = 3
+MIN_LEN_PASSWORD = 8
 MAX_LEN_USERNAME = 25
 MAX_LEN_EMAIL = 50
 MAX_LEN_TEXT = 500
@@ -141,7 +142,7 @@ AUTH_PASSWORD_VALIDATORS = [
 	{
 		'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
 		"OPTIONS": {
-			"min_length": 8,
+			"min_length": MIN_LEN_PASSWORD,
 		},
 	},
 	{

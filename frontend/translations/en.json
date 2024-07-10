@@ -99,7 +99,7 @@
 	"stats_winrate": "Win Rate",
 	"stats_match_history": "Match History",
 	"stats_match_winrate": "Match Win Rate",
-	"statistics": "Statistics",
+	"statistics": "'s Statistics",
 	"statistics_general": "<span class='text-danger'>General</span>",
 	"statistics_history": "<span class='text-success'>History</span>",
 	"statistics_performance": "<span class='text-primary'>Performance</span>",

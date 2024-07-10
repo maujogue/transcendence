@@ -160,6 +160,6 @@ def lang_is_valid(lang):
 		return False
 	if len(lang) > 2 or lang.isnumeric() or lang.isspace():
 		return False
-	if lang not in settings.LANGUAGES:
+	if lang not in settings.LANG:
 		return False
 	return True

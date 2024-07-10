@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 
 from django.http import JsonResponse
 
-from users.utils import decode_json_body, check_if_is_old_password
+from users.utils import decode_json_body
 from users.validators import PasswordValidators
 
 

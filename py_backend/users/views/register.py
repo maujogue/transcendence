@@ -1,13 +1,11 @@
 from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 
 from users.forms import CustomUserCreationForm
 from users.utils import validation_register, decode_json_body, send_confirmation_email
 
 
 @require_http_methods(["POST"])
-@csrf_exempt
 def register(request):
     data = decode_json_body(request)
     if isinstance(data, JsonResponse):

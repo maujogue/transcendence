@@ -12,6 +12,11 @@ from multiplayer.models import Lobby
 
 from math import log2, ceil
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+import asyncio
+from .blockchain import set_data_on_blockchain
+
 class TournamentMatch(models.Model):
 	lobby_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	num = models.IntegerField(default=0)
@@ -155,3 +160,9 @@ class Tournament(models.Model):
 	async def increase_round(self):
 		self.current_round += 1
 		self.asave()
+
+	@classmethod
+	@receiver(post_save, sender=Tournament)
+	def set_signal_for_blockchain(cls, instance, **kwargs):
+		if instance.finished:
+			asyncio.run(set_data_on_blockchain(instance))

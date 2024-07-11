@@ -2,7 +2,8 @@ from web3 import Web3, HTTPProvider
 import os
 import json
 
-CHAIN_ID = os.environ.get("CHAIN_ID")
+# CHAIN_ID = os.environ.get("CHAIN_ID")
+CHAIN_ID = 11155111
 WALLET = os.environ.get("WALLET")
 PRIVATE_KEY = os.environ.get("PRIVATE_KEY")
 PROVIDER_URL = os.environ.get("PROVIDER_URL")
@@ -19,6 +20,8 @@ def load_contract_abi():
 
 def set_data_on_blockchain(tournament):
     try:
+        print("entering into set_data_on_blockchain")
+        print(f"CONTRACT_ADDRESS: {CONTRACT_ADDRESS}")
         tournament_winner = tournament.get_winner()
         tournament_name = tournament.name
 

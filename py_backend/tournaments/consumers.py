@@ -103,7 +103,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def set_tournament_over(self):
         self.tournament.finished = True
         await self.tournament.asave()
-        self.tournament.receipt_address = await sync_to_async(set_data_on_blockchain)(self.tournament)
         await self.send_tournament_end()
 
     async def generate_round(self):
@@ -124,7 +123,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if all(matches.finished for matches in all_matches) and len(all_matches) > 0:
             return True
         return False
-    
+        
     async def create_history_match(self, lobby):
         try:
             self.match = await Match.objects.aget(lobby_id=str(lobby.uuid))
@@ -227,13 +226,13 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         self.tournament.started = True
         await sync_to_async(self.tournament.save)()
         await self.generate_round()
-    
+        
     @database_sync_to_async
     def is_tournament_full(self):
         if self.tournament.participants.count() == self.tournament.max_players:
             return True
         return False
-    
+        
     async def check_tournament_start(self):
         if await self.is_tournament_full() and not self.tournament.started:
             await self.launch_tournament()
@@ -243,7 +242,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     await self.send_self_matchup()
             else:
                 await self.send_bracket(False)
-    
+        
     async def validate_foreign_keys(self):
         try:
             if not self.match:
@@ -271,7 +270,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             'player_2': match.player2 if match.player2 else None,
             'round': match.round
         }
-    
+        
     @database_sync_to_async
     def get_tournament(self):
         try:
@@ -287,7 +286,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         current_time = timezone.now()
 
         return (current_time - timer).seconds
-    
+        
     @database_sync_to_async
     def authenticate_user_with_username(self, username):
         try:
@@ -361,7 +360,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         winner = await sync_to_async(self.tournament.get_winner)()
         ranking = await sync_to_async(self.tournament.get_ranking)()
         await self.send(text_data=json.dumps({'type': 'ranking', 'winner': winner, 'ranking': ranking}))
-    
+        
     async def tournament_participants(self, event):
         await self.send(
             text_data=json.dumps({'type': 'participants', 'participants': event['participants']}))
@@ -372,7 +371,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             if not self.match.finished and self.match.player2:
                 match_infos = self.get_match_infos(self.match)
                 await self.send(text_data=json.dumps({'type': 'matchup', 'match': match_infos, 'timer': 30}))
-    
+        
                 if self.task:
                     self.task.cancel()
                 self.task = asyncio.create_task(self.check_if_match_started_in_time(self.match))
@@ -383,7 +382,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def tournament_status(self, event):
         if event['status'] == 'disqualified':
             if event['username'] == self.scope['user'].tournament_username:
-    
+        
                 await self.send(text_data=json.dumps({'type': 'status', 'status': 'disqualified'}))
         elif event['status'] == 'endTournament':
             await self.send(text_data=json.dumps({'type': 'status', 'status': 'endTournament'}))

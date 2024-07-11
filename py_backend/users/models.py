@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.core.exceptions import ValidationError
+from django.contrib.sessions.models import Session
 from py_backend import settings
 from PIL import Image
 import random
@@ -23,7 +23,7 @@ class CustomUser(AbstractUser):
 		verbose_name = 'Custom User'
 
 	username = models.CharField(max_length=settings.MAX_LEN_USERNAME, unique=True)
-	tournament_username = models.CharField(max_length=9, unique=True, default='')
+	tournament_username = models.CharField(max_length=settings.MAX_LEN_TOURNAMENT_USERNAME, unique=True, default='')
 	email = models.EmailField(max_length=settings.MAX_LEN_EMAIL, unique=True)
 	email_is_verified = models.BooleanField(default=False)
 	title = models.CharField(max_length=50, null=True)
@@ -47,3 +47,5 @@ class CustomUser(AbstractUser):
 			output_size = (300, 300)
 			img.thumbnail(output_size)
 			img.save(self.avatar.path)
+
+

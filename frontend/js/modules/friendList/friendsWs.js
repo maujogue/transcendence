@@ -4,6 +4,7 @@ import { showAlert } from "../../Utils.js";
 import { fillInbox, initUserRequests } from "./friendList.js";
 import { fillFriendsList } from "./friendList.js";
 import { hostname } from "../../Router.js";
+import { checkIfWebsocketIsOpen } from "../../pong/handlerMessage.js";
 
 let currentUser;
 let wsFriends;
@@ -27,92 +28,58 @@ export async function friendsWebsocket() {
 	}
 }
 
-function checkWs() {
-	if (wsFriends && wsFriends.readyState === wsFriends.OPEN) {
-		return true;
-	}
-	return false;
-}
-
 async function auth() {
-	if (checkWs()) {
-		wsFriends.send(JSON.stringify({
-			'type': 'auth',
-			'username': currentUser,
-		}));
-	}
+	sendMessage('auth', {'username': currentUser});
 }
 
 async function getFriendsList() {
-	if (checkWs()) {
-		wsFriends.send(JSON.stringify({
-			'type': 'get_friendslist',
-			'current_user': currentUser,
-		}));
-	}
+	sendMessage('get_friendslist', {'username': currentUser});
 }
 
 async function getCurrentUserRequests() {
-	if (checkWs()) {
-		wsFriends.send(JSON.stringify({
-			'type': 'get_current_user_requests',
-			'user': currentUser,
-			'send': 'true',
-		}));
-	}
+	sendMessage('get_current_user_requests', {'user': currentUser, 'send': 'true'});
 }
 
 async function getUserRequests(username) {
-	if (checkWs()) {
-		wsFriends.send(JSON.stringify({
-			'type': 'get_user_requests',
-			'user': username,
-			'send': 'true',
-		}));
-	}
+	if (!checkUsername(username))
+		return;
+	sendMessage('get_user_requests', {'user': username, 'send': 'true'});
 }
 
 async function sendFriendRequest(username) {
-	if (checkWs()) {
-		wsFriends.send(JSON.stringify({
-			'type': 'friend_request',
-			'from_user': currentUser,
-			'to_user': username,
-		}));
-	}
+	if (!checkUsername(username))
+		return;
+	sendMessage('friend_request', {'from_user': username, 'to_user': 'username'});
 }
 
 async function acceptFriendRequest(fromUser) {
-	if (checkWs()) {
-		wsFriends.send(JSON.stringify({
-			'type': 'accept_request',
-			'from_user': fromUser,
-			'to_user': currentUser,
-		}));
-	}
+	if (!checkUsername(fromUser))
+		return;
+	sendMessage('accept_request', {'from_user': fromUser, 'to_user': currentUser});
 }
 
 async function declineFriendRequest(fromUser) {
-	if (checkWs()) {
-		wsFriends.send(JSON.stringify({
-			'type': 'decline_request',
-			'from_user': fromUser,
-			'to_user': currentUser,
-		}));
-	}
+	if (!checkUsername(fromUser))
+		return;
+	sendMessage('decline_request', {'from_user': fromUser, 'to_user': currentUser});
 }
+
 async function removeFriend(toUser) {
-	if (checkWs()) {
-		wsFriends.send(JSON.stringify({
-			'type': 'remove_friend',
-			'from_user': currentUser,
-			'to_user': toUser,
-		}));
-	}
+	if (!checkUsername(toUser))
+		return;
+	sendMessage('remove_friend', {'from_user': currentUser, 'to_user': toUser});
+}
+
+
+async function sendMessage(type, payload) {
+	if (!checkIfWebsocketIsOpen(wsFriends))
+		return ;
+	const message = JSON.stringify({type, ...payload });
+	wsFriends.send(message);
 }
 
 async function wsMessageRouter(data) {
-	const notificationHandlers = {
+	const handlers = {
 		'friend_request_to_user': (data) => {
 			getCurrentUserRequests();
 			showAlert(`You just receive a friend request from ${data.from_user} !`, true)
@@ -131,7 +98,7 @@ async function wsMessageRouter(data) {
 		'get_user_requests': (data) => initUserRequests(data),
 		'friend_accepted_from_user': (data) => showAlert(`${data.to_user} accepted your friend request !`, true),
 	};
-	const handler = notificationHandlers[data.type];
+	const handler = handlers[data.type];
 	if (handler && data) {
 		handler.call(this, data);
 	}
@@ -141,6 +108,13 @@ function closeWs () {
 	if (wsFriends) {
 		wsFriends.close();
 	}
+}
+
+function checkUsername(username) {
+	if (username && username != "") {
+		return true;
+	}
+	return false;
 }
 
 export { sendFriendRequest, acceptFriendRequest, declineFriendRequest, removeFriend, closeWs, getUserRequests };

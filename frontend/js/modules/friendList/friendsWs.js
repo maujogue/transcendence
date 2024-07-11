@@ -27,14 +27,6 @@ export async function friendsWebsocket() {
 	}
 }
 
-
-function checkWs() {
-	if (wsFriends && wsFriends.readyState === wsFriends.OPEN) {
-		return true;
-	}
-	return false;
-}
-
 async function auth() {
 	if (checkWs()) {
 		wsFriends.send(JSON.stringify({
@@ -65,7 +57,7 @@ async function getCurrentUserRequests() {
 }
 
 async function getUserRequests(username) {
-	if (checkWs()) {
+	if (checkWs() && checkUsername(username)) {
 		wsFriends.send(JSON.stringify({
 			'type': 'get_user_requests',
 			'user': username,
@@ -75,7 +67,7 @@ async function getUserRequests(username) {
 }
 
 async function sendFriendRequest(username) {
-	if (checkWs()) {
+	if (checkWs() && checkUsername(username)) {
 		wsFriends.send(JSON.stringify({
 			'type': 'friend_request',
 			'from_user': currentUser,
@@ -85,7 +77,7 @@ async function sendFriendRequest(username) {
 }
 
 async function acceptFriendRequest(fromUser) {
-	if (checkWs()) {
+	if (checkWs() && checkUsername(fromUser)) {
 		wsFriends.send(JSON.stringify({
 			'type': 'accept_request',
 			'from_user': fromUser,
@@ -95,7 +87,7 @@ async function acceptFriendRequest(fromUser) {
 }
 
 async function declineFriendRequest(fromUser) {
-	if (checkWs()) {
+	if (checkWs() && checkUsername(fromUser)) {
 		wsFriends.send(JSON.stringify({
 			'type': 'decline_request',
 			'from_user': fromUser,
@@ -104,7 +96,7 @@ async function declineFriendRequest(fromUser) {
 	}
 }
 async function removeFriend(toUser) {
-	if (checkWs()) {
+	if (checkWs() && checkUsername(toUser)) {
 		wsFriends.send(JSON.stringify({
 			'type': 'remove_friend',
 			'from_user': currentUser,
@@ -143,6 +135,20 @@ function closeWs () {
 	if (wsFriends) {
 		wsFriends.close();
 	}
+}
+
+function checkWs() {
+	if (wsFriends && wsFriends.readyState === wsFriends.OPEN) {
+		return true;
+	}
+	return false;
+}
+
+function checkUsername(username) {
+	if (username && username != "") {
+		return true;
+	}
+	return false;
 }
 
 export { sendFriendRequest, acceptFriendRequest, declineFriendRequest, removeFriend, closeWs, getUserRequests };

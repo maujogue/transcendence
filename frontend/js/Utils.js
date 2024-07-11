@@ -110,7 +110,7 @@ function showAlert(message, success) {
 	var alertDiv = document.getElementById("alert");
 	var currentdate = new Date();
 	var minutes = currentdate.getMinutes();
-	var datetime = currentdate.getHours() + ":" + (minutes.length === 1 ? "0" + minutes : minutes);
+	var datetime = currentdate.getHours() + ":" + (minutes < 10 ? "0" : "") + minutes;
 	alertDiv.innerHTML += `
 	<div id="alert${alertId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-animation="true" data-bs-delay="3000" style="background-color: whitesmoke !important;">
 		<div class="toast-header ${bgColor}">

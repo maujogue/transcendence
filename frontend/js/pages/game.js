@@ -140,8 +140,6 @@ export async function init(queryParams) {
 		if (event.target.id == 'localGame') {
 			createLocalMenu(field);
 			localLoop = true;
-			// localGameLoop();
-			// goToLocalSelectMenu();
 		}
 		if (event.target.id == '1v1') {
 			soloMode = false;
@@ -235,10 +233,8 @@ export async function init(queryParams) {
 			let actionP1, actionP2 = 0;
 			if (keyPress) {
 				actionP1, actionP2 = handleKeyPress(keysPressed, player1, player2, environment);
-				if (!soloMode) {
+				if (!soloMode)
 					storeData(environment, player2, actionP2);
-					// storeDataReversed(environment, player1, actionP1)
-				}
 			}
 			checkCollision(environment.ball, player1, player2, environment);
 			await setIfGameIsEnd();

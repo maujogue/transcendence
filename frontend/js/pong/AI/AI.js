@@ -8,11 +8,6 @@ import { ReplayBuffer } from "./ReplayBuffer.js";
 const numActions = 2;
 const numStateFeatures = 5;
 
-let epsilon = 1.0;
-const discountFactor = 0.99;
-const episodes = 10000;
-const batchSize = 64;
-
 export async function createModel() {
 	const model = tf.sequential();
 	model.add(tf.layers.dense({inputShape: [numStateFeatures], units: 24, activation: 'relu'}));
@@ -60,12 +55,6 @@ export async function trainModel(model, epochs) {
 
 export function storeData(env, player2, action) {
 	states.push(getState(env, player2));
-	let actionArray = (action === 0) ? [0.1, 0, 0] : (action === 1) ? [0, 1, 0] : [0, 0, 1];
-	actions.push(actionArray);
-}
-
-export function storeDataReversed(env, player1, action) {
-	states.push(getStateReversed(env, player1, action));
 	let actionArray = (action === 0) ? [0.1, 0, 0] : (action === 1) ? [0, 1, 0] : [0, 0, 1];
 	actions.push(actionArray);
 }

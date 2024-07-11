@@ -59,12 +59,12 @@ def username_is_unique(username):
 	return True, None
 
 
-def tournament_username_is_unique(tournament_username):
-	if not tournament_username or tournament_username == '':
-		return False, f'Username cannot be empty.'
-	response = CustomUser.objects.filter(tournament_username=tournament_username).exists()
+def tournament_username_is_unique(username):
+	if not username or username == '':
+		return False, f'Tournament username cannot be empty.'
+	response = CustomUser.objects.filter(tournament_username__iexact=username).exists()
 	if response:
-		return False, f'Username is already used.'
+		return False, f'Tournament username is already used.'
 	return True, None
 
 

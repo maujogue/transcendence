@@ -46,7 +46,7 @@
 		<div class="modal-content">
 			<form id="updateProfileForm" autocomplete="off" class="novalidate">
 				<div class="modal-header">
-					<h3 class="modal-title" data-lang="update_profile_modal_title">Update Profile</h3>
+					<h3 class="modal-title" data-lang="update_profile_modal_title"></h3>
 					<button id="closeButtonUpdateProfile" type="button" class="btn-close"
 						data-bs-dismiss="modal"></button>
 				</div>
@@ -63,7 +63,7 @@
 					</div>
 					<!-- BIO INPUT -->
 					<div class="mb-3">
-						<label for="bio" class="col-form-label text-primary" data-lang="bio_label">Bio</label>
+						<label for="bio" class="col-form-label text-primary" data-lang="bio_label"></label>
 						<textarea maxlength="150" rows="3" cols="50" name="bio"
 							class="form-control bioDynamic formInputs" id="bio" placeholder="What about you ?"
 							autocomplete="off" style="resize: none;" data-lang="bio_placeholder"></textarea>
@@ -88,8 +88,8 @@
 						data-lang="update_password_button">Update Password</a>
 					<a id="discardChangesButton" type="button" class="btn btn-outline-danger d-none"
 						data-lang="discard_changes_button">Discard Changes</a>
-					<button type="button" id="saveChangesButton" class="btn btn-primary" data-lang="save_changes_button" disabled>Save
-						Changes</button>
+					<button type="button" id="saveChangesButton" class="btn btn-primary" data-lang="save_changes_button" disabled>
+						</button>
 				</div>
 			</form>
 		</div>
@@ -102,7 +102,7 @@
 		<div class="modal-content">
 			<!-- LOGIN TITLE -->
 			<div class="modal-header">
-				<h1 class="modal-title fs-5" data-lang="password_check_title">Password Check</h1>
+				<h1 class="modal-title fs-5" data-lang="password_check_title"></h1>
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<!-- LOGIN COMMENT -->
@@ -143,7 +143,7 @@
 			<form id="updatePasswordForm">
 				<!-- LOGIN TITLE -->
 				<div class="modal-header">
-					<h1 class="modal-title fs-5" data-lang="password_update_title">Password Update</h1>
+					<h1 class="modal-title fs-5" data-lang="password_update_title"></h1>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<!-- COMMENT -->
@@ -152,7 +152,7 @@
 				<div class="modal-body">
 					<div class="mb-3">
 						<label for="updatePasswordCurrentPassword" class="col-form-label"
-							data-lang="current_password_label">Current Password</label>
+							data-lang="current_password_label"></label>
 						<div class="d-flex align-items-center gap-2">
 							<input type="password" name="password" class="form-control"
 								id="updatePasswordCurrentPassword" autocomplete="current-password" required />
@@ -161,7 +161,7 @@
 					</div>
 					<div class="mb-3">
 						<label for="updatePasswordFirstPassword" class="col-form-label"
-							data-lang="new_password_label">New Password</label>
+							data-lang="new_password_label"></label>
 						<div class="d-flex align-items-center gap-2">
 							<input id="updatePasswordFirstPassword" type="password" name="new_password1"
 								class="form-control" autocomplete="current-password" minlength="8" maxlength="20"
@@ -170,23 +170,22 @@
 							<i id="updatePasswordFirstPasswordToggle" class="fas fa-eye"></i>
 						</div>
 						<div id="updatePasswordHelpBlock" class="form-text">
-							<span data-lang="password_help_block">Your password must contain :</span>
+							<span data-lang="password_help_block"></span>
 							<br />
-							<span id="updatePassLength" class="passwordHelpLine" data-lang="password_help_length">- 8 to
-								20 characters</span><br />
+							<span id="updatePassLength" class="passwordHelpLine" data-lang="password_help_length"></span>
+							<br />
 							<span id="updatePassLowercase" class="passwordHelpLine"
-								data-lang="password_help_lowercase">- Lowercase</span><br />
+								data-lang="password_help_lowercase"></span><br />
 							<span id="updatePassUppercase" class="passwordHelpLine"
-								data-lang="password_help_uppercase">- Uppercase</span><br />
-							<span id="updatePassNumbers" class="passwordHelpLine" data-lang="password_help_numbers">-
-								Number</span><br />
-							<span id="updatePassSpecial" class="passwordHelpLine" data-lang="password_help_special">-
-								Special character</span>
+								data-lang="password_help_uppercase"></span><br />
+							<span id="updatePassNumbers" class="passwordHelpLine" data-lang="password_help_numbers"></span>
+							<br />
+							<span id="updatePassSpecial" class="passwordHelpLine" data-lang="password_help_special"></span>
 						</div>
 					</div>
 					<div class="mb-3">
 						<label for="updatePasswordSecondPassword" class="col-form-label"
-							data-lang="repeat_new_password_label">Repeat New Password</label>
+							data-lang="repeat_new_password_label"></label>
 						<div class="d-flex align-items-center gap-2">
 							<input id="updatePasswordSecondPassword" type="password" name="new_password2"
 								class="form-control" autocomplete="current-password" minlength="8" maxlength="20"
@@ -196,7 +195,6 @@
 						</div>
 						<div id="updatePasswordAgainHelpBlock" class="form-text text-danger d-none"
 							data-lang="password_mismatch">
-							Passwords don't match
 						</div>
 					</div>
 				</div>
@@ -204,12 +202,10 @@
 					<!-- CLOSE BUTTON -->
 					<div>
 						<button type="button" class="btn btn-secondary" data-bs-toggle="modal"
-							data-bs-target="#updateProfileModal">
-							Back
+							data-bs-target="#updateProfileModal" data-lang="back">
 						</button>
 						<button type="button" id="updatePasswordButton" class="btn btn-primary"
 							data-lang="confirm_password_button">
-							Confirm Password
 						</button>
 					</div>
 				</div>

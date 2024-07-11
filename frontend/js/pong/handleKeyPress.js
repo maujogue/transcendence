@@ -2,6 +2,7 @@ import { movePaddle } from "./movePaddle.js";
 import { displayCharacter } from "./displayCharacter.js";
 import { moveCursor } from "./menu.js";
 import * as THREE from 'three';
+import { soloMode } from "../pages/game.js";
 
 async function handleMenuKeyPress(keysPressed, player1, player2, env) {
 	if (keysPressed["d"]) {
@@ -25,36 +26,37 @@ async function handleMenuKeyPress(keysPressed, player1, player2, env) {
 function handleKeyPress(keysPressed, player1, player2, environment) {
 	let playerBox1;
 	let playerBox2;
-	let action = 0;
-	
-	console.log("Here");
+	let actionP1, actionP2 = 0;
+
 	if (!player1)
 		return;
 	playerBox1 = new THREE.Box3().setFromObject(player1.paddle.mesh);
 	if (keysPressed["w"] && !environment.border.up.box.intersectsBox(playerBox1)) {
+		actionP1 = 1;
 		player1.paddle.mesh.translateY(0.15);
 		player1.light.position.y += 0.15;
 	}
 	if (keysPressed["s"] && !environment.border.down.box.intersectsBox(playerBox1)) {
+		actionP1 = 2; 
 		player1.paddle.mesh.translateY(-0.15);
 		player1.light.position.y -= 0.15;
 	}
 
-	if (!player2)
+	if (!player2 || soloMode)
 		return;
 	playerBox2 = new THREE.Box3().setFromObject(player2.paddle.mesh);
-	if (keysPressed["ArrowUp"] && !environment.border.up.box.intersectsBox(playerBox2)) {
-		action = 1;
+	if (keysPressed['ArrowUp'] && !environment.border.up.box.intersectsBox(playerBox2)) {
+		actionP2 = 1;
 		player2.paddle.mesh.translateY(0.15);
 		player2.light.position.y += 0.15;
 	}
-	else if (keysPressed["ArrowDown"] && !environment.border.down.box.intersectsBox(playerBox2)) {
-		action = 2
+	else if (keysPressed['ArrowDown'] && !environment.border.down.box.intersectsBox(playerBox2)) {
+		actionP2 = 2
 		player2.paddle.mesh.translateY(-0.15);
 		player2.light.position.y -= 0.15;
 	}
 
-	return (action);
+	return (actionP1, actionP2);
 }
 
 export { handleKeyPress, handleMenuKeyPress};

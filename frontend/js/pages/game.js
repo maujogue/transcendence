@@ -18,7 +18,8 @@ import { checkIfUserIsInTournament, connectToTournament } from "../pong/tourname
 import { showAlert } from "../Utils.js";
 import * as THREE from 'three';
 import { injectGameTranslations } from "../modules/translationsModule/translationsModule.js";
-import { train, storeData } from "../pong/AI/AI.js"
+import { trainModel, storeData, createModel, moveAI, storeDataReversed } from "../pong/AI/AI.js"
+import { getState } from "../pong/AI/envForAI.js";
 
 export var lobby;
 export var clock;
@@ -52,6 +53,8 @@ export async function init(queryParams) {
 	let localLoop = false;
 	let userData;
 	let form;
+	let model;
+
 	const gameDiv = document.getElementById('game');
 	const field = await createField();
 	soloMode = false;
@@ -136,18 +139,16 @@ export async function init(queryParams) {
 		}
 		if (event.target.id == 'localGame') {
 			createLocalMenu(field);
-			// localLoop = true;
+			localLoop = true;
 			// localGameLoop();
 			// goToLocalSelectMenu();
 		}
 		if (event.target.id == '1v1') {
-			localLoop = true;
 			soloMode = false;
 			localGameLoop();
 			goToLocalSelectMenu();
 		}
 		if (event.target.id == 'easy') {
-			localLoop = true;
 			soloMode = true;
 			localGameLoop();
 			createAISelectMenu(field);
@@ -190,9 +191,14 @@ export async function init(queryParams) {
 			resize(environment);
 	});
 
-	function setIfGameIsEnd() {
+	async function setIfGameIsEnd() {
 		if (player1.score < 5 && player2.score < 5)
 			return;
+		
+		if (localLoop && !soloMode) {
+			console.log("States : ", states.length, " | Actions : ", actions.length);
+			await trainModel(model, 10000);
+		}
 		let winner = player1.name;
 		if (player2.score > player1.score)
 			winner = player2.name;
@@ -200,8 +206,6 @@ export async function init(queryParams) {
 		start = false;
 		player1.score = 0;
 		player2.score = 0;
-		actions.save('downloads://actions');
-		states.save('downloads://states');
 	}
 
 
@@ -215,23 +219,31 @@ export async function init(queryParams) {
 			ClearAllEnv(environment);
 			if (!soloMode) {
 				divMenu.remove();
-				environment = await initGame(player1, player2);
-			}
-			else {	   
-				environment = await initGame(player1, player2);
-				await train(player1, player2);
-			}
+				model = await createModel();//tf.loadLayersModel('https://127.0.0.1:8000/js/pong/AI/model/model.json');
+				model.compile({
+					optimizer: tf.train.adam(0.001),
+					loss: 'meanSquaredError'
+				});
+			}	   
+			else
+				model = await tf.loadLayersModel('https://127.0.0.1:8000/js/pong/AI/model/model.json');
+			environment = await initGame(player1, player2);
 		}
 		if (start) {
-			// if (soloMode)
-			// 	move the AI here
-			let action = 0;
-			if (keyPress)
-				action = handleKeyPress(keysPressed, player1, player2, environment);
-			console.log('ACtion : ', action);
-			storeData(environment, player1, player2, action);
+			if (soloMode) {
+				const prediction = model.predict(tf.tensor(getState(environment, player2), [1, 5]));
+				moveAI(player2, environment, prediction)
+			}
+			let actionP1, actionP2 = 0;
+			if (keyPress) {
+				actionP1, actionP2 = handleKeyPress(keysPressed, player1, player2, environment);
+				if (!soloMode && actionP2 != 0) {
+					storeData(environment, player2, actionP2);
+					// storeDataReversed(environment, player1, actionP1)
+				}
+			}
 			checkCollision(environment.ball, player1, player2, environment);
-			setIfGameIsEnd();
+			await setIfGameIsEnd();
 		}
 		if (player1 && player2)
 			updateMixers(player1, player2);

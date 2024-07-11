@@ -5,35 +5,56 @@ import { checkCollision } from "../collision.js";
 import * as THREE from 'three';
 
 function normalize(value) {
-	return value / 10.0;
+	return value / 20.0;
 }
 
-function convertToTensor(normalizedState) {
-	const tensorState = tf.tensor([
-		normalizedState.ballPosX,
-		normalizedState.ballPosY,
-		normalizedState.ballVelocityX,
-		normalizedState.ballVelocityY,
-		normalizedState.playerPosY,
-		normalizedState.agentPosY
-	], [1, 6]);
+// function convertToTensor(normalizedState) {
+// 	const tensorState = tf.tensor([
+// 		normalizedState.ballPosX,
+// 		normalizedState.ballPosY,
+// 		normalizedState.ballVelocityX,
+// 		normalizedState.ballVelocityY,
+// 		normalizedState.playerPosY,
+// 		normalizedState.agentPosY
+// 	], [1, 6]);
 
-	return (tensorState);
-}
+// 	return (tensorState);
+// }
 
-export function getState(env, player1, player2) {
+export function getState(env, player2) {
 	let state = {
 		'ballPosX': normalize(env.ball.mesh.position.x),
 		'ballPosY': normalize(env.ball.mesh.position.y),
 		'ballVelocityX': normalize(env.ball.direction.x),
 		'ballVelocityY': normalize(env.ball.direction.y),
-		'playerPosY': normalize(player1.paddle.mesh.position.y),
 		'agentPosY': normalize(player2.paddle.mesh.position.y)
 	};
 
-	const tensorState = convertToTensor(state);
+	const stateArray = Object.values(state);
 
-	return (tensorState);
+	// console.log("Data array : ", stateArray);
+
+	//const stateTensor = tf.tensor(stateArray, [1, stateArray.length]);
+
+	return (stateArray);
+}
+
+export function getStateReversed(env, player1) {
+	let state = {
+		'ballPosX': normalize((-1) * env.ball.mesh.position.x),
+		'ballPosY': normalize(env.ball.mesh.position.y),
+		'ballVelocityX': normalize((-1) * env.ball.direction.x),
+		'ballVelocityY': normalize(env.ball.direction.y),
+		'agentPosY': normalize(player1.paddle.mesh.position.y)
+	};
+
+	const stateArray = Object.values(state);
+
+	// console.log("Data array : ", stateArray);
+
+	//const stateTensor = tf.tensor(stateArray, [1, stateArray.length]);
+
+	return (stateArray);
 }
 
 export function moveAgents(player1, player2, actions, env) {

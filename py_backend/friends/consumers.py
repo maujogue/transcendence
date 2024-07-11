@@ -299,3 +299,10 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         except CustomUser.DoesNotExist:
             return False
         
+    @database_sync_to_async
+    def get_online_status(self):
+        try:
+            user = CustomUser.objects.get(username=self.scope['user'].username)
+            return user.is_online
+        except CustomUser.DoesNotExist:
+            return False

@@ -4,18 +4,18 @@ from users.decorators import custom_login_required as login_required
 from django.core.files.images import get_image_dimensions
 from django.http import JsonResponse
 
-from users.utils import extension_is_valid
+from users.utils import image_extension_is_valid
 
 import magic
 
 
 @require_http_methods(["POST"])
-@login_required
 @requires_csrf_token
+@login_required
 def update_profile_picture(request):
     uploaded_file = request.FILES.get("image")
     
-    if not extension_is_valid(uploaded_file.name):
+    if not image_extension_is_valid(uploaded_file.name):
         return JsonResponse({'error': "Invalid image type."}, status=400)
 
     if uploaded_file and uploaded_file.size > 5242880: # 5MB

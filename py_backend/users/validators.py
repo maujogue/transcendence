@@ -1,7 +1,8 @@
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from py_backend import settings
 
-SPECIAL_CHARS = "@+/*.,!#%^&\{}[]=:;\'\"`~"
+SPECIAL_CHARS = "@+/*.,!?#%^&\{}[]=:;\'\"`~"
 
 def contains_special_char(string):
 	for char in SPECIAL_CHARS:
@@ -48,3 +49,31 @@ class ContainsLowercaseValidator:
 
     def get_help_text(self):
         return _("Your password must contain at least one lowercase character.")
+    
+class MinLengthValidator:
+    def validate(self, password, user=None):
+        if len(password) < settings.MIN_LEN_PASSWORD:
+            raise ValidationError(
+                _("Your password is too short."),
+                code='password_too_short')
+    
+    def get_help_text(self):
+        return _("Your password is too short.")
+
+
+class PasswordValidators:
+    def __init__(self):
+        self.validators = [
+            ContainsDigitValidator(),
+            ContainsSpecialCharValidator(),
+            ContainsUppercaseValidator(),
+            ContainsLowercaseValidator(),
+            MinLengthValidator(),
+        ]
+
+    def validate(self, password):
+        for validator in self.validators:
+            try:
+                validator.validate(password)
+            except ValidationError as e:
+                raise ValidationError(f"{validator.get_help_text()}")

@@ -8,8 +8,8 @@ from users.models import CustomUser
 from users.utils import convert_image_to_base64, utils_get_friendslist_data
 
 @require_http_methods(["GET"])
-@login_required
 @requires_csrf_token
+@login_required
 def get_user_data(request, username=None):
     if username:
         user = get_object_or_404(CustomUser, username=username)

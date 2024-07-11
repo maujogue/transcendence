@@ -1,6 +1,6 @@
 from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
-from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth import authenticate, logout, login as auth_login
 
 from users.utils import decode_json_body, convert_image_to_base64
 from users import forms
@@ -13,10 +13,11 @@ def login_view(request):
         return data
     
     form = forms.LoginForm(data)
-
+    
     if form.is_valid():
         username = form.cleaned_data['username']
         password = form.cleaned_data['password']
+
         user = authenticate(username=username, password=password)
 
         if user is not None:
@@ -26,6 +27,9 @@ def login_view(request):
             if user.is_online:
                 return JsonResponse({'error': "You are already logged in somewhere else."}, status=400)
             auth_login(request, user)
+
+            request.session['active_session'] = True
+            user.session_key = request.session.session_key
             user.is_42auth = False
             user.save()
 

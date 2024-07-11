@@ -9,7 +9,7 @@ class RegisterTests(TestCase):
         CustomUser.objects.create(
             username="lboulatr",
             email="lboulatr@gmail.com",
-            password="Damiendubocal75")
+            password="Mewtransse9+")
     
     def test_basic_user(self):
         user = CustomUser.objects.get(username="lboulatr")

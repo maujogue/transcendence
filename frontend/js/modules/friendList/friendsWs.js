@@ -4,7 +4,7 @@ import { showAlert } from "../../Utils.js";
 import { fillInbox, initUserRequests } from "./friendList.js";
 import { fillFriendsList } from "./friendList.js";
 import { hostname } from "../../Router.js";
-import { checkIfWebsocketIsOpen } from "../../pong/handlerMessage.js";
+import { checkIfWebsocketIsOpen } from "../gameModule/handlerMessage.js";
 
 let currentUser;
 let wsFriends;

@@ -134,11 +134,13 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.match = await Match.objects.aget(lobby_id=str(lobby.uuid))
             return self.match
         except Match.DoesNotExist:
-            winner = self.match.player1 if lobby.player1 else self.match.player2
-            loser = self.match.player2 if winner == self.match.player1 else self.match.player1
+            player1 = await self.authenticate_user_with_username(self.match.player1)
+            player2 = await self.authenticate_user_with_username(self.match.player2)
+            winner = player1 if lobby.player1 else player2
+            loser = player2 if winner == player1 else player1
             match = Match(  lobby_id=str(lobby.uuid),
-                            player1=self.match.player1, 
-                            player2=self.match.player2, 
+                            player1=player1, 
+                            player2=player2, 
                             player1_average_exchange=0,
                             player2_average_exchange=0,
                             winner=winner,
@@ -151,9 +153,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def launch_match_timer(self, match):
         match.timer = timezone.now()
         await match.asave()
-        if match.player1 == self.scope['user'].tournament_username:
+        print(f'match.player1 = {match.player1}, match.player2 = {match.player2}, self.scope[].username {self.scope["user"].username}')
+        if match.player1 == self.scope['user'].username:
             await asyncio.sleep(30)
-        if match.player2 == self.scope['user'].tournament_username:
+        if match.player2 == self.scope['user'].username:
             await asyncio.sleep(32)
 
     async def cancel_match(self, match):
@@ -184,9 +187,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 await self.cancel_match(res_match)
             except TournamentMatch.DoesNotExist:
                 return
-        except Exception as e:
-            print('error: ', e)
-            return
+        # except Exception as e:
+        #     print('time error: ', e)
+        #     return
         
     async def check_tournament_status(self):
         if self.tournament.finished:
@@ -208,6 +211,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def set_match_info(self):
         try:
+            print('here')
             match = await self.get_match_result()
             self.match.player1 = match.player1
             self.match.player2 = match.player2
@@ -407,7 +411,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def tournament_status(self, event):
         if event['status'] == 'disqualified':
             if event['username'] == self.scope['user'].tournament_username:
-    
                 await self.send_data({'type': 'status', 'status': 'disqualified'})
         elif event['status'] == 'endTournament':
             await self.send_data({'type': 'status', 'status': 'endTournament'})

@@ -1,3 +1,5 @@
+import { injectTranslations } from "./modules/translationsModule/translationsModule.js";
+
 class Module {
 	constructor(name) {
 		this.name = name;
@@ -60,6 +62,7 @@ async function updateModule(moduleName) {
 			div.innerHTML = module.html;
 			await module.init();
 		}
+		await injectTranslations();
 	}
 }
 

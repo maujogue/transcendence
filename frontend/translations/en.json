@@ -104,6 +104,7 @@
 	"statistics_history": "<span class='text-success'>History</span>",
 	"statistics_performance": "<span class='text-primary'>Performance</span>",
 	"play_first_match": "Play your first match to see your statistics here!",
+	"play_first_match_search": "The statistics of this user will be available when he plays its first match!",
 	"goal_average": "Goal Average",
 	"exchanges": "Exchanges",
 	"localGame": "Local Game",

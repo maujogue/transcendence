@@ -13,6 +13,7 @@ import base64
 
 import json
 import os
+import re
 
 SPECIAL_CHARS = "+/*.,!?#%^&\{}[]=:;\'\"`~"
 SPECIAL_CHARS_EMAIL = "+/*,!?#%^&\{}[]=:;\'\"`~"
@@ -23,6 +24,8 @@ def email_is_valid(email):
 		return False, f'Missing email.'
 	if any(char in SPECIAL_CHARS_EMAIL for char in email):
 		return False, f'Email contains forbidden characters.'
+	if re.search(r'\s', email):
+		return False, 'email cannot contain spaces.'
 	if not '@' in email:
 		return False, f'Invalid email.'
 	return True, None
@@ -46,6 +49,8 @@ def username_is_valid(username):
 		return False, f'Username is too long.'
 	if any(char in SPECIAL_CHARS for char in username):
 		return False, f'Username contains forbidden characters.'
+	if re.search(r'\s', username):
+		return False, 'Username cannot contain spaces.'
 	return True, None
 
 

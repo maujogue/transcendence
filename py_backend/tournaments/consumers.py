@@ -87,21 +87,23 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def match_is_over(self):
         if not self.match:
-            self.match = await self.get_player_match(self.scope['user'].tournament_username)
+            self.match = await self.get_player_match(self.scope['user'])
         self.match.finished = True
         await self.match.asave()
 
     async def auth(self, text_data_json):
-        username = text_data_json.get('username')
-        user = await self.authenticate_user_with_username(username)
-        if user:
+        try:
+            username = text_data_json.get('username')
+            user = await self.authenticate_user_with_username(username)
             self.scope["user"] = user
-            self.match = await self.get_player_match(self.scope['user'].tournament_username)
+            self.match = await self.get_player_match(self.scope['user'])
             await self.send(text_data=json.dumps({"type": "auth", "status": "success"}))
             await self.check_tournament_start()
             await self.check_if_disqualified()
-        else:
+        except Exception as e:
             await self.send(text_data=json.dumps({"type":"auth", "status": "failed"}))
+            print(f'Auth error: {e}')
+            await self.close()
 
     async def set_tournament_over(self):
         self.tournament.finished = True
@@ -132,9 +134,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.match = await Match.objects.aget(lobby_id=str(lobby.uuid))
             return self.match
         except Match.DoesNotExist:
-            winner = lobby.player1 if lobby.player1 else lobby.player2
-            if not winner:
-                winner = self.match.player1
+            winner = self.match.player1 if lobby.player1 else self.match.player2
             loser = self.match.player2 if winner == self.match.player1 else self.match.player1
             match = Match(  lobby_id=str(lobby.uuid),
                             player1=self.match.player1, 
@@ -243,6 +243,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     
     @database_sync_to_async
     def is_tournament_full(self):
+        print(f'participants.count : {self.tournament.participants.count()}')
         if self.tournament.participants.count() == self.tournament.max_players:
             return True
         return False
@@ -260,7 +261,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def validate_foreign_keys(self):
         try:
             if not self.match:
-                self.match = await self.get_player_match(self.scope['user'].tournament_username)
+                self.match = await self.get_player_match(self.scope['user'])
             tournament = await Tournament.objects.aget(id=self.scope['url_route']['kwargs']['tournament_id'])
             match = await TournamentMatch.objects.aget(lobby_id=self.match.lobby_id)
             return True
@@ -307,14 +308,14 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             print('username: ', username)
             return CustomUser.objects.get(username=username)
         except CustomUser.DoesNotExist:
-            return None
+            raise Exception('user not found')
         
     async def send_self_bracket(self):
         bracket = await sync_to_async(self.tournament.get_tournament_bracket)()
         await self.send(text_data=json.dumps({'type': 'bracket', 'bracket': bracket}))
 
     async def send_self_matchup(self):
-        self.match = await self.get_player_match(self.scope['user'].tournament_username)
+        self.match = await self.get_player_match(self.scope['user'])
         if self.match and not self.match.finished and self.match.player2:
             match_infos = self.get_match_infos(self.match)
             timer = 30 - self.get_elapsed_time(self.match.timer)
@@ -383,7 +384,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             text_data=json.dumps({'type': 'participants', 'participants': event['participants']}))
         
     async def tournament_matchups(self, event):
-        self.match = await self.get_player_match(self.scope['user'].tournament_username)
+        self.match = await self.get_player_match(self.scope['user'])
         if self.match:
             if not self.match.finished and self.match.player2:
                 match_infos = self.get_match_infos(self.match)

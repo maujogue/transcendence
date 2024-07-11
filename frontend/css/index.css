@@ -32,3 +32,8 @@ p {
 img {
 	pointer-events: none;
 }
+
+html {
+	overflow-y: scroll;
+	height: 101vh;
+}

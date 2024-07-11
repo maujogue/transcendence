@@ -197,7 +197,7 @@ export async function init(queryParams) {
 		
 		if (localLoop && !soloMode) {
 			console.log("States : ", states.length, " | Actions : ", actions.length);
-			await trainModel(model, 10000);
+			await trainModel(model, 500);
 		}
 		let winner = player1.name;
 		if (player2.score > player1.score)
@@ -235,7 +235,7 @@ export async function init(queryParams) {
 			let actionP1, actionP2 = 0;
 			if (keyPress) {
 				actionP1, actionP2 = handleKeyPress(keysPressed, player1, player2, environment);
-				if (!soloMode && actionP2 != 0) {
+				if (!soloMode) {
 					storeData(environment, player2, actionP2);
 					// storeDataReversed(environment, player1, actionP1)
 				}

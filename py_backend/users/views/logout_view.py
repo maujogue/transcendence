@@ -11,6 +11,7 @@ from django.http import JsonResponse
 def logout_view(request):
     user = request.user
     user.save()
+    user.isOnline = False
     
     logout(request)
     return JsonResponse({'status': "You are now logout !"}, status=200)

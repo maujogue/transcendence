@@ -15,9 +15,7 @@ def check_password(request):
     form = forms.LoginForm(data)
 
     if form.is_valid():
-        username = form.cleaned_data['username']
         password = form.cleaned_data['password']
-        user = authenticate(username=username, password=password)
-        if user:
+        if request.user.check_password(password):
             return JsonResponse({'status': "Password valid"}, status=200)
     return JsonResponse({'error': "Wrong password"}, status=400)

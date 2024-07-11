@@ -219,7 +219,7 @@ export async function init(queryParams) {
 			ClearAllEnv(environment);
 			if (!soloMode) {
 				divMenu.remove();
-				model = await createModel();//tf.loadLayersModel('https://127.0.0.1:8000/js/pong/AI/model/model.json');
+				model = await tf.loadLayersModel('https://127.0.0.1:8000/js/pong/AI/model/model.json');
 				model.compile({
 					optimizer: tf.train.adam(0.001),
 					loss: 'meanSquaredError'
@@ -230,10 +230,8 @@ export async function init(queryParams) {
 			environment = await initGame(player1, player2);
 		}
 		if (start) {
-			if (soloMode) {
-				const prediction = model.predict(tf.tensor(getState(environment, player2), [1, 5]));
-				moveAI(player2, environment, prediction)
-			}
+			if (soloMode)
+				moveAI(player2, environment, model)
 			let actionP1, actionP2 = 0;
 			if (keyPress) {
 				actionP1, actionP2 = handleKeyPress(keysPressed, player1, player2, environment);

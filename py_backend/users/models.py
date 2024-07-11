@@ -36,9 +36,7 @@ class CustomUser(AbstractUser):
 	friends = models.ManyToManyField("self", blank=True)
 	is_42auth = models.BooleanField(default=False)
 	is_online = models.BooleanField(default=False)
-	is_logged_in = models.BooleanField(default=False)
 	lang = models.CharField(max_length=2, default='en')
-	session_key = models.CharField(max_length=32, default=None, null=True)
 	
 	def save(self, *args, **kwargs):
 		if not self.tournament_username:

@@ -74,13 +74,14 @@ def validation_register(data):
 	is_unique_email, unique_email_response = email_is_unique(email)
 
 	if not is_valid_username:
-		return validation_errors.append(valid_username_response)
+		validation_errors.append(valid_username_response)
 	if not already_used_username:
-		return validation_errors.append(response_already_used_username)
+		validation_errors.append(response_already_used_username)
 	if not is_valid_email:
-		return validation_errors.append(valid_email_response)
+		validation_errors.append(valid_email_response)
 	if not is_unique_email:
-		return validation_errors.append(unique_email_response)
+		validation_errors.append(unique_email_response)
+	return validation_errors
 
 
 def decode_json_body(request):

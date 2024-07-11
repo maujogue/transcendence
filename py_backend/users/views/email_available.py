@@ -19,7 +19,6 @@ def email_available(request):
     if not is_valid:
         return JsonResponse({'status': is_valid_response}, status=400)
     
-
     if email:
         is_unique, response = email_is_unique(email)
         if is_unique:

@@ -113,3 +113,8 @@ class UtilsFunctionsTest(TestCase):
         response_data = response.json()
         self.assertEqual(response_data.get('status'), 'Missing email.')
         self.assertEqual(response.status_code, 400)
+
+
+    def test_post_without_data(self):
+        response = self.client.post('email_available', {})
+        self.assertEqual(response.status_code, 404)

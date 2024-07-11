@@ -4,11 +4,9 @@ from django.contrib.auth import authenticate, logout, login as auth_login
 
 from users.utils import decode_json_body, convert_image_to_base64
 from users import forms
-from django.views.decorators.csrf import csrf_exempt
 
 
 @require_http_methods(["POST"])
-@csrf_exempt
 def login_view(request):
     data = decode_json_body(request)
     if isinstance(data, JsonResponse):

@@ -95,7 +95,7 @@ def decode_json_body(request):
 		return JsonResponse(data={'error': "Invalid JSON format"}, status=406)
 	
 
-def extension_is_valid(image_name):
+def image_extension_is_valid(image_name):
 	name, ext = os.path.splitext(image_name)
 	if ext == '.png':
 		return True

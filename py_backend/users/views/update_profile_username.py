@@ -7,7 +7,7 @@ from users.utils import decode_json_body, username_is_unique, username_is_valid
 
 
 @require_http_methods(["POST"])
-# @requires_csrf_token
+@requires_csrf_token
 @login_required
 def update_profile_username(request):
     data = decode_json_body(request)

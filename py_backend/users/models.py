@@ -23,7 +23,7 @@ class CustomUser(AbstractUser):
 		verbose_name = 'Custom User'
 
 	username = models.CharField(max_length=settings.MAX_LEN_USERNAME, unique=True)
-	tournament_username = models.CharField(max_length=9, unique=True, default='')
+	tournament_username = models.CharField(max_length=settings.MAX_LEN_TOURNAMENT_USERNAME, unique=True, default='')
 	email = models.EmailField(max_length=settings.MAX_LEN_EMAIL, unique=True)
 	email_is_verified = models.BooleanField(default=False)
 	title = models.CharField(max_length=50, null=True)

@@ -1,5 +1,14 @@
 {
     "about": "About",
+	"about_personalise_title": "Personalise your profile",
+	"about_personalise_description": "Choose your username, your avatar and your banner to make your profile unique. Write a Bio so that others learn the kind of player you are!",
+	"about_friends_title": "Find Friends",
+	"about_friends_description": "Search and add friends, view their profile and compare your stats",
+	"about_play_title": "Play locally or online",
+	"about_play_description": "1v1 your desk mate or play online with anyone in the world",
+	"about_tournaments_title": "Compete in tournaments",
+	"about_tournaments_description": "Play competitively by joining tournaments and climb the steps to become the champion!",
+
     "what_is_pong": "Welcome to Pong!",
     "play_pong_title": "Let's play <span class='text-success'>Pong!",
     "play_pong_description": "Pong is one of the most <span class='text-primary'>iconic games</span> of all time. <br> Why not give it a <span class='text-warning'>lifting?</span> <br> <span class='text-danger'>Meet Pong! </span>, the modern, online, 3D version of the original game.",
@@ -28,6 +37,7 @@
     "jocelyn_name":  "<span class='text-danger'> Jocelyn</span>",
     "jocelyn_role": "Blockchain integration",
     "jocelyn_image_alt": "Jocelyn",
+
     "profile_image_alt": "profile image",
     "edit_profile_button": "Edit",
     "username_label": "Username",

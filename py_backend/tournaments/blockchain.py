@@ -3,11 +3,15 @@ import os
 import json
 
 # CHAIN_ID = os.environ.get("CHAIN_ID")
+# WALLET = os.environ.get("WALLET")
+# PRIVATE_KEY = os.environ.get("PRIVATE_KEY")
+# PROVIDER_URL = os.environ.get("PROVIDER_URL")
+# CONTRACT_ADDRESS = os.environ.get("CONTRACT_ADDRESS")
 CHAIN_ID = 11155111
-WALLET = os.environ.get("WALLET")
-PRIVATE_KEY = os.environ.get("PRIVATE_KEY")
-PROVIDER_URL = os.environ.get("PROVIDER_URL")
-CONTRACT_ADDRESS = os.environ.get("CONTRACT_ADDRESS")
+WALLET = "0x08Cad489Ad4542AF82Ee81eC949776775dea23be"
+PRIVATE_KEY = "c38331b12e562919c0d636d90d526accf9e1b442f31cb6cd6254e1c231b97859"
+PROVIDER_URL = "https://sepolia.infura.io/v3/098a45a55c344ef8ac3da0ba6270fd1f"
+CONTRACT_ADDRESS = "0x9A0747a3555F00AA610553e07Cb84f15e60FD5cF"
 
 def load_contract_abi():
     script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -18,7 +22,7 @@ def load_contract_abi():
 
     return abi
 
-def set_data_on_blockchain(tournament):
+async def set_data_on_blockchain(tournament):
     try:
         print("entering into set_data_on_blockchain")
         print(f"CONTRACT_ADDRESS: {CONTRACT_ADDRESS}")

@@ -10,7 +10,10 @@ from stats.models import Match
 from multiplayer.models import Lobby
 from .models import Tournament, TournamentMatch
 from .bracket import generate_bracket
-from .blockchain import set_data_on_blockchain
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 class TournamentConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -85,8 +88,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def match_is_over(self):
         if not self.match:
             self.match = await self.get_player_match(self.scope['user'].tournament_username)
-        self.match.finished = True
-        await self.match.asave()
+        if not self.match.finished:
+            self.match.finished = True
+            await self.match.asave()
 
     async def auth(self, text_data_json):
         username = text_data_json.get('username')
@@ -101,9 +105,14 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({"type":"auth", "status": "failed"}))
 
     async def set_tournament_over(self):
-        self.tournament.finished = True
-        await self.tournament.asave()
-        await self.send_tournament_end()
+        if not self.tournament.finished:
+            logger.info(f"Setting tournament {self.tournament.pk} as finished.")
+            self.tournament.finished = True
+            await self.tournament.asave()
+            await self.send_tournament_end()
+        else:
+            logger.info(f"Tournament {self.tournament.pk} is already marked as finished.")
+
 
     async def generate_round(self):
         await sync_to_async(generate_bracket)(self.tournament)

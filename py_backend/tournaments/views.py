@@ -10,8 +10,6 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
 from .models import Tournament
-# from .blockchain.tournamentContract import deploy_tournament_contract
-from .blockchain import set_data_on_blockchain
 
 import json
 
@@ -169,20 +167,6 @@ def check_if_tournament_joined(request, username):
 			return JsonResponse({"message": "User has joined a tournament.", "tournament": tournamentJSON, "joined": True},
 						status=200)
 	return JsonResponse({"message": "User has joined a tournament.", "joined": False}, status=200)
-
-# @require_http_methods(["POST"])
-# def send_data_to_blockchain(request, tournament_id):
-# 	try:
-# 		tournament = Tournament.objects.get(pk=tournament_id)
-# 	except Tournament.DoesNotExist:
-# 		return JsonResponse({"errors": "Tournament not found."},
-# 					status=404)
-# 	tournament.receipt_address = set_data_on_blockchain(tournament)
-# 	if "Failed" in tournament.receipt_address:
-# 		return JsonResponse({"errors": tournament.receipt_address},
-# 					status=400)
-# 	return JsonResponse({"message": "Transaction initiated."},
-# 					 status=200)
 
 @require_http_methods(["GET"])
 def return_all_user_tournaments(request, username):

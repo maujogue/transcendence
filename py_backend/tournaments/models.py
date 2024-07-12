@@ -12,6 +12,11 @@ from multiplayer.models import Lobby
 
 from math import log2, ceil
 
+# debugging
+import logging
+
+logger = logging.getLogger(__name__)
+
 class TournamentMatch(models.Model):
 	lobby_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 	num = models.IntegerField(default=0)
@@ -45,6 +50,7 @@ class Tournament(models.Model):
 		super().clean()
 
 	def save(self, *args, **kwargs):
+		logger.info(f"Saving tournament {self.pk}, finished: {self.finished}")
 		if not self.pk:
 			self.max_round = ceil(log2(self.max_players))
 		super().save(*args, **kwargs)

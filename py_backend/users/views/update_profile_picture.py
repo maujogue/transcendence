@@ -6,6 +6,7 @@ from django.http import JsonResponse
 
 from users.utils import extension_is_valid
 
+import pylibmagic # needed for jrenault's macbook
 import magic
 
 

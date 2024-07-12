@@ -59,23 +59,3 @@ def set_data_on_blockchain(tournament):
     except Exception as e:
         print(f"Error deploying contract: {e}")
         return f"Failed to initiate transaction: {str(e)}"
-
-# def get_matches_by_player(tournament, player_name):
-#     contract_address = CONTRACT_ADDRESS
-
-#     abi = load_contract_abi()
-#     w3 = Web3(HTTPProvider(PROVIDER_URL))
-#     contract = w3.eth.contract(address=contract_address, abi=abi)
-#     matches = contract.functions.getMatches().call()
-
-#     player_matches = [{
-#             'round': match[1],
-#             'player1': match[2],
-#             'score_player_1': match[3],
-#             'player2': match[4],
-#             'score_player_2': match[5],
-#             'match_winner': match[6],
-#         }
-#         for match in matches if match[2] == player_name or match[4] == player_name
-#     ]
-#     return player_matches

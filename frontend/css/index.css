@@ -35,5 +35,5 @@ img {
 
 html {
 	overflow-y: scroll;
-	height: 101vh;
+	/* height: 101vh; */
 }

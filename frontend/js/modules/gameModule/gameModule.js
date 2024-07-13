@@ -56,7 +56,6 @@ export async function init() {
 	let localLoop = false;
 	let userData;
 	let form;
-	const gameDiv = document.getElementById('game');
 
 	await loadAllModel();
 
@@ -80,7 +79,7 @@ export async function init() {
 		player2 = await displayCharacter(player2, environment, "elvis", "player2");
 	}
 
-	gameDiv.addEventListener("keydown", function (event) {
+	document.addEventListener("keydown", function (event) {
 		let key = event.key;
 		if (event.key.match(/^[aqwd]$/))
 			key = event.key.toLowerCase();
@@ -93,17 +92,6 @@ export async function init() {
 		delete keysPressed[event.key];
 	});
 
-
-	gameDiv.addEventListener('click', function (event) {
-		document.body.style.overflow = 'hidden';
-		if (!gameDiv.contains(event.target)) {
-			document.body.style.overflow = 'auto';
-		}
-	});
-
-	gameDiv.addEventListener('click', function () {
-		document.body.style.overflow = 'hidden';
-	});
 
 	document.body.addEventListener("click", function (event) {
 		getUserData().then((data) => {
@@ -148,7 +136,7 @@ export async function init() {
 		}
 		if (event.target.id == 'fullScreen') {
 			if (!isFullScreen())
-				gameDiv.requestFullscreen();
+				document.requestFullscreen();
 			else
 				document.exitFullscreen();
 		}

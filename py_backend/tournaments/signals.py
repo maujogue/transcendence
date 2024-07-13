@@ -1,30 +1,27 @@
-import logging
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from .models import Tournament
-from asgiref.sync import sync_to_async
+from asgiref.sync import sync_to_async, async_to_sync
 from .blockchain import set_data_on_blockchain
+
+import logging
+import threading
 
 logger = logging.getLogger(__name__)
 
 @receiver(pre_save, sender=Tournament)
 def cache_tournament_state(sender, instance, **kwargs):
     if not instance.pk:
-        # New instance, nothing to compare
         instance._previous_finished_state = None
     else:
-        # Fetch the existing instance from the database
         previous = Tournament.objects.filter(pk=instance.pk).first()
-        if previous:
-            instance._previous_finished_state = previous.finished
-        else:
-            instance._previous_finished_state = None
+        instance._previous_finished_state = previous.finished if previous else None
 
 @receiver(post_save, sender=Tournament)
 def set_signal_for_blockchain(sender, instance, **kwargs):
     if kwargs.get('created', False):
         logger.info(f"Tournament {instance.pk} created. Ignoring signal.")
-        return  # Skip if the instance is just created
+        return
 
     previous_finished_state = getattr(instance, '_previous_finished_state', None)
     logger.info(f"Tournament {instance.pk} previous finished state: {previous_finished_state}")
@@ -32,6 +29,6 @@ def set_signal_for_blockchain(sender, instance, **kwargs):
 
     if previous_finished_state is None or (not previous_finished_state and instance.finished):
         logger.info(f"Tournament {instance.pk} finished. Triggering blockchain function.")
-        set_data_on_blockchain(instance)
+        threading.Thread(target=set_data_on_blockchain, args=(instance,)).start()
     else:
         logger.info(f"Tournament {instance.pk} save ignored. No change in finished state.")

@@ -11,9 +11,9 @@ from multiplayer.models import Lobby
 from .models import Tournament, TournamentMatch
 from .bracket import generate_bracket
 
-import logging
+#import logging
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 
 class TournamentConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -106,12 +106,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def set_tournament_over(self):
         if not self.tournament.finished:
-            logger.info(f"Setting tournament {self.tournament.pk} as finished.")
+            # logger.info(f"Setting tournament {self.tournament.pk} as finished.")
             self.tournament.finished = True
             await self.tournament.asave()
             await self.send_tournament_end()
-        else:
-            logger.info(f"Tournament {self.tournament.pk} is already marked as finished.")
+#        else:
+#            logger.info(f"Tournament {self.tournament.pk} is already marked as finished.")
 
 
     async def generate_round(self):

@@ -1,6 +1,9 @@
 from web3 import Web3, HTTPProvider
 import os
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 # CHAIN_ID = os.environ.get("CHAIN_ID")
 # WALLET = os.environ.get("WALLET")
@@ -14,6 +17,7 @@ PROVIDER_URL = "https://sepolia.infura.io/v3/098a45a55c344ef8ac3da0ba6270fd1f"
 CONTRACT_ADDRESS = "0x9A0747a3555F00AA610553e07Cb84f15e60FD5cF"
 
 def load_contract_abi():
+    logger.info("into load_contract_abi()")
     script_dir = os.path.dirname(os.path.abspath(__file__))
     json_path = os.path.join(script_dir, "compiledSolidity.json")
     with open(json_path, "r") as file:
@@ -22,8 +26,9 @@ def load_contract_abi():
 
     return abi
 
-async def set_data_on_blockchain(tournament):
+def set_data_on_blockchain(tournament):
     try:
+        logger.info("Entering into set_data_on_blockchain")
         print("entering into set_data_on_blockchain")
         print(f"CONTRACT_ADDRESS: {CONTRACT_ADDRESS}")
         tournament_winner = tournament.get_winner()

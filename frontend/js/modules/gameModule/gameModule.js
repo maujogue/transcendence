@@ -56,6 +56,7 @@ export async function init() {
 	let localLoop = false;
 	let userData;
 	let form;
+	var gamediv = document.getElementById("game");
 
 	await loadAllModel();
 
@@ -93,7 +94,7 @@ export async function init() {
 	});
 
 
-	document.body.addEventListener("click", function (event) {
+	gamediv.addEventListener("click", function (event) {
 		getUserData().then((data) => {
 			userData = data;
 		})
@@ -136,7 +137,7 @@ export async function init() {
 		}
 		if (event.target.id == 'fullScreen') {
 			if (!isFullScreen())
-				document.requestFullscreen();
+				gamediv.requestFullscreen();
 			else
 				document.exitFullscreen();
 		}

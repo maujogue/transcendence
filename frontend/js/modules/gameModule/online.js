@@ -155,8 +155,7 @@ async function connectToLobby(username) {
         onlineGameLoop(wsMatch);
         send_ping();
     }
-    
-    document.addEventListener('click', clickHandler);
+    document.getElementById("game").addEventListener('click', clickHandler);
     
     wsMatch.onmessage = function(e) {
         const data = JSON.parse(e.data);

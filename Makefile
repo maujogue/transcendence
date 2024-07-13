@@ -33,9 +33,9 @@ prod_clean:
 dev_clean:
 		$(DOCKER_COMPOSE_DEV) down --volumes --rmi all
 
-prod_fclean: prod_clean clean-migrations-cache
+prod_fclean: prod_clean clean-migrations-cache-db
 
-dev_fclean: dev_clean clean-migrations-cache
+dev_fclean: dev_clean clean-migrations-cache-db
 
 prod_re:
 	$(DOCKER_COMPOSE_PROD) build --build-arg CACHEBUST=$(shell date +%s)
@@ -66,7 +66,7 @@ removecontainers:
 			docker rm $$(docker ps -aq); \
 		fi; \
 
-armageddon: removecontainers clean-migrations-cache
+armageddon: removecontainers clean-migrations-cache-db
 		@if [ -f py_backend/db.sqlite3 ]; then \
 			rm py_backend/db.sqlite3; \
 		fi
@@ -81,8 +81,11 @@ armageddon: removecontainers clean-migrations-cache
 			docker rmi -f $$(docker images -qa); \
 		fi
 
-clean-migrations-cache:
+clean-migrations-cache-db:
 		@rm -rf py_backend/migrations
 		@rm -rf py_backend/__pycache__
 		@rm -rf py_backend/*/migrations
 		@rm -rf py_backend/*/__pycache__
+		@if [ -f py_backend/db.sqlite3 ]; then \
+			rm py_backend/db.sqlite3; \
+		fi

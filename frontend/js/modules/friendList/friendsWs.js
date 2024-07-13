@@ -49,7 +49,7 @@ async function getUserRequests(username) {
 async function sendFriendRequest(username) {
 	if (!checkUsername(username))
 		return;
-	sendMessage('friend_request', {'from_user': username, 'to_user': 'username'});
+	sendMessage('friend_request', {'from_user': currentUser, 'to_user': username});
 }
 
 async function acceptFriendRequest(fromUser) {

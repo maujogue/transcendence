@@ -12,6 +12,12 @@
 	transform: translateY(-100px);
 	width: 50%;
 	max-width: 250px;
+	aspect-ratio: 1;
+	object-fit: cover;
+}
+#profileCard .bannerDynamic {
+	aspect-ratio: 3/2;
+	object-fit: cover;
 }
 
 #editProfileBtn{

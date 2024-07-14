@@ -1,10 +1,10 @@
 from web3 import Web3, HTTPProvider
 import os
 import json
-import logging
+# import logging
 # from asgiref.sync import sync_to_async
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 
 # CHAIN_ID = os.environ.get("CHAIN_ID")
 # WALLET = os.environ.get("WALLET")
@@ -18,42 +18,31 @@ PROVIDER_URL = "https://sepolia.infura.io/v3/098a45a55c344ef8ac3da0ba6270fd1f"
 CONTRACT_ADDRESS = "0x9A0747a3555F00AA610553e07Cb84f15e60FD5cF"
 
 def load_abi_from_file(json_path):
-    logger.info("entering into load_abi_from_file")
     with open(json_path, "r") as file:
         compiled_solidity = json.load(file)
-    logger.info("end of load_abi_from_file")
     return compiled_solidity["contracts"]["tournamentContract.sol"]["StoreTournamentData"]["abi"]
 
 def load_contract_abi():
-    logger.info("into load_contract_abi()")
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    logger.info("after script_dir")
     json_path = os.path.join(script_dir, "compiledSolidity.json")
-    logger.info("after json_path")
-    logger.info("after open")
     abi = load_abi_from_file(json_path)
-    logger.info("after abi = compiled_solidity")
 
     return abi
 
 def set_data_on_blockchain(tournament):
     try:
-        logger.info("Entering into set_data_on_blockchain")
         print("entering into set_data_on_blockchain")
         print(f"CONTRACT_ADDRESS: {CONTRACT_ADDRESS}")
         tournament_winner = tournament.get_winner()
         tournament_name = tournament.name
 
         abi = load_contract_abi()
-        logger.info("after abi")
         w3 = Web3(HTTPProvider(PROVIDER_URL))
         contract = w3.eth.contract(address=CONTRACT_ADDRESS, abi=abi)
         nonce = w3.eth.get_transaction_count(WALLET, 'pending')
-        logger.info("after initialization of most infos")
 
         matches = []
         for match in tournament.matchups.all():
-            logger.info("before each iteration for match")
             matches.append({
                 'round': str(match.round),
                 'player1': match.player1,
@@ -62,7 +51,6 @@ def set_data_on_blockchain(tournament):
                 'scorePlayer2':str(match.score_player_2),
                 'matchWinner': match.winner
             })
-        logger.info("after matches init")
         transaction = contract.functions.addTournament(
             tournament_name,
             tournament_winner,
@@ -73,7 +61,6 @@ def set_data_on_blockchain(tournament):
             'from': WALLET,
             'nonce': nonce
         })
-        logger.info("after getting transaction")
         signed_transaction = w3.eth.account.sign_transaction(transaction, PRIVATE_KEY)
         transaction_hash = w3.eth.send_raw_transaction(signed_transaction.rawTransaction)
         print("Waiting for transaction to finish...")

@@ -53,7 +53,7 @@ export async function init() {
 			username: userData.get("username"),
 		};
 		if (!fetchBody.username)
-			return showAlert("Please enter a valid username.");
+			return showAlert("enter_valid_username_message");
 
 		await displayUserPage(fetchBody.username);
 	}
@@ -184,9 +184,9 @@ async function refreshManageFriendshipBtn() {
 async function displayUserPage(username) {
 	var userExists = await checkInputAvailable(username, "username");
 	if (userExists)
-		return showAlert("This user does not exist.");
+		return showAlert("user_not_exist_message");
 	if (username === await getUserData("username"))
-		return showAlert("You cannot visit your own profile.");
+		return showAlert("cant_visit_own_profile_message");
 	await waitThenInitDashButtons(username);
 	await injectDashData(username);
 	await navigateTo("/dash");

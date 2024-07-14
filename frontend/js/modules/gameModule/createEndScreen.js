@@ -8,26 +8,25 @@ function createEndScreen(winnerName) {
     div.classList.add('endscreen');
 
     const h3 = document.createElement('h3');
-    h3.innerText = winnerName + " WIN";
+	const win = document.createElement('h3');
+    h3.innerText = winnerName;
+    win.setAttribute("data-lang", "win");
     const titleDiv = document.createElement('div');
     div.append(titleDiv);
     titleDiv.append(h3);
+    titleDiv.append(win);
 
     const restartBtn = document.createElement('button');
     restartBtn.className = 'btn btn-endscreen';
     restartBtn.id = 'restart';
     restartBtn.innerText = 'Play again';
 	restartBtn.setAttribute("data-lang", "playagain");
-    const backToTheMenuBtn = document.createElement('button');
-    backToTheMenuBtn.className = 'btn';
-    backToTheMenuBtn.id = 'backMenu';
-    backToTheMenuBtn.innerText = 'Back to menu';
-	backToTheMenuBtn.setAttribute("data-lang", "backmenu");
-
+	
     const backToMenuBtn = document.createElement('button');
     backToMenuBtn.className = 'btn btn-endscreen';
     backToMenuBtn.id = 'backMenu';
     backToMenuBtn.innerText = 'Back to menu';
+	backToMenuBtn.setAttribute("data-lang", "backmenu");
 
     const btnDiv = document.createElement('div');
     btnDiv.classList.add('endscreen-btn');

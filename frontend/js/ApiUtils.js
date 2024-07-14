@@ -47,7 +47,7 @@ async function updateInfo(endpoint, fetchBody, modalToDismiss) {
 		resetForm();
 		injectUserData();
 	} else if (data.error && data.error.length > 0) showAlert(data.error);
-	else showAlert("Profile update Error");
+	else showAlert("profile_update_error_message");
 	return response;
 }
 

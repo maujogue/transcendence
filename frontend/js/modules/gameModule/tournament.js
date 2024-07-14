@@ -110,7 +110,7 @@ function displayRankingScreen(data) {
     if (!document.getElementsByClassName("tournament")[0])
         createTournamentDiv();
     const tournamentDiv = document.getElementsByClassName("tournament")[0];
-    tournamentDiv.innerHTML = `<h1 class="won-title">${data.winner} won the tournament!</h1>`;
+    tournamentDiv.innerHTML = `<h1 class="won-title">${data.winner} <span data-lang="tournament_won"></span></h1>`;
     displayTournamentRanking(data.ranking);
     createLeaveButton(tournamentDiv);
     createShowBracketButton(tournamentDiv);
@@ -120,7 +120,7 @@ function displayTournamentRanking(ranking) {
     console.log("displayTournamentRanking: ", ranking);
     const rankingDiv = document.createElement("div");
     rankingDiv.className = "ranking";
-    rankingDiv.innerHTML = "<h2 class='ranking-title'>Ranking</h2>";
+    rankingDiv.innerHTML = "<h2 class='ranking-title' data-lang='ranking'></h2>";
     const podiumDiv = document.createElement("div");
     podiumDiv.className = "podium";
     const podium = ["🥇", "🥈", "🥉"]
@@ -213,7 +213,7 @@ export function displayErrorPopUp (message, parent) {
     const errorPopUp = document.createElement("div");
     errorPopUp.id = "errorPopUp";
     errorPopUp.className = "error-pop-up pop-up";
-    errorPopUp.innerHTML = `<p>${message}</p>`;
+    errorPopUp.setAttribute("data-lang", message);
     parent.appendChild(errorPopUp);
     setTimeout(() => {
         if (document.getElementById("errorPopUp"))
@@ -223,7 +223,7 @@ export function displayErrorPopUp (message, parent) {
 
 export function createShowBracketButton(parent) {
     const seeBracketBtn = document.createElement("button");
-    seeBracketBtn.textContent = "Show bracket";
+	seeBracketBtn.setAttribute("data-lang", "show_bracket");
     seeBracketBtn.className = "show-bracket-btn end-tournament-btn tournament-btn";
     parent.appendChild(seeBracketBtn);
     seeBracketBtn.onclick = () => ask_bracket();
@@ -237,7 +237,7 @@ function ask_bracket() {
 
 export function createUnsubscribeButton(parent) {
     const unsubscribeBtn = document.createElement("button");
-    unsubscribeBtn.textContent = "Unsubscribe";
+	unsubscribeBtn.setAttribute("data-lang", "unsubscribe");
     unsubscribeBtn.onclick = () => unsubscribeFromTournament();
     unsubscribeBtn.className = "unsubscribe-btn tournament-btn";
     parent.appendChild(unsubscribeBtn);
@@ -255,7 +255,7 @@ export function createWaitingScreenTournament(tournament) {
     tournamentDiv.id = "PlayerList";
 	const header = document.createElement("div");
 	header.className = "list-header";
-	header.textContent = "Players";
+	header.setAttribute("data-lang", "players");
     const playerList = document.createElement("div");
     playerList.className = "player-list";
     playerList.id = "player-list";

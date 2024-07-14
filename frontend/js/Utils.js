@@ -1,5 +1,6 @@
 import { runEndPoint } from "./ApiUtils.js"
 import { getUserData, injectUserData } from "./User.js";
+import { injectElementTranslations } from "./modules/translationsModule/translationsModule.js";
 
 async function isLoggedIn() {
 	var response = await runEndPoint("users/check_user_logged_in/", "GET");
@@ -104,7 +105,7 @@ function toggleSearchBar(forceDisable) {
 
 var alertId = 0;
 
-function showAlert(message, success) {
+function showAlert(message, success, button) {
 	success = success === true || success === 'true';
 	var bgColor = success ? "text-bg-success" : "text-bg-danger";
 	var alertDiv = document.getElementById("alert");
@@ -118,11 +119,14 @@ function showAlert(message, success) {
 		<small>${datetime}</small>
 		<button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
 		</div>
-		<div class="toast-body" style="text-wrap: wrap;">
-		${message}
+		<div class="toast-body" style="text-wrap: wrap;"">
+		<div data-lang="${message}"></div>
 		</div>
 	</div>
 	`;
+	if (button)
+		alertDiv.querySelector(`#alert${alertId} .toast-body`).appendChild(button);
+	injectElementTranslations(`#alert${alertId}`);
 	var toast = alertDiv.querySelector("#alert" + alertId);
 	new bootstrap.Toast(toast).show();
 	alertId++;

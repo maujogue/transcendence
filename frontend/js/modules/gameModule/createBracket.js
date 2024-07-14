@@ -1,3 +1,4 @@
+import { injectElementTranslations } from "../translationsModule/translationsModule.js";
 import { displayMainMenu } from "./menu.js";
 import { createUnsubscribeButton, playerStatus, tournamentStatus } from "./tournament.js";
 import { wsTournament } from "./tournament.js";
@@ -71,7 +72,6 @@ function updateButtonWithStatus() {
 
 function displayWaitingText() {
     const waitingText = document.createElement('p');
-    let textContent;
     waitingText.id = 'waitingText';
     waitingText.classList.add('waiting-text');
     document.getElementsByClassName('tournament')[0].appendChild(waitingText);
@@ -81,19 +81,20 @@ function displayWaitingText() {
     
     setInterval(() => {
         if (tournamentStatus === "started")
-            textContent = 'Tournament start in few seconds';
+			waitingText.setAttribute("data-lang", "tournament_start");
         if (tournamentStatus === "waiting")
-            textContent = 'Waiting for players to finish their matches';
+			waitingText.setAttribute("data-lang", "waiting_for_players_tournament");
         if (playerStatus === "disqualified") {
             waitingText.remove();
             return;
         }
+		// injectElementTranslations("#game");
         if (dots.length < maxDots) {
             dots += '.';
         } else {
             dots = '';
         }
-        waitingText.textContent = `${textContent}${dots}`;
+        waitingText.textContent = waitingText.textContent + dots;
     }, interval);
 }
 
@@ -162,8 +163,10 @@ function displayRankingButton(parent) {
     const btn = document.createElement('button');
     btn.id = 'showRanking';
     btn.classList.add('tournament-btn', 'show-ranking-btn', 'end-tournament-btn');
-    btn.textContent = 'Show Ranking';
+
+	btn.setAttribute("data-lang", "show_ranking");
     parent.appendChild(btn);
+	injectElementTranslations("#game");
     document.getElementById('showRanking').addEventListener('click', () => {
         wsTournament.send(JSON.stringify({type: "getRanking"}));
     });
@@ -173,8 +176,9 @@ export function createLeaveButton(parent) {
     const btn = document.createElement('button');
     btn.id = 'leaveTournament';
     btn.classList.add('tournament-btn', 'leave-tournament-btn', 'end-tournament-btn');
-    btn.textContent = 'Exit';
+	btn.setAttribute("data-lang", "exit");
     parent.appendChild(btn);
+	injectElementTranslations("#game");
     document.getElementById('leaveTournament').addEventListener('click', () => {
         if (wsTournament)
             wsTournament.close();

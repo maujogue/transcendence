@@ -74,10 +74,10 @@ async function setLanguage(userLanguage) {
 	await runEndPoint("users/update_lang/", "POST", JSON.stringify({ lang: userLanguage }));
 }
 
-async function injectGameTranslations() {
+async function injectElementTranslations(elementSelector) {
 	var json = await getJsonFromLang();
-
-	const elmDivs = document.querySelectorAll("#game [data-lang]");
+	var el = document.querySelector(elementSelector);
+	const elmDivs = el.querySelectorAll("[data-lang]");
 	elmDivs.forEach((elm) => {
 		const key = elm.getAttribute("data-lang");
 		if (json[key])
@@ -96,4 +96,4 @@ async function printQueryParamsMessage(queryParams) {
 	history.replaceState(null, null, window.location.pathname);
 }
 
-export { setLanguage, injectGameTranslations, printQueryParamsMessage, injectTranslations }
+export { setLanguage, injectElementTranslations, printQueryParamsMessage, injectTranslations }

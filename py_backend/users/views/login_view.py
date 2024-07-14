@@ -25,7 +25,7 @@ def login_view(request):
                 return JsonResponse({'error': "Your email is not verified yet."}, status=400)
 
             if user.is_online:
-                return JsonResponse({'error': "You are already logged in somewhere else."}, status=400)
+                return JsonResponse({'error': "logged_elsewhere"}, status=400)
             auth_login(request, user)
 
             request.session['active_session'] = True

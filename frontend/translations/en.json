@@ -151,5 +151,9 @@
 	"username_input_label": "Username",
 	"tournament_username_input_label": "Tournament username",
 
-	"welcome": "Welcome!"
+	"welcome": "Welcome!",
+
+	"logged_elsewhere": "You are already logged in elsewhere. ",
+	"connect_here": "Connect here",
+	"cant_force_log": "Could not force log in. Please try again later."
 }

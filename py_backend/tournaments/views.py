@@ -191,3 +191,13 @@ def return_all_user_tournaments(request, username):
 	]
 	return JsonResponse({"tournaments": tournaments_data},
 					status=200)
+
+@require_http_methods(["GET"])
+def return_receipt_address(request, tournament_id):
+	try:
+		tournament = Tournament.objects.get(pk=tournament_id)
+	except Tournament.DoesNotExist:
+		return JsonResponse({"errors": "Tournament not found."},
+					status=404)
+	return JsonResponse({"tournaments": tournament.receipt_address},
+					status=200)

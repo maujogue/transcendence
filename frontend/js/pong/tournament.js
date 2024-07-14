@@ -37,7 +37,7 @@ export async function connectToTournament(tournament) {
             if (data.type == "status")
                 handlerMessageStatus(data);
             if (data.type == "ranking")
-                displayRankingScreen(data, tournament.receipt_address);
+                displayRankingScreen(data);
             if (data.type == "bracket") {
                 createTournamentDiv();
                 drawBracket(data.bracket);
@@ -109,7 +109,7 @@ async function ask_tournament_status() {
     }, 60000)
 }
 
-function displayRankingScreen(data, receiptAddress) {
+function displayRankingScreen(data) {
     if (!document.getElementsByClassName("tournament")[0])
         createTournamentDiv();
     const tournamentDiv = document.getElementsByClassName("tournament")[0];
@@ -117,40 +117,31 @@ function displayRankingScreen(data, receiptAddress) {
     displayTournamentRanking(data.ranking);
     createLeaveButton(tournamentDiv);
     createShowBracketButton(tournamentDiv);
-    createEtherscanButton(tournamentDiv, receiptAddress);
+    createEtherscanButton(tournamentDiv);
 }
 
-function createEtherscanButton(parent, receiptAddress) {
+function createEtherscanButton(parent) {
     const etherscanBtn = document.createElement("button");
     etherscanBtn.textContent = "Waiting for transaction";
     etherscanBtn.className = "etherscan-btn end-tournament-btn tournament-btn";
     etherscanBtn.disabled = true;
     
     parent.appendChild(etherscanBtn);
-    
-    if (receiptAddress) {
-        etherscanBtn.disabled = false;
-        etherscanBtn.textContent = "See on Blockchain";
-        etherscanBtn.onclick = () => {
-            window.open(`https://sepolia.etherscan.io/tx/${receipt_address}`, '_blank', 'noopener noreferrer');
-        };
-    } else {
-        const interval = setInterval(async () => {
-            try {
-                const response = await fetch(`/api/tournaments/${currentTournament.id}/`);
-                const data = await response.json();
-                if (receiptAddress) {
-                    etherscanBtn.disabled = false;
-                    etherscanBtn.textContent = "See on Blockchain";
-                    etherscanBtn.onclick = () => {
-                        window.open(`https://sepolia.etherscan.io/tx/${receipt_address}`, '_blank', 'noopener noreferrer');
-                    };
-                }
-            } catch (error) {
-                console.error("Error fetching receipt address:", error);
+    const interval = setInterval(async () => {
+        try {
+            const response = await fetch(`/api/tournaments/${currentTournament.id}/receipt-address/`);
+            const data = await response.json();
+            if (data.receipt_address != "0x0") {
+                etherscanBtn.disabled = false;
+                etherscanBtn.textContent = "See on Blockchain";
+                etherscanBtn.onclick = () => {
+                    window.open(`https://sepolia.etherscan.io/tx/${receipt_address}`, '_blank', 'noopener noreferrer');
+                };
             }
-        }, 5000);
-    }
+        } catch (error) {
+            console.error("Error fetching receipt address:", error);
+        }
+    }, 5000);
 }
 
 function displayTournamentRanking(ranking) {

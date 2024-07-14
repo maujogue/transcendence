@@ -11,7 +11,7 @@ import json
 # PRIVATE_KEY = os.environ.get("PRIVATE_KEY")
 # PROVIDER_URL = os.environ.get("PROVIDER_URL")
 # CONTRACT_ADDRESS = os.environ.get("CONTRACT_ADDRESS")
-CHAIN_ID = 11155111
+CHAIN_ID = 11155111 #TODO find if it's working with the env in prod, if not find a solution
 WALLET = "0x08Cad489Ad4542AF82Ee81eC949776775dea23be"
 PRIVATE_KEY = "c38331b12e562919c0d636d90d526accf9e1b442f31cb6cd6254e1c231b97859"
 PROVIDER_URL = "https://sepolia.infura.io/v3/098a45a55c344ef8ac3da0ba6270fd1f"
@@ -69,4 +69,4 @@ def set_data_on_blockchain(tournament):
         return transaction_receipt
     except Exception as e:
         print(f"Error deploying contract: {e}")
-        return f"Failed to initiate transaction: {str(e)}"
+        return None

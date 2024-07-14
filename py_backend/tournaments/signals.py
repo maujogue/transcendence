@@ -16,6 +16,12 @@ def cache_tournament_state(sender, instance, **kwargs):
         previous = Tournament.objects.filter(pk=instance.pk).first()
         instance._previous_finished_state = previous.finished if previous else None
 
+def get_receipt_address(instance):
+    transaction_receipt = set_data_on_blockchain(instance)
+    if transaction_receipt:
+        instance.receipt_address = transaction_receipt['transactionHash'].hex()
+        instance.save(update_fields=['receipt_address'])
+
 @receiver(post_save, sender=Tournament)
 def set_signal_for_blockchain(sender, instance, **kwargs):
     if kwargs.get('created', False):
@@ -25,6 +31,6 @@ def set_signal_for_blockchain(sender, instance, **kwargs):
 
     if previous_finished_state is None or (not previous_finished_state and instance.finished):
         # logger.info(f"Tournament {instance.pk} finished. Triggering blockchain function.")
-        threading.Thread(target=set_data_on_blockchain, args=(instance,)).start()
+        threading.Thread(target=get_receipt_address, args=(instance,)).start()
     # else:
     #     logger.info(f"Tournament {instance.pk} save ignored. No change in finished state.")

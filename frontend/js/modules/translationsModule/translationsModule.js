@@ -60,8 +60,12 @@ async function injectTranslations() {
 	const elmDivs = document.querySelectorAll("[data-lang]");
 	elmDivs.forEach((elm) => {
 		const key = elm.getAttribute("data-lang");
-		if (json[key])
-			elm.innerHTML = json[key];
+		if (json[key]){
+			if (elm.placeholder)
+				elm.placeholder = json[key];
+			else
+				elm.innerHTML = json[key];
+		}
 	});
 }
 

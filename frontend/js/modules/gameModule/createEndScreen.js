@@ -53,7 +53,7 @@ export async function createTournamentEndScreen(winnerName) {
     div.classList.add('endscreen');
     
     const h3 = document.createElement('h3');
-    h3.innerText = winnerName + " WIN";
+    h3.innerText = winnerName + " " + await getKeyTranslation("win");
     const titleDiv = document.createElement('div');
     div.append(titleDiv);
     titleDiv.append(h3);

@@ -139,7 +139,7 @@ async function fillFriendsList(data) {
 	var friendScroll = module.querySelector("#friendScroll");
 	friendScroll.innerHTML = "";
 
-	var friendListHtml = (friend, isOnline) => {
+	var friendListHtml = (friend, isOnline, isInGame) => {
 		return `
 		<a class="ms-2 userLink py-1 position-relative" ${!isOnline ? 'style="opacity:0.5;"' : ''}>
 			<img width="30" height="30" class="rounded-circle" src="data:image/png;base64, ${friend.avatar}"/>
@@ -153,7 +153,7 @@ async function fillFriendsList(data) {
 		}
 		.bi-circle-fill {
 			font-size: 10px;
-			color: green;
+			color: ${isInGame};
 			position: absolute;
 			top: 0;
 			left: 0;
@@ -162,7 +162,10 @@ async function fillFriendsList(data) {
 		</style>`;
 	}
 	onlineFriends.forEach(friend => {
-		friendScroll.innerHTML += friendListHtml(friend, true);
+		let inGameStatusColor = "green";
+		if (friend.ingame_status)
+			inGameStatusColor = "orange";
+		friendScroll.innerHTML += friendListHtml(friend, true, inGameStatusColor);
 	});
 	offlineFriends.forEach(friend => {
 		friendScroll.innerHTML += friendListHtml(friend, false);

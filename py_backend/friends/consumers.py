@@ -163,7 +163,8 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         friendslist = []
         friendslist = current_user.friends.all()
         friends_list_data = [{'username': friend.username, 
-                            'status': friend.is_online, 
+                            'online_status': friend.is_online,
+                            'ingame_status': friend.is_ingame,
                             'avatar': convert_image_to_base64(friend.avatar)}
                             for friend in friendslist]
         return friends_list_data

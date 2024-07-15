@@ -15,7 +15,7 @@ def update_tournament_name(request):
     if isinstance(data, JsonResponse):
         return data
     
-    tournament_username = data.get('username')
+    tournament_username = data.get('tournament_username')
     is_valid, is_valid_error = username_is_valid(tournament_username)
     if not is_valid:
         return JsonResponse({'error': is_valid_error}, status=400)

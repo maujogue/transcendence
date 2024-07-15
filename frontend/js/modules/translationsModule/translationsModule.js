@@ -49,7 +49,7 @@ export async function init() {
 					await setLanguage(lang);
 				Cookies.set("lang", lang);
 				await disableCollapsedSidebar(true);
-				await initPages();
+				await injectTranslations();
 			});
 		});
 	}

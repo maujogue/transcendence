@@ -40,7 +40,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 await self.send_tournament_ranking()
             await self.check_tournament_start()
         except Exception as e:
-            print('error: ', e)
+            print('receive error: ', e)
 
     async def disconnect(self, close_code):
         if self.tournament is None:
@@ -134,8 +134,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.match = await Match.objects.aget(lobby_id=str(lobby.uuid))
             return self.match
         except Match.DoesNotExist:
-            player1 = await self.authenticate_user_with_username(self.match.player1)
-            player2 = await self.authenticate_user_with_username(self.match.player2)
+            player1 = await self.authenticate_user_with_id(self.match.player1)
+            player2 = await self.authenticate_user_with_id(self.match.player2)
             winner = player1 if lobby.player1 else player2
             loser = player2 if winner == player1 else player1
             match = Match(  lobby_id=str(lobby.uuid),
@@ -187,9 +187,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 await self.cancel_match(res_match)
             except TournamentMatch.DoesNotExist:
                 return
-        # except Exception as e:
-        #     print('time error: ', e)
-        #     return
+        except Exception as e:
+            print('time error: ', e)
+            return
         
     async def check_tournament_status(self):
         if self.tournament.finished:
@@ -213,13 +213,15 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         try:
             print('here')
             match = await self.get_match_result()
-            self.match.player1 = match.player1
-            self.match.player2 = match.player2
+            player1 = await self.authenticate_user_with_id(match.player1)
+            player2 = await self.authenticate_user_with_id(match.player2)
+            self.match.player1 = player1.tournament_username
+            self.match.player2 = player2.tournament_username
             self.match.score_player_1 = match.player1_score
             self.match.score_player_2 = match.player2_score
-            self.match.winner = match.winner
+            self.match.winner = player1.tournament_username if match.winner == player1.id else player2.tournament_username
             self.match.finished = True
-            loser = match.player1 if match.winner == match.player2 else match.player2
+            loser = player1.tournament_username if match.winner == match.player1 else player2.tournament_username
             await self.match.asave()
             await self.send_disqualified(loser)
         except Exception as e:
@@ -247,7 +249,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     
     @database_sync_to_async
     def is_tournament_full(self):
-        print(f'participants.count : {self.tournament.participants.count()}')
         if self.tournament.participants.count() == self.tournament.max_players:
             return True
         return False
@@ -315,6 +316,13 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         try:
             print('username: ', username)
             return CustomUser.objects.get(username=username)
+        except CustomUser.DoesNotExist:
+            raise Exception('user not found')
+        
+    @database_sync_to_async
+    def authenticate_user_with_id(self, id):
+        try:
+            return CustomUser.objects.get(id=id)
         except CustomUser.DoesNotExist:
             raise Exception('user not found')
         

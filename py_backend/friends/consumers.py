@@ -13,8 +13,10 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await self.accept()
 
     async def disconnect(self, exit_code):
+        print('disconnect')
         try:
             if self.scope['user'] is None:
+                print('disconnect user is None')
                 return
             await self.set_online_status(False)
             await self.group_send(
@@ -290,9 +292,17 @@ class FriendsConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async    
     def set_online_status(self, status):
         try:
-            user = CustomUser.objects.get(username=self.scope['user'].username)
+            user = CustomUser.objects.get(id=self.scope['user'].id)
             user.is_online = status
             user.save()
+            print('set Online status to', status)
         except CustomUser.DoesNotExist:
             return False
         
+    @database_sync_to_async
+    def get_online_status(self):
+        try:
+            user = CustomUser.objects.get(username=self.scope['user'].username)
+            return user.is_online
+        except CustomUser.DoesNotExist:
+            return False

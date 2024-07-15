@@ -6,12 +6,12 @@ from users.models import CustomUser
 # Create your models here.
 class Match(models.Model):
     lobby_id = models.CharField(max_length=100, editable=False, blank=False, default="default", unique=False)
-    player1 = models.ForeignKey(CustomUser, related_name='player1',on_delete=models.SET_DEFAULT, default=None)
-    player2 = models.ForeignKey(CustomUser, related_name='player2',on_delete=models.SET_DEFAULT, default=None)
+    player1 = models.IntegerField(default=None, null=True)
+    player2 = models.IntegerField(default=None, null=True)
     player1_average_exchange = models.IntegerField(default=0)
     player2_average_exchange = models.IntegerField(default=0)
-    winner = models.ForeignKey(CustomUser, related_name='winner',on_delete=models.SET_DEFAULT, default=None)
-    loser = models.ForeignKey(CustomUser, related_name='loser',on_delete=models.SET_DEFAULT, default=None)
+    winner = models.IntegerField(default=None, null=True)
+    loser = models.IntegerField(default=None, null=True)
     player1_score = models.IntegerField(default=0)
     player2_score = models.IntegerField(default=0)
     date = models.DateTimeField(default=timezone.now)

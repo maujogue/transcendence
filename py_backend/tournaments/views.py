@@ -14,9 +14,9 @@ from .models import Tournament
 import json
 
 ### debug ###
-import logging
+# import logging
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 # #######
 
 CustomUser = get_user_model()
@@ -199,7 +199,7 @@ def return_receipt_address(request, tournament_id):
 	except Tournament.DoesNotExist:
 		return JsonResponse({"errors": "Tournament not found."},
 					status=404)
-	logger.info(f"logger receipt address in view: {tournament.receipt_address}")
-	print(f"print receipt address in view: {tournament.receipt_address}")
+	# logger.info(f"logger receipt address in view: {tournament.receipt_address}")
+	# print(f"print receipt address in view: {tournament.receipt_address}")
 	return JsonResponse({"receipt_address": tournament.receipt_address},
 					status=200)

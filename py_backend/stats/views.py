@@ -75,7 +75,6 @@ def create_match_list(matches):
     matchs_json = []
     for match in matches:
         match_json = create_match_json(match)
-        print(f'match json: {match_json}')
         matchs_json.append(match_json)
     return matchs_json
 

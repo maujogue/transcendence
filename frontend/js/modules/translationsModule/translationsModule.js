@@ -57,10 +57,12 @@ export async function init() {
 
 async function injectTranslations() {
 	var json = await getJsonFromLang();
+	if (!json)
+		return ;
 	const elmDivs = document.querySelectorAll("[data-lang]");
 	elmDivs.forEach((elm) => {
 		const key = elm.getAttribute("data-lang");
-		if (json[key]){
+		if (json[key]) {
 			if (elm.placeholder)
 				elm.placeholder = json[key];
 			else
@@ -71,7 +73,13 @@ async function injectTranslations() {
 
 async function getJsonFromLang() {
 	var lang = Cookies.get("lang");
-	return fetch(`../../../translations/${lang}.json`).then((res) => res.json()).then((data) => { return data });
+	try {
+		return await fetch(`../../../../translations/${lang}.json`).then((res) => res.json()).then((data) => { return data });
+	}
+	catch (e) {
+		console.error(`Error loading ${lang}.json file`);
+		return null;
+	}
 }
 
 async function setLanguage(userLanguage) {
@@ -80,6 +88,8 @@ async function setLanguage(userLanguage) {
 
 async function injectElementTranslations(elementSelector) {
 	var json = await getJsonFromLang();
+	if (!json)
+		return ;
 	var el = document.querySelector(elementSelector);
 	const elmDivs = el.querySelectorAll("[data-lang]");
 	elmDivs.forEach((elm) => {
@@ -89,15 +99,24 @@ async function injectElementTranslations(elementSelector) {
 	});
 }
 
+async function getKeyTranslation(key) {
+	var json = await getJsonFromLang();
+	console.log(json, json[key]);
+	if (json && json[key])
+		return json[key];
+}
+
 async function printQueryParamsMessage(queryParams) {
 	if (queryParams) {
 		var message = queryParams.get("message");
 		var success = queryParams.get("success");
 		var json = await getJsonFromLang();
+		if (!json)
+			return ;
 		if (message)
 			showAlert(json[message], success);
 	}
 	history.replaceState(null, null, window.location.pathname);
 }
 
-export { setLanguage, injectElementTranslations, printQueryParamsMessage, injectTranslations }
+export { setLanguage, injectElementTranslations, printQueryParamsMessage, injectTranslations, getKeyTranslation}

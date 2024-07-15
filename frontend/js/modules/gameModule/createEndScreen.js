@@ -1,3 +1,4 @@
+import { getKeyTranslation } from "../translationsModule/translationsModule.js";
 import { createDivMenu } from "./menu.js"
 import { displayMainMenu } from "./menu.js"
 import { tournament_username } from "./online.js";
@@ -44,7 +45,7 @@ function returnToMenu() {
 
 export {createEndScreen, returnToMenu }
 
-export function createTournamentEndScreen(winnerName) {
+export async function createTournamentEndScreen(winnerName) {
     console.log("inside createTournamentEndScree.\nwinnerName:" + winnerName);
     console.log("tournament username: " + tournament_username);
     createDivMenu("endscreen");
@@ -60,11 +61,11 @@ export function createTournamentEndScreen(winnerName) {
     const h2 = document.createElement('h2');
     if (tournament_username === winnerName) {
         h2.id = 'winMsg';
-        h2.innerText = "Congratulations !";
+        h2.innerText = await getKeyTranslation("congratulations");
     }
     else {
         h2.id = 'loseMsg';
-        h2.innerText = "You lost.\nIt happens... more to some than to others...";
+        h2.innerText = await getKeyTranslation("you_lost");
     }
     const msgDiv = document.createElement('div');
     div.append(msgDiv);

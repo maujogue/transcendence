@@ -7,6 +7,7 @@ import { createLeaveButton, drawBracket} from "./createBracket.js";
 import { hostname } from "../../Router.js";
 import { wsMatch } from "./online.js";
 import { checkIfWebsocketIsOpen, handlerEndGame } from "./handlerMessage.js";
+import { getKeyTranslation } from "../translationsModule/translationsModule.js";
 
 export let wsTournament
 export let tournamentStatus;
@@ -25,17 +26,17 @@ export async function connectToTournament(tournament) {
             fillUserData().then(sendUsername);
         };
 
-        wsTournament.onmessage = (event) => {
+        wsTournament.onmessage = async (event) => {
             const data = JSON.parse(event.data);
             console.log("Received data:", data);
             if (data.type == "participants")
                 displayPlayerList(data.participants);
             if (data.type == "matchup") {
                 createOnlineSelectMenu(data.match.lobby_id);
-                displayTimer(data.timer)
+                await displayTimer(data.timer)
             }
             if (data.type == "status")
-                handlerMessageStatus(data);
+                await handlerMessageStatus(data);
             if (data.type == "ranking")
                 displayRankingScreen(data);
             if (data.type == "bracket") {
@@ -59,21 +60,21 @@ export async function connectToTournament(tournament) {
     }
 }
 
-function displayTimer(time) {
+async function displayTimer(time) {
     const timerDiv = document.createElement("div");
     timerDiv.id = "timer";
     timerDiv.classList.add("timer");
-    timerDiv.innerHTML = `Time left: ${time}`;
+    timerDiv.innerHTML = await getKeyTranslation("time_left") + time;
     document.getElementById("selectMenu")?.appendChild(timerDiv);
-    setInterval(() => {
+    setInterval(async () => {
         if (time == 0)
             return ;
         time--;
-        timerDiv.innerHTML = `Time left: ${time}`;
+        timerDiv.innerHTML = await getKeyTranslation("time_left") + time;
     }, 1000);
 }
 
-function handlerMessageStatus(data) {
+async function handlerMessageStatus(data) {
     console.log("Status:", data.status);
     if (data.status == "disqualified") {
         playerStatus = "disqualified";
@@ -88,7 +89,7 @@ function handlerMessageStatus(data) {
         ask_tournament_status();
     }
     if (data.status == "cancelled") {
-        displayErrorPopUp(data['message'], document.getElementById('game'));
+        await displayErrorPopUp(data['message'], document.getElementById('game'));
         if (checkIfWebsocketIsOpen(wsMatch)) {
             wsMatch.close();
             clearOnlineVariables();
@@ -208,12 +209,18 @@ export async function checkIfUserIsInTournament(user) {
     });
 }
 
-export function displayErrorPopUp (message, parent) {
-    console.error("displayErrorPopUp", message);
+export async function displayErrorPopUp (message, parent) {
+    // console.log("displayErrorPopUp", message);
     const errorPopUp = document.createElement("div");
     errorPopUp.id = "errorPopUp";
     errorPopUp.className = "error-pop-up pop-up";
-    errorPopUp.setAttribute("data-lang", message);
+	console.log("message", message);
+	var errorText = await getKeyTranslation(message);
+	console.log("errorText", errorText);
+	if (!errorText)
+    	errorPopUp.innerText = message;
+	else
+		errorPopUp.innerText = errorText;
     parent.appendChild(errorPopUp);
     setTimeout(() => {
         if (document.getElementById("errorPopUp"))
@@ -235,9 +242,10 @@ function ask_bracket() {
     }));
 }
 
-export function createUnsubscribeButton(parent) {
+export async function createUnsubscribeButton(parent) {
     const unsubscribeBtn = document.createElement("button");
 	unsubscribeBtn.setAttribute("data-lang", "unsubscribe");
+	unsubscribeBtn.innerText = await getKeyTranslation("unsubscribe");
     unsubscribeBtn.onclick = () => unsubscribeFromTournament();
     unsubscribeBtn.className = "unsubscribe-btn tournament-btn";
     parent.appendChild(unsubscribeBtn);

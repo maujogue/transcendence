@@ -1,4 +1,4 @@
-import { injectElementTranslations } from "../translationsModule/translationsModule.js";
+import { getKeyTranslation, injectElementTranslations } from "../translationsModule/translationsModule.js";
 import { displayMainMenu } from "./menu.js";
 import { createUnsubscribeButton, playerStatus, tournamentStatus } from "./tournament.js";
 import { wsTournament } from "./tournament.js";
@@ -72,6 +72,7 @@ function updateButtonWithStatus() {
 
 function displayWaitingText() {
     const waitingText = document.createElement('p');
+	let textContent;
     waitingText.id = 'waitingText';
     waitingText.classList.add('waiting-text');
     document.getElementsByClassName('tournament')[0].appendChild(waitingText);
@@ -79,22 +80,22 @@ function displayWaitingText() {
     let maxDots = 3;
     let interval = 500;
     
-    setInterval(() => {
+    setInterval( async () => {
         if (tournamentStatus === "started")
-			waitingText.setAttribute("data-lang", "tournament_start");
+			textContent = await getKeyTranslation("tournament_start");
         if (tournamentStatus === "waiting")
-			waitingText.setAttribute("data-lang", "waiting_for_players_tournament");
+			textContent = await getKeyTranslation("waiting_for_players_tournament");
         if (playerStatus === "disqualified") {
             waitingText.remove();
             return;
         }
-		// injectElementTranslations("#game");
         if (dots.length < maxDots) {
             dots += '.';
         } else {
             dots = '';
         }
-        waitingText.textContent = waitingText.textContent + dots;
+		console.log(textContent);
+        waitingText.textContent = `${textContent}${dots}`;
     }, interval);
 }
 

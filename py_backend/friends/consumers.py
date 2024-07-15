@@ -9,53 +9,67 @@ import json
 class FriendsConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
-        await self.set_online_status(True)
+        self.scope['user'] = None
         await self.accept()
 
-
     async def disconnect(self, exit_code):
-        await self.set_online_status(False)
-        await self.group_send(
-            self.scope['user'].username,
-            event = {'type': 'send_friendslist'})
+        print('disconnect')
+        try:
+            if self.scope['user'] is None:
+                print('disconnect user is None')
+                return
+            await self.set_online_status(False)
+            await self.group_send(
+                self.scope['user'].username,
+                event = {'type': 'send_friendslist'})
+        except Exception as e:
+            print('Disconnect error:', e)
 
 
     async def receive(self, text_data):
-        data = json.loads(text_data)
-        message_type = data.get('type')
+        try:
+            data = json.loads(text_data)
+            message_type = data.get('type')
 
-        handlers = {
-            'auth': self.auth,
-            'check_user_exist': self.user_exist,
-            'friend_request': self.create_friend_request,
-            'accept_request': self.accept_request,
-            'decline_request': self.decline_request,
-            'remove_friend': self.remove_friend,
-            'get_friendslist': self.send_friendslist,
-            'get_current_user_requests': self.send_current_user_requests,
-            'get_user_requests': self.get_user_requests,
-        }
-        handler = handlers.get(message_type)
-        if handler:
-            await handler(data)
+            handlers = {
+                'auth': self.auth,
+                'check_user_exist': self.user_exist,
+                'friend_request': self.create_friend_request,
+                'accept_request': self.accept_request,
+                'decline_request': self.decline_request,
+                'remove_friend': self.remove_friend,
+                'get_friendslist': self.send_friendslist,
+                'get_current_user_requests': self.send_current_user_requests,
+                'get_user_requests': self.get_user_requests,
+            }
+            handler = handlers.get(message_type)
+            if handler:
+                await handler(data)
+        except Exception as e:
+            print('receive error:', e)
 
 
     async def auth(self, data):
-        username = data.get('username')
-        await self.authenticate_user(username)
-        await self.channel_layer.group_add(
-            self.scope['user'].username,
-            self.channel_name)
-        
-        friends = await self.get_friends()
-        for f in friends:
+        try:
+            username = data.get('username')
+            await self.authenticate_user(username)
             await self.channel_layer.group_add(
-                f.get('username'),
+                self.scope['user'].username,
                 self.channel_name)
-        
-        await self.group_send(
-            self.scope['user'].username,
-            event = {'type': 'send_friendslist'})
+            
+            friends = await self.get_friends()
+            for f in friends:
+                await self.channel_layer.group_add(
+                    f.get('username'),
+                    self.channel_name)
+            
+            await self.group_send(
+                self.scope['user'].username,
+                event = {'type': 'send_friendslist'})
+        except Exception as e:
+            print('Auth error:', e)
+            await self.close()
+
 
 
 
@@ -205,10 +219,14 @@ class FriendsConsumer(AsyncWebsocketConsumer):
     async def authenticate_user(self, username):
         user = await self.authenticate_user_with_username(username)
         if user is not None:
+            if user.is_online:
+                raise Exception('user already connected')
             self.scope['user'] = user
+            await self.set_online_status(True)
             await self.send(text_data=json.dumps({ "type": "auth", "status": "success"}))
         else:
             await self.send(text_data=json.dumps({ "type": "auth", "status": "failed"}))
+            raise Exception('Authentification failed')
 
     async def user_exist(self, data):
         username = data.get('username')
@@ -274,9 +292,17 @@ class FriendsConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async    
     def set_online_status(self, status):
         try:
-            user = CustomUser.objects.get(username=self.scope['user'].username)
+            user = CustomUser.objects.get(id=self.scope['user'].id)
             user.is_online = status
             user.save()
+            print('set Online status to', status)
         except CustomUser.DoesNotExist:
             return False
         
+    @database_sync_to_async
+    def get_online_status(self):
+        try:
+            user = CustomUser.objects.get(username=self.scope['user'].username)
+            return user.is_online
+        except CustomUser.DoesNotExist:
+            return False

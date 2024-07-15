@@ -2,9 +2,11 @@ import { createEnvironment } from "./createEnvironment.js";
 import { displayCharacter } from './displayCharacter.js';
 import { createLobbyLights, createLobbyScene } from './createField.js';
 import { isFullScreen } from './resize.js';
-import { winWidth, winHeight, charactersNames } from './varGlobal.js';
+import { charactersNames } from './varGlobal.js';
+import { winHeight, winWidth } from "./varGlobal.js";
+import { createFormTournament } from "./createTournament.js";
 import { initSpaceBackground } from "./spaceBackground.js";
-import { characters } from "../pages/game.js";
+import { characters } from "./gameModule.js"
 import { colors } from "./varGlobal.js"; 
 import * as THREE from 'three';
 
@@ -109,6 +111,7 @@ function createTitle(div) {
 	const logo = document.createElement("img");
 	logo.src = "./assets/img/pong.svg";
 	logo.classList.add("logo");
+	logo.style.opacity = "0";
 	div.appendChild(logo);
 }
 

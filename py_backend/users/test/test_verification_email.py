@@ -19,7 +19,7 @@ class VerificationEmail(TestCase):
         self.user = CustomUser.objects.create(
             username="lboulatr",
             email="lboulatr@gmail.com",
-            password="Damiendubocal75")
+            password="Mewtransse9+")
         
     def test_new_user_in_database(self):
         newUser = {

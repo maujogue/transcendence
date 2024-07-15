@@ -748,7 +748,7 @@ border: 3px solid orange;  /* creates padding around scroll thumb */
 	flex-direction: column;
 	justify-content: space-between;
 	padding: 0;
-	box-shadow: 2px 2px 15px 2px black;
+	box-shadow: 3px 3px 15px black;
 }
 
 .inputAnimate {

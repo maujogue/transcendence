@@ -24,8 +24,6 @@ class Page {
 const routes = [
 	new Page("dashboard", "/dash", "html/Dashboard.html", true),
 	new Page("sidebar", "", "html/Sidebar.html", true),
-	new Page("about", "/about", "html/About.html"),
-	new Page("game", "/game", "html/Game.html", true),
 	new Page("emailVerified", "/emailVerified", "html/EmailVerified.html", true),
 ];
 
@@ -49,7 +47,6 @@ async function router() {
 	if (previousPage)
 		previousPage.hidden = true;
 	var newPageDiv = allPages.find(page => page.id === newPage.name);
-	toggleActiveTab(location.pathname);
 	if (newPageDiv)
 		newPageDiv.hidden = false;
 };
@@ -69,16 +66,6 @@ async function navigateOnClick(e) {
 	}
 }
 
-function toggleActiveTab(target) {
-	var currentActive = document.querySelector(".active");
-	if (currentActive != null)
-		currentActive.classList.remove("active");
-	if (target == "/")
-		target = "/dash";
-	if (target == "/dash" || target == "/game" || (target == "/about" && !isLoggedIn()))
-		document.querySelector("a[href='" + target + "']").classList.add("active");
-}
-
 async function initPages() {
 	var contentContainer = document.getElementById("content-container");
 	contentContainer.innerHTML = "";
@@ -95,11 +82,8 @@ async function initPages() {
 	await toggleContentOnLogState();
 	await injectUserData();
 	for (const page of routes) {
-		if (page.name === "game")
-			contentContainer.querySelector("#game").setAttribute("tabindex", "0");
 		await execPageJavascript(page.name);
 	}
-	toggleActiveTab(location.pathname);
 	router();
 	setLoading(false);
 }

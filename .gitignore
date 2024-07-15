@@ -8,14 +8,11 @@ py_backend/docker/cert.key
 
 frontend/js/pong/dev
 py_backend/db.sqlite3
-py_backend/friends/migrations
-py_backend/multiplayer/migrations
-py_backend/users/migrations
-py_backend/stats/migrations
-py_backend/tournaments/migrations
-py_backend/auth42/migrations
 
-
+py_backend/migrations
+py_backend/__pycache__
+py_backend/*/migrations
+py_backend/*/__pycache__
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

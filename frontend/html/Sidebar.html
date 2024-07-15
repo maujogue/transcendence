@@ -1,50 +1,30 @@
 <link rel="stylesheet" href="/css/sidebar.css" />
 
-<nav id="sidebar" class="sidebar opened-sidebar d-flex flex-column flex-shrink-0 p-3 text-white bg-dark">
-	<!-- HEADER -->
-	<a class="navbar-brand d-flex align-items-center" href="/" navlink>
-		<img src="/assets/img/Pong_The_Next_Level_cover.jpg" alt="Logo" width="40" height="40" />
-		<h3 id="title" class="ms-3 mt-2 section-name position-relative" data-lang="sidebar_title">Pong!</h3>
-	</a>
-	<div class="mt-3 pb-2 mb-4 text-danger border-bottom border-2 border-warning"></div>
-	<!-- NAVLIST -->
-	<ul id="navList" class="nav nav-pills flex-column">
-		<li class="nav-item text-white">
-			<a href="/dash" class="nav-link active" navlink>
-				<i class="bi bi-house me-2"></i>
-				<span class="section-name" data-lang="sidebar_dashboard">Dashboard</span>
-			</a>
-		</li>
-		<li class="nav-item text-white">
-			<a href="/game" class="nav-link" navlink>
-				<i class="bi bi-controller me-2"></i>
-				<span class="section-name" data-lang="sidebar_game">Game</span>
-			</a>
-		</li>
-		<li class="nav-item text-white logOutContent">
-			<a href="/about" class="nav-link" navlink>
-				<i class="bi bi-info-circle me-2"></i>
-				<span class="section-name" data-lang="sidebar_about">About</span>
-			</a>
-		</li>
-	</ul>
-	<div class="mt-2 pb-2 mb-4 text-danger border-bottom border-2 border-warning"></div>
+<nav id="sidebar" class="sidebar opened-sidebar d-flex flex-column flex-shrink-0 p-3 text-white">
 	<div class="friendList">
 
 	</div>
-	<div class="mt-3 pb-2 mb-4 text-danger border-bottom border-2 border-warning logInContent"></div>
 
 	<!-- LOGIN BUTTON / REGISTER BUTTON -->
+	<div class="logOutContent">
+		<div class="d-flex flex-column align-items-center">
+			<img src="../../../assets/img/pong-cropped.svg" alt="Pong" class="img-fluid" />
+			<div class="text-primary" style="font-size: 100px;"><i class="fas fa-sign-in-alt"></i></div>
+		</div>
+	</div>
+
 	<div class="logOutContent mt-auto">
 		<div class="translationsModule"></div>
-		<button class="btn btn-outline-secondary mb-2" data-bs-toggle="modal" data-bs-target="#login"
-			data-lang="log_in_button">
-			Log In
-		</button>
-		<button class="btn btn-outline-info mb-2" data-bs-toggle="modal" data-lang="sign_up_button"
-			data-bs-target="#register">
-			Sign up
-		</button>
+		<div class="d-flex">
+			<button class="btn btn-outline-secondary mb-2 w-100 me-1" data-bs-toggle="modal" data-bs-target="#login"
+				data-lang="log_in_button">
+				Log In
+			</button>
+			<button class="btn btn-outline-info mb-2 w-100" data-bs-toggle="modal" data-lang="sign_up_button"
+				data-bs-target="#register">
+				Sign up
+			</button>
+		</div>
 	</div>
 	<!-- DROPUP -->
 	<div class="logInContent mt-auto">
@@ -52,8 +32,7 @@
 			<ul class="dropdown-menu dropdown-menu-dark text-small shadow">
 				<div id="friendRequestInbox" class="d-flex flex-column gap-3"></div>
 			</ul>
-			<a class="d-flex align-items-center text-white text-decoration-none friendsNavbarBtn" id="dropdownUser1"
-				navlink>
+			<a class="d-flex align-items-center text-white text-decoration-none friendsNavbarBtn" id="dropdownUser1">
 				<div id="notificationsBadge"></div>
 				<span class="section-name ms-2" style="position: relative" data-lang="Notifications"></span>
 			</a>
@@ -67,12 +46,10 @@
 		<hr />
 		<div class="dropup d-flex align-items-center">
 			<ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-				<li><a class="dropdown-item" href="/about" navlink data-lang="sidebar_about">About</a></li>
-				<div class="dropdown-divider"></div>
 				<li><a id="logoutButton" class="dropdown-item" data-lang="sign_out_button">Sign out</a></li>
 			</ul>
 			<a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1"
-				data-bs-toggle="dropdown" navlink>
+				data-bs-toggle="dropdown">
 				<img width="30" height="30" class="rounded-circle me-2 avatarDynamic" />
 			</a>
 			<span class="section-name ms-2 usernameDynamic" style="position: relative"></span>
@@ -93,7 +70,7 @@
 			<div class="modal-body">
 				<div class="auth42 px-0"></div>
 				<div class="mb-3">
-					<label for="usernameLogin" class="col-form-label" data-lang="login_username_label">Username</label>
+					<label for="usernameLogin" class="col-form-label text-primary" data-lang="login_username_label">Username</label>
 					<input type="text" name="username" class="form-control" id="usernameLogin" placeholder="Tazz1998"
 						autocomplete="username" required />
 				</div>
@@ -119,7 +96,7 @@
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-lang="close_button">
 						Close
 					</button>
-					<button type="submit" class="btn btn-primary" navlink data-lang="login_button">Login</button>
+					<button type="submit" class="btn btn-primary" data-lang="login_button">Login</button>
 				</div>
 			</div>
 		</form>
@@ -200,8 +177,7 @@
 						Close
 					</button>
 					<!-- SUBMIT FORM  -->
-					<button type="submit" class="saveChangesButton btn btn-info text-white disabled" navlink
-						data-lang="register_button">
+					<button type="submit" class="btn btn-info text-white" data-lang="register_button">
 						Sign up
 					</button>
 				</div>

@@ -6,13 +6,13 @@ import { initGame } from "./initGame.js";
 import { translateBall} from "./onlineCollision.js";
 import { handlerScore, setBallData, handlerStatusMessage, removeGameScreen, checkIfWebsocketIsOpen, displayIntroScreen } from "./handlerMessage.js";
 import { sendCharacter} from "./sendMessage.js";
-import { characters } from "../pages/game.js";
+import { characters } from "./gameModule.js";
 import { updateMixers } from "./displayCharacter.js";
 import { resize } from "./resize.js";
-import { getUserData } from "../User.js";
-import { field } from "../pages/game.js";
+import { getUserData } from "../../User.js";
+import { field } from "./gameModule.js";
 import { wsTournament } from "./tournament.js";
-import { hostname } from "../Router.js";
+import { hostname } from "../../Router.js";
 
 let requestId
 let env;
@@ -155,8 +155,7 @@ async function connectToLobby(username) {
         onlineGameLoop(wsMatch);
         send_ping();
     }
-    
-    document.addEventListener('click', clickHandler);
+    document.getElementById("game").addEventListener('click', clickHandler);
     
     wsMatch.onmessage = function(e) {
         const data = JSON.parse(e.data);

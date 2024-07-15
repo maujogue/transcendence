@@ -21,11 +21,12 @@ export async function init() {
 			lang = Cookies.get("lang");
 			if (!lang) {
 				lang = navigator.language || navigator.userLanguage;
-				Cookies.set("lang", lang.slice(0, 2));
+				lang = lang.slice(0, 2);
+				Cookies.set("lang", lang);
 			}
 		}
 		else
-			Cookies.set("lang", lang.slice(0, 2));
+			Cookies.set("lang", lang);
 		var flag = module.querySelector(`[data-lang="${lang}"] > img`).src;
 		var name = module.querySelector(`[data-lang="${lang}"] > span`).textContent.trim();
 		button.querySelector("img").src = flag;
@@ -48,7 +49,7 @@ export async function init() {
 					await setLanguage(lang);
 				Cookies.set("lang", lang);
 				await disableCollapsedSidebar(true);
-				await initPages();
+				await injectTranslations();
 			});
 		});
 	}

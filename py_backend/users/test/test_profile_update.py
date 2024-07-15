@@ -64,7 +64,7 @@ class ProfileUpdate(TestCase):
             content_type='application/json'
         )
         self.user.refresh_from_db()
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 401)
 
 
     def test_change_username(self):
@@ -393,7 +393,7 @@ class ProfileUpdate(TestCase):
 
     def test_update_tournament_name(self):
         update_datas = {
-            'username': 'zebulon55'
+            'tournament_username': 'zebulon55'
         }
 
         response = self.client.post(
@@ -403,8 +403,8 @@ class ProfileUpdate(TestCase):
         )
         self.user.refresh_from_db()
 
-        self.assertEqual(self.user.tournament_username, 'zebulon55')
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.user.tournament_username, 'zebulon55')
 
     def test_tournament_name_already_used(self):
         update_datas = {

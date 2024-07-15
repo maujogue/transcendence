@@ -1,5 +1,4 @@
 import { createDivMenu } from "./menu.js"
-import { ClearAllEnv } from "./createEnvironment.js"
 import { displayMainMenu } from "./menu.js"
 import { tournament_username } from "./online.js";
 

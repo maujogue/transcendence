@@ -9,8 +9,8 @@ from users.utils import decode_json_body, email_is_valid, email_is_unique, send_
 
 
 @require_http_methods(["POST"])
-@login_required
 @requires_csrf_token
+@login_required
 def update_email(request):
     data = decode_json_body(request)
     if isinstance(data, JsonResponse):

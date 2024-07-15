@@ -1,36 +1,39 @@
-import { resize, isFullScreen } from "../pong/resize.js";
-import { checkCollision } from "../pong/collision.js";
-import { displayMainMenu, createSelectMenu, createOnlineMenu } from '../pong/menu.js';
-import { handleKeyPress, handleMenuKeyPress } from '../pong/handleKeyPress.js';
-import { displayCharacter, updateMixers } from '../pong/displayCharacter.js';
-import { initGame } from "../pong/initGame.js";
-import { createEndScreen, returnToMenu } from "../pong/createEndScreen.js"
-import { actualizeScore } from "../pong/score.js";
-import { createField } from "../pong/createField.js";
-import { createOnlineSelectMenu } from "../pong/online.js";
-import { ClearAllEnv } from "../pong/createEnvironment.js";
-import { loadAllModel } from "../pong/loadModels.js"
-import { loadScene } from "../pong/loadModels.js";
-import { getUserData } from "../User.js";
-import { sendTournamentForm, createFormTournament } from "../pong/createTournament.js";
-import { createJoinTournamentMenu } from "../pong/joinTournament.js";
-import { checkIfUserIsInTournament, connectToTournament } from "../pong/tournament.js";
-import { showAlert } from "../Utils.js";
-import * as THREE from 'three';
-import { injectGameTranslations } from "../modules/translationsModule/translationsModule.js";
-import { createTournamentHistoryMenu } from "../pong/tournamentHistory.js"
+import { resize, isFullScreen } from "./resize.js";
+import { checkCollision } from "./collision.js";
+import { displayMainMenu, createSelectMenu, createOnlineMenu } from './menu.js';
+import { handleKeyPress, handleMenuKeyPress } from './handleKeyPress.js';
+import { displayCharacter, updateMixers } from './displayCharacter.js';
+import { initGame } from "./initGame.js";
+import { createEndScreen, returnToMenu } from "./createEndScreen.js"
+import { actualizeScore } from "./score.js";
+import { createField } from "./createField.js";
+import { createOnlineSelectMenu } from "./online.js";
+import { ClearAllEnv } from "./createEnvironment.js";
+import { loadAllModel } from "./loadModels.js"
+import { loadScene } from "./loadModels.js";
+import { getUserData } from "../../User.js";
+import { sendTournamentForm, createFormTournament } from "./createTournament.js";
+import { createJoinTournamentMenu } from "./joinTournament.js";
+import { checkIfUserIsInTournament, connectToTournament } from "./tournament.js";
+import { getModuleDiv, updateModule } from "../../Modules.js";
 
+import { wsTournament } from "./tournament.js";
+import { createTournamentHistoryMenu } from "./tournamentHistory.js";
+import * as THREE from 'three';
+import { injectGameTranslations } from "../translationsModule/translationsModule.js";
+import { updateWinVariables } from "./varGlobal.js";
 export var lobby;
 export var clock;
 export var characters;
-var isGameLoaded = false;
+
 export const field = await createField();
 
-export async function init(queryParams) {
-	if (queryParams && queryParams.get("message"))
-		showAlert(queryParams.get("message"), queryParams.get("success"));
-	if (isGameLoaded)
+export async function init() {
+	var module = getModuleDiv("gameModule");
+	if (!module)
 		return;
+
+	updateWinVariables();
 
 	var target = document.querySelector('#game');
 	var config = { attributes: true, childList: true, characterData: true };
@@ -53,7 +56,7 @@ export async function init(queryParams) {
 	let localLoop = false;
 	let userData;
 	let form;
-	const gameDiv = document.getElementById('game');
+	var gamediv = document.getElementById("game");
 
 	await loadAllModel();
 
@@ -77,7 +80,7 @@ export async function init(queryParams) {
 		player2 = await displayCharacter(player2, environment, "elvis", "player2");
 	}
 
-	gameDiv.addEventListener("keydown", function (event) {
+	document.addEventListener("keydown", function (event) {
 		let key = event.key;
 		if (event.key.match(/^[aqwd]$/))
 			key = event.key.toLowerCase();
@@ -91,18 +94,7 @@ export async function init(queryParams) {
 	});
 
 
-	gameDiv.addEventListener('click', function (event) {
-		document.body.style.overflow = 'hidden';
-		if (!gameDiv.contains(event.target)) {
-			document.body.style.overflow = 'auto';
-		}
-	});
-
-	gameDiv.addEventListener('click', function () {
-		document.body.style.overflow = 'hidden';
-	});
-
-	document.body.addEventListener("click", function (event) {
+	gamediv.addEventListener("click", function (event) {
 		getUserData().then((data) => {
 			userData = data;
 		})
@@ -145,7 +137,7 @@ export async function init(queryParams) {
 		}
 		if (event.target.id == 'fullScreen') {
 			if (!isFullScreen())
-				gameDiv.requestFullscreen();
+				gamediv.requestFullscreen();
 			else
 				document.exitFullscreen();
 		}
@@ -209,7 +201,6 @@ export async function init(queryParams) {
 	if (localLoop)
 		requestAnimationFrame(localGameLoop);
 	}
-	isGameLoaded = true;
 }
 
 

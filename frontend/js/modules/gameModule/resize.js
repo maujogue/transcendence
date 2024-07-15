@@ -1,4 +1,3 @@
-import { init } from "../pages/game.js";
 import { recreateCanvas } from "./createEnvironment.js";
 import { checkIfWebsocketIsOpen } from "./handlerMessage.js";
 import { initSpaceBackground, stopStep } from "./spaceBackground.js";
@@ -96,7 +95,6 @@ function resize(environment) {
 
 	const div = document.getElementsByClassName("menu")[0];
 	if (div) {
-		console.log("resize menu");
 		div.style.width = width + "px";
 		div.style.height = height + "px";
 		div.style.fontSize = width / 25 + "px";

@@ -35,12 +35,15 @@ ALLOWED_HOSTS = ['*']
 # Define for backend
 
 MIN_LEN_USERNAME = 3
+MIN_LEN_PASSWORD = 8
 MAX_LEN_USERNAME = 25
+MAX_LEN_TOURNAMENT_USERNAME = 9
 MAX_LEN_EMAIL = 50
 MAX_LEN_TEXT = 500
 FORTY_TWO_UID = 'u-s4t2ud-92889d666741a2b0d333c0b63e74d6491194432da0c98a38a82560e58f9b0f83'
 FORTY_TWO_SECRET = os.environ.get("FORTY_TWO_SECRET")
 FORTY_TWO_REDIRECT_URI = 'https://127.0.0.1:8000/api/auth42/callback/'
+LANG = ['en', 'fr', 'es']
 
 # Application definition
 
@@ -141,7 +144,7 @@ AUTH_PASSWORD_VALIDATORS = [
 	{
 		'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
 		"OPTIONS": {
-			"min_length": 8,
+			"min_length": MIN_LEN_PASSWORD,
 		},
 	},
 	{

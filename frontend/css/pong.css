@@ -636,10 +636,8 @@ border: 3px solid orange;  /* creates padding around scroll thumb */
 }
 
 .etherscan-btn {
-	bottom: 5;
-    left: 0;
-	color: white;
-	border: none;
+	bottom: 0;
+	
 }
 
 .etherscan-btn:disabled {

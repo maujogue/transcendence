@@ -130,29 +130,35 @@ export function createEtherscanButton(parent) {
 
     const interval = setInterval(async () => {
         try {
-            const response = await fetch(`https://${hostname}:8000/api/tournaments/${currentTournament.id}/receipt-address/`, {
+            fetch(`https://${hostname}:8000/api/tournament/${currentTournament.id}/receipt-address/`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
                     "X-CSRFToken": await get_csrf_token(),
                 },
+            })
+            .then((response) => {
+                if (!response.ok)
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+               response.json()
+               .then((data) => {
+                   if (data.receipt_address !== "0x0") {
+                       clearInterval(interval);
+                       etherscanBtn.disabled = false;
+                       etherscanBtn.textContent = "See on Blockchain";
+                       etherscanBtn.onclick = () => {
+                           window.open(`https://sepolia.etherscan.io/tx/${data.receipt_address}`, '_blank', 'noopener noreferrer');
+                       };
+                   }
+               })
+            })
+            .catch((error) => {
+                console.error(error);
             });
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            const data = await response.json();
-            if (data.currentTournament.receipt_address !== "0x0") {
-                clearInterval(interval);
-                etherscanBtn.disabled = false;
-                etherscanBtn.textContent = "See on Blockchain";
-                etherscanBtn.onclick = () => {
-                    window.open(`https://sepolia.etherscan.io/tx/${data.currentTournament.receipt_address}`, '_blank', 'noopener noreferrer');
-                };
-            }
         } catch (error) {
             console.error("Error fetching receipt address:", error);
         }
-    }, 5000);
+    }, 1000);
 }
 
 function displayTournamentRanking(ranking) {

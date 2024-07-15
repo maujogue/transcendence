@@ -239,5 +239,5 @@ EMAIL_USE_TLS = True
 
 
 CRONJOBS = [
-    ('*/5 * * * *', 'users.tasks.check_unverified_accounts'),
+    ('*/3 * * * *', 'users.tasks.check_unverified_accounts'),
 ]

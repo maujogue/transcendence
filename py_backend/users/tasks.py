@@ -4,6 +4,6 @@ from .models import CustomUser
 
 def check_unverified_accounts():
     now = timezone.now()
-    five_minutes_ago = now - timedelta(minutes=5)
+    three_minutes_ago = now - timedelta(minutes=3)
     
-    CustomUser.objects.filter(account_creation_time__lte=five_minutes_ago).delete()
+    CustomUser.objects.filter(account_creation_time__lte=three_minutes_ago).delete()

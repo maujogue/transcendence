@@ -247,7 +247,7 @@ class ProfileUpdate(TestCase):
         response_data = response.json()
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response_data.get('status'), 'words_not_matching_message')
+        self.assertEqual(response_data.get('status'), 'passwords_not_matching_message')
 
 
     def test_update_empty_password(self):

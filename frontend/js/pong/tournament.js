@@ -122,10 +122,19 @@ function displayRankingScreen(data) {
 
 export function createEtherscanButton(parent) {
     const etherscanBtn = document.createElement("button");
-    etherscanBtn.textContent = "Waiting for transaction";
     etherscanBtn.className = "etherscan-btn end-tournament-btn tournament-btn";
-    etherscanBtn.disabled = true;
-    
+    if (currentTournament.receipt_address !== "0x0") {
+        console.log("currentTournament.receipt_address: " + currentTournament.receipt_address);
+        etherscanBtn.disabled = false;
+        etherscanBtn.textContent = "See on Blockchain";
+        etherscanBtn.onclick = () => {
+            window.open(`https://sepolia.etherscan.io/tx/${currentTournament.receipt_address}`, '_blank', 'noopener noreferrer');
+        }
+    }
+    else {
+        etherscanBtn.disabled = true;
+        etherscanBtn.textContent = "Waiting for transaction";
+    }
     parent.appendChild(etherscanBtn);
 
     const interval = setInterval(async () => {
@@ -142,15 +151,15 @@ export function createEtherscanButton(parent) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
                response.json()
                .then((data) => {
-                   if (data.receipt_address !== "0x0") {
-                       clearInterval(interval);
-                       etherscanBtn.disabled = false;
-                       etherscanBtn.textContent = "See on Blockchain";
-                       etherscanBtn.onclick = () => {
-                           window.open(`https://sepolia.etherscan.io/tx/${data.receipt_address}`, '_blank', 'noopener noreferrer');
-                       };
-                   }
-               })
+                    if (data.receipt_address !== "0x0") {
+                        clearInterval(interval);
+                        etherscanBtn.disabled = false;
+                        etherscanBtn.textContent = "See on Blockchain";
+                        etherscanBtn.onclick = () => {
+                            window.open(`https://sepolia.etherscan.io/tx/${data.receipt_address}`, '_blank', 'noopener noreferrer');
+                        };
+                    }
+                })
             })
             .catch((error) => {
                 console.error(error);

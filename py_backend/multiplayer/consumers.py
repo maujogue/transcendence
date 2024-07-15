@@ -7,6 +7,7 @@ from multiplayer.ball import Ball
 from multiplayer.player import Player
 from users.models import CustomUser
 from stats.models import Match
+from channels.db import database_sync_to_async
 
 class PongConsumer(AsyncWebsocketConsumer):
     def check_if_user_is_connected(self):
@@ -31,6 +32,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             return lobby
         lobby = Lobby()
         await lobby.asave()
+        await self.set_ingame_status(True)
         return lobby
     
     async def create_player(self):
@@ -173,6 +175,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             if (self.lobby.game_started == True):
                 await self.send_status('stop', f"Connection lost with {self.scope['user'].tournament_username}")
                 await self.setGameOver()
+                await self.set_ingame_status(False)
             await self.disconnect_user()
             if self.lobby.connected_user == 0 and self.scope['url_route']['kwargs'].get('lobby_id') is None:
                 await self.close_lobby()
@@ -195,6 +198,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             await self.lobby.adelete()
         except Lobby.DoesNotExist:
             return
+        await self.set_ingame_status(False)
 
     async def startGame(self):
         await self.send_match_info()
@@ -497,4 +501,11 @@ class PongConsumer(AsyncWebsocketConsumer):
         except Exception as e:
             print("Error: ", e)
 
-    
+    @database_sync_to_async    
+    def set_ingame_status(self, status):
+        try:
+            user = CustomUser.objects.get(username=self.scope['user'].username)
+            user.is_ingame = status
+            user.save()
+        except CustomUser.DoesNotExist:
+            return False

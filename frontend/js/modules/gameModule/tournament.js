@@ -108,8 +108,10 @@ async function ask_tournament_status() {
 }
 
 function displayRankingScreen(data) {
-	document.getElementsByClassName("tournament")[0].remove();
-    createTournamentDiv();
+	var div = document.getElementsByClassName("tournament")[0];
+	if (div)
+		div.remove();
+	createTournamentDiv();
     const tournamentDiv = document.getElementsByClassName("tournament")[0];
     tournamentDiv.innerHTML = `<h1 class="won-title">${data.winner} <span data-lang="tournament_won"></span></h1>`;
     displayTournamentRanking(data.ranking);

@@ -101,7 +101,7 @@ async function injectElementTranslations(elementSelector) {
 
 async function getKeyTranslation(key) {
 	var json = await getJsonFromLang();
-	console.log(json, json[key]);
+
 	if (json && json[key])
 		return json[key];
 }

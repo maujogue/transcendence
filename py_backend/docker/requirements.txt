@@ -12,5 +12,6 @@ requests-toolbelt
 mimetypes-magic
 six
 django-friendship
+django-crontab
 
 # channels-redis==4.2.0

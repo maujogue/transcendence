@@ -69,6 +69,7 @@ def create_match_json(match):
         'player2_average_exchange': match.player2_average_exchange,
         'winner': get_username_with_id(match.winner),
         'loser': get_username_with_id(match.loser),
+        'date': match.date
     }
 
 def create_match_list(matches):

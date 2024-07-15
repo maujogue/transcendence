@@ -88,31 +88,44 @@ async function disableCollapsedSidebar(forceDisable) {
 function toggleSearchBar(forceDisable) {
 	const searchInput = document.querySelector("#searchButton > input");
 
-	if (searchInput.hidden == true || forceDisable) {
+	if (searchInput.style.opacity == 0 || forceDisable) {
+		searchInput.style.opacity = 1;
 		setTimeout(() => {
 			searchInput.hidden = false;
-		}, 500);
+		}, 100);
 	}
 	else {
-		searchInput.hidden = true;
+		setTimeout(() => {
+			searchInput.hidden = true;
+		}, 200);
+		searchInput.style.opacity = 0;
 	}
 }
 
+var alertId = 0;
+
 function showAlert(message, success) {
 	success = success === true || success === 'true';
-	var bgColor = success ? "alert-success" : "alert-danger";
+	var bgColor = success ? "text-bg-success" : "text-bg-danger";
 	var alertDiv = document.getElementById("alert");
-	var alertItem = document.createElement("div");
-	alertItem.innerHTML = `
-	<div class="alert ${bgColor} d-flex align-items-center ">
-		<span> ${message} </span>
-		<button type="button" class="ms-3 btn-close showAlertDiv" data-bs-dismiss="alert" aria-label="Close"></button>
+	var currentdate = new Date();
+	var minutes = currentdate.getMinutes();
+	var datetime = currentdate.getHours() + ":" + (minutes < 10 ? "0" : "") + minutes;
+	alertDiv.innerHTML += `
+	<div id="alert${alertId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-animation="true" data-bs-delay="3000" style="background-color: whitesmoke !important;">
+		<div class="toast-header ${bgColor}">
+		<strong class="me-auto">${success ? "Information" : "Error"}</strong>
+		<small>${datetime}</small>
+		<button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+		</div>
+		<div class="toast-body" style="text-wrap: wrap;">
+		${message}
+		</div>
 	</div>
 	`;
-	alertDiv.appendChild(alertItem);
-	setTimeout(function () {
-		alertItem.remove();
-	}, 3000);
+	var toast = alertDiv.querySelector("#alert" + alertId);
+	new bootstrap.Toast(toast).show();
+	alertId++;
 }
 
 function togglePasswordVisibility(togglePasswordInputId, passwordFieldId) {

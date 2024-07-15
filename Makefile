@@ -33,9 +33,9 @@ prod_clean:
 dev_clean:
 		$(DOCKER_COMPOSE_DEV) down --volumes --rmi all
 
-prod_fclean: prod_clean
+prod_fclean: prod_clean clean-migrations-cache-db
 
-dev_fclean: dev_clean
+dev_fclean: dev_clean clean-migrations-cache-db
 
 prod_re:
 	$(DOCKER_COMPOSE_PROD) build --build-arg CACHEBUST=$(shell date +%s)
@@ -55,7 +55,7 @@ dev_fre:	prod_fclean dev_fclean
 
 clean:	prod_clean dev_clean
 
-fclean:	prod_fclean dev_fclean	removecontainers
+fclean:	prod_fclean dev_fclean	removecontainers 
 
 nomail:
 		python3 disableMailVerification.py
@@ -66,7 +66,7 @@ removecontainers:
 			docker rm $$(docker ps -aq); \
 		fi; \
 
-armageddon: removecontainers
+armageddon: removecontainers clean-migrations-cache-db
 		@if [ -f py_backend/db.sqlite3 ]; then \
 			rm py_backend/db.sqlite3; \
 		fi
@@ -79,4 +79,13 @@ armageddon: removecontainers
 		fi
 		@if [ -n "$$(docker images -qa)" ]; then \
 			docker rmi -f $$(docker images -qa); \
+		fi
+
+clean-migrations-cache-db:
+		@rm -rf py_backend/migrations
+		@rm -rf py_backend/__pycache__
+		@rm -rf py_backend/*/migrations
+		@rm -rf py_backend/*/__pycache__
+		@if [ -f py_backend/db.sqlite3 ]; then \
+			rm py_backend/db.sqlite3; \
 		fi

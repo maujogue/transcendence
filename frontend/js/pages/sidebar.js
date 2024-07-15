@@ -10,7 +10,9 @@ export function init(queryParams) {
 	var registerForm = document.getElementById("registrationForm");
 	var password1 = document.getElementById("registerPassword");
 	var password2 = document.getElementById("registerPasswordAgain");
+	var sidebar = document.getElementById("sidebar");
 
+	sidebar.style.height = (window.innerHeight - 40) + "px";
 	collapseButton.addEventListener("click", toggleSidebarCollapse);
 	logoutButton.addEventListener("click", () => logout());
 	loginForm.addEventListener("submit", (event) => {

@@ -1,0 +1,156 @@
+<style>
+	.accordion-button:focus {
+		box-shadow: none;
+		border-color: rgba(0, 0, 0, .125);
+		background-color: transparent;
+	}
+
+	.accordion-button:not(.collapsed) {
+		background-color: transparent;
+	}
+</style>
+
+<div class="accordion rounded-4" id="aboutAccordion">
+	<!-- item 1 -->
+	<div class="accordion-item" style="border-top-left-radius: 20px;border-top-right-radius: 20px;">
+		<h2 class="accordion-header">
+			<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+				data-bs-target="#flush-collapseOne" data-lang="what_is_pong" style="border-top-left-radius: 20px;border-top-right-radius: 20px;">
+				What is Pong! ?
+			</button>
+		</h2>
+		<div id="flush-collapseOne" class="accordion-collapse collapse show" data-bs-parent="#aboutAccordion">
+			<section class="container-fluid p-5 text-center text-sm-start hero">
+				<div class="d-sm-flex align-items-center justify-content-between">
+					<div class="me-sm-2">
+						<h1 class="text-sm-start" data-lang="play_pong_title"></h1>
+						<p class="lead my-4" data-lang="play_pong_description"></p>
+					</div>
+					<img class="img-fluid rounded-circle d-none d-sm-block" src="../assets/img/logo1.JPG" alt="pong"
+						data-lang="pong_image_alt" style="max-width: 400px;">
+				</div>
+			</section>
+		</div>
+	</div>
+	<!-- item 2 -->
+	<div class="accordion-item">
+		<h2 class="accordion-header">
+			<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+				data-bs-target="#flush-collapseTwo" data-lang="how_do_i_play">
+				How do I play ?
+			</button>
+		</h2>
+		<div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#aboutAccordion">
+			<section class="p-5 container-fluid">
+				<div class="row align-items-center justify-content-between">
+					<div class="col-6">
+						<img src="assets/img/table.jpg" alt="pong pad" class="img-fluid" data-lang="pong_pad_image_alt">
+					</div>
+					<div class="col-6 p-5">
+
+						<div class="d-flex align-items-center text-success">
+							<i class="bi bi-pencil me-2 "></i>
+							<h4 data-lang="about_personalise_title"></h4>
+						</div>
+						<p class="lead" data-lang="about_personalise_description"></p>
+						</p>
+						<div class="d-flex align-items-center text-primary">
+							<i class="bi bi-search me-2"></i>
+							<h3 data-lang="about_friends_title"></h3>
+						</div>
+						<p class="lead" data-lang="about_friends_description"></p>
+						</p>
+						<div class="d-flex align-items-center text-warning">
+							<i class="bi bi-controller me-2"></i>
+							<h4 data-lang="about_play_title"></h4>
+						</div>
+						<p class="lead" data-lang="about_play_description"></p>
+						</p>
+						<div class="d-flex align-items-center text-danger">
+							<i class="bi bi-trophy me-2"></i>
+							<h4 data-lang="about_tournaments_title"></h4>
+						</div>
+						<p class="lead" data-lang="about_tournaments_description"></p>
+						</p>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+	<!-- item 3 -->
+	<div class="accordion-item" style="border-bottom-left-radius: 20px;border-bottom-right-radius: 20px;">
+		<h2 class="accordion-header">
+			<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+				data-bs-target="#flush-collapseThree" data-lang="who_is_the_team" style="border-bottom-left-radius: 20px;border-bottom-right-radius: 20px;">
+			</button>
+		</h2>
+		<div id="flush-collapseThree" class="accordion-collapse collapse" data-bs-parent="#aboutAccordion" >
+			<section class="container-fluid py-5 gap-4">
+				<h2 class="text-center" data-lang="our_team">Our team</h2>
+				<p class="lead text-center mb-5" data-lang="team_description"></p>
+				<div class="row g-4 mb-4 justify-content-center">
+					<div class="col-sm-6 col-md-4 col-lg-3 col-xl-2 d-flex align-items-stretch">
+						<div class="card bg-light">
+							<div class="card-body text-center">
+								<img src="assets/img/clement.jpg" width="200px" height="200px"
+									class="img-fluid rounded-circle mb-3 portraits" data-lang="clement_image_alt">
+								<h3 class="card-title text-center" data-lang="clement_name">Clément</h3>
+								<p class="card-text" data-lang="clement_role">Game Development - 3D</p>
+								<a href="#"><i class="bi bi-linkedin"></i></a>
+								<a href="#"><i class="bi bi-github"></i></a>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6 col-md-4 col-lg-3 col-xl-2 d-flex align-items-stretch">
+						<div class="card bg-light">
+							<div class="card-body text-center">
+								<img src="assets/img/mathis.jpg" width="200px" height="200px"
+									class="img-fluid rounded-circle mb-3 portraits" data-lang="mathis_image_alt">
+								<h3 class="card-title text-center" data-lang="mathis_name">Mathis</h3>
+								<p class="card-text" data-lang="mathis_role">Frontend - Docker Services</p>
+								<a href="#"><i class="bi bi-linkedin"></i></a>
+								<a href="#"><i class="bi bi-github"></i></a>
+							</div>
+						</div>
+					</div>
+					<div class="col col-sm-6 col-md-4 col-lg-3 col-xl-2 d-flex align-items-stretch">
+						<div class="card bg-light">
+							<div class="card-body text-center">
+								<img src="assets/img/leo.jpg" width="200px" height="200px"
+									class="img-fluid rounded-circle mb-3 portraits" data-lang="leo_image_alt">
+								<h3 class="card-title text-center" data-lang="leo_name">Léo</h3>
+								<p class="card-text" data-lang="leo_role">Backend - API</p>
+								<a href="#"><i class="bi bi-linkedin"></i></a>
+								<a href="#"><i class="bi bi-github"></i></a>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6 col-md-4 col-lg-3 col-xl-2 d-flex align-items-stretch">
+						<div class="card bg-light">
+							<div class="card-body text-center">
+								<img src="assets/img/maxime.jpg" width="200px" height="200px"
+									class="img-fluid rounded-circle mb-3 portraits" data-lang="maxime_image_alt">
+								<h3 class="card-title text-center" data-lang="maxime_name">Maxime</h3>
+								<p class="card-text" data-lang="maxime_role">3D assistant</p>
+								<a href="#"><i class="bi bi-linkedin"></i></a>
+								<a href="#"><i class="bi bi-github"></i></a>
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6 col-md-4 col-lg-3 col-xl-2 d-flex align-items-stretch">
+						<div class="card bg-light">
+							<div class="card-body text-center">
+								<img src="assets/img/jocelyn.jpg" width="200px" height="200px"
+									class="img-fluid rounded-circle mb-3 portraits" data-lang="jocelyn_image_alt">
+								<h3 class="card-title text-center" data-lang="jocelyn_name">Jocelyn</h3>
+								<p class="card-text" data-lang="jocelyn_role">Blockchain integration</p>
+								<a href="#"><i class="bi bi-linkedin"></i></a>
+								<a href="#"><i class="bi bi-github"></i></a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+	</div>
+</div>

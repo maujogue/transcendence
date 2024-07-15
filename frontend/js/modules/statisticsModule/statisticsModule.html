@@ -1,128 +1,197 @@
-<div class="mt-4 card p-0">
-	<div class="card-header">
-		<h2 data-lang="statistics">Statistics</h2>
+<div id="statisticsCard" class="mt-4 card p-0 rounded-4">
+	<div class="card-header d-flex align-items-center">
+		<i class="bi bi-bar-chart-fill me-2 text-warning"></i>
+		<h3 id="usernameStats"></h3>
+		<h3 data-lang="statistics">'s Statistics</h3>
 	</div>
-	<div class="card-body">
-		<div class="row mb-3">
-			<div class="col-sm-6 col-md-3">
-				<div class="stat-item card">
-					<div class="card-body">
-						<h5 class="card-title" data-lang="stats_winrate">Win Rate</h5>
-						<p class="card-text" id="winrate">0%</p>
-					</div>
-				</div>
-			</div>
-			<div class="col-sm-6 col-md-3">
-				<div class="stat-item card">
-					<div class="card-body">
-						<h5 class="card-title" data-lang="stats_wins">Wins</h5>
-						<p class="card-text" id="wins">0</p>
-					</div>
-				</div>
-			</div>
-			<div class="col-sm-6 col-md-3">
-				<div class="stat-item card">
-					<div class="card-body">
-						<h5 class="card-title" data-lang="stats_losses">Losses</h5>
-						<p class="card-text" id="losses">0</p>
-					</div>
-				</div>
-			</div>
-			<div class="col-sm-6 col-md-3">
-				<div class="stat-item card">
-					<div class="card-body">
-						<h5 class="card-title" data-lang="stats_winstreak">Win Streak</h5>
-						<p class="card-text" id="winstreak">0</p>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div id="gamesPlayedRow" class="row">
-			<div class="col-md-6">
-				<div class="d-flex">
-					<h3 data-lang="stats_match_history">Match History</h3>
-					<div class="dropdown mb-3 ms-auto history-dropdown">
-						<button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
-							data-bs-toggle="dropdown" data-lang="stats_all_matches">
-							All Matches
-						</button>
-						<div class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton">
-							<a class="dropdown-item" data-filter="all" hidden data-lang="stats_all_matches">All Matches</a>
-							<a class="dropdown-item" data-filter="wins" data-lang="stats_wins">Wins</a>
-							<a class="dropdown-item" data-filter="losses" data-lang="stats_losses">Losses</a>
+	<div id="gamesPlayedRow" class="card-body">
+		<div class="accordion accordion-flush" id="accordionFlushExample">
+			<div class="accordion-item">
+				<h2 class="accordion-header">
+					<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+						data-bs-target="#flush-collapseOne" data-lang="statistics_general">
+						General
+					</button>
+				</h2>
+				<div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+					<div class="accordion-body">
+						<div class="row mb-3">
+							<div class="col-sm-6 col-md-3">
+								<div class="stat-item card">
+									<div class="card-body">
+										<h5 class="card-title" data-lang="stats_winrate">Win Rate</h5>
+										<p class="card-text" id="winrate">0%</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-6 col-md-3">
+								<div class="stat-item card">
+									<div class="card-body">
+										<h5 class="card-title" data-lang="stats_wins">Wins</h5>
+										<p class="card-text" id="wins">0</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-6 col-md-3">
+								<div class="stat-item card">
+									<div class="card-body">
+										<h5 class="card-title" data-lang="stats_losses">Losses</h5>
+										<p class="card-text" id="losses">0</p>
+									</div>
+								</div>
+							</div>
+							<div class="col-sm-6 col-md-3">
+								<div class="stat-item card">
+									<div class="card-body">
+										<h5 class="card-title" data-lang="stats_winstreak">Win Streak</h5>
+										<p class="card-text" id="winstreak">0</p>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
-				<div class="table-responsive">
-					<table class="table table-striped" id="match-history">
-						<thead>
-							<tr>
-								<th data-lang="stats_date">Date</th>
-								<th data-lang="stats_score">Score</th>
-								<th data-lang="stats_result">Result</th>
-							</tr>
-						</thead>
-						<tbody>
-							<!-- Match history rows will be added here dynamically -->
-						</tbody>
-					</table>
-				</div>
 			</div>
-			<div class="col-md-6">
-				<div class="d-flex">
-					<h3 data-lang="stats_match_winrate">Match Win Rate</h3>
-					<div class="dropdown mb-3 ms-auto winrate-dropdown">
-						<button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
-							data-bs-toggle="dropdown" data-lang="pie_chart">
-							Pie Chart
-						</button>
-						<div class="dropdown-menu dropdown-menu-dark">
-							<a class="dropdown-item" data-filter="Pie Chart" hidden data-lang="pie_chart">Pie Chart</a>
-							<a class="dropdown-item" data-filter="Bar Chart" data-lang="winrate">Bar Chart</a>
-							<a class="dropdown-item" data-filter="Doughnut Chart" data-lang="doughnut_chart">Doughnut Chart</a>
+			<div class="accordion-item">
+				<h2 class="accordion-header">
+					<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+						data-bs-target="#flush-collapseTwo" data-lang="statistics_history">
+						History
+					</button>
+				</h2>
+				<div id="flush-collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+					<div class="accordion-body">
+						<div class="row">
+							<div class="col-md-6">
+								<div class="card">
+									<div class="card-body">
+										<h3 data-lang="stats_match_history">Match History</h3>
+										<div class="dropdown mb-3 ms-auto history-dropdown">
+											<button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
+												data-bs-toggle="dropdown" data-lang="stats_all_matches">
+												All Matches
+											</button>
+											<div class="dropdown-menu dropdown-menu-dark"
+												aria-labelledby="dropdownMenuButton">
+												<a class="dropdown-item" data-filter="all" hidden
+													data-lang="stats_all_matches">All
+													Matches</a>
+												<a class="dropdown-item" data-filter="wins"
+													data-lang="stats_wins">Wins</a>
+												<a class="dropdown-item" data-filter="losses"
+													data-lang="stats_losses">Losses</a>
+											</div>
+										</div>
+									</div>
+									<div class="table-responsive">
+										<table class="table table-striped" id="match-history">
+											<thead>
+												<tr>
+													<th data-lang="stats_date">Date</th>
+													<th data-lang="stats_score">Score</th>
+												</tr>
+											</thead>
+											<tbody>
+												<!-- Match history rows will be added here dynamically -->
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="card">
+									<div class="card-body">
+										<h3 data-lang="stats_match_winrate">Match Win Rate</h3>
+										<div class="dropdown mb-3 ms-auto winrate-dropdown">
+											<button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
+												data-bs-toggle="dropdown" data-lang="pie_chart">
+												Pie Chart
+											</button>
+											<div class="dropdown-menu dropdown-menu-dark">
+												<a class="dropdown-item" data-filter="Pie Chart" hidden
+													data-lang="pie_chart">Pie
+													Chart</a>
+												<a class="dropdown-item" data-filter="Bar Chart" data-lang="winrate">Bar
+													Chart</a>
+												<a class="dropdown-item" data-filter="Doughnut Chart"
+													data-lang="doughnut_chart">Doughnut Chart</a>
+											</div>
+										</div>
+									</div>
+									<div class="chart-container">
+										<canvas class="chart-container" id="winRateChart" height="400px"></canvas>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
-				<div class="chart-container">
-					<canvas class="chart-container" id="winRateChart" height="400px"></canvas>
-				</div>
 			</div>
-			<div class="col-md-6">
-				<div class="d-flex">
-					<h3 data-lang="goal_average">Goal-Average</h3>
-					<div class="dropdown mb-3 ms-auto goal-dropdown">
-						<button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
-							data-bs-toggle="dropdown" data-lang="pie_chart">
-							Pie Chart
-						</button>
-						<div class="dropdown-menu dropdown-menu-dark">
-							<a class="dropdown-item" data-filter="Pie Chart" hidden data-lang="pie_chart">Pie Chart</a>
-							<a class="dropdown-item" data-filter="Bar Chart" data-lang="bar_chart">Bar Chart</a>
-							<a class="dropdown-item" data-filter="Doughnut Chart" data-lang="doughnut_chart">Doughnut Chart</a>
+			<div class="accordion-item">
+				<h2 class="accordion-header">
+					<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+						data-bs-target="#flush-collapseThree" data-lang="statistics_performance">
+						Performance
+					</button>
+				</h2>
+				<div id="flush-collapseThree" class="accordion-collapse collapse"
+					data-bs-parent="#accordionFlushExample">
+					<div class="accordion-body">
+						<div id="inGameStatsRow" class="row">
+							<div class="col-md-6">
+								<div class="card">
+									<div class="card-body">
+										<h3 data-lang="goal_average">Goal-Average</h3>
+										<div class="dropdown mb-3 ms-auto goal-dropdown">
+											<button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
+												data-bs-toggle="dropdown" data-lang="pie_chart">
+												Pie Chart
+											</button>
+											<div class="dropdown-menu dropdown-menu-dark">
+												<a class="dropdown-item" data-filter="Pie Chart" hidden
+													data-lang="pie_chart">Pie
+													Chart</a>
+												<a class="dropdown-item" data-filter="Bar Chart"
+													data-lang="bar_chart">Bar
+													Chart</a>
+												<a class="dropdown-item" data-filter="Doughnut Chart"
+													data-lang="doughnut_chart">Doughnut Chart</a>
+											</div>
+										</div>
+									</div>
+									<div class="chart-container">
+										<canvas class="chart-container" id="goalAverageChart" height="400px"></canvas>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<div class="card">
+									<div class="card-body">
+										<h3 data-lang="exchanges">Exchanges</h3>
+										<div class="dropdown mb-3 ms-auto exchange-dropdown">
+											<button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
+												data-bs-toggle="dropdown" data-lang="bar_chart">
+												Bar Chart
+											</button>
+											<div class="dropdown-menu dropdown-menu-dark">
+												<a class="dropdown-item" data-filter="Bar Chart" hidden
+													data-lang="bar_chart">Bar
+													Chart</a>
+												<a class="dropdown-item" data-filter="Pie Chart"
+													data-lang="pie_chart">Pie
+													Chart</a>
+												<a class="dropdown-item" data-filter="Doughnut Chart"
+													data-lang="doughnut_chart">Doughnut Chart</a>
+											</div>
+										</div>
+									</div>
+									<div class="chart-container">
+										<canvas class="chart-container" id="exchangeChart" height="400px"></canvas>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="chart-container">
-					<canvas class="chart-container" id="goalAverageChart" height="400px"></canvas>
-				</div>
-			</div>
-			<div class="col-md-6">
-				<div class="d-flex">
-					<h3 data-lang="exchanges">Exchanges</h3>
-					<div class="dropdown mb-3 ms-auto exchange-dropdown">
-						<button class="btn btn-sm btn-secondary dropdown-toggle" type="button"
-							data-bs-toggle="dropdown" data-lang="bar_chart">
-							Bar Chart
-						</button>
-						<div class="dropdown-menu dropdown-menu-dark">
-							<a class="dropdown-item" data-filter="Bar Chart" hidden data-lang="bar_chart">Bar Chart</a>
-							<a class="dropdown-item" data-filter="Pie Chart" data-lang="pie_chart">Pie Chart</a>
-							<a class="dropdown-item" data-filter="Doughnut Chart" data-lang="doughnut_chart">Doughnut Chart</a>
-						</div>
-					</div>
-				</div>
-				<div class="chart-container">
-					<canvas class="chart-container" id="exchangeChart" height="400px"></canvas>
 				</div>
 			</div>
 		</div>
@@ -130,6 +199,28 @@
 </div>
 
 <style>
+	#statisticsCard {
+		padding: 20px;
+		box-shadow: 3px 3px 15px black;
+		background-color:#141419;
+		color: white;
+	}
+
+	#statisticsCard .accordion {
+		color: white;
+		--bs-accordion-bg: transparent;
+	}
+
+	#statisticsCard .accordion-button {
+		color: white;
+		--bs-accordion-bg: transparent;
+	}
+
+	.accordion-button:not(.collapsed) {
+		background-color: #262426;
+	}
+
+
 	.win-row {
 		background-color: #d4edda;
 	}
@@ -149,17 +240,23 @@
       margin-right: auto; */
 	}
 
-	.table-responsive{
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        #match-history thead,
-        #match-history tbody tr {
-            display: table;
-            width: 100%;
-            table-layout: fixed;
-        }
-        #match-history thead {
-            width: calc(100% - 1em);
-        }
+	.table-responsive {
+		max-height: 200px;
+		overflow-y: auto;
+	}
+
+	#match-history thead,
+	#match-history tbody tr {
+		display: table;
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	#match-history thead {
+		width: calc(100% - 1em);
+	}
+
+	#flush-collapseTwo .card, #flush-collapseThree .card {
+		padding: 15px;
+	}
 </style>

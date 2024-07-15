@@ -134,8 +134,8 @@ async function fillInbox(data) {
 
 async function fillFriendsList(data) {
 	friendList = data.friends;
-	const onlineFriends = friendList.filter(friend => friend.status);
-	const offlineFriends = friendList.filter(friend => !friend.status);
+	const onlineFriends = friendList.filter(friend => friend.online_status);
+	const offlineFriends = friendList.filter(friend => !friend.online_status);
 	var friendScroll = module.querySelector("#friendScroll");
 	friendScroll.innerHTML = "";
 

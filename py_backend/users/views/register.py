@@ -18,6 +18,7 @@ def register(request):
     form = CustomUserCreationForm(data)
     if form.is_valid():
         user = form.save()
+        user.save_account_creation_time()
         if send_confirmation_email(user, request) == False:
             return JsonResponse({'error': "Error sending the email."}, status=400)
         return JsonResponse({'status': "Please validate your email by clicking on the link we sent you."}, status=200)

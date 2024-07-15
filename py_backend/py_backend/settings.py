@@ -236,3 +236,9 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'backend.amos@gmail.com'
 EMAIL_HOST_PASSWORD = 'hvqzjctapjxiijjf'
 EMAIL_USE_TLS = True
+
+
+CHECK_UNVERIFIED_ACCOUNT_DELAY = 5
+CRONJOBS = [
+    ('*/5 * * * *', 'users.tasks.check_unverified_accounts'),
+]

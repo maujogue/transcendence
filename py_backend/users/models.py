@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.contrib.sessions.models import Session
+from django.utils import timezone
 from py_backend import settings
 from PIL import Image
 import random
@@ -37,7 +37,12 @@ class CustomUser(AbstractUser):
 	is_42auth = models.BooleanField(default=False)
 	is_online = models.BooleanField(default=False)
 	lang = models.CharField(max_length=2, default='en')
+	account_creation_time = models.DateTimeField(null=True, blank=True)
 	
+	def save_account_creation_time(self, *args, **kwargs):
+		self.account_creation_time = timezone.now()
+		super().save(*args, **kwargs)
+
 	def save(self, *args, **kwargs):
 		if not self.tournament_username:
 			self.tournament_username = generate_random_pseudo(random.randint(3, 5))

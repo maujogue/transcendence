@@ -80,7 +80,7 @@ function displayWaitingText() {
     let maxDots = 3;
     let interval = 500;
     
-    setInterval( async () => {
+    var timer = setInterval( async () => {
         if (tournamentStatus === "started")
 			textContent = await getKeyTranslation("tournament_start");
         if (tournamentStatus === "waiting")
@@ -94,7 +94,8 @@ function displayWaitingText() {
         } else {
             dots = '';
         }
-		console.log(textContent);
+		if (!document.querySelector('.waiting-text'))
+			clearInterval(timer);
         waitingText.textContent = `${textContent}${dots}`;
     }, interval);
 }

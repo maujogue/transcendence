@@ -20,7 +20,7 @@ def update_profile_password(request):
         return data
     
     if request.user.is_42auth:
-        return JsonResponse({'status': "You cannot update your password because you are authenticated with 42."}, status=400)
+        return JsonResponse({'status': "update_42_error_message"}, status=400)
     
     new_password1 = data.get('new_password1')
     new_password2 = data.get('new_password2')
@@ -38,8 +38,8 @@ def update_profile_password(request):
             request.user.save()
             update_session_auth_hash(request, request.user)
 
-            return JsonResponse({"status": "Your password has been correctly updated !"}, status=200)
+            return JsonResponse({"status": "profile_password_updated_message"}, status=200)
         else:
-            return JsonResponse({'status': 'Passwords do not match.'}, status=400)
+            return JsonResponse({'status': 'passwords_not_matching_message'}, status=400)
     else:
-        return JsonResponse({'status': 'One password is missing.'}, status=400)
+        return JsonResponse({'status': 'password_missing_message'}, status=400)

@@ -15,7 +15,11 @@ def register(request):
     if valid_request:
         return JsonResponse({'error': valid_request}, status=400)
 
-    form = CustomUserCreationForm(data)
+    try:
+        form = CustomUserCreationForm(data)
+    except:
+        return JsonResponse({'error': 'Error during the form creation.'}, status=400)
+    
     if form.is_valid():
         user = form.save()
         user.save_account_creation_time()

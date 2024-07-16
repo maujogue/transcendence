@@ -9,5 +9,8 @@ COPY requirements.txt code/requirements.txt
 RUN pip install --upgrade pip
 RUN pip install -r code/requirements.txt
 
+RUN apt-get update
+RUN apt-get install -y cron
+
 COPY ./entrypoint.prod.sh /code/entrypoint.prod.sh
 CMD ["sh","docker/entrypoint.prod.sh"]

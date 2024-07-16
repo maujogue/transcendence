@@ -37,11 +37,6 @@ class CustomUser(AbstractUser):
 	is_42auth = models.BooleanField(default=False)
 	is_online = models.BooleanField(default=False)
 	lang = models.CharField(max_length=2, default='en')
-	account_creation_time = models.DateTimeField(null=True, blank=True)
-	
-	def save_account_creation_time(self, *args, **kwargs):
-		self.account_creation_time = timezone.now()
-		super().save(*args, **kwargs)
 
 	def save(self, *args, **kwargs):
 		if not self.tournament_username:

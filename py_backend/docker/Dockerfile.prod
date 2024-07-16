@@ -11,6 +11,6 @@ COPY ./entrypoint.prod.sh /code/entrypoint.prod.sh
 
 ARG CACHEBUST
 RUN echo $CACHEBUST
-COPY ../ /code
+COPY .. /code
 WORKDIR /code
 CMD ["sh","docker/entrypoint.prod.sh"]

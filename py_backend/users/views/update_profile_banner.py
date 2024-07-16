@@ -36,6 +36,6 @@ def update_profile_banner(request):
     try:
         request.user.banner = uploaded_file
         request.user.save()
-        return JsonResponse({'status': "Your profile picture has been correctly updated !"}, status=200)
+        return JsonResponse({'status': "profile_banner_updated_message"}, status=200)
     except Exception as e:
-        return JsonResponse({'error': "An error occurred while updating your profile picture."}, status=500)
+        return JsonResponse({'error': "error_updating_profile_banner_message"}, status=500)

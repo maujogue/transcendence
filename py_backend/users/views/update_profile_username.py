@@ -16,7 +16,7 @@ def update_profile_username(request):
     
     username = data.get('username')
     if request.user.is_42auth:
-        return JsonResponse({'status': "You cannot update your username because you are authenticated with 42."}, status=400)
+        return JsonResponse({'status': "update_42_error_message"}, status=400)
     
     is_valid, is_valid_error = username_is_valid(username)
     if not is_valid:
@@ -28,5 +28,5 @@ def update_profile_username(request):
             return JsonResponse({'error': error_message}, status=400)
         request.user.username = username
         request.user.save()
-        return JsonResponse({'status': "Your username has been correctly updated !"}, status=200)
+        return JsonResponse({'status': "profile_username_updated_message"}, status=200)
     return JsonResponse({'error': 'Missing username.'}, status=400)

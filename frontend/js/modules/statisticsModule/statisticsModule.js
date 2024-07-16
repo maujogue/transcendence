@@ -68,9 +68,9 @@ export async function init() {
 	updateMatchHistory(userStats.matchHistoryAll);
 
 	var charts = [
-		new CustomChart(module, '#winRateChart', '.winrate-dropdown', winRateChartConfig(userStats)),
-		new CustomChart(module, '#goalAverageChart', '.goal-dropdown', goalAverageChartConfig(userStats)),
-		new CustomChart(module, '#exchangeChart', '.exchange-dropdown', exchangeChartConfig(userStats)),
+		new CustomChart(module, '#winRateChart', '.winrate-dropdown', await winRateChartConfig(userStats)),
+		new CustomChart(module, '#goalAverageChart', '.goal-dropdown', await goalAverageChartConfig(userStats)),
+		new CustomChart(module, '#exchangeChart', '.exchange-dropdown', await exchangeChartConfig(userStats)),
 	];
 
 	var historyDropdown = module.querySelector('.history-dropdown');
@@ -121,7 +121,6 @@ export async function init() {
 					<span style="color: ${p1Color}"> ${match.player1} </span>
 				</span>
 				`;
-			console.log(cellScore.innerHTML);
 			cellDate.innerHTML = '<span class="fs-6" >' + new Date(match.date).toLocaleString() + '</span>';
 		});
 	}

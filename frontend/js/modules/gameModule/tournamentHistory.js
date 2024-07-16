@@ -47,7 +47,7 @@ function createDivTournamentHistory(parent) {
     const header = document.createElement("div");
     header.className = "list-header";
     const div = document.createElement("div");
-    div.textContent = "Tournaments History";
+	div.setAttribute("data-lang", "tournaments_history");
     const div2 = document.createElement("div");
     const tournamentsInfo = document.createElement("div");
     tournamentsInfo.id = "tournamentsInfo";

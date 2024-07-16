@@ -17,26 +17,26 @@ def update_profile_picture(request):
     uploaded_file = request.FILES.get("image")
     
     if not image_extension_is_valid(uploaded_file.name):
-        return JsonResponse({'error': "Invalid image type."}, status=400)
+        return JsonResponse({'error': "invalid_file_type_message"}, status=400)
 
     if uploaded_file and uploaded_file.size > 5242880: # 5MB
-        return JsonResponse({'error': "File size exceeds the limit."}, status=400)
+        return JsonResponse({'error': "file_too_big_message"}, status=400)
     
     if uploaded_file is None:
-        return JsonResponse({'error': "No file provided."}, status=400)
+        return JsonResponse({'error': "no_file_message"}, status=400)
     
     mime = magic.Magic()
     file_type = mime.from_buffer(uploaded_file.read(1024))
     if 'image' not in file_type:
-        return JsonResponse({'error': "Invalid file."}, status=400)
+        return JsonResponse({'error': "invalid_file_message"}, status=400)
     
     try:
         get_image_dimensions(uploaded_file)
     except Exception as e:
-        return JsonResponse({'error': "Invalid file."}, status=400)
+        return JsonResponse({'error': "invalid_file_message"}, status=400)
     try:
         request.user.avatar = uploaded_file
         request.user.save()
-        return JsonResponse({'status': "Your profile picture has been correctly updated !"}, status=200)
+        return JsonResponse({'status': "profile_picture_updated_message"}, status=200)
     except Exception as e:
-        return JsonResponse({'error': "An error occurred while updating your profile picture."}, status=500)
+        return JsonResponse({'error': "error_updating_profile_picture_message"}, status=500)

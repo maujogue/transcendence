@@ -19,7 +19,7 @@ def register(request):
     if form.is_valid():
         user = form.save()
         if send_confirmation_email(user, request) == False:
-            return JsonResponse({'error': "Error sending the email."}, status=400)
-        return JsonResponse({'status': "Please validate your email by clicking on the link we sent you."}, status=200)
+            return JsonResponse({'error': "error_sending_email_message"}, status=400)
+        return JsonResponse({'status': "validate_email_message"}, status=200)
     else:
         return JsonResponse({'error': form.errors}, status=400)

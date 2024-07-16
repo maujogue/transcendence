@@ -29,7 +29,6 @@ def login_view(request):
             auth_login(request, user)
 
             request.session['active_session'] = True
-            user.session_key = request.session.session_key
             user.is_42auth = False
             user.save()
 

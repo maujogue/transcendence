@@ -172,7 +172,7 @@ function createInterfaceSelectMenu() {
 	createPanelDiv();
 	createDivInputImg("P1");
 	createDivInputImg("P2");
-	createDivInputImg("GO");
+	createDivInputImg("Start");
 	charactersNames.forEach(character => {
 		createSwatchPanel(i, character);
 		i++;

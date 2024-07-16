@@ -22,10 +22,10 @@ def login_view(request):
 
         if user is not None:
             if not user.email_is_verified:
-                return JsonResponse({'error': "Your email is not verified yet."}, status=400)
+                return JsonResponse({'error': "email_unverified"}, status=400)
 
             if user.is_online:
-                return JsonResponse({'error': "You are already logged in somewhere else."}, status=400)
+                return JsonResponse({'error': "logged_elsewhere"}, status=400)
             auth_login(request, user)
 
             request.session['active_session'] = True
@@ -45,5 +45,5 @@ def login_view(request):
                 'is_online': user.is_online,
                 'lang': user.lang,
             }
-            return JsonResponse({'status': "You are now logged in !", "user": user_info}, status=200)
-    return JsonResponse({'error': "Wrong username or password."}, status=400)
+            return JsonResponse({'status': "logged_in", "user": user_info}, status=200)
+    return JsonResponse({'error': "username_password_incorrect"}, status=400)

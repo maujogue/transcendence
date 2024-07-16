@@ -1,11 +1,12 @@
+import { getKeyTranslation } from "../translationsModule/translationsModule.js";
 
-function winRateChartConfig(userStats) {
+async function winRateChartConfig(userStats) {
 	return {
 		type: 'pie',
 		data: {
-			labels: ['Wins', 'Losses'],
+			labels: [await getKeyTranslation("wins"), await getKeyTranslation("losses")],
 			datasets: [{
-				label: 'winLoseChart',
+				label: await getKeyTranslation("winrate_chart"),
 				data: [userStats.wins, userStats.losses],
 				backgroundColor: [
 					'rgba(75, 192, 192, 0.2)',
@@ -37,14 +38,14 @@ function winRateChartConfig(userStats) {
 	}
 }
 
-function goalAverageChartConfig(userStats) {
+async function goalAverageChartConfig(userStats) {
 	return {
 
 		type: 'pie',
 		data: {
-			labels: ['Scored', 'Conceded'],
+			labels: [await getKeyTranslation("scored"), await getKeyTranslation("conceded")],
 			datasets: [{
-				label: 'goalAverageChart',
+				label: await getKeyTranslation("goal_average_chart"),
 				data: [userStats.averageScored, userStats.averageConceded],
 				backgroundColor: [
 					'rgba(75, 192, 192, 0.2)',
@@ -76,13 +77,13 @@ function goalAverageChartConfig(userStats) {
 	}
 }
 
-function exchangeChartConfig(userStats) {
+async function exchangeChartConfig(userStats) {
 	return {
 		type: 'bar',
 		data: {
-			labels: ['Exchanges Before Goal'],
+			labels: [await getKeyTranslation("exchange_before_goal")],
 			datasets: [{
-				label: 'ExchangesChart',
+				label: await getKeyTranslation("exchanges_chart"),
 				data: [userStats.averageExchanged],
 				backgroundColor: [
 					'rgba(75, 192, 192, 0.2)',

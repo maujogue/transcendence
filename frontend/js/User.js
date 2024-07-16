@@ -1,5 +1,5 @@
-import { get_csrf_token } from "./ApiCalls.js";
-import { isLoggedIn } from "./Utils.js";
+import { get_csrf_token, logout } from "./ApiCalls.js";
+import { isLoggedIn, showAlert } from "./Utils.js";
 import { hostname } from "./Router.js";
 
 async function injectUserData(divToFill = null, username = null) {
@@ -49,4 +49,15 @@ async function getUserData(dataElement, username) {
 	}
 }
 
-export { getUserData, injectUserData };
+function initSessionWs() {
+	const ws = new WebSocket(`wss://${hostname}:8000/ws/notify/`);
+
+	ws.onmessage = function(event) {
+		const data = JSON.parse(event.data);
+		if (data.action === 'logout') {
+			location.reload();
+			showAlert('loggout_because_logged_elsewhere', false);
+		}
+	};
+}
+export { getUserData, injectUserData, initSessionWs };

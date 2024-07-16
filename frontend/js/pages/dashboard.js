@@ -1,10 +1,11 @@
 import { updatePassword, updateProfile, updateProfileWithPassword } from "../ApiCalls.js";
-import { togglePasswordVisibility, checkPassword, showAlert } from "../Utils.js";
+import { togglePasswordVisibility, checkPassword } from "../Utils.js";
 import { resetForm, inputInitListeners } from "../DashboardUtils.js"
-import { getUserData } from "../User.js";
+import { initSessionWs } from "../User.js";
 import { printQueryParamsMessage } from "../modules/translationsModule/translationsModule.js";
 
 export async function init(queryParams) {
+	initSessionWs();
 	printQueryParamsMessage(queryParams);
 
 	var modal = document.getElementById("updateProfileModal");

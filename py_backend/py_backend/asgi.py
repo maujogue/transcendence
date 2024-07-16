@@ -17,6 +17,7 @@ from channels.auth import AuthMiddlewareStack
 import multiplayer.routing
 import tournaments.routing
 import friends.routing
+import users.routing
 
 class CustomURLRouter(URLRouter):
     def __init__(self, application):
@@ -46,6 +47,7 @@ application = ProtocolTypeRouter({
                 multiplayer.routing.websocket_urlpatterns \
             +   tournaments.routing.websocket_urlpatterns \
             +   friends.routing.websocket_urlpatterns \
+            +   users.routing.websocket_urlpatterns \
         )
     ),
 })

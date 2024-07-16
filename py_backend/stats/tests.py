@@ -32,7 +32,7 @@ class UserWinrateViewTest(TestCase):
 
         response = client.get(reverse('winrate', kwargs={'user': 'non_existing_user'}))
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json(), {'error': 'User not found'})
+        self.assertEqual(response.json(), {'error': 'user_not_found_message'})
     
 class MatchsTest(TestCase):
     def setUp(self):
@@ -88,7 +88,7 @@ class MatchsTest(TestCase):
 
         response = client.get(reverse('matchs', kwargs={'user': 'non_existing_user'}))
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json(), {'error': 'User not found'})
+        self.assertEqual(response.json(), {'error': 'user_not_found_message'})
     
     def test_get_all_matchs(self):
         client = Client()

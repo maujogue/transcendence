@@ -23,11 +23,12 @@ export async function sendTournamentForm(form) {
 	.then((response) => response.json())
 	.then((data) => {
 		if (data.errors)
-			throw new Error(data.errors);
+			throw (data.errors);
 		connectToTournament(data.tournament);
 	})
-	.catch((error) => {
-		displayErrorPopUp(error, document.getElementsByClassName("tournament")[0]);
+	.catch(async (error) => {
+		console.log("ok", error);
+		await displayErrorPopUp(error, document.getElementsByClassName("tournament")[0]);
 	});
 }
 

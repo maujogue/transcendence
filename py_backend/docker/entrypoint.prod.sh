@@ -1,6 +1,8 @@
 #!/bin/sh
+cd py_backend
 python manage.py crontab add
 python manage.py crontab add
+cd ..
 python manage.py makemigrations users tournaments stats multiplayer friends --noinput
 python manage.py migrate --noinput
 python manage.py collectstatic --noinput

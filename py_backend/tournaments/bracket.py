@@ -34,7 +34,7 @@ def get_round_winners(tournament):
 
 def generate_bracket(tournament):
     if tournament.current_round == 1:
-        participants = list(tournament.participants.values_list('tournament_username', flat=True))
+        participants = list(tournament.participants.all())
         random.shuffle(participants)
     else:
         participants = get_round_winners(tournament)

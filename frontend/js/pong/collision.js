@@ -1,5 +1,6 @@
 import * as THREE from 'three'
 import { actualizeScore } from './score.js';
+import { currentActions, actions } from '../pages/game.js';
 
 function resetPos(ball, player1, player2, environment) {
     ball.mesh.position.set(0, 0, 0.9).unproject(environment.camera);
@@ -15,12 +16,17 @@ async function checkIfScored(ball, player1, player2, environment) {
     if (ball.mesh.position.x < bbox1.min.x - 2) {
         player2.score++;
         ball.direction.x = -0.1;
-        resetPos(ball, player1, player2, environment);
+		currentActions.map(subArray => actions.push(subArray));
+		currentActions.length = 0;
+		resetPos(ball, player1, player2, environment);
         actualizeScore(player1, player2, environment, environment.font);
     }
     if (ball.mesh.position.x > bbox2.max.x + 2) {
         player1.score++; 
         ball.direction.x = 0.1;
+		let transformedActions = currentActions.map(subArray => subArray.map(x => x > 0 ? -x : x));
+		transformedActions.map(subArray => actions.push(subArray));
+		currentActions.length = 0;
         resetPos(ball, player1, player2, environment);
         actualizeScore(player1, player2, environment, environment.font);
     }
@@ -60,8 +66,11 @@ function checkCollision(ball, player1, player2, environment) {
     ballBox.copy(ball.mesh.geometry.boundingBox).applyMatrix4(ball.mesh.matrixWorld);
     if (bbox1.intersectsBox(ballBox))
         physicsBall(ball, bbox1);
-    if (bbox2.intersectsBox(ballBox))
+    if (bbox2.intersectsBox(ballBox)) {
+		currentActions.map(subArray => actions.push(subArray));
+		currentActions.length = 0;
         physicsBall(ball, bbox2);
+	}
     checkCollisionWithBorder(ball, ballBox, environment);
     ball.mesh.translateX(ball.direction.x);
     ball.mesh.translateY(ball.direction.y);

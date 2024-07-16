@@ -26,37 +26,35 @@ async function handleMenuKeyPress(keysPressed, player1, player2, env) {
 function handleKeyPress(keysPressed, player1, player2, environment) {
 	let playerBox1;
 	let playerBox2;
-	let actionP1, actionP2 = 0;
+	let action = 0;
 
 	if (!player1)
 		return;
 	playerBox1 = new THREE.Box3().setFromObject(player1.paddle.mesh);
 	if (keysPressed["w"] && !environment.border.up.box.intersectsBox(playerBox1)) {
-		actionP1 = 1;
 		player1.paddle.mesh.translateY(0.15);
 		player1.light.position.y += 0.15;
 	}
 	if (keysPressed["s"] && !environment.border.down.box.intersectsBox(playerBox1)) {
-		actionP1 = 2; 
 		player1.paddle.mesh.translateY(-0.15);
 		player1.light.position.y -= 0.15;
 	}
 
 	if (!player2 || soloMode)
-		return;
+		return (-1);
 	playerBox2 = new THREE.Box3().setFromObject(player2.paddle.mesh);
 	if (keysPressed['ArrowUp'] && !environment.border.up.box.intersectsBox(playerBox2)) {
-		actionP2 = 1;
+		action = 1;
 		player2.paddle.mesh.translateY(0.15);
 		player2.light.position.y += 0.15;
 	}
 	else if (keysPressed['ArrowDown'] && !environment.border.down.box.intersectsBox(playerBox2)) {
-		actionP2 = 2
+		action = 2
 		player2.paddle.mesh.translateY(-0.15);
 		player2.light.position.y -= 0.15;
 	}
 
-	return (actionP1, actionP2);
+	return (action);
 }
 
 export { handleKeyPress, handleMenuKeyPress};

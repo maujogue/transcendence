@@ -1,9 +1,8 @@
 import * as THREE from 'three';
-import { getStateReversed, getState } from './envForAI.js'
-import { updateMixers } from "../displayCharacter.js"
+import { getState } from './envForAI.js'
 
-import { environment, actions, states } from '../../pages/game.js';
-import { ReplayBuffer } from "./ReplayBuffer.js";
+import { environment, currentActions, actions, states } from '../../pages/game.js';
+
 
 const numActions = 2;
 const numStateFeatures = 5;
@@ -36,6 +35,8 @@ export function moveAI(player2, env, model) {
 		player2.paddle.mesh.translateY(-0.15);
 		player2.light.position.y -= 0.15;
 	}
+
+	return (AIAction);
 }
 
 export async function trainModel(model, epochs) {
@@ -55,6 +56,6 @@ export async function trainModel(model, epochs) {
 
 export function storeData(env, player2, action) {
 	states.push(getState(env, player2));
-	let actionArray = (action === 0) ? [0.1, 0, 0] : (action === 1) ? [0, 1, 0] : [0, 0, 1];
-	actions.push(actionArray);
+	let actionArray = (action === 0) ? [1, 0, 0] : (action === 1) ? [0, 1, 0] : [0, 0, 1];
+	currentActions.push(actionArray);
 }

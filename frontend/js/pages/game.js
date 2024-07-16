@@ -16,10 +16,9 @@ import { sendTournamentForm, createFormTournament } from "../pong/createTourname
 import { createJoinTournamentMenu } from "../pong/joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "../pong/tournament.js";
 import { showAlert } from "../Utils.js";
-import * as THREE from 'three';
 import { injectGameTranslations } from "../modules/translationsModule/translationsModule.js";
-import { trainModel, storeData, createModel, moveAI, storeDataReversed } from "../pong/AI/AI.js"
-import { getState } from "../pong/AI/envForAI.js";
+import { trainModel, storeData, createModel, moveAI } from "../pong/AI/AI.js"
+import * as THREE from 'three';
 
 export var lobby;
 export var clock;
@@ -28,6 +27,7 @@ export var soloMode;
 export var environment;
 export var states = [];
 export var actions = [];
+export var currentActions = [];
 
 export async function init(queryParams) {
 	if (queryParams && queryParams.get("message"))
@@ -193,9 +193,9 @@ export async function init(queryParams) {
 		if (player1.score < 5 && player2.score < 5)
 			return;
 		
-		if (localLoop && !soloMode) {
+		if (localLoop) {
 			console.log("States : ", states.length, " | Actions : ", actions.length);
-			await trainModel(model, 500);
+			await trainModel(model, 1000);
 		}
 		let winner = player1.name;
 		if (player2.score > player1.score)
@@ -215,27 +215,22 @@ export async function init(queryParams) {
 		if (keysPressed[" "] && document.getElementById("selectMenu") && player1 && player2 && !start) {
 			start = true;
 			ClearAllEnv(environment);
-			if (!soloMode) {
-				divMenu.remove();
-				model = await tf.loadLayersModel('https://127.0.0.1:8000/js/pong/AI/model/model.json');
-				model.compile({
-					optimizer: tf.train.adam(0.001),
-					loss: 'meanSquaredError'
-				});
-			}	   
-			else
-				model = await tf.loadLayersModel('https://127.0.0.1:8000/js/pong/AI/model/model.json');
-			environment = await initGame(player1, player2);
+			if (!soloMode)
+				divMenu.remove();   
+			model = await tf.loadLayersModel('https://127.0.0.1:8000/js/pong/AI/model/model.json');
+			model.compile({
+				optimizer: tf.train.adam(0.001),
+				loss: 'meanSquaredError'
+			});
+		environment = await initGame(player1, player2);
 		}
 		if (start) {
+			let action = 0;
+			if (keyPress)
+				action = handleKeyPress(keysPressed, player1, player2, environment);
 			if (soloMode)
-				moveAI(player2, environment, model)
-			let actionP1, actionP2 = 0;
-			if (keyPress) {
-				actionP1, actionP2 = handleKeyPress(keysPressed, player1, player2, environment);
-				if (!soloMode)
-					storeData(environment, player2, actionP2);
-			}
+				action = moveAI(player2, environment, model)
+			storeData(environment, player2, action);
 			checkCollision(environment.ball, player1, player2, environment);
 			await setIfGameIsEnd();
 		}

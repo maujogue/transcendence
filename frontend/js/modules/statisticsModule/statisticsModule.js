@@ -15,7 +15,7 @@ export async function init() {
 		username = usernameDiv.innerText;
 	else
 		username = await getUserData("username");
-	module.querySelector("#usernameStats").innerText = ' ' + username;
+	module.querySelector("#usernameStats").innerText = '\v' + username;
 	if (!username)
 		return;
 	var response = await runEndPoint("stats/" + username + "/matchs", "GET");

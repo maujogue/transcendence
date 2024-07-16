@@ -156,27 +156,33 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         await self.delete_interaction_request(from_user, to_user)
         await self.group_send(to_user, event = {'type': 'send_friendslist'})
         return await self.send(text_data=json.dumps({ "type": "refresh_friends"}))
-        
     
-
     @database_sync_to_async
     def get_friends(self):
-        current_user = CustomUser.objects.get(username=self.scope['user'].username)
-        friendslist = []
-        friendslist = current_user.friends.all()
-        friends_list_data = [{'username': friend.username, 
-                            'status': friend.is_online, 
-                            'avatar': convert_image_to_base64(friend.avatar)}
-                            for friend in friendslist]
-        return friends_list_data
+        try:
+            current_user = CustomUser.objects.get(id=self.scope['user'].id)
+            friendslist = []
+            friendslist = current_user.friends.all()
+            friends_list_data = [{'username': friend.username, 
+                                'status': friend.is_online, 
+                                'avatar': convert_image_to_base64(friend.avatar)}
+                                for friend in friendslist]
+            return friends_list_data
+        except Exception as e:
+            return None
 
 
     async def send_friendslist(self, data):
-        friends_list_data = []
-        friends_list_data = await self.get_friends()
-        await self.send(text_data=json.dumps({
-            "type": "friendslist",
-            "friends": friends_list_data}))
+        try:
+            friends_list_data = []
+            friends_list_data = await self.get_friends()
+            if friends_list_data is None:
+                raise Exception('User not found')
+            await self.send(text_data=json.dumps({
+                "type": "friendslist",
+                "friends": friends_list_data}))
+        except Exception as e:
+            print(f'send friendlist error: {e}')
         
     async def refresh_friends(self, data):
         await self.send(text_data=json.dumps({
@@ -295,7 +301,6 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             user = CustomUser.objects.get(id=self.scope['user'].id)
             user.is_online = status
             user.save()
-            print('set Online status to', status)
         except CustomUser.DoesNotExist:
             return False
         

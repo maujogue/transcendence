@@ -121,7 +121,6 @@ export async function init() {
 					<span style="color: ${p1Color}"> ${match.player1} </span>
 				</span>
 				`;
-			console.log(cellScore.innerHTML);
 			cellDate.innerHTML = '<span class="fs-6" >' + new Date(match.date).toLocaleString() + '</span>';
 		});
 	}

@@ -49,6 +49,7 @@ export async function connectToTournament(tournament) {
         };
         
         wsTournament.onclose = (event) => {
+            // #TODO Affiche un message d'erreur si la websocket se ferme a cause d'une erreur
             playerStatus = null;
             tournamentStatus = null;
             clearOnlineVariables();

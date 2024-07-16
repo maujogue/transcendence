@@ -110,12 +110,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def set_tournament_over(self):
         if not self.tournament.finished:
-            # logger.info(f"Setting tournament {self.tournament.pk} as finished.")
             self.tournament.finished = True
             await self.tournament.asave()
+            print(f'send tournament end')
             await self.send_tournament_end()
-#        else:
-#            logger.info(f"Tournament {self.tournament.pk} is already marked as finished.")
 
 
     async def generate_round(self):
@@ -382,8 +380,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         )
 
     async def send_tournament_ranking(self):
-        if self.tournament.finished is False:
-            return
         winner = await sync_to_async(self.tournament.get_winner)()
         ranking = await sync_to_async(self.tournament.get_ranking)()
         await self.send(text_data=json.dumps({'type': 'ranking', 'winner': winner, 'ranking': ranking}))

@@ -120,7 +120,7 @@ async function showAlert(message, success, button) {
 		<button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
 		</div>
 		<div class="toast-body" style="text-wrap: wrap;"">
-		<div"> ${await getKeyTranslation(message)}</div>
+			${await getKeyTranslation(message)}
 		</div>
 	</div>
 	`;

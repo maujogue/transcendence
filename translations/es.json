@@ -237,5 +237,13 @@
 	"username_empty": "El nombre de usuario está vacío.",
 	"username_used": "El nombre de usuario ya está utilizado.",
 	"tournament_name_empty": "El nombre del torneo no puede estar vacío.",
-	"tournament_name_used": "El nombre del torneo ya está en uso."
+	"tournament_name_used": "El nombre del torneo ya está en uso.",
+	"wins": "gana",
+	"losses": "Pérdidas",
+	"exchanges_chart": "gráfico de intercambio",
+	"goal_average_chart": "Gráfico de promedio de objetivos",
+	"winrate_chart": "gráfico de tasa de ganancia",
+	"exchange_before_goal": "Intercambios antes del gol",
+	"scored": "Anotado",
+	"conceded": "Concedido"
 }

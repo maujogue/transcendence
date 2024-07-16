@@ -5,6 +5,7 @@ import { get_csrf_token, runEndPoint, updateInfo } from "./ApiUtils.js"
 import { getSubmittedInput, toggleConfirmPasswordModal } from "./DashboardUtils.js";
 import { toggleContentOnLogState } from "./Utils.js";
 import { closeWs } from "./modules/friendList/friendsWs.js";
+import { getKeyTranslation } from "./modules/translationsModule/translationsModule.js";
 
 async function register(registerForm) {
 	const userData = new FormData(registerForm);
@@ -47,7 +48,7 @@ async function login(loginForm) {
 		await navigateTo("/dash");
 	} else if (response.data.error === "logged_elsewhere") {
 		const button = document.createElement("button");
-		button.setAttribute("data-lang", "connect_here");
+		button.innerText = await getKeyTranslation("connect_here");
 		button.classList.add("btn", "btn-sm", "btn-danger", "text-white", "ms-auto");
 		button.onclick = async () => {
 			response = await runEndPoint("users/update_is_online/", "POST", JSON.stringify({username: fetchBody.username, online: false}));

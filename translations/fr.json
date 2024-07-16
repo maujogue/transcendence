@@ -237,5 +237,13 @@
 	"username_empty": "Le nom d'utilisateur est vide.",
 	"username_used": "Le nom d'utilisateur est déjà utilisé.",
 	"tournament_name_empty": "Le nom du tournoi ne peut pas être vide.",
-	"tournament_name_used": "Le nom du tournoi est déjà utilisé."
+	"tournament_name_used": "Le nom du tournoi est déjà utilisé.",
+	"wins": "Victoires",
+	"losses": "Défaites",
+	"exchanges_chart": "Graphique des échanges menés",
+	"goal_average_chart": "Graphique de la moyenne des buts",
+	"winrate_chart": "Tableau des taux de victoire",
+	"exchange_before_goal": "Echanges avant le but",
+	"scored": "Marqués",
+	"conceded": "Concédés"
 }

@@ -237,5 +237,14 @@
 	"username_empty": "Username is empty.",
 	"username_used": "Username is already used.",
 	"tournament_name_empty": "Tournament name cannot be empty.",
-	"tournament_name_used": "Tournament name is already used."
+	"tournament_name_used": "Tournament name is already used.",
+
+	"wins": "Wins",
+	"losses": "Losses",
+	"exchanges_chart": "Exchange chart",
+	"goal_average_chart": "Goal average chart",
+	"winrate_chart": "Winrate chart",
+	"exchange_before_goal": "Exchanges before goal",
+	"scored": "Scored",
+	"conceded": "Conceded"
 }

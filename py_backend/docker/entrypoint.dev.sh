@@ -1,4 +1,6 @@
 #!/bin/sh
+python manage.py crontab add
+python manage.py crontab add
 python manage.py makemigrations users tournaments stats multiplayer friends --noinput
 python manage.py migrate --noinput
 python manage.py collectstatic --noinput

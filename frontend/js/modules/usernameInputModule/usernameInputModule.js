@@ -2,6 +2,7 @@ import { getUserData } from "../../User.js";
 import { checkInputAvailable } from "../../ApiCalls.js";
 import { disableSaveChangesButton, resetForm } from "../../DashboardUtils.js";
 import { getModuleDiv } from "../../Modules.js";
+import { getKeyTranslation } from "../translationsModule/translationsModule.js";
 let debounceTimer;
 
 export async function init() {
@@ -31,7 +32,7 @@ async function invalidateUsernameIfUnavailable(input, userInput) {
 
 	debounceTimer = setTimeout(async () => {
 		if (input.value.length < 3) {
-			inputFeedback.innerHTML = "Username must be at least 3 characters long";
+			inputFeedback.innerHTML = await getKeyTranslation("username_short");
 			input.classList.remove("is-valid");
 			input.classList.add("is-invalid");
 		} else {
@@ -39,7 +40,7 @@ async function invalidateUsernameIfUnavailable(input, userInput) {
 			if (userInput && input.value == userInput)
 				resetForm();
 			else if (!usernameAvailable) {
-				inputFeedback.innerHTML = "Username is not Available!";
+				inputFeedback.innerHTML = await getKeyTranslation("username_unavailable");
 				input.classList.remove("is-valid");
 				input.classList.add("is-invalid");
 

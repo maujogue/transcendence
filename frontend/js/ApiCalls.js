@@ -23,12 +23,12 @@ async function register(registerForm) {
 	var data = response.data;
 
 	if (response.statusCode === 200) {
-		showAlert(response.data.status, true);
+		await showAlert(response.data.status, true);
 	} else {
 		if (data.error.password2)
-			showAlert(data.error.password2[0]);
-		else if (data.error && typeof (data.error[0]) === "string") showAlert(data.error[0]);
-		else showAlert("error_message");
+			await showAlert(data.error.password2[0]);
+		else if (data.error && typeof (data.error[0]) === "string") await showAlert(data.error[0]);
+		else await showAlert("error_message");
 	}
 }
 

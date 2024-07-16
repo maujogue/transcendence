@@ -77,7 +77,7 @@ async function getJsonFromLang() {
 		return await fetch(`../../../../translations/${lang}.json`).then((res) => res.json()).then((data) => { return data });
 	}
 	catch (e) {
-		console.error(`Error loading ${lang}.json file`);
+		console.error(`Error loading ${lang}.json file`, e);
 		return null;
 	}
 }
@@ -104,6 +104,7 @@ async function getKeyTranslation(key) {
 
 	if (json && json[key])
 		return json[key];
+	return key;
 }
 
 async function printQueryParamsMessage(queryParams) {

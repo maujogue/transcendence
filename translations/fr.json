@@ -89,6 +89,7 @@
 	"log_in_link": "Se connecter",
 	"loading": "Chargement...",
 	"email_unavailable": "L'e-mail n'est pas disponible !",
+	"email_invalid": "L'e-mail est invalide.",
 	"username_unavailable": "Le nom d'utilisateur n'est pas disponible!",
 	"username_short": "Le nom d'utilisateur doit contenir au moins 3 caractères.",
 	"doughnut_chart": "Graphique en beignet",
@@ -223,7 +224,6 @@
 	"request_already_sent_message": "Vous avez déjà envoyé une demande d'ami à cet utilisateur.",
 	"already_friends_message": "Vous êtes déjà amis avec cet utilisateur.",
 	"friend_request_accepted_message": "Votre demande d'ami a été acceptée !",
-
 	"go_dash": "Aller au menu principal",
 	"go_login_page": "Aller à la page de connexion",
 	"missing_email": "L'e-mail est manquant.",
@@ -237,6 +237,5 @@
 	"username_empty": "Le nom d'utilisateur est vide.",
 	"username_used": "Le nom d'utilisateur est déjà utilisé.",
 	"tournament_name_empty": "Le nom du tournoi ne peut pas être vide.",
-	"tournament_name_used": "Le nom du tournoi est déjà utilisé.",
-	
-  }
+	"tournament_name_used": "Le nom du tournoi est déjà utilisé."
+}

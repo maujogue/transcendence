@@ -89,6 +89,7 @@
 	"log_in_link": "Acceso",
 	"loading": "Cargando...",
 	"email_unavailable": "¡El correo electrónico no está disponible!",
+	"email_invalid": "¡Correo electrónico inválido!",
 	"username_unavailable": "¡Nombre de usuario no esta disponible!",
 	"username_short": "El nombre de usuario debe tener al menos 3 caracteres.",
 	"doughnut_chart": "Gráfico de anillos",
@@ -223,7 +224,6 @@
 	"request_already_sent_message": "Ya enviaste una solicitud de amistad a este usuario.",
 	"already_friends_message": "Ya eres amigo de este usuario.",
 	"friend_request_accepted_message": "¡Tu solicitud de amistad ha sido aceptada!",
-
 	"go_dash": "Ir al panel de control",
 	"go_login_page": "Ir a la página de inicio de sesión",
 	"missing_email": "Falta el correo electrónico.",

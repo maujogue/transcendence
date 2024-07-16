@@ -1,16 +1,20 @@
 from web3 import Web3, HTTPProvider
 import os
 import json
+from dotenv import load_dotenv
 # import logging
 # from asgiref.sync import sync_to_async
 
 # logger = logging.getLogger(__name__)
 
-CHAIN_ID = 11155111 #Sepolia chain ID
-WALLET = os.environ.get("WALLET")
-PRIVATE_KEY = os.environ.get("PRIVATE_KEY")
-PROVIDER_URL = os.environ.get("PROVIDER_URL")
 CONTRACT_ADDRESS = os.environ.get("CONTRACT_ADDRESS")
+
+load_dotenv(".env.tournament")
+
+CHAIN_ID = 11155111 #Sepolia chain ID
+WALLET = os.getenv("WALLET")
+PRIVATE_KEY = os.getenv("PRIVATE_KEY")
+PROVIDER_URL = os.getenv("PROVIDER_URL")
 
 def load_abi_from_file(json_path):
     with open(json_path, "r") as file:

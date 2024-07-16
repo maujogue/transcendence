@@ -14,4 +14,4 @@ def logout_view(request):
     user.isOnline = False
     
     logout(request)
-    return JsonResponse({'status': "You are now logout !"}, status=200)
+    return JsonResponse({'status': "logout_message"}, status=200)

@@ -151,7 +151,7 @@ class LogoutTests(TestCase):
         
         self.assertEqual(response.status_code, 400)
         response_data = response.json()
-        self.assertEqual(response_data.get('error'), "Your email is not verified yet.")
+        self.assertEqual(response_data.get('error'), "email_unverified")
       
 
 

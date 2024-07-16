@@ -82,13 +82,13 @@ async function wsMessageRouter(data) {
 	const handlers = {
 		'friend_request_to_user': (data) => {
 			getCurrentUserRequests();
-			showAlert(`You just receive a friend request from ${data.from_user} !`, true)
+			showAlert("friend_request_received_message", true)
 		},
 		'friend_request_from_user': () => {},
-		'user_himself': () => showAlert("You cannot send a friend request to yourself.", false),
-		'user_do_not_exist': () => showAlert("This user does not exist.", false),
-		'request_already_sent': () => showAlert(`You already sent a friend request to this user.`, false),
-		'already_friends': (data) => showAlert(`You are already friends with ${data.to_user}.`, false),
+		'user_himself': () => showAlert("self_request_error_message", false),
+		'user_do_not_exist': () => showAlert("user_not_exist_message", false),
+		'request_already_sent': () => showAlert(`request_already_sent_message`, false),
+		'already_friends': (data) => showAlert("already_friends_message", false),
 		'refresh_friends': () => {
 			getCurrentUserRequests();
 			getFriendsList();
@@ -96,7 +96,7 @@ async function wsMessageRouter(data) {
 		'friendslist': async (data) => await fillFriendsList(data),
 		'get_current_user_requests': (data) => fillInbox(data),
 		'get_user_requests': (data) => initUserRequests(data),
-		'friend_accepted_from_user': (data) => showAlert(`${data.to_user} accepted your friend request !`, true),
+		'friend_accepted_from_user': (data) => showAlert("friend_request_accepted_message", true),
 	};
 	const handler = handlers[data.type];
 	if (handler && data) {

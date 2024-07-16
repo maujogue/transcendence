@@ -40,11 +40,11 @@ export function removeGameScreen(env) {
 }
     
 
-function handlerStopGame(webSocket, env, message) {
+async function handlerStopGame(webSocket, env, message) {
     console.log("handlerStopGame");
     if (!document.getElementsByClassName("menu")[0])
         createDivMenu("menu");
-    displayErrorPopUp(message, document.getElementsByClassName("menu")[0]);
+    await displayErrorPopUp(message, document.getElementsByClassName("menu")[0]);
     document.getElementById("errorPopUp").classList.add("match-error");
     webSocket.close();
     setTimeout(() => {
@@ -83,9 +83,9 @@ export async function handlerEndGame(data, env, webSocket) {
 	await updateModule("statisticsModule");
 }
 
-function handlerPlayerDisconnect(data, env, webSocket) {
+async function handlerPlayerDisconnect(data, env, webSocket) {
     document.getElementById("endscreen")?.remove();
-    handlerStopGame(webSocket, env, data.message);
+    await handlerStopGame(webSocket, env, data.message);
 }
 
 function addHtmlIntroScreen(data) {
@@ -111,14 +111,14 @@ export function displayIntroScreen(env, data) {
     addHtmlIntroScreen(data);
 }
 
-export function handlerStatusMessage(data, webSocket, env, status) {
+export async function handlerStatusMessage(data, webSocket, env, status) {
     console.log("status", data);
     if (data['status'] == 'disconnected')
-        handlerPlayerDisconnect(data, env, webSocket);
+        await handlerPlayerDisconnect(data, env, webSocket);
     if (data['status'] == 'stop')
-        handlerStopGame(webSocket, env, data.message);
+        await handlerStopGame(webSocket, env, data.message);
     if (data['status'] == 'endGame') {
-        handlerEndGame(data, env, webSocket);
+        await handlerEndGame(data, env, webSocket);
     }
     if (data['status'] == 'start') {
         status.gameIsInit = true;

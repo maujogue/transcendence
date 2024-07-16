@@ -26,5 +26,5 @@ def update_tournament_name(request):
             return JsonResponse({'error': is_unique_error}, status=400)
         request.user.tournament_username = tournament_username
         request.user.save()
-        return JsonResponse({'status': "Your tournament username has been correctly updated !"}, status=200)
+        return JsonResponse({'status': "profile_tournament_username_updated_message"}, status=200)
     return JsonResponse({'error': 'Missing username.'}, status=400)

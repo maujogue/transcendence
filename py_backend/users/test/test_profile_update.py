@@ -95,7 +95,7 @@ class ProfileUpdate(TestCase):
         self.user.refresh_from_db()
         response_data = response.json()
 
-        self.assertEqual(response_data.get('error'), 'Username is already used.')
+        self.assertEqual(response_data.get('error'), 'username_used')
         self.assertEqual(response.status_code, 400)
 
     def test_name_already_used_lower(self):
@@ -153,7 +153,7 @@ class ProfileUpdate(TestCase):
         self.user.refresh_from_db()
         response_data = response.json()
 
-        self.assertEqual(response_data.get('error'), 'Username is already used.')
+        self.assertEqual(response_data.get('error'), 'username_used')
         self.assertEqual(response.status_code, 400)
 
 

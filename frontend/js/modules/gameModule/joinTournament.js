@@ -76,8 +76,8 @@ async function joinTournament(tournament) {
         }
         connectToTournament(tournament);
     })
-    .catch((error) => {
-        displayErrorPopUp(error, document.getElementsByClassName("tournament")[0]);
+    .catch(async (error) => {
+        await displayErrorPopUp(error, document.getElementsByClassName("tournament")[0]);
     })
 }
     

@@ -11,7 +11,7 @@ def user_exists(func):
         try:
             userAuth = CustomUser.objects.get(username=user)
         except CustomUser.DoesNotExist:
-            return JsonResponse({"error": "User not found"}, status=404)
+            return JsonResponse({"error": "user_not_found_message"}, status=404)
         return func(request, userAuth, *args, **kwargs)
     return wrapper
 

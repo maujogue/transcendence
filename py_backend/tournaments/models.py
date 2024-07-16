@@ -154,9 +154,13 @@ class Tournament(models.Model):
 		if round_number == self.max_round:
 			return "Final"
 		elif round_number == self.max_round - 1:
-			return "semi-Final"
-		else:
-			return f"Round {round_number}"
+			return "1/2"
+		elif round_number == self.max_round - 2:
+			return "1/4"
+		elif round_number == self.max_round - 3:
+			return "1/8"
+		elif round_number == self.max_round - 4:
+			return "1/16"
 		
 	async def increase_round(self):
 		self.current_round += 1

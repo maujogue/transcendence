@@ -40,7 +40,7 @@ function createWaitingScreen() {
 	waitingScreen.innerHTML = '\
 		<i class="fa-solid fa-xmark close-matchmaking" id="closeMatchmaking"></i> \
 		<img id="avatar_pong" src="" alt="avatar">\
-		<div id="waitingText">Waiting for other player</div>';
+		<div id="waitingText" data-lang="waiting_for_players_lobby">Waiting for other player</div>';
 	
 }
 

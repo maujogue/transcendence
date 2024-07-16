@@ -157,7 +157,7 @@ async function connectToLobby(username) {
     }
     document.getElementById("game").addEventListener('click', clickHandler);
     
-    wsMatch.onmessage = function(e) {
+    wsMatch.onmessage = async function(e) {
         const data = JSON.parse(e.data);
 
         if (data['type'] == 'player_data') {
@@ -166,7 +166,7 @@ async function connectToLobby(username) {
             paddle.name = "paddle_" + data['name'];
         }
         if (data['type'] && data['type'] == 'status')
-            handlerStatusMessage(data, wsMatch, env, status);
+            await handlerStatusMessage(data, wsMatch, env, status);
         if (data['type'] == 'match_info')
             displayIntroScreen(env, data);
         if (data['type'] == 'ball_data')

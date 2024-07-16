@@ -20,7 +20,7 @@ import { getModuleDiv, updateModule } from "../../Modules.js";
 import { wsTournament } from "./tournament.js";
 import { createTournamentHistoryMenu } from "./tournamentHistory.js";
 import * as THREE from 'three';
-import { injectGameTranslations } from "../translationsModule/translationsModule.js";
+import { injectElementTranslations } from "../translationsModule/translationsModule.js";
 import { updateWinVariables } from "./varGlobal.js";
 export var lobby;
 export var clock;
@@ -38,7 +38,9 @@ export async function init() {
 	var target = document.querySelector('#game');
 	var config = { attributes: true, childList: true, characterData: true };
 	var observer = new MutationObserver(function (mutations) {
-		mutations.forEach(injectGameTranslations);
+		mutations.forEach(() => {
+			injectElementTranslations("#game")
+		});
 	});
 	observer.observe(target, config);
 
@@ -61,7 +63,7 @@ export async function init() {
 	await loadAllModel();
 
 	window.addEventListener('resize', resize(environment));
-	
+
 	getUserData().then((data) => {
 		userData = data;
 		if (userData) {
@@ -98,7 +100,7 @@ export async function init() {
 		getUserData().then((data) => {
 			userData = data;
 		})
-		
+
 		if (event.target.id == 'restart' && !isOnline) {
 			document.getElementById("endscreen").remove();
 			player1.score = 0;
@@ -192,14 +194,14 @@ export async function init() {
 			console.log("start");
 			if (keyPress)
 				handleKeyPress(keysPressed, player1, player2, environment);
-		checkCollision(environment.ball, player1, player2, environment);
-		setIfGameIsEnd();
-	}
-	if (player1 && player2)
-	updateMixers(player1, player2);
-	environment?.renderer.render(environment.scene, environment.camera);
-	if (localLoop)
-		requestAnimationFrame(localGameLoop);
+			checkCollision(environment.ball, player1, player2, environment);
+			setIfGameIsEnd();
+		}
+		if (player1 && player2)
+			updateMixers(player1, player2);
+		environment?.renderer.render(environment.scene, environment.camera);
+		if (localLoop)
+			requestAnimationFrame(localGameLoop);
 	}
 }
 

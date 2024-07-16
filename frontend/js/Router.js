@@ -30,7 +30,7 @@ const routes = [
 window.addEventListener("popstate", () => router(routes));
 
 document.addEventListener("DOMContentLoaded", async () => {
-	document.body.addEventListener("click", async (e) => await navigateOnClick(e));
+	// document.body.addEventListener("click", async (e) => await navigateOnClick(e));
 	await initArray(routes);
 	await initPages();
 	resetModalFormsInitListeners();

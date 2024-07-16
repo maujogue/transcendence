@@ -22,52 +22,52 @@ SPECIAL_CHARS = "+/*.,!?#%^&\{}[]=:;\'\"`~"
 
 def email_is_valid(email):
 	if not email or email == '':
-		return False, f'Missing email.'
+		return False, f'missing_email'
 	try:
 		validate_email(email)
 	except ValidationError as e:
-		return False, f'Invalid email.'
+		return False, f'invalid_email'
 	return True, None
 
 
 def email_is_unique(email):
 	if not email or email == '':
-		return False, f'Missing email.'
+		return False, f'missing_email'
 	response = CustomUser.objects.filter(email=email).exists()
 	if response:
-		return False, f'Email is already used.'
+		return False, f'email_used'
 	return True, None
 
 
 def username_is_valid(username):
 	if not username or username == '':
-		return False, f'Missing username.'
+		return False, f'missing_username'
 	if len(username) < settings.MIN_LEN_USERNAME:
-		return False, f'Username is too short.'
+		return False, f'username_too_short'
 	if len(username) > settings.MAX_LEN_USERNAME:
-		return False, f'Username is too long.'
+		return False, f'username_too_long'
 	if any(char in SPECIAL_CHARS for char in username):
-		return False, f'Username contains forbidden characters.'
+		return False, f'username_forbidden'
 	if re.search(r'\s', username):
-		return False, 'Username cannot contain spaces.'
+		return False, 'username_space'
 	return True, None
 
 
 def username_is_unique(username):
 	if not username or username == '':
-		return False, f'Username cannot be empty.'
+		return False, f'username_empty'
 	response = CustomUser.objects.filter(username__iexact=username).exists()
 	if response:
-		return False, f'Username is already used.'
+		return False, f'username_used'
 	return True, None
 
 
 def tournament_username_is_unique(username):
 	if not username or username == '':
-		return False, f'Tournament username cannot be empty.'
+		return False, f'tournament_name_empty'
 	response = CustomUser.objects.filter(tournament_username__iexact=username).exists()
 	if response:
-		return False, f'Tournament username is already used.'
+		return False, f'tournamet_name_used'
 	return True, None
 
 

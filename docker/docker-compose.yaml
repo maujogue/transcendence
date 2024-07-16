@@ -1,19 +1,19 @@
 services:
   django_backend:
     build:
-        context: ../py_backend/docker
-        dockerfile: Dockerfile.prod
+      context: ../py_backend/docker
+      dockerfile: Dockerfile.prod
     volumes:
-       - staticfiles:/staticfiles
-       - ../py_backend:/code
-       - certificates:/etc/nginx/ssl  
+      - staticfiles:/staticfiles
+      - ../py_backend:/code
+      - certificates:/etc/nginx/ssl
+      - ../translations:/code/translations
     env_file:
       - ./.env.prod
     depends_on:
       db:
         condition: service_healthy
     restart: always
-
 
   db:
     image: postgres:latest
@@ -30,23 +30,21 @@ services:
       retries: 5
     restart: always
 
-    
-
   nginx_frontend:
     build:
       context: ../frontend
       dockerfile: Dockerfile
     working_dir: /usr/app/
     volumes:
-      - certificates:/etc/nginx/ssl  
+      - certificates:/etc/nginx/ssl
       - staticfiles:/staticfiles
       - ../frontend:/usr/share/nginx/html
+      - ../translations:/usr/share/nginx/html/translations
     ports:
       - 8000:80
     restart: always
-  
 
 volumes:
   postgres_data:
   certificates:
-  staticfiles: 
+  staticfiles:

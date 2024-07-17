@@ -19,6 +19,7 @@ import { showAlert } from "../Utils.js";
 import { injectGameTranslations } from "../modules/translationsModule/translationsModule.js";
 import { trainModel, storeData, createModel, moveAI } from "../pong/AI/AI.js"
 import * as THREE from 'three';
+import { getState } from "../pong/AI/envForAI.js";
 
 export var lobby;
 export var clock;
@@ -138,8 +139,8 @@ export async function init(queryParams) {
 			returnToMenu();
 		}
 		if (event.target.id == 'localGame') {
-			createLocalMenu(field);
 			localLoop = true;
+			createLocalMenu();
 		}
 		if (event.target.id == '1v1') {
 			soloMode = false;
@@ -195,7 +196,7 @@ export async function init(queryParams) {
 		
 		if (localLoop) {
 			console.log("States : ", states.length, " | Actions : ", actions.length);
-			await trainModel(model, 1000);
+			await trainModel(model, 500);
 		}
 		let winner = player1.name;
 		if (player2.score > player1.score)
@@ -226,11 +227,12 @@ export async function init(queryParams) {
 		}
 		if (start) {
 			let action = 0;
+			let actualState = getState(environment, player2);
 			if (keyPress)
 				action = handleKeyPress(keysPressed, player1, player2, environment);
 			if (soloMode)
 				action = moveAI(player2, environment, model)
-			storeData(environment, player2, action);
+			storeData(actualState, action);
 			checkCollision(environment.ball, player1, player2, environment);
 			await setIfGameIsEnd();
 		}

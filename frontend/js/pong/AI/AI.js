@@ -54,8 +54,8 @@ export async function trainModel(model, epochs) {
 	await model.save('downloads://model');
 }
 
-export function storeData(env, player2, action) {
-	states.push(getState(env, player2));
+export function storeData(actualState, action) {
+	states.push(actualState);
 	let actionArray = (action === 0) ? [1, 0, 0] : (action === 1) ? [0, 1, 0] : [0, 0, 1];
 	currentActions.push(actionArray);
 }

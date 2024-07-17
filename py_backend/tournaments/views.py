@@ -11,9 +11,15 @@ from django.db import IntegrityError
 
 from .models import Tournament
 
-CustomUser = get_user_model()
-
 import json
+
+### debug ###
+# import logging
+
+# logger = logging.getLogger(__name__)
+# #######
+
+CustomUser = get_user_model()
 
 @login_required
 @require_http_methods(["POST"])
@@ -49,7 +55,7 @@ def create_tournament(request):
 	try:
 		tournament = Tournament.objects.create(
 			name=name,
-			max_players=max_players
+			max_players=max_players,
 		)
 		tournament.participants.add(request.user)
 	except IntegrityError as e:
@@ -63,7 +69,8 @@ def create_tournament(request):
 		"id": tournament.id,
 		"name": tournament.name,
 		"max_players": tournament.max_players,
-		"participants": [p.tournament_username for p in tournament.participants.all()]
+		"participants": [p.tournament_username for p in tournament.participants.all()],
+
 	}
 	return JsonResponse({"message": "tournament_create_success", "tournament": tournamentJSON},
 					status=201)
@@ -184,4 +191,16 @@ def return_all_user_tournaments(request, username):
 		for tournament in tournaments
 	]
 	return JsonResponse({"tournaments": tournaments_data},
+					status=200)
+
+@require_http_methods(["GET"])
+def return_receipt_address(request, tournament_id):
+	try:
+		tournament = Tournament.objects.get(pk=tournament_id)
+	except Tournament.DoesNotExist:
+		return JsonResponse({"errors": "Tournament not found."},
+					status=404)
+	# logger.info(f"logger receipt address in view: {tournament.receipt_address}")
+	# print(f"print receipt address in view: {tournament.receipt_address}")
+	return JsonResponse({"receipt_address": tournament.receipt_address},
 					status=200)

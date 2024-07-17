@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "solidity-dynamic-array": "^0.4.0"
+  }
+}

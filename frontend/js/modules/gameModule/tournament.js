@@ -19,7 +19,7 @@ export async function connectToTournament(tournament) {
     try {
         console.log("Connecting to tournament:", tournament);
         currentTournament = tournament;
-        wsTournament = new WebSocket(`ws://${hostname}:8080/ws/tournament/${tournament.id}/`);
+        wsTournament = new WebSocket(`wss://${hostname}:8000/ws/tournament/${tournament.id}/`);
     
         wsTournament.onopen = () => {
             createWaitingScreenTournament(tournament);
@@ -120,10 +120,20 @@ function displayRankingScreen(data) {
     tournamentDiv.innerHTML = `<h1 class="won-title">${data.winner} <span data-lang="tournament_won"></span></h1>`;
     displayTournamentRanking(data.ranking);
     createLeaveButton(tournamentDiv);
+    // createButtonDiv(tournamentDiv);
     createShowBracketButton(tournamentDiv);
     createEtherscanButton(tournamentDiv);
 }
 
+// function createButtonDiv(parent) {
+//     const buttonDiv = document.createElement("div");
+
+//     buttonDiv.className = "end-tournament-container";
+//     parent.appendChild(buttonDiv);
+
+//     createShowBracketButton(buttonDiv);
+//     createEtherscanButton(buttonDiv);
+// }
 
 async function getReceiptAddress(tournament_id) {
     try {
@@ -152,74 +162,45 @@ async function updateEtherscanButton(etherscanBtn, receipt_address) {
     }
 }
 
-/*
-function displayWaitingText() {
-    const waitingText = document.createElement('p');
-    let textContent;
-    waitingText.id = 'waitingText';
-    waitingText.classList.add('waiting-text');
-    document.getElementsByClassName('tournament')[0].appendChild(waitingText);
-    let dots = '';
+function getWaitingTransactionText(etherscanBtn) {
+    let dots = "";
     let maxDots = 3;
     let interval = 500;
-    
-    var timer = setInterval( async () => {
-        if (tournamentStatus === "started")
-            textContent = await getKeyTranslation("tournament_start");
-        if (tournamentStatus === "waiting")
-            textContent = await getKeyTranslation("waiting_for_players_tournament");
-        if (playerStatus === "disqualified") {
-            waitingText.remove();
-            return;
-        }
+
+    let timer = setInterval( async () => {
         if (dots.length < maxDots) {
-            dots += '.';
+            dots += ".";
         } else {
-            dots = '';
+            dots = "";
         }
-        if (!document.querySelector('.waiting-text'))
-            clearInterval(timer);
-        waitingText.textContent = `${textContent}${dots}`;
+        etherscanBtn.textContent = `Waiting for transaction${dots}`;
     }, interval);
+    return timer;
 }
-*/
 
-// async function getWaitingTransactionText() {
-//     let dots = "";
-//     let maxDots = 3;
-//     let interval = 500;
-
-//     var timer = setInterval( async () => {
-//         if (dots.length < maxDots) {
-//             dots += ".";
-//         } else {
-//             dots = "";
-//         }
-
-//     })
-// }
-
-async function createEtherscanButton(parent) {
+export async function createEtherscanButton(parent) {
     const etherscanBtn = document.createElement("button");
     etherscanBtn.className = "etherscan-btn end-tournament-btn tournament-btn";
     parent.appendChild(etherscanBtn);
     etherscanBtn.disabled = true;
-    etherscanBtn.textContent = getWaitingTransactionText();
-    await displayEtherscanButton(etherscanBtn);
+    etherscanBtn.textContent = "Waiting for transaction";
+    const dotInterval = getWaitingTransactionText(etherscanBtn);
+    await displayEtherscanButton(etherscanBtn, dotInterval);
 }
 
-async function displayEtherscanButton(etherscanBtn) {
+async function displayEtherscanButton(etherscanBtn, dotInterval) {
     let tournament_id = currentTournament.id;
 
-
     const receipt_address = await getReceiptAddress(tournament_id);
-    if (receipt_address && receipt_address !== "0x0")
+    if (receipt_address && receipt_address !== "0x0") {
+        clearInterval(dotInterval);
         updateEtherscanButton(etherscanBtn, receipt_address)
-
+    }
     const interval = setInterval(async () => {
         const receipt_address = await getReceiptAddress(tournament_id);
         if (receipt_address && receipt_address !== "0x0") {
             updateEtherscanButton(etherscanBtn, receipt_address)
+            clearInterval(dotInterval);
             clearInterval(interval);
         }
     }, 1000);

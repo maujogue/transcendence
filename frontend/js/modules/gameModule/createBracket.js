@@ -1,6 +1,6 @@
 import { getKeyTranslation, injectElementTranslations } from "../translationsModule/translationsModule.js";
 import { displayMainMenu } from "./menu.js";
-import { createUnsubscribeButton, playerStatus, tournamentStatus } from "./tournament.js";
+import { createUnsubscribeButton, playerStatus, tournamentStatus, createEtherscanButton } from "./tournament.js";
 import { wsTournament } from "./tournament.js";
 import { winHeight, winWidth } from "./varGlobal.js";
 
@@ -63,8 +63,10 @@ function createBracketCanvas() {
 function updateButtonWithStatus() {
     if (tournamentStatus === "finished" || playerStatus === "disqualified") {
         createLeaveButton(document.getElementsByClassName('tournament')[0]);
-        if (tournamentStatus === "finished")
+        if (tournamentStatus === "finished") {
             displayRankingButton(document.getElementsByClassName('tournament')[0]);
+            createEtherscanButton(document.getElementsByClassName('tournament')[0]);
+        }
     }
     if (tournamentStatus != "finished")
         displayWaitingText();

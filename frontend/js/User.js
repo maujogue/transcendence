@@ -50,7 +50,7 @@ async function getUserData(dataElement, username) {
 }
 
 function initSessionWs() {
-	const ws = new WebSocket(`wss://${hostname}:8000/ws/notify/`);
+	const ws = new WebSocket(`ws://${hostname}:8080/ws/notify/`);
 
 	ws.onmessage = function(event) {
 		const data = JSON.parse(event.data);

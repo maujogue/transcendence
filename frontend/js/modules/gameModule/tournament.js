@@ -19,7 +19,7 @@ export async function connectToTournament(tournament) {
     try {
         console.log("Connecting to tournament:", tournament);
         currentTournament = tournament;
-        wsTournament = new WebSocket(`wss//${hostname}:8000/ws/tournament/${tournament.id}/`);
+        wsTournament = new WebSocket(`ws://${hostname}:8080/ws/tournament/${tournament.id}/`);
     
         wsTournament.onopen = () => {
             createWaitingScreenTournament(tournament);
@@ -124,6 +124,7 @@ function displayRankingScreen(data) {
     createEtherscanButton(tournamentDiv);
 }
 
+
 async function getReceiptAddress(tournament_id) {
     try {
         const response = await fetch(`https://${hostname}:8000/api/tournament/${tournament_id}/receipt-address/`, {
@@ -151,12 +152,59 @@ async function updateEtherscanButton(etherscanBtn, receipt_address) {
     }
 }
 
+/*
+function displayWaitingText() {
+    const waitingText = document.createElement('p');
+    let textContent;
+    waitingText.id = 'waitingText';
+    waitingText.classList.add('waiting-text');
+    document.getElementsByClassName('tournament')[0].appendChild(waitingText);
+    let dots = '';
+    let maxDots = 3;
+    let interval = 500;
+    
+    var timer = setInterval( async () => {
+        if (tournamentStatus === "started")
+            textContent = await getKeyTranslation("tournament_start");
+        if (tournamentStatus === "waiting")
+            textContent = await getKeyTranslation("waiting_for_players_tournament");
+        if (playerStatus === "disqualified") {
+            waitingText.remove();
+            return;
+        }
+        if (dots.length < maxDots) {
+            dots += '.';
+        } else {
+            dots = '';
+        }
+        if (!document.querySelector('.waiting-text'))
+            clearInterval(timer);
+        waitingText.textContent = `${textContent}${dots}`;
+    }, interval);
+}
+*/
+
+// async function getWaitingTransactionText() {
+//     let dots = "";
+//     let maxDots = 3;
+//     let interval = 500;
+
+//     var timer = setInterval( async () => {
+//         if (dots.length < maxDots) {
+//             dots += ".";
+//         } else {
+//             dots = "";
+//         }
+
+//     })
+// }
+
 async function createEtherscanButton(parent) {
     const etherscanBtn = document.createElement("button");
     etherscanBtn.className = "etherscan-btn end-tournament-btn tournament-btn";
     parent.appendChild(etherscanBtn);
     etherscanBtn.disabled = true;
-    etherscanBtn.textContent = "Waiting for transaction";
+    etherscanBtn.textContent = getWaitingTransactionText();
     await displayEtherscanButton(etherscanBtn);
 }
 

@@ -88,6 +88,11 @@ export async function init() {
 			key = event.key.toLowerCase();
 		keysPressed[key] = true;
 		keyPress = true;
+		switch(event.code){
+            case "ArrowUp": case "ArrowDown": case "ArrowLeft": case "ArrowRight":
+            case "Space": event.preventDefault(); break;
+            default: break;
+        }
 		event.stopPropagation();
 	});
 
@@ -191,7 +196,6 @@ export async function init() {
 			player2.score = 0;
 		}
 		if (start) {
-			console.log("start");
 			if (keyPress)
 				handleKeyPress(keysPressed, player1, player2, environment);
 			checkCollision(environment.ball, player1, player2, environment);

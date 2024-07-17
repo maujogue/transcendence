@@ -44,6 +44,8 @@ prod_re:
 dev_re:
 	$(DOCKER_COMPOSE_DEV) build --no-cache
 	$(DOCKER_COMPOSE_DEV) up -d
+	@chmod +x ./crontab.sh
+	@./crontab.sh
 
 prod_fre:	prod_fclean dev_fclean
 		$(DOCKER_COMPOSE_PROD) build --no-cache

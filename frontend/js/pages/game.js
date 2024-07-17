@@ -140,7 +140,7 @@ export async function init(queryParams) {
 		}
 		if (event.target.id == 'localGame') {
 			localLoop = true;
-			createLocalMenu();
+			createLocalMenu(field);
 		}
 		if (event.target.id == '1v1') {
 			soloMode = false;
@@ -220,7 +220,7 @@ export async function init(queryParams) {
 				divMenu.remove();   
 			model = await tf.loadLayersModel('https://127.0.0.1:8000/js/pong/AI/model/model.json');
 			model.compile({
-				optimizer: tf.train.adam(0.001),
+				optimizer: tf.train.adam(0.01),
 				loss: 'meanSquaredError'
 			});
 		environment = await initGame(player1, player2);

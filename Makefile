@@ -17,9 +17,15 @@ $(NAME):
 
 prod_up:
 		$(DOCKER_COMPOSE_PROD) up -d --build
+		@chmod +x ./crontab.sh
+		@echo 'launching crontab.sh ...'
+		@./crontab.sh > /dev/null 2>&1
 
 dev_up:
 		$(DOCKER_COMPOSE_DEV) up -d --build
+		@chmod +x ./crontab.sh
+		@echo 'launching crontab.sh ...'
+		@./crontab.sh > /dev/null 2>&1
 
 prod_down:
 		$(DOCKER_COMPOSE_PROD) down
@@ -39,21 +45,31 @@ dev_fclean: dev_clean clean-migrations-cache-db
 
 prod_re:
 	$(DOCKER_COMPOSE_PROD) build --build-arg CACHEBUST=$(shell date +%s)
-	$(DOCKER_COMPOSE_PROD) up -d 
+	$(DOCKER_COMPOSE_PROD) up -d
+	@chmod +x ./crontab.sh
+	@echo 'launching crontab.sh ...'
+	@./crontab.sh > /dev/null 2>&1 
 
 dev_re:
 	$(DOCKER_COMPOSE_DEV) build --no-cache
 	$(DOCKER_COMPOSE_DEV) up -d
 	@chmod +x ./crontab.sh
-	@./crontab.sh
+	@echo 'launching crontab.sh ...'
+	@./crontab.sh > /dev/null 2>&1
 
 prod_fre:	prod_fclean dev_fclean
 		$(DOCKER_COMPOSE_PROD) build --no-cache
 		$(DOCKER_COMPOSE_PROD) up -d
+		@chmod +x ./crontab.sh
+		@echo 'launching crontab.sh ...'
+		@./crontab.sh > /dev/null 2>&1
 
 dev_fre:	prod_fclean dev_fclean
 		$(DOCKER_COMPOSE_DEV) build --no-cache
 		$(DOCKER_COMPOSE_DEV) up -d
+		@chmod +x ./crontab.sh
+		@echo 'launching crontab.sh ...'
+		@./crontab.sh > /dev/null 2>&1
 
 clean:	prod_clean dev_clean
 

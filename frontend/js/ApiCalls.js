@@ -210,14 +210,12 @@ async function checkInputAvailable(input, type) {
 		email: input,
 		username: input,
 	};
-	console.log(fetchBody.username);
 	if (type === "username")
 		response = await runEndPoint("users/username_available/", "POST", JSON.stringify(fetchBody));
 	else if (type === "email")
 		response = await runEndPoint("users/email_available/", "POST", JSON.stringify(fetchBody));
 	else if (type === "tournament_username")
 		response = await runEndPoint("users/tournament_username_available/", "POST", JSON.stringify(fetchBody));
-	console.log(response);
 	if (response.data.status === "failure") {
 		return (false)
 	} else {

@@ -187,7 +187,6 @@ async function refreshManageFriendshipBtn() {
 
 async function displayUserPage(username) {
 	var usernameAvailable = await checkInputAvailable(username, "username");
-	console.log(usernameAvailable);
 	if (usernameAvailable === true)
 		return showAlert("user_not_exist_message");
 	if (username === await getUserData("username"))

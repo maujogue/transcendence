@@ -43,6 +43,8 @@ function resetForm(input) {
 			elm.classList.remove("is-valid")
 		if (elm.classList.contains("is-invalid"))
 			elm.classList.remove("is-invalid")
+		if (elm.type === "file")
+			elm.value = "";
 	});
 	discardChangesButton.classList.add("d-none");
 	updatePasswordButton.classList.remove("d-none");

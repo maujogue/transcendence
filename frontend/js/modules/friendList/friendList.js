@@ -28,7 +28,7 @@ export async function init() {
 		});
 	});
 	var searchFriendForm = module.querySelector("#searchFriendForm");
-	searchFriendForm.addEventListener("submit", (event) => {
+	searchFriendForm.addEventListener("submit", async (event) => {
 		event.preventDefault();
 		var input = searchFriendForm.querySelector("input");
 		if (input.hidden == true) {
@@ -43,7 +43,7 @@ export async function init() {
 			input.setSelectionRange(input.value.length, input.value.length); // Place cursor at the end
 		}
 		else
-			searchFriend(event.target);
+			await searchFriend(event.target);
 	});
 
 
@@ -186,8 +186,9 @@ async function refreshManageFriendshipBtn() {
 }
 
 async function displayUserPage(username) {
-	var userExists = await checkInputAvailable(username, "username");
-	if (!userExists)
+	var usernameAvailable = await checkInputAvailable(username, "username");
+	console.log(usernameAvailable);
+	if (usernameAvailable === true)
 		return showAlert("user_not_exist_message");
 	if (username === await getUserData("username"))
 		return showAlert("cant_visit_own_profile_message");

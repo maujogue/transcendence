@@ -1,6 +1,6 @@
 import { displayCharacter } from "./displayCharacter.js";
 import { createSelectMenu, createWaitingScreen, createInterfaceSelectMenu, createHUD} from "./menu.js";
-import { handleMenuKeyPress, setKeyPressToFalse } from "./handleKeyPress.js";
+import { handleMenuKeyPress, setKeyPressToFalse, clearKeysPressed } from "./handleKeyPress.js";
 import { ClearAllEnv } from "./createEnvironment.js";
 import { initGame } from "./initGame.js";
 import { translateBall} from "./onlineCollision.js";
@@ -44,8 +44,8 @@ export function clearOnlineVariables() {
     wsMatch = null;
     player = null;
     opp = null;
-    keysPressed = {};
-    keyPress = false;
+    clearKeysPressed();
+    setKeyPressToFalse();
     status = {
         'start': false,
         'exit': false,

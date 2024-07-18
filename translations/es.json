@@ -36,6 +36,7 @@
 	"profile_image_alt": "imagen de perfil",
 	"edit_profile_button": "Editar",
 	"username_label": "Nombre de usuario",
+	"game_username_label": "Nombre de Juego",
 	"email_label": "Correo electrónico",
 	"bio_label": "Biografía",
 	"log_in_to_see_profile": "Iniciar sesión / Regístrate para jugar",

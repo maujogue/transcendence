@@ -227,6 +227,7 @@
 	"go_dash": "Aller au menu principal",
 	"go_login_page": "Aller à la page de connexion",
 	"missing_email": "L'e-mail est manquant.",
+	"email_too_long": "L'e-mail est trop long.",
 	"invalid_email": "Email invalide.",
 	"email_used": "Cet adresse mail est déjà utilisée.",
 	"missing_username": "Le nom d'utilisateur est manquant.",

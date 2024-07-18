@@ -115,12 +115,12 @@ async function showAlert(message, success, button) {
 
 	alertDiv.innerHTML += `
 	<div id="alert${alertId}" class="notification d-flex flex-column mt-2">
-		<div class="notification-header ${bgColor} text-white d-flex justify-content-between align-items-center p-3">
+		<div class="notification-header ${bgColor} text-white d-flex justify-content-between align-items-center px-3 py-2">
 		<strong class="me-auto">${success ? "Information" : "Error"}</strong>
 		<small me-2>${datetime}</small>
 		<button type="button" class="ms-2 btn-close btn-close-white" onclick="this.parentNode.parentNode.remove();"></button>
 		</div>
-		<div class="notification-body p-3">
+		<div class="notification-body px-3 py-2">
 			${await getKeyTranslation(message)}
 		</div>
 	</div>

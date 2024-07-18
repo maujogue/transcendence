@@ -45,6 +45,7 @@ html {
 	position: relative;
 	z-index: 1060;
 	transition: all 0.5s;
+	box-shadow: 3px 3px 15px black;
 }
 
 .notification-header {

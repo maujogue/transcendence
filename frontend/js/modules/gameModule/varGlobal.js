@@ -17,6 +17,10 @@ export function updateWinVariables() {
 	var pongImg = document.querySelector('.pongImg');
 	var profileCard = document.querySelector('#profileCard');
 	pongImg.width = winWidth;
+	if (winWidth < 523 || winHeight < 294) {
+		winWidth = 523;
+		winHeight = 294;
+	}
 	game.style.width = winWidth + 'px';
 	game.style.height = winHeight + 'px';
 	gameModule.style.width = winWidth + 'px';

@@ -2,7 +2,7 @@ import { navigateTo, initPages } from "./Router.js";
 import { showAlert } from "./Utils.js";
 import { getUserData, injectUserData, } from "./User.js";
 import { get_csrf_token, runEndPoint, updateInfo } from "./ApiUtils.js"
-import { getSubmittedInput, toggleConfirmPasswordModal } from "./DashboardUtils.js";
+import { getSubmittedInput, toggleModal } from "./DashboardUtils.js";
 import { toggleContentOnLogState } from "./Utils.js";
 import { closeWs } from "./modules/friendList/friendsWs.js";
 import { getKeyTranslation } from "./modules/translationsModule/translationsModule.js";
@@ -25,6 +25,8 @@ async function register(registerForm) {
 
 	if (response.statusCode === 200) {
 		await showAlert(response.data.status, true);
+		toggleModal("register");
+		toggleModal("login");
 	} else {
 		if (data.error.password2)
 			await showAlert(data.error.password2[0]);
@@ -165,7 +167,8 @@ function updateProfile() {
 	var avatarInput = document.getElementById("avatar");
 	var bannerInput = document.getElementById("banner");
 	if (inputName == "username" || inputName == "email") {
-		toggleConfirmPasswordModal("confirmPasswordModal");
+		toggleModal("updateProfileModal");
+		toggleModal("confirmPasswordModal");
 	}
 	else if (inputName == "tournament_username") {
 		const fetchBody = {

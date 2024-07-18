@@ -37,3 +37,24 @@ html {
 	overflow-y: scroll;
 	/* height: 101vh; */
 }
+
+
+.notification {
+	min-width: 300px;
+	position: relative;
+	z-index: 1060;
+	transition: all 0.5s;
+}
+
+.notification-header {
+	border-top-left-radius: 5px;	
+	border-top-right-radius: 5px;	
+}
+
+.notification-body {
+	border-bottom-left-radius: 5px;	
+	border-bottom-right-radius: 5px;	
+	text-wrap: wrap;
+	background-color: whitesmoke;
+	color: black;
+}

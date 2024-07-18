@@ -108,28 +108,41 @@ var alertId = 0;
 async function showAlert(message, success, button) {
 	success = success === true || success === 'true';
 	var bgColor = success ? "text-bg-success" : "text-bg-danger";
-	var alertDiv = document.getElementById("alert");
+	var alertDiv = document.getElementById("alertContainer");
 	var currentdate = new Date();
 	var minutes = currentdate.getMinutes();
 	var datetime = currentdate.getHours() + ":" + (minutes < 10 ? "0" : "") + minutes;
+
 	alertDiv.innerHTML += `
-	<div id="alert${alertId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-animation="true" data-bs-delay="3000" style="background-color: whitesmoke !important;">
-		<div class="toast-header ${bgColor}">
+	<div id="alert${alertId}" class="notification d-flex flex-column mt-2">
+		<div class="notification-header ${bgColor} text-white d-flex justify-content-between align-items-center p-3">
 		<strong class="me-auto">${success ? "Information" : "Error"}</strong>
-		<small>${datetime}</small>
-		<button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+		<small me-2>${datetime}</small>
+		<button type="button" class="ms-2 btn-close btn-close-white" onclick="this.parentNode.parentNode.remove();"></button>
 		</div>
-		<div class="toast-body" style="text-wrap: wrap;"">
+		<div class="notification-body p-3">
 			${await getKeyTranslation(message)}
 		</div>
 	</div>
 	`;
-	console.log(message);
 	if (button)
-		alertDiv.querySelector(`#alert${alertId} .toast-body`).appendChild(button);
-	var toast = alertDiv.querySelector("#alert" + alertId);
-	new bootstrap.Toast(toast).show();
+		alertDiv.querySelector(`#alert${alertId} .notification-body`).appendChild(button);
+
+	setTimeout((function (id) {
+		return function () {
+			removeAlert(document.getElementById(`alert${id}`));
+		}
+	})(alertId), 5000);
 	alertId++;
+}
+
+function removeAlert(alertDiv) {
+	if (alertDiv) {
+		alertDiv.style.opacity = 0;
+		setTimeout(() => {
+			alertDiv.remove();
+		}, 500);
+	}
 }
 
 function togglePasswordVisibility(togglePasswordInputId, passwordFieldId) {

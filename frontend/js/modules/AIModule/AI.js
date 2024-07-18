@@ -1,10 +1,8 @@
 import * as THREE from 'three';
 import { getState } from './envForAI.js'
 
-import { environment, currentActions, actions, states } from '../../pages/game.js';
+import { currentActions, actions, states } from '../gameModule/gameModule.js';
 
-
-const numActions = 2;
 const numStateFeatures = 5;
 
 export async function createModel() {
@@ -20,7 +18,7 @@ export async function createModel() {
 }
 
 export function moveAI(player2, env, model) {
-	const prediction = model.predict(tf.tensor(getState(environment, player2), [1, 5]));
+	const prediction = model.predict(tf.tensor(getState(env, player2), [1, 5]));
 	const maxIndexTensor = prediction.argMax(1);
 	const AIAction = maxIndexTensor.squeeze().dataSync()[0]; // Convert to a numeric value
 

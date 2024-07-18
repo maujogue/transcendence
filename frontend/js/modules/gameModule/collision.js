@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { actualizeScore } from './score.js';
-import { currentActions, actions } from '../pages/game.js';
+import { currentActions, actions } from './gameModule.js';
 
 function resetPos(ball, player1, player2, environment) {
     ball.mesh.position.set(0, 0, 0.9).unproject(environment.camera);

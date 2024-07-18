@@ -2,7 +2,7 @@ import { movePaddle } from "./movePaddle.js";
 import { displayCharacter } from "./displayCharacter.js";
 import { moveCursor } from "./menu.js";
 import * as THREE from 'three';
-import { soloMode } from "../pages/game.js";
+import { soloMode } from "./gameModule.js";
 
 export let keyPress = false;
 export let keysPressed = {};

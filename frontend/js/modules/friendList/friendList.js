@@ -187,7 +187,7 @@ async function refreshManageFriendshipBtn() {
 
 async function displayUserPage(username) {
 	var userExists = await checkInputAvailable(username, "username");
-	if (userExists)
+	if (!userExists)
 		return showAlert("user_not_exist_message");
 	if (username === await getUserData("username"))
 		return showAlert("cant_visit_own_profile_message");

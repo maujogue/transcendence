@@ -18,11 +18,15 @@ function drawMatchBox(x, y, match) {
 
     ctx.strokeRect(x, y, boxWidth, boxHeight);
     ctx.font = '0.8em Arial';
-    writePlayerName(x + 10 ,y + 20, match.player1, match.player1_score, match.winner);
-    writePlayerName(x + 10, y + (boxHeight - 10), match.player2, match.player2_score, match.winner);
+    const marginHorizontal = boxWidth / 10;
+    const marginVertical = boxHeight / 3;
+    writePlayerName(x + marginHorizontal,y + marginVertical, match.player1, match.winner);
+    writeScore((x + boxWidth) - marginHorizontal, y + marginVertical, match.player1_score)
+    writePlayerName(x + marginHorizontal, (y + boxHeight) - marginVertical + 5, match.player2, match.winner);
+    writeScore((x + boxWidth) - marginHorizontal, (y + boxHeight) - marginVertical + 5, match.player2_score)
 }
 
-function writePlayerName(x, y, playerName, score, winner) {
+function writePlayerName(x, y, playerName, winner) {
     if (winner === playerName)
         ctx.fillStyle = 'green';
     else if (!winner || winner === null)
@@ -34,9 +38,12 @@ function writePlayerName(x, y, playerName, score, winner) {
         score = "-";
         ctx.fillStyle = "black";
     }
-    ctx.fillText(`${playerName}`, x, y);
-    ctx.fillText(`${score}`, x + boxWidth - 25, y);
+    ctx.fillText(`${playerName}`, x, y);    
     ctx.fillStyle = 'black';
+}
+
+function writeScore(x, y, score) {
+    ctx.fillText(`${score}`, x, y);
 }
 
 function drawConnectingLine(x1, y1, x2, y2) {
@@ -105,7 +112,7 @@ function displayWaitingText() {
 function setDimensions() {
     const tournamentDiv = document.getElementsByClassName('tournament')[0];
     boxWidth =  tournamentDiv.offsetWidth / 5;
-    boxHeight = tournamentDiv.offsetHeight / 10;
+    boxHeight = tournamentDiv.offsetHeight / 8;
     horizontalSpacing = tournamentDiv.offsetWidth / 3.5;
 }
 

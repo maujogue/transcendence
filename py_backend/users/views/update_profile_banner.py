@@ -7,11 +7,12 @@ from django.http import JsonResponse
 from users.utils import image_extension_is_valid
 
 import magic
+from PIL import Image
 
 
 @require_http_methods(["POST"])
-@login_required
 @requires_csrf_token
+@login_required
 def update_profile_banner(request):
     uploaded_file = request.FILES.get("image")
     
@@ -35,7 +36,10 @@ def update_profile_banner(request):
         return JsonResponse({'error': "Invalid file."}, status=400)
     try:
         request.user.banner = uploaded_file
+        Image.open(uploaded_file)
         request.user.save()
         return JsonResponse({'status': "profile_banner_updated_message"}, status=200)
+    except IOError as e:
+        return JsonResponse({'error': "error_updating_profile_banner_message"}, status=400)
     except Exception as e:
-        return JsonResponse({'error': "error_updating_profile_banner_message"}, status=500)
+        return JsonResponse({'error': "error_updating_profile_banner_message"}, status=400)

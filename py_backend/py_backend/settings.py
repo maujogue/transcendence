@@ -43,7 +43,7 @@ MAX_LEN_TEXT = 500
 FORTY_TWO_UID = 'u-s4t2ud-92889d666741a2b0d333c0b63e74d6491194432da0c98a38a82560e58f9b0f83'
 FORTY_TWO_SECRET = os.environ.get("FORTY_TWO_SECRET")
 FORTY_TWO_REDIRECT_URI = 'https://127.0.0.1:8000/api/auth42/callback/'
-LANG = ['en', 'fr', 'es']
+LANG = ['en', 'EN', 'fr', 'FR', 'es', 'ES']
 
 # Application definition
 

@@ -39,7 +39,5 @@ def update_profile_banner(request):
         Image.open(uploaded_file)
         request.user.save()
         return JsonResponse({'status': "profile_banner_updated_message"}, status=200)
-    except IOError as e:
-        return JsonResponse({'error': "error_updating_profile_banner_message"}, status=400)
     except Exception as e:
         return JsonResponse({'error': "error_updating_profile_banner_message"}, status=400)

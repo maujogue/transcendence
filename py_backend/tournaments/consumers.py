@@ -144,19 +144,20 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.match = await Match.objects.aget(lobby_id=str(lobby.uuid))
             return self.match
         except Match.DoesNotExist:
-            player1 = await self.authenticate_user_with_id(self.match.player1)
-            player2 = await self.authenticate_user_with_id(self.match.player2)
+            player1 = await self.authenticate_user_with_username(self.match.player1)
+            player2 = await self.authenticate_user_with_username(self.match.player2)
             winner = player1 if lobby.player1 else player2
             loser = player2 if winner == player1 else player1
             match = Match(  lobby_id=str(lobby.uuid),
-                            player1=player1, 
-                            player2=player2, 
+                            player1=player1.id, 
+                            player2=player2.id, 
                             player1_average_exchange=0,
                             player2_average_exchange=0,
-                            winner=winner,
-                            loser=loser,
+                            winner=winner.id,
+                            loser=loser.id,
                             player1_score=0,
                             player2_score=0)
+            print('here')
             await match.asave()
             return match
 
@@ -165,9 +166,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         await match.asave()
         print(f'match.player1 = {match.player1}, match.player2 = {match.player2}, self.scope[].username {self.scope["user"].username}')
         if match.player1 == self.scope['user'].username:
-            await asyncio.sleep(30)
+            await asyncio.sleep(10)
         if match.player2 == self.scope['user'].username:
-            await asyncio.sleep(32)
+            await asyncio.sleep(12)
 
     async def cancel_match(self, match):
         await self.send_data({'type': 'status', 'status': 'cancelled', 'message': f'Match not started in time, {match.winner} wins!'})
@@ -190,7 +191,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             if not await self.check_if_match_is_started(match):
                 lobby = await Lobby.objects.aget(pk=match.lobby_id)
                 res_match = await self.create_history_match(lobby)
+                print(f'cancel match')
                 await self.cancel_match(res_match)
+            else:
+                print('match start')
         except Lobby.DoesNotExist:
             try:
                 res_match = await TournamentMatch.objects.aget(lobby_id=match.lobby_id)
@@ -221,7 +225,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def set_match_info(self):
         try:
-            print('here')
             match = await self.get_match_result()
             player1 = await self.authenticate_user_with_id(match.player1)
             player2 = await self.authenticate_user_with_id(match.player2)

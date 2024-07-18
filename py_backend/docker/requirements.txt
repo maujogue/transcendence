@@ -9,9 +9,11 @@ django-cors-headers==4.3.1
 pillow==10.2.0
 websocket
 requests-toolbelt
+pylibmagic # for jrenault's macbook
 mimetypes-magic
 six
 django-friendship
-django-crontab
-
-# channels-redis==4.2.0
+# for blockchain module
+web3
+py-solc-x
+eth_tester

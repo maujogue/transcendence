@@ -12,6 +12,10 @@ from multiplayer.models import Lobby
 from .models import Tournament, TournamentMatch
 from .bracket import generate_bracket
 
+#import logging
+
+# logger = logging.getLogger(__name__)
+
 class TournamentConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.match = None
@@ -88,9 +92,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def match_is_over(self):
         if not self.match:
-            self.match = await self.get_player_match(self.scope['user'])
-        self.match.finished = True
-        await self.match.asave()
+            self.match = await self.get_player_match(self.scope['user'].tournament_username)
+        if not self.match.finished:
+            self.match.finished = True
+            await self.match.asave()
 
     async def auth(self, text_data_json):
         try:
@@ -106,9 +111,14 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.close()
 
     async def set_tournament_over(self):
-        self.tournament.finished = True
-        await self.tournament.asave()
-        await self.send_tournament_end()
+        if not self.tournament.finished:
+            # logger.info(f"Setting tournament {self.tournament.pk} as finished.")
+            self.tournament.finished = True
+            await self.tournament.asave()
+            await self.send_tournament_end()
+#        else:
+#            logger.info(f"Tournament {self.tournament.pk} is already marked as finished.")
+
 
     async def generate_round(self):
         await sync_to_async(generate_bracket)(self.tournament)
@@ -128,7 +138,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if all(matches.finished for matches in all_matches) and len(all_matches) > 0:
             return True
         return False
-    
+        
     async def create_history_match(self, lobby):
         try:
             self.match = await Match.objects.aget(lobby_id=str(lobby.uuid))
@@ -246,13 +256,13 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         self.tournament.started = True
         await sync_to_async(self.tournament.save)()
         await self.generate_round()
-    
+        
     @database_sync_to_async
     def is_tournament_full(self):
         if self.tournament.participants.count() == self.tournament.max_players:
             return True
         return False
-    
+        
     async def check_tournament_start(self):
         if await self.is_tournament_full() and not self.tournament.started:
             await self.launch_tournament()
@@ -262,7 +272,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     await self.send_self_matchup()
             else:
                 await self.send_bracket(False)
-    
+        
     async def validate_foreign_keys(self):
         try:
             if not self.match:
@@ -294,7 +304,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             'player_2': match.player2 if match.player2 else None,
             'round': match.round
         }
-    
+        
     @database_sync_to_async
     def get_tournament(self):
         try:
@@ -310,7 +320,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         current_time = timezone.now()
 
         return (current_time - timer).seconds
-    
+        
     @database_sync_to_async
     def authenticate_user_with_username(self, username):
         try:
@@ -387,7 +397,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.tournament.name,
             {
                 'type': 'tournament.status',
-                'status': 'endTournament'
+                'status': 'endTournament',
             }
         )
 

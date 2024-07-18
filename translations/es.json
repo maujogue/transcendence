@@ -31,7 +31,7 @@
 	"maxime_role": "asistente 3D",
 	"maxime_image_alt": "maxime",
 	"jocelyn_name": "<span class='text-danger'> jocelyn</span>",
-	"jocelyn_role": "Integración de cadena de bloques",
+	"jocelyn_role": "Integración de blockchain",
 	"jocelyn_image_alt": "jocelyn",
 	"profile_image_alt": "imagen de perfil",
 	"edit_profile_button": "Editar",
@@ -246,5 +246,7 @@
 	"winrate_chart": "gráfico de tasa de ganancia",
 	"exchange_before_goal": "Intercambios antes del gol",
 	"scored": "Anotado",
-	"conceded": "Concedido"
+	"conceded": "Concedido",
+	"see_blockchain": "Ver en la blockchain",
+	"waiting_for_transaction": "Esperando transacción"
 }

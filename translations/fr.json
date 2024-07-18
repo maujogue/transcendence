@@ -246,5 +246,7 @@
 	"winrate_chart": "Tableau des taux de victoire",
 	"exchange_before_goal": "Echanges avant le but",
 	"scored": "Marqués",
-	"conceded": "Concédés"
+	"conceded": "Concédés",
+	"see_blockchain": "Voir sur la blockchain",
+	"waiting_for_transaction": "Transaction en cours"
 }

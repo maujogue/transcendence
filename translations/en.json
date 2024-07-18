@@ -247,5 +247,7 @@
 	"winrate_chart": "Winrate chart",
 	"exchange_before_goal": "Exchanges before goal",
 	"scored": "Scored",
-	"conceded": "Conceded"
+	"conceded": "Conceded",
+	"see_blockchain": "See on blockchain",
+	"waiting_for_transaction": "Waiting for transaction"
 }

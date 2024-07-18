@@ -39,4 +39,6 @@ def update_profile_picture(request):
         request.user.save()
         return JsonResponse({'status': "profile_picture_updated_message"}, status=200)
     except Exception as e:
-        return JsonResponse({'error': "error_updating_profile_picture_message"}, status=500)
+        request.user.avatar = "avatar.jpg"
+        request.user.save()
+        return JsonResponse({'error': "error_updating_profile_picture_message"}, status=400)

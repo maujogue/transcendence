@@ -105,20 +105,19 @@ async function updatePage(pageName) {
 
 function setLoading(state) {
 	var allPages = Array.from(document.querySelectorAll(".page"));
-	var contentContainer = document.getElementById("content-container");
+	var spinner = document.getElementById("loadingScreen");
 	var sidebarContainer = document.getElementById("sidebar-container");
 	var currentPage = allPages.find((x) => x.hidden == false);
 	if (state) {
 		if (currentPage)
 			currentPage.hidden = true;
-		contentContainer.innerHTML += 
-			`<div id="loadingScreen" class="position-absolute top-0 left-0 w-75 h-100 d-flex justify-content-center align-items-center">
-			<div class="spinner-border" role="status"></div>
-		</div>
+		spinner.innerHTML = `
+			<div class="spinner" role="status"></div>
 		`;
+
 		sidebarContainer.hidden = true;
 	} else {
-		document.getElementById("loadingScreen")?.remove();
+		document.querySelector("#loadingScreen div")?.remove();
 		if (currentPage)
 			currentPage.hidden = false;
 		sidebarContainer.hidden = false;

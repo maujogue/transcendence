@@ -44,7 +44,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         await self.lobby.asave()
 
     async def set_environment(self):
-        self.max_points = 1
+        self.max_points = 3
         self.is_connected = False
         self.is_ready = False
         self.scope['user'] = None

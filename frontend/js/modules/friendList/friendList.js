@@ -132,10 +132,14 @@ async function fillInbox(data) {
 	});
 }
 
+function sortFriendsName(x, y) {
+	return x.username.localeCompare(y.username);
+}
+
 async function fillFriendsList(data) {
 	friendList = data.friends;
-	const onlineFriends = friendList.filter(friend => friend.status);
-	const offlineFriends = friendList.filter(friend => !friend.status);
+	const onlineFriends = friendList.filter(friend => friend.status).sort(sortFriendsName);
+	const offlineFriends = friendList.filter(friend => !friend.status).sort(sortFriendsName);
 	var friendScroll = module.querySelector("#friendScroll");
 	friendScroll.innerHTML = "";
 
@@ -252,7 +256,7 @@ async function initManageFriendshipBtn(username) {
 			btn.remove();
 			initManageFriendshipBtn(username);
 		}
-		else if (!requestSent){
+		else if (!requestSent) {
 			sendFriendRequest(username);
 			manageFriendshipBtn.innerHTML = `<button class="btn btn-danger " disabled data-lang="friend_request_sent"></button>`;
 			injectTranslations();

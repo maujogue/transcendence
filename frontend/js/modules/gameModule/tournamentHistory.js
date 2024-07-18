@@ -76,6 +76,7 @@ async function displayUserTournaments() {
         if (!Array.isArray(data.tournaments)) {
             return ;
         }
+        data.tournaments.reverse();
         data.tournaments.map((tournament) => {
             createTournamentInfo(tournament, tournament.participants.length, tournament.maxParticipants);
         });

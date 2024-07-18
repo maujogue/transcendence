@@ -229,6 +229,7 @@
 	"missing_email": "Email is missing.",
 	"invalid_email": "Invalid email.",
 	"email_used": "Email is already used.",
+	"email_too_long": "Email is too long.",
 	"missing_username": "Username is missing.",
 	"username_too_short": "Username is too short.",
 	"username_too_long": "Username is too long.",

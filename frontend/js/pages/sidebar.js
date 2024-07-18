@@ -1,5 +1,5 @@
 import { register, login, logout } from "../ApiCalls.js";
-import { togglePasswordVisibility, checkPassword, showAlert, toggleSearchBar } from "../Utils.js";
+import { togglePasswordVisibility, checkPassword, toggleSearchBar } from "../Utils.js";
 import { printQueryParamsMessage } from "../modules/translationsModule/translationsModule.js";
 
 export function init(queryParams) {
@@ -10,7 +10,9 @@ export function init(queryParams) {
 	var registerForm = document.getElementById("registrationForm");
 	var password1 = document.getElementById("registerPassword");
 	var password2 = document.getElementById("registerPasswordAgain");
+	var sidebar = document.getElementById("sidebar");
 
+	sidebar.style.height = (window.innerHeight - 40) + "px";
 	collapseButton.addEventListener("click", toggleSidebarCollapse);
 	logoutButton.addEventListener("click", () => logout());
 	loginForm.addEventListener("submit", (event) => {

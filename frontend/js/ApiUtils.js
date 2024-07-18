@@ -1,9 +1,10 @@
 import { resetForm, toggleConfirmPasswordModal, inputInitListeners } from "./DashboardUtils.js";
 import { showAlert } from "./Utils.js";
 import { injectUserData } from "./User.js";
+import { hostname } from "./Router.js";
 
 async function get_csrf_token() {
-	return fetch("https://127.0.0.1:8000/api/users/get_csrf_token/", {
+	return fetch(`https://${hostname}:8000/api/users/get_csrf_token/`, {
 		method: "GET",
 		credentials: "include",
 	})
@@ -15,7 +16,7 @@ async function get_csrf_token() {
 }
 
 async function runEndPoint(endpoint, method, fetchBody) {
-	return fetch("https://127.0.0.1:8000/api/" + endpoint, {
+	return fetch(`https://${hostname}:8000/api/` + endpoint, {
 		method: method,
 		headers: {
 			"X-CSRFToken": await get_csrf_token(),
@@ -46,7 +47,7 @@ async function updateInfo(endpoint, fetchBody, modalToDismiss) {
 		resetForm();
 		injectUserData();
 	} else if (data.error && data.error.length > 0) showAlert(data.error);
-	else showAlert("Profile update Error");
+	else showAlert("profile_update_error_message");
 	return response;
 }
 

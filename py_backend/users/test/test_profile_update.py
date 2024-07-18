@@ -64,7 +64,7 @@ class ProfileUpdate(TestCase):
             content_type='application/json'
         )
         self.user.refresh_from_db()
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 401)
 
 
     def test_change_username(self):
@@ -95,7 +95,7 @@ class ProfileUpdate(TestCase):
         self.user.refresh_from_db()
         response_data = response.json()
 
-        self.assertEqual(response_data.get('error'), 'Username is already used.')
+        self.assertEqual(response_data.get('error'), 'username_used')
         self.assertEqual(response.status_code, 400)
 
     def test_name_already_used_lower(self):
@@ -153,7 +153,7 @@ class ProfileUpdate(TestCase):
         self.user.refresh_from_db()
         response_data = response.json()
 
-        self.assertEqual(response_data.get('error'), 'Username is already used.')
+        self.assertEqual(response_data.get('error'), 'username_used')
         self.assertEqual(response.status_code, 400)
 
 
@@ -247,7 +247,7 @@ class ProfileUpdate(TestCase):
         response_data = response.json()
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response_data.get('status'), 'Passwords do not match.')
+        self.assertEqual(response_data.get('status'), 'passwords_not_matching_message')
 
 
     def test_update_empty_password(self):
@@ -265,7 +265,7 @@ class ProfileUpdate(TestCase):
         response_data = response.json()
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response_data.get('status'), 'One password is missing.')
+        self.assertEqual(response_data.get('status'), 'password_missing_message')
 
 
     def test_update_no_datas(self):
@@ -393,7 +393,7 @@ class ProfileUpdate(TestCase):
 
     def test_update_tournament_name(self):
         update_datas = {
-            'username': 'zebulon55'
+            'tournament_username': 'zebulon55'
         }
 
         response = self.client.post(
@@ -403,8 +403,8 @@ class ProfileUpdate(TestCase):
         )
         self.user.refresh_from_db()
 
-        self.assertEqual(self.user.tournament_username, 'zebulon55')
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.user.tournament_username, 'zebulon55')
 
     def test_tournament_name_already_used(self):
         update_datas = {

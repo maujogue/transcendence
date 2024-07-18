@@ -1,5 +1,6 @@
 import { runEndPoint } from "./ApiUtils.js"
 import { getUserData, injectUserData } from "./User.js";
+import { getKeyTranslation, injectElementTranslations, injectTranslations } from "./modules/translationsModule/translationsModule.js";
 
 async function isLoggedIn() {
 	var response = await runEndPoint("users/check_user_logged_in/", "GET");
@@ -88,31 +89,47 @@ async function disableCollapsedSidebar(forceDisable) {
 function toggleSearchBar(forceDisable) {
 	const searchInput = document.querySelector("#searchButton > input");
 
-	if (searchInput.hidden == true || forceDisable) {
+	if (searchInput.style.opacity == 0 || forceDisable) {
+		searchInput.style.opacity = 1;
 		setTimeout(() => {
 			searchInput.hidden = false;
-		}, 500);
+		}, 100);
 	}
 	else {
-		searchInput.hidden = true;
+		setTimeout(() => {
+			searchInput.hidden = true;
+		}, 200);
+		searchInput.style.opacity = 0;
 	}
 }
 
-function showAlert(message, success) {
+var alertId = 0;
+
+async function showAlert(message, success, button) {
 	success = success === true || success === 'true';
-	var bgColor = success ? "alert-success" : "alert-danger";
+	var bgColor = success ? "text-bg-success" : "text-bg-danger";
 	var alertDiv = document.getElementById("alert");
-	var alertItem = document.createElement("div");
-	alertItem.innerHTML = `
-	<div class="alert ${bgColor} d-flex align-items-center ">
-		<span> ${message} </span>
-		<button type="button" class="ms-3 btn-close showAlertDiv" data-bs-dismiss="alert" aria-label="Close"></button>
+	var currentdate = new Date();
+	var minutes = currentdate.getMinutes();
+	var datetime = currentdate.getHours() + ":" + (minutes < 10 ? "0" : "") + minutes;
+	alertDiv.innerHTML += `
+	<div id="alert${alertId}" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-animation="true" data-bs-delay="3000" style="background-color: whitesmoke !important;">
+		<div class="toast-header ${bgColor}">
+		<strong class="me-auto">${success ? "Information" : "Error"}</strong>
+		<small>${datetime}</small>
+		<button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+		</div>
+		<div class="toast-body" style="text-wrap: wrap;"">
+			${await getKeyTranslation(message)}
+		</div>
 	</div>
 	`;
-	alertDiv.appendChild(alertItem);
-	setTimeout(function () {
-		alertItem.remove();
-	}, 3000);
+	console.log(message);
+	if (button)
+		alertDiv.querySelector(`#alert${alertId} .toast-body`).appendChild(button);
+	var toast = alertDiv.querySelector("#alert" + alertId);
+	new bootstrap.Toast(toast).show();
+	alertId++;
 }
 
 function togglePasswordVisibility(togglePasswordInputId, passwordFieldId) {

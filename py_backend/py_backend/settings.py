@@ -25,6 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
+DJANGO_ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "127.0.0.1")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = bool(os.environ.get("DEBUG", default=0))
@@ -34,12 +35,15 @@ ALLOWED_HOSTS = ['*']
 # Define for backend
 
 MIN_LEN_USERNAME = 3
+MIN_LEN_PASSWORD = 8
 MAX_LEN_USERNAME = 25
+MAX_LEN_TOURNAMENT_USERNAME = 9
 MAX_LEN_EMAIL = 50
 MAX_LEN_TEXT = 500
 FORTY_TWO_UID = 'u-s4t2ud-92889d666741a2b0d333c0b63e74d6491194432da0c98a38a82560e58f9b0f83'
 FORTY_TWO_SECRET = os.environ.get("FORTY_TWO_SECRET")
 FORTY_TWO_REDIRECT_URI = 'https://127.0.0.1:8000/api/auth42/callback/'
+LANG = ['en', 'fr', 'es']
 
 # Application definition
 
@@ -140,7 +144,7 @@ AUTH_PASSWORD_VALIDATORS = [
 	{
 		'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
 		"OPTIONS": {
-			"min_length": 8,
+			"min_length": MIN_LEN_PASSWORD,
 		},
 	},
 	{
@@ -197,29 +201,32 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = True # A Retirer
-CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
 	"https://127.0.0.1:8000",
 	"https://localhost:8000",
+    "https://" + DJANGO_ALLOWED_HOSTS + ":8000",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
 	"https://127.0.0.1:8000",
 	"https://localhost:8000",
+    "https://" + DJANGO_ALLOWED_HOSTS + ":8000",
 ]
 
 ALLOWED_HOSTS = [
 	"localhost",
 	"127.0.0.1",
-    "0.0.0.0"
+    "0.0.0.0",
+    DJANGO_ALLOWED_HOSTS,
 ]
 
 CORS_ORIGIN_WHITELIST = [
 	"https://127.0.0.1:8000",
 	"https://localhost:8000",
+    "https://" + DJANGO_ALLOWED_HOSTS + ":8000",
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -228,3 +235,18 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'backend.amos@gmail.com'
 EMAIL_HOST_PASSWORD = 'hvqzjctapjxiijjf'
 EMAIL_USE_TLS = True
+
+# debugging
+# LOGGING = {
+#     "version": 1,
+#     "disable_existing_loggers": False,
+#     "handlers": {
+#         "console": {
+#             "class": "logging.StreamHandler",
+#         },
+#     },
+#     "root": {
+#         "handlers": ["console"],
+#         "level": "DEBUG",
+#     },
+# }

@@ -10,8 +10,8 @@ from users.utils import decode_json_body
 
 
 @require_http_methods(["POST"])
-@login_required
 @requires_csrf_token
+@login_required
 def update_profile_bio(request):
     data = decode_json_body(request)
     if isinstance(data, JsonResponse):
@@ -24,5 +24,5 @@ def update_profile_bio(request):
     if bio or bio == '':
         request.user.bio = bio
         request.user.save()
-        return JsonResponse({'status': "Your bio has been correctly updated !"}, status=200)
-    return JsonResponse({'status': "Missing bio."}, status=400)
+        return JsonResponse({'status': "profile_bio_updated_message"}, status=200)
+    return JsonResponse({'status': "error_updating_profile_bio_message"}, status=400)

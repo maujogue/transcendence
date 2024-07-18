@@ -5,6 +5,8 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
 
 from users.tokens import account_activation_token, email_update_token
 from py_backend import settings
@@ -13,49 +15,59 @@ import base64
 
 import json
 import os
+import re
 
-SPECIAL_CHARS = "+/*.,!#%^&\{}[]=:;\'\"`~"
-SPECIAL_CHARS_EMAIL = "+/*,!#%^&\{}[]=:;\'\"`~"
+SPECIAL_CHARS = "+/*.,!?#%^&\{}[]=:;\'\"`~"
+
 
 def email_is_valid(email):
 	if not email or email == '':
-		return False, f'Missing email.'
-	if any(char in SPECIAL_CHARS_EMAIL for char in email):
-		return False, f'Email contains forbidden characters.'
-	if not '@' in email:
-		return False, f'Invalid email.'
+		return False, f'missing_email'
+	try:
+		validate_email(email)
+	except ValidationError as e:
+		return False, f'invalid_email'
 	return True, None
 
 
 def email_is_unique(email):
 	if not email or email == '':
-		return False, f'Missing email.'
+		return False, f'missing_email'
 	response = CustomUser.objects.filter(email=email).exists()
 	if response:
-		return False, f'Email is already used.'
+		return False, f'email_used'
 	return True, None
 
 
 def username_is_valid(username):
 	if not username or username == '':
-		return False, f'Missing username.'
+		return False, f'missing_username'
 	if len(username) < settings.MIN_LEN_USERNAME:
-		return False, f'Username is too short.'
+		return False, f'username_too_short'
 	if len(username) > settings.MAX_LEN_USERNAME:
-		return False, f'Username is too long.'
+		return False, f'username_too_long'
 	if any(char in SPECIAL_CHARS for char in username):
-		return False, f'Username contains forbidden characters.'
-	if CustomUser.objects.filter(username=username).exists():
-		return False, f'Username already exists.'
+		return False, f'username_forbidden'
+	if re.search(r'\s', username):
+		return False, 'username_space'
 	return True, None
 
 
 def username_is_unique(username):
 	if not username or username == '':
-		return False, f'Username cannot be empty.'
+		return False, f'username_empty'
 	response = CustomUser.objects.filter(username__iexact=username).exists()
 	if response:
-		return False, f'Username is already used.'
+		return False, f'username_used'
+	return True, None
+
+
+def tournament_username_is_unique(username):
+	if not username or username == '':
+		return False, f'tournament_name_empty'
+	response = CustomUser.objects.filter(tournament_username__iexact=username).exists()
+	if response:
+		return False, f'tournamet_name_used'
 	return True, None
 
 
@@ -65,29 +77,40 @@ def validation_register(data):
 	username = data.get('username')
 	email = data.get('email')
 	
-	valid_username, response_username = username_is_valid(username)
-	valid_email, response_email = email_is_unique(email)
+	is_valid_username, valid_username_response = username_is_valid(username)
+	already_used_username, response_already_used_username = username_is_unique(username)
+	is_valid_email, valid_email_response = email_is_valid(email)
+	is_unique_email, unique_email_response = email_is_unique(email)
 
-	if not valid_username:
-		validation_errors.append(response_username)
-	if not valid_email:
-		validation_errors.append(response_email)
+	if not is_valid_username:
+		validation_errors.append(valid_username_response)
+	if not already_used_username:
+		validation_errors.append(response_already_used_username)
+	if not is_valid_email:
+		validation_errors.append(valid_email_response)
+	if not is_unique_email:
+		validation_errors.append(unique_email_response)
 	return validation_errors
 
 
 def decode_json_body(request):
 	try:
 		data = json.loads(request.body.decode("utf-8"))
+
+		for key, value in data.items():
+			if isinstance(value, int):
+				data[key] = str(value)
+
 		return data
 	except json.JSONDecodeError:
 		return JsonResponse(data={'error': "Invalid JSON format"}, status=406)
 	
 
-def extension_is_valid(image_name):
+def image_extension_is_valid(image_name):
 	name, ext = os.path.splitext(image_name)
 	if ext == '.png':
 		return True
-	if ext == '.jpg':
+	if ext == '.jpg' or ext == '.jpeg' or ext == '.JPG' or ext == '.JPEG':
 		return True
 	return False
 
@@ -146,3 +169,13 @@ def utils_get_friendslist_data(user):
 	if friends_count == 0:
 		return False
 	return friends_list_data
+
+
+def lang_is_valid(lang):
+	if not lang or lang == '':
+		return False
+	if len(lang) > 2 or lang.isnumeric() or lang.isspace():
+		return False
+	if lang not in settings.LANG:
+		return False
+	return True

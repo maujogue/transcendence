@@ -1,0 +1,48 @@
+#profileCard {
+	padding: 20px;
+	box-shadow: 3px 3px 15px black;
+	min-width: 200px;
+	background-color: #141419;
+}
+
+#profileCard .profileInfo {
+	transform: translateY(-100px);
+}
+#profileCard .avatarDynamic {
+	transform: translateY(-100px);
+	width: 50%;
+	max-width: 250px;
+	aspect-ratio: 1;
+	object-fit: cover;
+}
+#profileCard .bannerDynamic {
+	aspect-ratio: 3/2;
+	object-fit: cover;
+}
+
+#editProfileBtn{
+	margin-right:15px;
+	margin-left: auto;
+	margin-bottom: 15px;
+	transition: all 0.5s ease;
+}
+
+
+#profileCard .footer {
+	transform: translate(0, -90px);
+}
+
+#profileCard .bioDynamic{
+	text-wrap: wrap;
+}
+
+.aboutModule p{
+	text-wrap: wrap;
+}
+
+textarea {
+	text-wrap: wrap;
+	overflow: hidden;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+}

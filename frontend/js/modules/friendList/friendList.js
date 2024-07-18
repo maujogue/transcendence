@@ -1,5 +1,5 @@
 import { getModuleDiv } from "../../Modules.js";
-import { asyncTimeout, disableCollapsedSidebar, isLoggedIn, showAlert, toggleSearchBar } from "../../Utils.js";
+import { asyncTimeout, disableCollapsedSidebar, isLoggedIn, showAlert } from "../../Utils.js";
 import { friendsWebsocket, getUserRequests } from "./friendsWs.js";
 import { sendFriendRequest } from "./friendsWs.js";
 import { acceptFriendRequest, declineFriendRequest } from "./friendsWs.js";
@@ -53,7 +53,7 @@ export async function init() {
 			username: userData.get("username"),
 		};
 		if (!fetchBody.username)
-			return showAlert("Please enter a valid username.");
+			return showAlert("enter_valid_username_message");
 
 		await displayUserPage(fetchBody.username);
 	}
@@ -184,9 +184,9 @@ async function refreshManageFriendshipBtn() {
 async function displayUserPage(username) {
 	var userExists = await checkInputAvailable(username, "username");
 	if (userExists)
-		return showAlert("This user does not exist.");
+		return showAlert("user_not_exist_message");
 	if (username === await getUserData("username"))
-		return showAlert("You cannot visit your own profile.");
+		return showAlert("cant_visit_own_profile_message");
 	await waitThenInitDashButtons(username);
 	await injectDashData(username);
 	await navigateTo("/dash");
@@ -196,8 +196,7 @@ async function injectDashData(username, close) {
 	var userDash = document.getElementById("userDash");
 	setTimeout(async () => {
 		if (close) {
-			showDiv("#closeProfileBtn", false);
-			showDiv("#manageFriendshipBtn", false);
+			showDiv("#onProfileButtonsDiv", false);
 			showDiv("#editProfileBtn", true);
 		}
 		await injectUserData(userDash, username);
@@ -213,9 +212,8 @@ async function waitThenInitDashButtons(username) {
 	userDash.style.opacity = 0;
 
 	setTimeout(async () => {
-		showDiv("#closeProfileBtn", true);
+		showDiv("#onProfileButtonsDiv", true);
 		showDiv("#editProfileBtn", false);
-		showDiv("#manageFriendshipBtn", true);
 		initManageFriendshipBtn(username);
 		initCloseButton();
 	}, 100);
@@ -245,7 +243,7 @@ async function initManageFriendshipBtn(username) {
 	else if (requestSent)
 		manageFriendshipBtn.innerHTML = `<button class="btn btn-danger " disabled data-lang="friend_request_sent"></button>`;
 	else
-		manageFriendshipBtn.innerHTML = `<button class="btn btn-outline-success " data-lang="add_friend">Add Friend</button>`;
+		manageFriendshipBtn.innerHTML = `<button class="btn btn-success " data-lang="add_friend">Add Friend</button>`;
 	injectTranslations();
 	var btn = manageFriendshipBtn.querySelector("button");
 	btn.addEventListener("click", () => {

@@ -2,6 +2,7 @@ import { getUserData } from "../../User.js";
 import { checkInputAvailable } from "../../ApiCalls.js";
 import { disableSaveChangesButton, resetForm } from "../../DashboardUtils.js";
 import { getModuleDiv } from "../../Modules.js";
+import { getKeyTranslation } from "../translationsModule/translationsModule.js";
 let debounceTimer;
 
 export async function init() {
@@ -32,7 +33,7 @@ async function invalidateEmailIfUnavailable(input, userInput) {
 
 	debounceTimer = setTimeout(async () => {
 		if (!emailPattern.test(input.value)) {
-			inputFeedback.innerHTML = "Please enter a valid email adress";
+			inputFeedback.innerHTML = await getKeyTranslation("email_invalid");
 			input.classList.remove("is-valid");
 			input.classList.add("is-invalid");
 		} else {
@@ -40,7 +41,7 @@ async function invalidateEmailIfUnavailable(input, userInput) {
 			if (userInput && input.value == userInput)
 				resetForm();
 			else if (!emailAvailable) {
-				inputFeedback.innerHTML = "Email is not Available!";
+				inputFeedback.innerHTML = await getKeyTranslation("email_unavailable");
 				input.classList.remove("is-valid");
 				input.classList.add("is-invalid");
 			} else {

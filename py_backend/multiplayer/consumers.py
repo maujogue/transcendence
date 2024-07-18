@@ -76,6 +76,12 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.lobby_group_name, { 'type': 'pong.ask_user', 'name': self.player.name}
         )
 
+    async def check_if_user_is_still_connected(self):
+        await self.channel_layer.group_send(
+            self.lobby_group_name, {'type': 'pong.check_if_connected'}
+        )
+
+
     async def connect(self):
         try:
             await self.set_environment()
@@ -182,14 +188,17 @@ class PongConsumer(AsyncWebsocketConsumer):
             print("Error: ", e)
 
     async def disconnect_user(self):
-        self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
-        await self.lobby.disconnectUser(self.player)
-        if self.scope['user'] is not None:
-            await self.send_status('disconnected', "opponent_left_game")
-        await self.channel_layer.group_discard(
-            self.lobby_group_name,
-            self.channel_name
-        )
+        try:
+            self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
+            await self.lobby.disconnectUser(self.player)
+            if self.scope['user'] is not None:
+                await self.send_status('disconnected', "opponent_left_game")
+            await self.channel_layer.group_discard(
+                self.lobby_group_name,
+                self.channel_name
+            )
+        except Exception as e:
+            return
   
     async def close_lobby(self):
         try:

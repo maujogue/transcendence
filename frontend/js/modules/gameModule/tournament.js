@@ -19,7 +19,7 @@ export async function connectToTournament(tournament) {
     try {
         console.log("Connecting to tournament:", tournament);
         currentTournament = tournament;
-        wsTournament = new WebSocket(`ws://${hostname}:8080/ws/tournament/${tournament.id}/`);
+        wsTournament = new WebSocket(`wss://${hostname}:8000/ws/tournament/${tournament.id}/`);
     
         wsTournament.onopen = () => {
             createWaitingScreenTournament(tournament);
@@ -120,9 +120,20 @@ function displayRankingScreen(data) {
     tournamentDiv.innerHTML = `<h1 class="won-title">${data.winner} <span data-lang="tournament_won"></span></h1>`;
     displayTournamentRanking(data.ranking);
     createLeaveButton(tournamentDiv);
+    // createButtonDiv(tournamentDiv);
     createShowBracketButton(tournamentDiv);
     createEtherscanButton(tournamentDiv);
 }
+
+// function createButtonDiv(parent) {
+//     const buttonDiv = document.createElement("div");
+
+//     buttonDiv.className = "end-tournament-container";
+//     parent.appendChild(buttonDiv);
+
+//     createShowBracketButton(buttonDiv);
+//     createEtherscanButton(buttonDiv);
+// }
 
 async function getReceiptAddress(tournament_id) {
     try {
@@ -151,27 +162,45 @@ async function updateEtherscanButton(etherscanBtn, receipt_address) {
     }
 }
 
-async function createEtherscanButton(parent) {
+function getWaitingTransactionText(etherscanBtn) {
+    let dots = "";
+    let maxDots = 3;
+    let interval = 500;
+
+    let timer = setInterval( async () => {
+        if (dots.length < maxDots) {
+            dots += ".";
+        } else {
+            dots = "";
+        }
+        etherscanBtn.textContent = `Waiting for transaction${dots}`;
+    }, interval);
+    return timer;
+}
+
+export async function createEtherscanButton(parent) {
     const etherscanBtn = document.createElement("button");
     etherscanBtn.className = "etherscan-btn end-tournament-btn tournament-btn";
     parent.appendChild(etherscanBtn);
     etherscanBtn.disabled = true;
     etherscanBtn.textContent = "Waiting for transaction";
-    await displayEtherscanButton(etherscanBtn);
+    const dotInterval = getWaitingTransactionText(etherscanBtn);
+    await displayEtherscanButton(etherscanBtn, dotInterval);
 }
 
-async function displayEtherscanButton(etherscanBtn) {
+async function displayEtherscanButton(etherscanBtn, dotInterval) {
     let tournament_id = currentTournament.id;
 
-
     const receipt_address = await getReceiptAddress(tournament_id);
-    if (receipt_address && receipt_address !== "0x0")
+    if (receipt_address && receipt_address !== "0x0") {
+        clearInterval(dotInterval);
         updateEtherscanButton(etherscanBtn, receipt_address)
-
+    }
     const interval = setInterval(async () => {
         const receipt_address = await getReceiptAddress(tournament_id);
         if (receipt_address && receipt_address !== "0x0") {
             updateEtherscanButton(etherscanBtn, receipt_address)
+            clearInterval(dotInterval);
             clearInterval(interval);
         }
     }, 1000);

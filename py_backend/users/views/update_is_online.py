@@ -47,4 +47,4 @@ def update_is_online(request):
         return JsonResponse({'status': 'success', 'message': 'Online state updated successfully'})
         
     except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)

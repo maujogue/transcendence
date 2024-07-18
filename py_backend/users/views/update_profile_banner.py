@@ -38,4 +38,4 @@ def update_profile_banner(request):
         request.user.save()
         return JsonResponse({'status': "profile_banner_updated_message"}, status=200)
     except Exception as e:
-        return JsonResponse({'error': "error_updating_profile_banner_message"}, status=500)
+        return JsonResponse({'error': "error_updating_profile_banner_message"}, status=400)

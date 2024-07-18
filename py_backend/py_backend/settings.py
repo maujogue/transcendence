@@ -64,7 +64,6 @@ INSTALLED_APPS = [
 	'tournaments',
     'stats',
 	'auth42',
-    'django_crontab',
 ]
 
 ASGI_APPLICATION = 'py_backend.asgi.application'

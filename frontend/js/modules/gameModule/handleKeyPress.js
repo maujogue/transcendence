@@ -3,6 +3,31 @@ import { displayCharacter } from "./displayCharacter.js";
 import { moveCursor } from "./menu.js";
 import * as THREE from 'three';
 
+export let keyPress = false;
+export let keysPressed = {};
+
+export function setKeyPressToFalse() {
+	keyPress = false;
+}
+
+document.addEventListener("keydown", function (event) {
+	let key = event.key;
+	if (event.key.match(/^[aqwd]$/))
+		key = event.key.toLowerCase();
+	keysPressed[key] = true;
+	keyPress = true;
+	switch(event.code){
+		case "ArrowUp": case "ArrowDown": case "ArrowLeft": case "ArrowRight":
+		case "Space": event.preventDefault(); break;
+		default: break;
+	}
+	event.stopPropagation();
+});
+
+document.addEventListener("keyup", function (event) {
+	delete keysPressed[event.key];
+});
+
 async function handleMenuKeyPress(keysPressed, player1, player2, env) {
 	if (keysPressed["d"]) {
 		await moveCursor("d", player1, "cursorP1", env);

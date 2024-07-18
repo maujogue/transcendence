@@ -105,19 +105,21 @@ async function updatePage(pageName) {
 
 function setLoading(state) {
 	var allPages = Array.from(document.querySelectorAll(".page"));
-	var spinner = document.getElementById("loadingScreen");
+	var spinner = document.getElementById("loadingScreenHolder");
 	var sidebarContainer = document.getElementById("sidebar-container");
 	var currentPage = allPages.find((x) => x.hidden == false);
 	if (state) {
 		if (currentPage)
 			currentPage.hidden = true;
 		spinner.innerHTML = `
+		<div id="loadingScreen">
 			<div class="spinner" role="status"></div>
+		</div>
 		`;
 
 		sidebarContainer.hidden = true;
 	} else {
-		document.querySelector("#loadingScreen div")?.remove();
+		document.querySelector("#loadingScreenHolder div")?.remove();
 		if (currentPage)
 			currentPage.hidden = false;
 		sidebarContainer.hidden = false;

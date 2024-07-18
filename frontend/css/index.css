@@ -39,6 +39,10 @@ html {
 	/* height: 101vh; */
 }
 
+#alertContainer{
+	position:fixed;
+	z-index: 1060;
+ }
 
 .notification {
 	min-width: 300px;
@@ -69,7 +73,7 @@ html {
 	height: 100%;
 	display: flex;
 	justify-content: center;
-	align-items: center;w
+	align-items: center;
 }
 
 #loadingScreen .spinner {

@@ -4,11 +4,11 @@
         <p>Hi <b>{{ username }}</b>,</p>
         <p>You updated your email address. Please click on the button below to verify your new email.</p>
         <br>
-        <a href="https://127.0.0.1:8000/api/{% url 'confirm_new_email' uidb64=uid token=token new_email=new_email %}/" style="border: 0; color: #ffffff; background-color: #3931af; padding: 15px; font-weight: bold; text-decoration: none; border-radius: 5px;">
+        <a href="https://{{ domain }}/api/{% url 'confirm_new_email' uidb64=uid token=token new_email=new_email %}/" style="border: 0; color: #ffffff; background-color: #3931af; padding: 15px; font-weight: bold; text-decoration: none; border-radius: 5px;">
             Verify Email
         </a>
         <p style="margin-top: 40px;">Or you can copy the link below to your browser</p>
-        <p>https://127.0.0.1:8000/api/{% url 'confirm_new_email' uidb64=uid token=token  new_email=new_email %}/</p>
+        <p>https://{{ domain }}/api/{% url 'confirm_new_email' uidb64=uid token=token  new_email=new_email %}/</p>
         <p><b>The Transcendence Team</b></p>
     </div>
 </div>

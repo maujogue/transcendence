@@ -14,7 +14,6 @@ mimetypes-magic
 six
 django-friendship
 # for blockchain module
-python-dotenv
 web3
 py-solc-x
 eth_tester

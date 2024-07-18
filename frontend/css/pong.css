@@ -635,12 +635,19 @@ border: 3px solid orange;  /* creates padding around scroll thumb */
 	border-radius: 15px;
 }
 
+/* .end-tournament-container {
+	display: flex;
+	justify-content: flex-start;
+	gap: 1%;
+} */
+
 .etherscan-btn {
 	bottom: 0;
-	
+	width: 31%;
 }
 
 .etherscan-btn:disabled {
+	color: white;
 	background-color: grey;
 	cursor: not-allowed;
 }

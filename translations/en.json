@@ -36,6 +36,7 @@
 	"profile_image_alt": "profile image",
 	"edit_profile_button": "Edit",
 	"username_label": "Username",
+	"game_username_label": "Game Username",
 	"email_label": "Email",
 	"bio_label": "Bio",
 	"log_in_to_see_profile": "Log in / Sign up to play",
@@ -247,5 +248,7 @@
 	"winrate_chart": "Winrate chart",
 	"exchange_before_goal": "Exchanges before goal",
 	"scored": "Scored",
-	"conceded": "Conceded"
+	"conceded": "Conceded",
+	"see_blockchain": "See on blockchain",
+	"waiting_for_transaction": "Waiting for transaction"
 }

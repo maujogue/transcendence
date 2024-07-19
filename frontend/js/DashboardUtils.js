@@ -43,6 +43,8 @@ function resetForm(input) {
 			elm.classList.remove("is-valid")
 		if (elm.classList.contains("is-invalid"))
 			elm.classList.remove("is-invalid")
+		if (elm.type === "file")
+			elm.value = "";
 	});
 	discardChangesButton.classList.add("d-none");
 	updatePasswordButton.classList.remove("d-none");
@@ -85,17 +87,15 @@ function getSubmittedInput() {
 	return inputsArray.find((input) => !input.hasAttribute("disabled"));
 }
 
-function toggleConfirmPasswordModal(modalToDismiss) {
-	var updateProfileModal = document.getElementById("updateProfileModal");
-	bootstrap.Modal.getInstance(updateProfileModal).toggle();
-	if (modalToDismiss) {
-		var confirmPassword = document.getElementById(modalToDismiss);
-		var confirmPasswordModal = bootstrap.Modal.getInstance(confirmPassword);
-		if (confirmPasswordModal instanceof bootstrap.Modal)
-			confirmPasswordModal.toggle();
+function toggleModal(modalName) {
+	if (modalName) {
+		var modalDiv= document.getElementById(modalName);
+		var modal = bootstrap.Modal.getInstance(modalDiv);
+		if (modal instanceof bootstrap.Modal)
+			modal.toggle();
 		else {
-			confirmPasswordModal = new bootstrap.Modal(confirmPassword);
-			confirmPasswordModal.toggle();
+			modal = new bootstrap.Modal(modalDiv);
+			modal.toggle();
 		}
 	}
 }
@@ -106,6 +106,6 @@ export {
 	disableSaveChangesButton,
 	getSubmittedInput,
 	resetForm,
-	toggleConfirmPasswordModal,
+	toggleModal,
 	inputInitListeners,
 };

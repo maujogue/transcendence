@@ -105,6 +105,8 @@ function removeP2Cursor() {
 async function goToOnlineSelectMenu() {
     env = createSelectMenu(characters);
     removeP2Cursor();
+    if (checkIfWebsocketIsOpen(wsTournament))
+        document.getElementById('backIcon')?.remove();
 }
 
 async function createOnlineSelectMenu(id) {

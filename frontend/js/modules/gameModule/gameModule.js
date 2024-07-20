@@ -177,11 +177,6 @@ export async function init() {
 		if (player1.score < 5 && player2.score < 5)
 			return;
 
-		if (localLoop) {
-			console.log("States : ", states.length, " | Actions : ", actions.length);
-			await trainModel(model, 500);
-		}
-
 		let winner = player1.name;
 		if (player2.score > player1.score)
 			winner = player2.name;
@@ -205,22 +200,16 @@ export async function init() {
 			ClearAllEnv(environment);
 			divMenu.remove();
 			model = await tf.loadLayersModel('https://127.0.0.1:8000/js/modules/AIModule/model/model.json');
-			model.compile({
-				optimizer: tf.train.adam(0.001),
-				loss: 'meanSquaredError'
-			});
 			environment = await initGame(player1, player2);
 			player1.score = 0;
 			player2.score = 0;
 		}
 		if (start) {
-			let action = 0;
 			let actualState = getState(environment, player2);
 			if (keyPress)
-				action = handleKeyPress(keysPressed, player1, player2, environment);
+				handleKeyPress(keysPressed, player1, player2, environment);
 			if (soloMode)
-				action = moveAI(player2, environment, model)
-			storeData(actualState, action);
+				moveAI(player2, actualState, model);
 			checkCollision(environment.ball, player1, player2, environment);
 			await setIfGameIsEnd();
 		}

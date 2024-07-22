@@ -309,6 +309,7 @@ export function createLocalMenu() {
 	createGamemodeDiv("Solo", parent);
 	createSubmode('Multiplayer', "1v1");
 	createSubmode('Solo', "Easy");
+	createSubmode('Solo', "Intermediate");
 }
 
 function createGamemodeDiv(text, parent) {

@@ -16,7 +16,7 @@ import { sendTournamentForm, createFormTournament } from "./createTournament.js"
 import { createJoinTournamentMenu } from "./joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "./tournament.js";
 import { getModuleDiv, updateModule } from "../../Modules.js";
-import { getState } from "../AIModule/envForAI.js";
+import { getState, checkElapsedTime } from "../AIModule/envForAI.js";
 import { trainModel, moveAI, storeData } from "../AIModule/AI.js";
 
 import { wsTournament } from "./tournament.js";
@@ -62,9 +62,13 @@ export async function init() {
 	let player2;
 	let isOnline = false;
 	let localLoop = false;
+	let firstPrediction = true;
+	let setTimer = true;
 	let userData;
 	let form;
 	let model;
+	let actualState;
+	let clockAI = new THREE.Clock();
 	var gamediv = document.getElementById("game");
 
 	await loadAllModel();
@@ -127,7 +131,9 @@ export async function init() {
 			localGameLoop();
 			goToLocalSelectMenu();
 		}
-		if (event.target.id == 'easy') {
+		if (event.target.id == 'easy' || event.target.id == 'intermediate') {
+			if (event.target.id == 'intermediate')
+				setTimer = false;
 			soloMode = true;
 			localGameLoop();
 			createAISelectMenu();
@@ -205,11 +211,17 @@ export async function init() {
 			player2.score = 0;
 		}
 		if (start) {
-			let actualState = getState(environment, player2);
+			if (soloMode) {
+				if (!setTimer)
+					actualState = getState(environment, player2);
+				else if (checkElapsedTime(clockAI) || firstPrediction) {
+					actualState = getState(environment, player2);
+					firstPrediction = false;
+				}
+				moveAI(player2, actualState, model, environment);
+			}
 			if (keyPress)
 				handleKeyPress(keysPressed, player1, player2, environment);
-			if (soloMode)
-				moveAI(player2, actualState, model);
 			checkCollision(environment.ball, player1, player2, environment);
 			await setIfGameIsEnd();
 		}

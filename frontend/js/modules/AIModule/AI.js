@@ -17,7 +17,7 @@ export async function createModel() {
 	return model;
 }
 
-export function moveAI(player2, state, model) {
+export function moveAI(player2, state, model, env) {
 	const prediction = model.predict(tf.tensor(state, [1, 5]));
 	const maxIndexTensor = prediction.argMax(1);
 	const AIAction = maxIndexTensor.squeeze().dataSync()[0]; // Convert to a numeric value

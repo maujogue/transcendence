@@ -2,7 +2,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import requires_csrf_token
 from django.http import JsonResponse
 
-from users.utils import decode_json_body, username_is_valid, tournament_username_is_unique
+from users.utils import decode_json_body, tournament_username_is_valid, tournament_username_is_unique
 from users.models import CustomUser
 from users.decorators import custom_login_required as login_required
 
@@ -16,7 +16,7 @@ def update_tournament_name(request):
         return data
     
     tournament_username = data.get('tournament_username')
-    is_valid, is_valid_error = username_is_valid(tournament_username)
+    is_valid, is_valid_error = tournament_username_is_valid(tournament_username)
     if not is_valid:
         return JsonResponse({'error': is_valid_error}, status=400)
 

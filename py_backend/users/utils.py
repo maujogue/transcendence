@@ -72,6 +72,16 @@ def tournament_username_is_unique(username):
 		return False, f'tournamet_name_used'
 	return True, None
 
+def tournament_username_is_valid(username):
+	if not username or username == '':
+		return False, f'missing_username'
+	if len(username) > settings.MAX_LEN_TOURNAMENT_USERNAME:
+		return False, f'username_too_long'
+	if any(char in SPECIAL_CHARS for char in username):
+		return False, f'username_forbidden'
+	if re.search(r'\s', username):
+		return False, f'username_space'
+	return True, None
 
 def validation_register(data):
 	validation_errors = []
@@ -110,11 +120,9 @@ def decode_json_body(request):
 
 def image_extension_is_valid(image_name):
 	name, ext = os.path.splitext(image_name)
-	if ext == '.png':
-		return True
-	if ext == '.jpg' or ext == '.jpeg' or ext == '.JPG' or ext == '.JPEG':
-		return True
-	return False
+	if ext not in settings.IMAGE_EXTENSION:
+		return False
+	return True
 
 
 def convert_image_to_base64(image_field):

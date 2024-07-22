@@ -9,6 +9,7 @@ import { removeFriend } from "./friendsWs.js";
 import { injectTranslations } from "../translationsModule/translationsModule.js";
 import { checkInputAvailable } from "../../ApiCalls.js";
 import { navigateTo } from "../../Router.js";
+import { isSpamming } from "../../ApiUtils.js";
 var module;
 var friendList;
 var requestsList;
@@ -48,6 +49,8 @@ export async function init() {
 
 
 	async function searchFriend(searchFriendForm) {
+		if (isSpamming("search_friend"))
+			return;
 		const userData = new FormData(searchFriendForm);
 		const fetchBody = {
 			username: userData.get("username"),

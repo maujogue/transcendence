@@ -48,6 +48,7 @@ jobs:
         SQL_DATABASE: ${{ secrets.SQL_DATABASE }}
         SQL_USER: ${{ secrets.SQL_USER }}
         SQL_PASSWORD: ${{ secrets.SQL_PASSWORD }}
+        GITHUB_ACTIONS: True
       run: |
         cd py_backend
         python manage.py test

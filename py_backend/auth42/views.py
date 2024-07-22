@@ -101,6 +101,7 @@ def oauth_callback(request):
         user = CustomUser.objects.create(username=username, email=email)
         user.avatar.save(avatarMedium.name, avatarMedium, save=True)
         user.is_42auth = True
+        user.email_is_verified = True
         user.save()
         login(request, user)
         return redirect('/dash?success=true&message=42_register_success')

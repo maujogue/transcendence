@@ -22,7 +22,6 @@ export function updateWinVariables() {
 	game.style.width = winWidth + 'px';
 	game.style.height = winHeight + 'px';
 	gameModule.style.width = winWidth + 'px';
-
-	profileCard.style.maxHeight = winHeight +'px';
+	profileCard.style.maxHeight = gameModule.style.height +'px';
 }
 

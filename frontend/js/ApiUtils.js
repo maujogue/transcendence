@@ -37,6 +37,8 @@ async function runEndPoint(endpoint, method, fetchBody) {
 }
 
 async function updateInfo(endpoint, fetchBody, modalToDismiss) {
+	if (isSpamming(endpoint))
+		return;
 	var response = await runEndPoint(endpoint, "POST", fetchBody);
 	var data = response.data;
 
@@ -52,4 +54,22 @@ async function updateInfo(endpoint, fetchBody, modalToDismiss) {
 	return response;
 }
 
-export { get_csrf_token, runEndPoint, updateInfo }
+let endpointTab = {};
+
+function isSpamming(endpoint) {
+	if (endpoint in endpointTab) {
+		var lastCalled = endpointTab[endpoint];
+		if (Date.now() - lastCalled <= 2000){
+			return true;
+		}
+		else {
+			endpointTab[endpoint] = Date.now();
+			return false
+		}
+	}
+	else
+		endpointTab[endpoint] = Date.now();
+	return false
+}
+
+export { get_csrf_token, runEndPoint, updateInfo, isSpamming }

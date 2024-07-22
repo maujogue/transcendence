@@ -156,13 +156,13 @@ async function getReceiptAddress(tournament_id) {
 
 async function updateEtherscanButton(etherscanBtn, receipt_address) {
     etherscanBtn.disabled = false;
-    etherscanBtn.textContent = "See on Blockchain";
+    etherscanBtn.textContent = await getKeyTranslation("see_blockchain");
     etherscanBtn.onclick = () => {
         window.open(`https://sepolia.etherscan.io/tx/${receipt_address}`, '_blank', 'noopener noreferrer');
     }
 }
 
-function getWaitingTransactionText(etherscanBtn) {
+async function getWaitingTransactionText(etherscanBtn) {
     let dots = "";
     let maxDots = 3;
     let interval = 500;
@@ -173,7 +173,7 @@ function getWaitingTransactionText(etherscanBtn) {
         } else {
             dots = "";
         }
-        etherscanBtn.textContent = `Waiting for transaction${dots}`;
+        etherscanBtn.textContent = await getKeyTranslation("waiting_for_transaction") + dots;
     }, interval);
     return timer;
 }
@@ -183,7 +183,7 @@ export async function createEtherscanButton(parent) {
     etherscanBtn.className = "etherscan-btn end-tournament-btn tournament-btn";
     parent.appendChild(etherscanBtn);
     etherscanBtn.disabled = true;
-    etherscanBtn.textContent = "Waiting for transaction";
+    etherscanBtn.textContent = await getKeyTranslation("waiting_for_transaction");
     const dotInterval = getWaitingTransactionText(etherscanBtn);
     await displayEtherscanButton(etherscanBtn, dotInterval);
 }

@@ -22,11 +22,13 @@ import { createTournamentHistoryMenu } from "./tournamentHistory.js";
 import * as THREE from 'three';
 import { injectElementTranslations } from "../translationsModule/translationsModule.js";
 import { updateWinVariables } from "./varGlobal.js";
+import { keyPress, keysPressed, setKeyPressToFalse } from "./handleKeyPress.js";
 export var lobby;
 export var clock;
 export var characters;
 
 export const field = await createField();
+
 
 export async function init() {
 	var module = getModuleDiv("gameModule");
@@ -52,8 +54,6 @@ export async function init() {
 	let environment;
 	let player1;
 	let player2;
-	let keyPress = false;
-	let keysPressed = {};
 	let isOnline = false;
 	let localLoop = false;
 	let userData;
@@ -81,20 +81,6 @@ export async function init() {
 		player1 = await displayCharacter(player1, environment, "chupacabra", "player1");
 		player2 = await displayCharacter(player2, environment, "elvis", "player2");
 	}
-
-	document.addEventListener("keydown", function (event) {
-		let key = event.key;
-		if (event.key.match(/^[aqwd]$/))
-			key = event.key.toLowerCase();
-		keysPressed[key] = true;
-		keyPress = true;
-		event.stopPropagation();
-	});
-
-	document.addEventListener("keyup", function (event) {
-		delete keysPressed[event.key];
-	});
-
 
 	gamediv.addEventListener("click", function (event) {
 		getUserData().then((data) => {
@@ -180,7 +166,7 @@ export async function init() {
 	async function localGameLoop() {
 		if (keyPress && !start) {
 			await handleMenuKeyPress(keysPressed, player1, player2, environment);
-			keyPress = false;
+			setKeyPressToFalse()
 		}
 		if (keysPressed[" "] && document.getElementById("selectMenu") && player1 && player2 && !start) {
 			start = true;
@@ -191,7 +177,6 @@ export async function init() {
 			player2.score = 0;
 		}
 		if (start) {
-			console.log("start");
 			if (keyPress)
 				handleKeyPress(keysPressed, player1, player2, environment);
 			checkCollision(environment.ball, player1, player2, environment);

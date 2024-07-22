@@ -11,9 +11,13 @@ def register(request):
     if isinstance(data, JsonResponse):
         return data
     
-    valid_request = validation_register(data)
-    if valid_request:
-        return JsonResponse({'error': valid_request}, status=400)
+    try:
+        valid_request = validation_register(data)
+        if valid_request:
+            return JsonResponse({'error': valid_request}, status=400)
+        form = CustomUserCreationForm(data)
+    except:
+        return JsonResponse({'error': 'Error during the validation.'}, status=400)
 
     form = CustomUserCreationForm(data)
     if form.is_valid():

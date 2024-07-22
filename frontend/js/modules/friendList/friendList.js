@@ -28,7 +28,7 @@ export async function init() {
 		});
 	});
 	var searchFriendForm = module.querySelector("#searchFriendForm");
-	searchFriendForm.addEventListener("submit", (event) => {
+	searchFriendForm.addEventListener("submit", async (event) => {
 		event.preventDefault();
 		var input = searchFriendForm.querySelector("input");
 		if (input.hidden == true) {
@@ -43,7 +43,7 @@ export async function init() {
 			input.setSelectionRange(input.value.length, input.value.length); // Place cursor at the end
 		}
 		else
-			searchFriend(event.target);
+			await searchFriend(event.target);
 	});
 
 
@@ -132,10 +132,14 @@ async function fillInbox(data) {
 	});
 }
 
+function sortFriendsName(x, y) {
+	return x.username.localeCompare(y.username);
+}
+
 async function fillFriendsList(data) {
 	friendList = data.friends;
-	const onlineFriends = friendList.filter(friend => friend.status);
-	const offlineFriends = friendList.filter(friend => !friend.status);
+	const onlineFriends = friendList.filter(friend => friend.status).sort(sortFriendsName);
+	const offlineFriends = friendList.filter(friend => !friend.status).sort(sortFriendsName);
 	var friendScroll = module.querySelector("#friendScroll");
 	friendScroll.innerHTML = "";
 
@@ -182,8 +186,8 @@ async function refreshManageFriendshipBtn() {
 }
 
 async function displayUserPage(username) {
-	var userExists = await checkInputAvailable(username, "username");
-	if (userExists)
+	var usernameAvailable = await checkInputAvailable(username, "username");
+	if (usernameAvailable === true)
 		return showAlert("user_not_exist_message");
 	if (username === await getUserData("username"))
 		return showAlert("cant_visit_own_profile_message");
@@ -252,7 +256,7 @@ async function initManageFriendshipBtn(username) {
 			btn.remove();
 			initManageFriendshipBtn(username);
 		}
-		else if (!requestSent){
+		else if (!requestSent) {
 			sendFriendRequest(username);
 			manageFriendshipBtn.innerHTML = `<button class="btn btn-danger " disabled data-lang="friend_request_sent"></button>`;
 			injectTranslations();

@@ -112,12 +112,10 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def set_tournament_over(self):
         if not self.tournament.finished:
-            # logger.info(f"Setting tournament {self.tournament.pk} as finished.")
             self.tournament.finished = True
             await self.tournament.asave()
+            print(f'send tournament end')
             await self.send_tournament_end()
-#        else:
-#            logger.info(f"Tournament {self.tournament.pk} is already marked as finished.")
 
 
     async def generate_round(self):
@@ -141,20 +139,20 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         
     async def create_history_match(self, lobby):
         try:
-            self.match = await Match.objects.aget(lobby_id=str(lobby.uuid))
-            return self.match
+            match = await Match.objects.aget(lobby_id=str(lobby.uuid))
+            return match
         except Match.DoesNotExist:
-            player1 = await self.authenticate_user_with_id(self.match.player1)
-            player2 = await self.authenticate_user_with_id(self.match.player2)
+            player1 = await self.authenticate_user_with_username(self.match.player1)
+            player2 = await self.authenticate_user_with_username(self.match.player2)
             winner = player1 if lobby.player1 else player2
             loser = player2 if winner == player1 else player1
             match = Match(  lobby_id=str(lobby.uuid),
-                            player1=player1, 
-                            player2=player2, 
+                            player1=player1.id, 
+                            player2=player2.id, 
                             player1_average_exchange=0,
                             player2_average_exchange=0,
-                            winner=winner,
-                            loser=loser,
+                            winner=winner.id,
+                            loser=loser.id,
                             player1_score=0,
                             player2_score=0)
             await match.asave()
@@ -169,8 +167,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if match.player2 == self.scope['user'].username:
             await asyncio.sleep(32)
 
-    async def cancel_match(self, match):
-        await self.send_data({'type': 'status', 'status': 'cancelled', 'message': f'Match not started in time, {match.winner} wins!'})
+    async def cancel_match(self):
+        await self.send_data({'type': 'status', 'status': 'cancelled', 'message': f'Match not started in time!'})
         await asyncio.sleep(5)
         await self.endGame()
 
@@ -189,12 +187,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.launch_match_timer(match)
             if not await self.check_if_match_is_started(match):
                 lobby = await Lobby.objects.aget(pk=match.lobby_id)
-                res_match = await self.create_history_match(lobby)
-                await self.cancel_match(res_match)
+                await self.create_history_match(lobby)
+                await self.cancel_match()
         except Lobby.DoesNotExist:
             try:
-                res_match = await TournamentMatch.objects.aget(lobby_id=match.lobby_id)
-                await self.cancel_match(res_match)
+                await TournamentMatch.objects.aget(lobby_id=match.lobby_id)
+                await self.cancel_match()
             except TournamentMatch.DoesNotExist:
                 return
         except Exception as e:
@@ -221,7 +219,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def set_match_info(self):
         try:
-            print('here')
             match = await self.get_match_result()
             player1 = await self.authenticate_user_with_id(match.player1)
             player2 = await self.authenticate_user_with_id(match.player2)
@@ -402,8 +399,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         )
 
     async def send_tournament_ranking(self):
-        if self.tournament.finished is False:
-            return
         winner = await sync_to_async(self.tournament.get_winner)()
         ranking = await sync_to_async(self.tournament.get_ranking)()
         await self.send_data({'type': 'ranking', 'winner': winner, 'ranking': ranking})

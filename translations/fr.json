@@ -36,6 +36,7 @@
 	"profile_image_alt": "image de profil",
 	"edit_profile_button": "Modifier",
 	"username_label": "Nom d'utilisateur",
+	"game_username_label": "Nom d'utlisateur en jeu",
 	"email_label": "E-mail",
 	"bio_label": "Biographie",
 	"log_in_to_see_profile": "Connectez-vous / Inscrivez-vous pour jouer",
@@ -227,6 +228,7 @@
 	"go_dash": "Aller au menu principal",
 	"go_login_page": "Aller à la page de connexion",
 	"missing_email": "L'e-mail est manquant.",
+	"email_too_long": "L'e-mail est trop long.",
 	"invalid_email": "Email invalide.",
 	"email_used": "Cet adresse mail est déjà utilisée.",
 	"missing_username": "Le nom d'utilisateur est manquant.",
@@ -245,5 +247,7 @@
 	"winrate_chart": "Tableau des taux de victoire",
 	"exchange_before_goal": "Echanges avant le but",
 	"scored": "Marqués",
-	"conceded": "Concédés"
+	"conceded": "Concédés",
+	"see_blockchain": "Voir sur la blockchain",
+	"waiting_for_transaction": "Transaction en cours"
 }

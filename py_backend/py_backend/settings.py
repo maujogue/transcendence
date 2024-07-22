@@ -13,6 +13,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from django.core.management.utils import get_random_secret_key
 import os
+import environ
+
+
+env = environ.Env()
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
@@ -25,11 +29,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
-DJANGO_ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "127.0.0.1")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get("DEBUG", default=0))
-
+DEBUG = env.bool('DEBUG', default=False)
 ALLOWED_HOSTS = ['*']
 
 # Define for backend
@@ -41,7 +43,7 @@ MAX_LEN_TOURNAMENT_USERNAME = 9
 MAX_LEN_EMAIL = 50
 MAX_LEN_TEXT = 500
 FORTY_TWO_UID = 'u-s4t2ud-92889d666741a2b0d333c0b63e74d6491194432da0c98a38a82560e58f9b0f83'
-FORTY_TWO_SECRET = os.environ.get("FORTY_TWO_SECRET")
+FORTY_TWO_SECRET = env("FORTY_TWO_SECRET")
 FORTY_TWO_REDIRECT_URI = 'https://127.0.0.1:8000/api/auth42/callback/'
 LANG = ['en', 'fr', 'es']
 
@@ -56,7 +58,6 @@ INSTALLED_APPS = [
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
-	# 'django_extensions',
     'channels',
 	'multiplayer',
 	'users',
@@ -96,7 +97,6 @@ TEMPLATES = [
 	{
 		'BACKEND': 'django.template.backends.django.DjangoTemplates',
 		'DIRS': [],
-		# 'DIRS': [os.path.join(BASE_DIR, 'frontend', 'templates')],
   		'DIRS': [BASE_DIR / 'users/templates'], 
 		'APP_DIRS': True,
 		'OPTIONS': {
@@ -184,10 +184,6 @@ USE_I18N = True
 
 STATIC_URL = "/staticfiles/"
 STATIC_ROOT = "/staticfiles/"
-# STATICFILES_DIRS = [
-#     BASE_DIR / "frontend/static",  # Path to your "frontend" folder
-# ]
-
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -198,35 +194,35 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_CREDENTIALS = True
+#HSTS settings
+SECURE_HSTS_SECONDS = env.int('SECURE_HSTS_SECONDS')
+SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS')
+SECURE_HSTS_PRELOAD = env.bool('SECURE_HSTS_PRELOAD')
 
-CORS_ALLOWED_ORIGINS = True # A Retirer
+#HTTPS settings
+SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT')
+SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE')
+CSRF_COOKIE_SECURE = True
 
-CORS_ALLOW_ALL_ORIGINS = True
 
+DJANGO_ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[])
+
+# Define CORS and CSRF trusted origins
 CORS_ALLOWED_ORIGINS = [
-	"https://127.0.0.1:8000",
-	"https://localhost:8000",
-    "https://" + DJANGO_ALLOWED_HOSTS + ":8000",
+    *["https://" + host + ":8000" for host in DJANGO_ALLOWED_HOSTS]
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-	"https://127.0.0.1:8000",
-	"https://localhost:8000",
-    "https://" + DJANGO_ALLOWED_HOSTS + ":8000",
+    *["https://" + host + ":8000" for host in DJANGO_ALLOWED_HOSTS]
 ]
 
+# Define allowed hosts
 ALLOWED_HOSTS = [
-	"localhost",
-	"127.0.0.1",
-    "0.0.0.0",
-    DJANGO_ALLOWED_HOSTS,
+    *DJANGO_ALLOWED_HOSTS
 ]
 
 CORS_ORIGIN_WHITELIST = [
-	"https://127.0.0.1:8000",
-	"https://localhost:8000",
-    "https://" + DJANGO_ALLOWED_HOSTS + ":8000",
+    *["https://" + host + ":8000" for host in DJANGO_ALLOWED_HOSTS]
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -235,18 +231,3 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'backend.amos@gmail.com'
 EMAIL_HOST_PASSWORD = 'hvqzjctapjxiijjf'
 EMAIL_USE_TLS = True
-
-# debugging
-# LOGGING = {
-#     "version": 1,
-#     "disable_existing_loggers": False,
-#     "handlers": {
-#         "console": {
-#             "class": "logging.StreamHandler",
-#         },
-#     },
-#     "root": {
-#         "handlers": ["console"],
-#         "level": "DEBUG",
-#     },
-# }

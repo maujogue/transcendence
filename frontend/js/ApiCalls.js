@@ -1,5 +1,5 @@
 import { navigateTo, initPages } from "./Router.js";
-import { showAlert } from "./Utils.js";
+import { isLoggedIn, showAlert } from "./Utils.js";
 import { getUserData, injectUserData, } from "./User.js";
 import { get_csrf_token, runEndPoint, updateInfo } from "./ApiUtils.js"
 import { getSubmittedInput, toggleModal } from "./DashboardUtils.js";
@@ -53,7 +53,7 @@ async function login(loginForm) {
 		button.innerText = await getKeyTranslation("connect_here");
 		button.classList.add("btn", "btn-sm", "btn-danger", "text-white", "ms-auto");
 		button.onclick = async () => {
-			response = await runEndPoint("users/update_is_online/", "POST", JSON.stringify({username: fetchBody.username, online: false}));
+			response = await runEndPoint("users/update_is_online/", "POST", JSON.stringify({ username: fetchBody.username, online: false }));
 			if (response.statusCode === 200)
 				login(loginForm);
 			else
@@ -66,11 +66,13 @@ async function login(loginForm) {
 }
 
 async function logout() {
-	var response = await runEndPoint("users/logout/", "POST",);
-	if (response.statusCode === 200) {
-		closeWs();
-		await initPages();
-		await navigateTo("/dash");
+	if (await isLoggedIn()) {
+		var response = await runEndPoint("users/logout/", "POST",);
+		if (response.statusCode === 200) {
+			closeWs();
+			await initPages();
+			await navigateTo("/dash");
+		}
 	}
 }
 

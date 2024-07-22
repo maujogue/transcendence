@@ -13,7 +13,8 @@ import { getUserData } from "../../User.js";
 import { field } from "./gameModule.js";
 import { wsTournament } from "./tournament.js";
 import { hostname } from "../../Router.js";
-import { keyPress, keysPressed} from './handleKeyPress.js'
+import { keyPress, keysPressed} from './handleKeyPress.js';
+import { setEditButtonProfile } from '../../Utils.js';
 
 let requestId
 let env;
@@ -137,6 +138,7 @@ async function connectToLobby(username) {
     
     tournament_username = username;
     wsMatch.onopen = function() {
+        setEditButtonProfile(true);
         console.log("Connected to the server mutliplayer");
         status.is_connected = true;
         document.getElementById("selectMenu").remove();
@@ -203,6 +205,7 @@ async function connectToLobby(username) {
 
     wsMatch.onclose = function(e) {
         console.log('Connection closed', e.code, e.reason);
+        setEditButtonProfile(false);
         status.is_connected = false;
         if (status.start)
             clearOnlineVariables();

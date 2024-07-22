@@ -197,6 +197,15 @@ const asyncTimeout = (number) => {
 	});
 };
 
+function setEditButtonProfile(status) {
+	var editProfileBtnId = 'editProfileBtn'; 
+	var button = document.getElementById(editProfileBtnId);
+
+	if (button) {
+		button.disabled = status;
+	}
+}
+
 export {
 	toggleContentOnLogState,
 	showAlert,
@@ -210,4 +219,5 @@ export {
 	resetCheckPassword,
 	resetModalFormsInitListeners,
 	asyncTimeout,
+	setEditButtonProfile,
 };

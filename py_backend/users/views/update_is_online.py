@@ -4,6 +4,7 @@ from django.contrib.sessions.models import Session
 from django.http import JsonResponse
 from users.utils import decode_json_body
 from users.models import CustomUser
+from users.decorators import is_in_game
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
@@ -12,6 +13,7 @@ logging = logging.getLogger('django')
 
 @require_http_methods(['POST'])
 @requires_csrf_token
+@is_in_game
 def update_is_online(request):
     try:
         data = decode_json_body(request)

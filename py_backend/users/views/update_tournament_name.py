@@ -3,13 +3,13 @@ from django.views.decorators.csrf import requires_csrf_token
 from django.http import JsonResponse
 
 from users.utils import decode_json_body, username_is_valid, tournament_username_is_unique
-from users.models import CustomUser
-from users.decorators import custom_login_required as login_required
+from users.decorators import custom_login_required as login_required, is_in_game
 
 
 @require_http_methods(["POST"])
 @requires_csrf_token
 @login_required
+@is_in_game
 def update_tournament_name(request):
     data = decode_json_body(request)
     if isinstance(data, JsonResponse):

@@ -1,6 +1,6 @@
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import requires_csrf_token
-from users.decorators import custom_login_required as login_required
+from users.decorators import custom_login_required as login_required, is_in_game
 from django.core.files.images import get_image_dimensions
 from django.http import JsonResponse
 
@@ -13,6 +13,7 @@ from PIL import Image
 @require_http_methods(["POST"])
 @requires_csrf_token
 @login_required
+@is_in_game
 def update_profile_banner(request):
     uploaded_file = request.FILES.get("image")
     

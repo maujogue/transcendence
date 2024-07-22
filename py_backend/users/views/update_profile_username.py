@@ -1,6 +1,6 @@
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import requires_csrf_token
-from users.decorators import custom_login_required as login_required
+from users.decorators import custom_login_required as login_required, is_in_game
 from django.http import JsonResponse
 
 from users.utils import decode_json_body, username_is_unique, username_is_valid
@@ -9,6 +9,7 @@ from users.utils import decode_json_body, username_is_unique, username_is_valid
 @require_http_methods(["POST"])
 @requires_csrf_token
 @login_required
+@is_in_game
 def update_profile_username(request):
     data = decode_json_body(request)
     if isinstance(data, JsonResponse):

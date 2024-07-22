@@ -174,6 +174,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 await self.send_status('stop', "connection_lost_opponent")
                 await self.setGameOver()
             await self.disconnect_user()
+            print('self.lobby.connected_user:', self.lobby.connected_user)
             if self.lobby.connected_user == 0 and self.scope['url_route']['kwargs'].get('lobby_id') is None:
                 await self.close_lobby()
         except Exception as e:

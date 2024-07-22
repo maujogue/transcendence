@@ -9,6 +9,7 @@ import { removeFriend } from "./friendsWs.js";
 import { injectTranslations } from "../translationsModule/translationsModule.js";
 import { checkInputAvailable } from "../../ApiCalls.js";
 import { navigateTo } from "../../Router.js";
+import { isSpamming } from "../../ApiUtils.js";
 var module;
 var friendList;
 var requestsList;

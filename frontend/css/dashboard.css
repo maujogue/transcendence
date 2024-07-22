@@ -6,11 +6,11 @@
 }
 
 #profileCard .profileInfo {
-	transform: translateY(-100px);
+	transform: translateY(-60%);
 }
 #profileCard .avatarDynamic {
 	transform: translateY(-100px);
-	width: 50%;
+	width: 30%;
 	max-width: 250px;
 	aspect-ratio: 1;
 	object-fit: cover;
@@ -18,13 +18,17 @@
 #profileCard .bannerDynamic {
 	aspect-ratio: 3/2;
 	object-fit: cover;
+	height: 25%;
 }
 
 #editProfileBtn{
-	margin-right:15px;
-	margin-left: auto;
-	margin-bottom: 15px;
-	transition: all 0.5s ease;
+    margin-right: 15px;
+    margin-left: auto;
+    margin-bottom: 15px;
+    transition: all 0.5s ease;
+    position: absolute;
+    right: 0;
+	bottom: 0;
 }
 
 

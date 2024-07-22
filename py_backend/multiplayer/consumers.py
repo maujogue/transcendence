@@ -177,35 +177,44 @@ class PongConsumer(AsyncWebsocketConsumer):
             print("Disconnected")
             if self.is_connected == False:
                 return
+            try:
+                self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
+            except Lobby.DoesNotExist:
+                await self.disconnect_user()
+                return
             self.is_connected = False
-            if (self.lobby.game_started == True):
+            if self.lobby.game_started == True:  
+                await self.createHistoryMatch()
+                await self.close_lobby()
                 await self.send_status('stop', "connection_lost_opponent")
-                await self.setGameOver()
+                await self.disconnect_user()
+            elif self.scope['user'] is not None:
+                await self.send_status('disconnected', "opponent_left_game")
             await self.disconnect_user()
-            print('self.lobby.connected_user:', self.lobby.connected_user)
+            print(f'{self.scope["user"].username } self.lobby.connected_user:', self.lobby.connected_user)
             if self.lobby.connected_user == 0 and self.scope['url_route']['kwargs'].get('lobby_id') is None:
                 await self.close_lobby()
         except Exception as e:
-            print("Error: ", e)
+            print("Disconnect Error: ", e)
 
     async def disconnect_user(self):
+        await self.channel_layer.group_discard(
+            self.lobby_group_name,
+            self.channel_name
+        )
         try:
             self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
             await self.lobby.disconnectUser(self.player)
-            if self.scope['user'] is not None:
-                await self.send_status('disconnected', "opponent_left_game")
-            await self.channel_layer.group_discard(
-                self.lobby_group_name,
-                self.channel_name
-            )
         except Exception as e:
             return
   
     async def close_lobby(self):
         try:
             self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
+            print('delete lobby')
             await self.lobby.adelete()
         except Lobby.DoesNotExist:
+            print('lobby does not exist')
             return
 
     async def startGame(self):
@@ -310,12 +319,12 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def createHistoryMatch(self):
         player1 = self.player if self.player.name == 'player1' else self.opp
         player2 = self.player if self.player.name == 'player2' else self.opp
-        self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
 
         try:
-            await Match.objects.aget(lobby_id=str(self.lobby.uuid))
-            print(f'match already exist:', self.lobby.uuid)
-        except :
+            await Match.objects.aget(lobby_id=str(self.lobby_name))
+            print(f'match already exist:', self.lobby_name)
+        except Match.DoesNotExist:
+            print('create history match')
             if not self.lobby.player2:
                 self.winner = player1.user   
             elif not self.lobby.player1 or (self.player.name == 'player1' and not self.is_connected):
@@ -323,7 +332,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             else:
                 self.winner = player1.user if player1.score > player2.score else player2.user
             loser = player1.user if player1.user != self.winner else player2.user
-            match = Match(  lobby_id=str(self.lobby.uuid),
+            match = Match(  lobby_id=str(self.lobby_name),
                             player1=player1.user.id, 
                             player2=player2.user.id, 
                             player1_average_exchange=self.calculateAverageExchange(self.exchangeBeforePointsP1),
@@ -513,12 +522,8 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def pong_update_lobby(self, event):
         try:
-            print('before lobby name:', self.lobby_name)
-            print('before lobby group name:', self.lobby_group_name)
             self.lobby.uuid = event['uuid']
             self.lobby_name = event['uuid']
-            print('lobby name:', self.lobby_name)
-            print('lobby group name:', self.lobby_group_name)
             await self.lobby.asave()
             self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
         except Exception as e:

@@ -12,24 +12,21 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 from django.core.management.utils import get_random_secret_key
-import environ
+import os
+
 AUTH_USER_MODEL = 'users.CustomUser'
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-env = environ.Env(
-	DEBUG=(bool, False),
-	SECRET_KEY=(str, get_random_secret_key())
-)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = os.environ.get('DEBUG', 0) == 'True'
 ALLOWED_HOSTS = ['*']
 
 # Define for backend
@@ -41,7 +38,7 @@ MAX_LEN_TOURNAMENT_USERNAME = 9
 MAX_LEN_EMAIL = 50
 MAX_LEN_TEXT = 500
 FORTY_TWO_UID = 'u-s4t2ud-92889d666741a2b0d333c0b63e74d6491194432da0c98a38a82560e58f9b0f83'
-FORTY_TWO_SECRET = env("FORTY_TWO_SECRET")
+FORTY_TWO_SECRET = os.environ.get("FORTY_TWO_SECRET")
 FORTY_TWO_REDIRECT_URI = 'https://127.0.0.1:8000/api/auth42/callback/'
 LANG = ['en', 'fr', 'es']
 
@@ -193,17 +190,19 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 #HSTS settings
-SECURE_HSTS_SECONDS = env.int('SECURE_HSTS_SECONDS')
-SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS')
-SECURE_HSTS_PRELOAD = env.bool('SECURE_HSTS_PRELOAD')
+SECURE_HSTS_SECONDS = int(os.environ.get('SECURE_HSTS_SECONDS'))
+SECURE_HSTS_INCLUDE_SUBDOMAINS = os.environ.get('SECURE_HSTS_INCLUDE_SUBDOMAINS') == 'True'
+SECURE_HSTS_PRELOAD = os.environ.get('SECURE_HSTS_PRELOAD') == 'True'
 
 #HTTPS settings
-SECURE_SSL_REDIRECT = env.bool('SECURE_SSL_REDIRECT')
-SESSION_COOKIE_SECURE = env.bool('SESSION_COOKIE_SECURE')
+SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT') == 'True'
+SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE') == 'True'
 CSRF_COOKIE_SECURE = True
 
 
-DJANGO_ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[])
+DJANGO_ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default=[])
+if "," in DJANGO_ALLOWED_HOSTS:
+	DJANGO_ALLOWED_HOSTS = DJANGO_ALLOWED_HOSTS.split(",")
 
 # Define CORS and CSRF trusted origins
 CORS_ALLOWED_ORIGINS = [

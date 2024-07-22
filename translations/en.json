@@ -168,7 +168,7 @@
 	"connection_lost": "You lost connection with ",
 	"user_left": " left the game.",
 	"connection_lost_opponent": "You lost connection with your opponent.",
-	"opponent_left_game": "Your opponnent left the game",
+	"opponent_left_game": "Your opponent left the game",
 	"42_login_success": "You logged in successfully using your 42 account.",
 	"42_register_success": "You registered successfully using your 42 account.",
 	"42_auth_error": "An error occurred while trying to log in using your 42 account. Please try again later.",

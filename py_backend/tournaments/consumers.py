@@ -33,16 +33,16 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         try:
             text_data_json = json.loads(text_data)
-            print('text_data_json: ', text_data_json)
+            print('text data json:', text_data_json)
             if text_data_json.get('type') == 'auth':
                 await self.auth(text_data_json)
+                await self.check_tournament_start()
             if text_data_json.get('type') == 'status':
                 await self.handler_status(text_data_json.get('status'))
             if text_data_json.get('type') == 'bracket':
                 await self.send_self_bracket()
             if text_data_json.get('type') == 'getRanking':
                 await self.send_tournament_ranking()
-            await self.check_tournament_start()
         except Exception as e:
             print('receive error: ', e)
 
@@ -161,7 +161,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def launch_match_timer(self, match):
         match.timer = timezone.now()
         await match.asave()
-        print(f'match.player1 = {match.player1}, match.player2 = {match.player2}, self.scope[].username {self.scope["user"].username}')
         if match.player1 == self.scope['user'].username:
             await asyncio.sleep(30)
         if match.player2 == self.scope['user'].username:
@@ -261,6 +260,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         return False
         
     async def check_tournament_start(self):
+        self.tournament = await self.get_tournament()
         if await self.is_tournament_full() and not self.tournament.started:
             await self.launch_tournament()
         elif self.tournament.started and not self.tournament.finished:
@@ -268,6 +268,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 if not await self.check_if_match_is_started(self.match):
                     await self.send_self_matchup()
             else:
+                print('send bracket check tournament start')
                 await self.send_bracket(False)
         
     async def validate_foreign_keys(self):

@@ -56,7 +56,6 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.lobby = await self.join_lobby()
         if not self.lobby or self.lobby.connected_user >= 2:
             raise Exception("Lobby is full")
-        await self.set_ingame_status(True)
         self.lobby_name = self.lobby.uuid
         self.ball = Ball()
         await self.create_player()
@@ -120,6 +119,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         user = await self.authenticate_user_with_username(username)
         if user is not None:
             self.scope['user'] = user
+            await self.set_ingame_status(True)
             await self.set_player_in_lobby(user)
             await self.send_data({ "type": "auth", "status": "success"})
             await self.channel_layer.group_send(
@@ -534,7 +534,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             print("Error: ", e)
 
     @database_sync_to_async 
-    def set_online_status(self, status):
+    def set_ingame_status(self, status):
         try:
             user = CustomUser.objects.get(id=self.scope['user'].id)
             user.is_ingame = status

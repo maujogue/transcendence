@@ -120,11 +120,9 @@ def decode_json_body(request):
 
 def image_extension_is_valid(image_name):
 	name, ext = os.path.splitext(image_name)
-	if ext == '.png':
-		return True
-	if ext == '.jpg' or ext == '.jpeg' or ext == '.JPG' or ext == '.JPEG':
-		return True
-	return False
+	if ext not in settings.IMAGE_EXTENSION:
+		return False
+	return True
 
 
 def convert_image_to_base64(image_field):

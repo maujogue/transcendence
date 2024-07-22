@@ -4,8 +4,8 @@ NAME				=	transcendence
 DOCKER_COMPOSE_DEV_PATH	=	$(DIR_SRC)docker-compose.yaml
 DOCKER_COMPOSE_PROD_PATH	=	$(DIR_SRC)docker-compose.prod.yaml
 
-DOCKER_COMPOSE_DEV		=	docker compose -f $(DOCKER_COMPOSE_DEV_PATH)
-DOCKER_COMPOSE_PROD		=	docker compose -f $(DOCKER_COMPOSE_PROD_PATH)
+DOCKER_COMPOSE_DEV		=	docker-compose -f $(DOCKER_COMPOSE_DEV_PATH)
+DOCKER_COMPOSE_PROD		=	docker-compose -f $(DOCKER_COMPOSE_PROD_PATH)
 
 DIR_SRC				=	./docker/
 
@@ -13,7 +13,7 @@ DIR_SRC				=	./docker/
 all: $(NAME)
 
 $(NAME): 
-		$(MAKE) up
+		$(MAKE) prod_up
 
 prod_up:
 		$(DOCKER_COMPOSE_PROD) up -d --build
@@ -42,7 +42,7 @@ prod_re:
 	$(DOCKER_COMPOSE_PROD) up -d 
 
 dev_re:
-	$(DOCKER_COMPOSE_DEV) build --no-cache
+	$(DOCKER_COMPOSE_DEV) build --build-arg CACHEBUST=$(shell date +%s)
 	$(DOCKER_COMPOSE_DEV) up -d
 
 prod_fre:	prod_fclean dev_fclean

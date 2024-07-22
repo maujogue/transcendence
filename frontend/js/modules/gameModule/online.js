@@ -1,6 +1,6 @@
 import { displayCharacter } from "./displayCharacter.js";
 import { createSelectMenu, createWaitingScreen, createInterfaceSelectMenu, createHUD} from "./menu.js";
-import { handleMenuKeyPress} from "./handleKeyPress.js";
+import { handleMenuKeyPress, setKeyPressToFalse, clearKeysPressed } from "./handleKeyPress.js";
 import { ClearAllEnv } from "./createEnvironment.js";
 import { initGame } from "./initGame.js";
 import { translateBall} from "./onlineCollision.js";
@@ -13,13 +13,12 @@ import { getUserData } from "../../User.js";
 import { field } from "./gameModule.js";
 import { wsTournament } from "./tournament.js";
 import { hostname } from "../../Router.js";
+import { keyPress, keysPressed} from './handleKeyPress.js'
 
 let requestId
 let env;
 let player;
 let opp;
-let keysPressed = {};
-let keyPress = false;
 let status = {
     'start': false,
     'exit': false,
@@ -45,8 +44,8 @@ export function clearOnlineVariables() {
     wsMatch = null;
     player = null;
     opp = null;
-    keysPressed = {};
-    keyPress = false;
+    clearKeysPressed();
+    setKeyPressToFalse();
     status = {
         'start': false,
         'exit': false,
@@ -58,16 +57,9 @@ export function clearOnlineVariables() {
     ClearAllEnv(env)
 }
 
-
-document.addEventListener('keypress', function(event) {
-    keysPressed[event.key] = true;
-    keyPress = true;
-    event.stopPropagation();
-})
-
 document.addEventListener("keyup", function(event) {
     delete keysPressed[event.key];
-    keyPress = false;
+    setKeyPressToFalse()
     if (status.start && (event.key == 'w' || event.key == 's')) {
         keyUp = true;
     }
@@ -113,6 +105,8 @@ function removeP2Cursor() {
 async function goToOnlineSelectMenu() {
     env = createSelectMenu(characters);
     removeP2Cursor();
+    if (checkIfWebsocketIsOpen(wsTournament))
+        document.getElementById('backIcon')?.remove();
 }
 
 async function createOnlineSelectMenu(id) {
@@ -256,7 +250,7 @@ function sendMove(wsMatch) {
             'type': 'player_pos',
             'move': move
         }));
-        keyPress = false;
+        setKeyPressToFalse();
         keysPressed["w"] = false;
         keysPressed["s"] = false;
     }
@@ -293,13 +287,12 @@ async function onlineGameLoop(wsMatch) {
     if (document.getElementById("menu")) {
         ClearAllEnv(env);
         wsMatch?.close();
-        keyPress = false;
+        setKeyPressToFalse();
         status.exit = true;
         document.removeEventListener('click', clickHandler);
     }
     if (keysPressed[' '] && !status.is_connected) {
         keysPressed[' '] = false;
-        console.log("Connecting to the server");
         getUserData('tournament_username').then((res) => {
             connectToLobby(res, null)
         })
@@ -309,7 +302,7 @@ async function onlineGameLoop(wsMatch) {
     }
     if (!status.start && keyPress) {
         handleMenuKeyPress(keysPressed, player, null, env);
-        keyPress = false;
+        setKeyPressToFalse();
     }
     if (status.gameIsInit)
         await setGameIsStart();

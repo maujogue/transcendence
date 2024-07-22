@@ -111,7 +111,6 @@ function createTitle(div) {
 	const logo = document.createElement("img");
 	logo.src = "./assets/img/pong.svg";
 	logo.classList.add("logo");
-	logo.style.opacity = "0";
 	div.appendChild(logo);
 }
 
@@ -323,7 +322,6 @@ function createOnlineMenu() {
 	createSubmode('Tournament', "Join");
 	createSubmode('Tournament', "History");
 	createSubmode('1v1', "Quick Play");
-	createSubmode('1v1', "Private Game");
 }
 
 

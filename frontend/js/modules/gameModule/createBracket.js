@@ -1,8 +1,7 @@
 import { getKeyTranslation, injectElementTranslations } from "../translationsModule/translationsModule.js";
 import { displayMainMenu } from "./menu.js";
-import { createUnsubscribeButton, playerStatus, tournamentStatus, createEtherscanButton } from "./tournament.js";
+import { playerStatus, tournamentStatus, createEtherscanButton } from "./tournament.js";
 import { wsTournament } from "./tournament.js";
-import { winHeight, winWidth } from "./varGlobal.js";
 
 let canvas;
 let ctx;
@@ -179,6 +178,7 @@ function displayRankingButton(parent) {
     parent.appendChild(btn);
 	injectElementTranslations("#game");
     document.getElementById('showRanking').addEventListener('click', () => {
+        console.log('getRqnking')
         wsTournament.send(JSON.stringify({type: "getRanking"}));
     });
 }

@@ -1,13 +1,14 @@
 import { navigateTo, initPages } from "./Router.js";
-import { showAlert } from "./Utils.js";
+import { isLoggedIn, showAlert } from "./Utils.js";
 import { getUserData, injectUserData, } from "./User.js";
-import { get_csrf_token, runEndPoint, updateInfo } from "./ApiUtils.js"
+import { get_csrf_token, isSpamming, runEndPoint, updateInfo } from "./ApiUtils.js"
 import { getSubmittedInput, toggleModal } from "./DashboardUtils.js";
-import { toggleContentOnLogState } from "./Utils.js";
 import { closeWs } from "./modules/friendList/friendsWs.js";
 import { getKeyTranslation } from "./modules/translationsModule/translationsModule.js";
 
 async function register(registerForm) {
+	if (isSpamming("register"))
+		return;
 	const userData = new FormData(registerForm);
 	const fetchBody = {
 		username: userData.get("username"),
@@ -36,6 +37,8 @@ async function register(registerForm) {
 }
 
 async function login(loginForm) {
+	if (await isLoggedIn() || isSpamming("login"))
+		return ;
 	const userData = new FormData(loginForm);
 	const fetchBody = {
 		username: userData.get("username"),
@@ -45,7 +48,9 @@ async function login(loginForm) {
 	var response = await runEndPoint("users/login/", "POST", JSON.stringify(fetchBody));
 
 	if (response.statusCode === 200) {
-		bootstrap.Modal.getInstance(document.getElementById("login")).hide();
+		var modal = document.getElementById("login");
+		if (modal)
+			bootstrap.Modal.getInstance(modal).hide();
 		await initPages();
 		await navigateTo("/dash");
 	} else if (response.data.error === "logged_elsewhere") {
@@ -66,6 +71,8 @@ async function login(loginForm) {
 }
 
 async function logout() {
+	if (isSpamming("logout"))
+		return;
 	var response = await runEndPoint("users/logout/", "POST",);
 	if (response.statusCode === 200) {
 		closeWs();
@@ -75,6 +82,8 @@ async function logout() {
 }
 
 async function updatePassword(updatePasswordForm) {
+	if (isSpamming("update_password"))
+		return;
 	var updatePasswordForm = document.getElementById("updatePasswordForm");
 	const userData = new FormData(updatePasswordForm);
 	const fetchBody = {
@@ -103,6 +112,8 @@ async function updatePassword(updatePasswordForm) {
 }
 
 async function updateUsername(updateUsernameForm) {
+	if (isSpamming("update_username"))
+		return;
 	const userData = new FormData(updateUsernameForm);
 	const fetchBody = {
 		username: await getUserData("username"),
@@ -126,6 +137,8 @@ async function updateUsername(updateUsernameForm) {
 }
 
 async function updateEmail(updateEmailForm) {
+	if (isSpamming("update_email"))
+		return;
 	const userData = new FormData(updateEmailForm);
 	const fetchBody = {
 		username: await getUserData("username"),

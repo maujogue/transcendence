@@ -1,6 +1,6 @@
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import requires_csrf_token
-from users.decorators import custom_login_required as login_required
+from users.decorators import custom_login_required as login_required, is_in_game
 
 from django.http import JsonResponse
 
@@ -11,6 +11,7 @@ from users.utils import decode_json_body, email_is_valid, email_is_unique, send_
 @require_http_methods(["POST"])
 @requires_csrf_token
 @login_required
+@is_in_game
 def update_email(request):
     data = decode_json_body(request)
     if isinstance(data, JsonResponse):

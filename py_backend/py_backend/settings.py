@@ -19,17 +19,14 @@ AUTH_USER_MODEL = 'users.CustomUser'
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
-DJANGO_ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "127.0.0.1")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(os.environ.get("DEBUG", default=0))
-
+DEBUG = os.environ.get('DEBUG', 0) == 'True'
 ALLOWED_HOSTS = ['*']
 
 # Define for backend
@@ -57,7 +54,6 @@ INSTALLED_APPS = [
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
-	# 'django_extensions',
     'channels',
 	'multiplayer',
 	'users',
@@ -97,7 +93,6 @@ TEMPLATES = [
 	{
 		'BACKEND': 'django.template.backends.django.DjangoTemplates',
 		'DIRS': [],
-		# 'DIRS': [os.path.join(BASE_DIR, 'frontend', 'templates')],
   		'DIRS': [BASE_DIR / 'users/templates'], 
 		'APP_DIRS': True,
 		'OPTIONS': {
@@ -185,10 +180,6 @@ USE_I18N = True
 
 STATIC_URL = "/staticfiles/"
 STATIC_ROOT = "/staticfiles/"
-# STATICFILES_DIRS = [
-#     BASE_DIR / "frontend/static",  # Path to your "frontend" folder
-# ]
-
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -199,35 +190,37 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_CREDENTIALS = True
+#HSTS settings
+SECURE_HSTS_SECONDS = os.environ.get('SECURE_HSTS_SECONDS', 0)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = os.environ.get('SECURE_HSTS_INCLUDE_SUBDOMAINS') == 'True'
+SECURE_HSTS_PRELOAD = os.environ.get('SECURE_HSTS_PRELOAD') == 'True'
 
-CORS_ALLOWED_ORIGINS = True # A Retirer
+#HTTPS settings
+SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT') == 'True'
+SESSION_COOKIE_SECURE = os.environ.get('SESSION_COOKIE_SECURE') == 'True'
+CSRF_COOKIE_SECURE = True
 
-CORS_ALLOW_ALL_ORIGINS = True
 
+DJANGO_ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", default=[])
+if "," in DJANGO_ALLOWED_HOSTS:
+	DJANGO_ALLOWED_HOSTS = DJANGO_ALLOWED_HOSTS.split(",")
+
+# Define CORS and CSRF trusted origins
 CORS_ALLOWED_ORIGINS = [
-	"https://127.0.0.1:8000",
-	"https://localhost:8000",
-    "https://" + DJANGO_ALLOWED_HOSTS + ":8000",
+    *["https://" + host + ":8000" for host in DJANGO_ALLOWED_HOSTS]
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-	"https://127.0.0.1:8000",
-	"https://localhost:8000",
-    "https://" + DJANGO_ALLOWED_HOSTS + ":8000",
+    *["https://" + host + ":8000" for host in DJANGO_ALLOWED_HOSTS]
 ]
 
+# Define allowed hosts
 ALLOWED_HOSTS = [
-	"localhost",
-	"127.0.0.1",
-    "0.0.0.0",
-    DJANGO_ALLOWED_HOSTS,
+    *DJANGO_ALLOWED_HOSTS
 ]
 
 CORS_ORIGIN_WHITELIST = [
-	"https://127.0.0.1:8000",
-	"https://localhost:8000",
-    "https://" + DJANGO_ALLOWED_HOSTS + ":8000",
+    *["https://" + host + ":8000" for host in DJANGO_ALLOWED_HOSTS]
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -236,18 +229,3 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'backend.amos@gmail.com'
 EMAIL_HOST_PASSWORD = 'hvqzjctapjxiijjf'
 EMAIL_USE_TLS = True
-
-# debugging
-# LOGGING = {
-#     "version": 1,
-#     "disable_existing_loggers": False,
-#     "handlers": {
-#         "console": {
-#             "class": "logging.StreamHandler",
-#         },
-#     },
-#     "root": {
-#         "handlers": ["console"],
-#         "level": "DEBUG",
-#     },
-# }

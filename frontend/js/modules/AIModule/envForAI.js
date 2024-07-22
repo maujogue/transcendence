@@ -22,8 +22,7 @@ export function getState(env, player2) {
 export function checkElapsedTime(clock) {
 	const delta = clock.getDelta();
 	elapsedTime += delta;
-	if (elapsedTime >= 1){
-		console.log("Time : ", elapsedTime);
+	if (elapsedTime >= 0.5){
 		elapsedTime = 0;
 		return true;
 	}

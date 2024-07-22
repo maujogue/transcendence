@@ -77,15 +77,10 @@ async function displayTimer(time) {
 
 async function handlerMessageStatus(data) {
     console.log("Status:", data.status);
-    if (data.status == "disqualified") {
+    if (data.status == "disqualified")
         playerStatus = "disqualified";
-        // displayErrorPopUp("You have been disqualified", document.getElementsByClassName("tournament")[0]);
-    }
-    if (data.status == "endTournament" && tournamentStatus != "finished") {
+    if (data.status == "endTournament" && tournamentStatus != "finished")
         tournamentStatus = "finished";
-        // if (userData.tournament_username === data.winner)
-        //     sendTournamentOnBlockchain();
-    }
     if (data.status == "start")
         tournamentStatus = "started";
     if (data.status == "waiting") {
@@ -102,9 +97,9 @@ async function handlerMessageStatus(data) {
 }
 
 async function ask_tournament_status() {
-    setInterval(() => {
+    let interval = setInterval(() => {
         if (tournamentStatus != "waiting" || !checkIfWebsocketIsOpen(wsTournament) || playerStatus == "disqualified")
-            return ;
+            clearInterval(interval)
         wsTournament.send(JSON.stringify({
             'type': 'ask_status',
         }));
@@ -120,20 +115,9 @@ function displayRankingScreen(data) {
     tournamentDiv.innerHTML = `<h1 class="won-title">${data.winner} <span data-lang="tournament_won"></span></h1>`;
     displayTournamentRanking(data.ranking);
     createLeaveButton(tournamentDiv);
-    // createButtonDiv(tournamentDiv);
     createShowBracketButton(tournamentDiv);
     createEtherscanButton(tournamentDiv);
 }
-
-// function createButtonDiv(parent) {
-//     const buttonDiv = document.createElement("div");
-
-//     buttonDiv.className = "end-tournament-container";
-//     parent.appendChild(buttonDiv);
-
-//     createShowBracketButton(buttonDiv);
-//     createEtherscanButton(buttonDiv);
-// }
 
 async function getReceiptAddress(tournament_id) {
     try {
@@ -326,6 +310,7 @@ export function createShowBracketButton(parent) {
 }
 
 function ask_bracket() {
+    console.log('ask bracket')
     wsTournament.send(JSON.stringify({
         'type': 'bracket',
     }));

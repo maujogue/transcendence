@@ -6,7 +6,6 @@ import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
 
 
 async function loadModel(fileName) {
-    // console.log(fileName);
     return new Promise((resolve, reject) => {
         const loader = new GLTFLoader();
         const draco = new DRACOLoader();

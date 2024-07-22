@@ -200,7 +200,7 @@
 	"profile_picture_updated_message": "Your profile picture has been correctly updated !",
 	"error_updating_profile_picture_message": "An error occurred while updating your profile picture. Please try again later.",
 	"invalid_file_message": "Invalid file. Please upload a valid image file.",
-	"file_too_big_message": "File is too big. Please upload a file smaller than 1MB.",
+	"file_too_big_message": "File is too big. Please upload a file smaller than 5MB.",
 	"invalid_file_type_message": "Invalid file type. Please upload a jpeg or png file.",
 	"no_file_message": "No file selected. Please select a file.",
 	"profile_banner_updated_message": "Your profile banner has been correctly updated !",

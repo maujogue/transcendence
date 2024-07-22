@@ -60,7 +60,6 @@ function isSpamming(endpoint) {
 	if (endpoint in endpointTab) {
 		var lastCalled = endpointTab[endpoint];
 		if (Date.now() - lastCalled <= 2000){
-			console.log("blocked");
 			return true;
 		}
 		else {

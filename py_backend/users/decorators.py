@@ -1,6 +1,5 @@
 from django.http import JsonResponse
 from django.contrib.auth.models import AnonymousUser
-from django.shortcuts import redirect
 
 def custom_login_required(func):
     def wrapper(request, *args, **kwargs):

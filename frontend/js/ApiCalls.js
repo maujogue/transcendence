@@ -78,6 +78,7 @@ async function logout() {
 		closeWs();
 		await initPages();
 		await navigateTo("/dash");
+	}
 }
 
 async function updatePassword(updatePasswordForm) {

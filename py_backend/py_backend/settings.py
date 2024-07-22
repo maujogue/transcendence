@@ -37,7 +37,7 @@ ALLOWED_HOSTS = ['*']
 MIN_LEN_USERNAME = 3
 MIN_LEN_PASSWORD = 8
 MAX_LEN_USERNAME = 25
-MAX_LEN_TOURNAMENT_USERNAME = 9
+MAX_LEN_TOURNAMENT_USERNAME = 12
 MAX_LEN_EMAIL = 50
 MAX_LEN_TEXT = 500
 FORTY_TWO_UID = 'u-s4t2ud-92889d666741a2b0d333c0b63e74d6491194432da0c98a38a82560e58f9b0f83'
@@ -117,22 +117,15 @@ WSGI_APPLICATION = 'py_backend.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / "db.sqlite3",
-    }
+	"default": {
+		"ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
+		"NAME": os.environ.get("SQL_DATABASE"),
+		"USER": os.environ.get("SQL_USER", "user"),
+		"PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
+		"HOST": os.environ.get("SQL_HOST", "localhost"),
+		"PORT": os.environ.get("SQL_PORT", "5432"),
+	}
 }
-
-# DATABASES = {
-# 	"default": {
-# 		"ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
-# 		"NAME": os.environ.get("SQL_DATABASE"),
-# 		"USER": os.environ.get("SQL_USER", "user"),
-# 		"PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
-# 		"HOST": os.environ.get("SQL_HOST", "localhost"),
-# 		"PORT": os.environ.get("SQL_PORT", "5432"),
-# 	}
-# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

@@ -13,7 +13,7 @@ DIR_SRC				=	./docker/
 all: $(NAME)
 
 $(NAME): 
-		$(MAKE) up
+		$(MAKE) prod_up
 
 prod_up:
 		$(DOCKER_COMPOSE_PROD) up -d --build

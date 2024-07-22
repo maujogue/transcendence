@@ -1,7 +1,8 @@
 import * as THREE from 'three';
 import { getState } from './envForAI.js'
 
-import { currentActions, actions, states } from '../gameModule/gameModule.js';
+import { currentActions, actions, states, clockAI, setTimer } from '../gameModule/gameModule.js';
+import { checkElapsedTime, resetElapsedTime } from './envForAI.js';
 
 const numStateFeatures = 5;
 
@@ -17,7 +18,7 @@ export async function createModel() {
 	return model;
 }
 
-export function moveAI(player2, state, model, env) {
+function moveAI(player2, state, model, env) {
 	const prediction = model.predict(tf.tensor(state, [1, 5]));
 	const maxIndexTensor = prediction.argMax(1);
 	const AIAction = maxIndexTensor.squeeze().dataSync()[0]; // Convert to a numeric value
@@ -56,4 +57,25 @@ export function storeData(actualState, action) {
 	states.push(actualState);
 	let actionArray = (action === 0) ? [1, 0, 0] : (action === 1) ? [0, 1, 0] : [0, 0, 1];
 	currentActions.push(actionArray);
+}
+
+export function AIMovement(player2, model, env) {
+	let actualState;
+
+	if (!setTimer)
+		actualState = getState(env, player2);
+	else if (checkElapsedTime(clockAI) || firstPrediction) {
+		actualState = getState(env, player2);
+		firstPrediction = false;
+	}
+	moveAI(player2, actualState, model, env);
+}
+
+export function resetAITimer(player1, player2, firstPrediction) {
+	if (player1.hasScored || player2.hasScored) {
+		firstPrediction = true;
+		resetElapsedTime();
+		player1.hasScored = false;
+		player2.hasScored = false;
+	}
 }

@@ -16,8 +16,7 @@ import { sendTournamentForm, createFormTournament } from "./createTournament.js"
 import { createJoinTournamentMenu } from "./joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "./tournament.js";
 import { getModuleDiv, updateModule } from "../../Modules.js";
-import { getState, checkElapsedTime } from "../AIModule/envForAI.js";
-import { trainModel, moveAI, storeData } from "../AIModule/AI.js";
+import { trainModel, AIMovement, storeData, resetAITimer } from "../AIModule/AI.js";
 
 import { wsTournament } from "./tournament.js";
 import { createTournamentHistoryMenu } from "./tournamentHistory.js";
@@ -32,6 +31,8 @@ export var states = [];
 export var actions = [];
 export var currentActions = [];
 export var soloMode;
+export var clockAI;
+export var setTimer;
 
 export const field = await createField();
 
@@ -54,6 +55,7 @@ export async function init() {
 
 	lobby = await loadScene('lobbyTest');
 	clock = new THREE.Clock();
+	clockAI = new THREE.Clock();
 	characters = new Map();
 	let start = false;
 	let divMenu = document.getElementById("menu");
@@ -68,7 +70,6 @@ export async function init() {
 	let form;
 	let model;
 	let actualState;
-	let clockAI = new THREE.Clock();
 	var gamediv = document.getElementById("game");
 
 	await loadAllModel();
@@ -192,6 +193,7 @@ export async function init() {
 		else if (winner === "player2")
 			winner = "player 2";
 
+		firstPrediction = true;
 		createEndScreen(winner);
 		start = false;
 	}
@@ -211,18 +213,12 @@ export async function init() {
 			player2.score = 0;
 		}
 		if (start) {
-			if (soloMode) {
-				if (!setTimer)
-					actualState = getState(environment, player2);
-				else if (checkElapsedTime(clockAI) || firstPrediction) {
-					actualState = getState(environment, player2);
-					firstPrediction = false;
-				}
-				moveAI(player2, actualState, model, environment);
-			}
+			if (soloMode)
+				AIMovement(player2, model, environment, firstPrediction);
 			if (keyPress)
 				handleKeyPress(keysPressed, player1, player2, environment);
 			checkCollision(environment.ball, player1, player2, environment);
+			resetAITimer(player1, player2, firstPrediction);
 			await setIfGameIsEnd();
 		}
 		if (player1 && player2)

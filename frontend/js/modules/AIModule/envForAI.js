@@ -29,3 +29,7 @@ export function checkElapsedTime(clock) {
 	else
 		return false;
 }
+
+export function resetElapsedTime() {
+	elapsedTime = 0;
+}

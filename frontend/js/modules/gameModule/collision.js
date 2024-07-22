@@ -14,6 +14,7 @@ async function checkIfScored(ball, player1, player2, environment) {
     let bbox2 = new THREE.Box3().setFromObject(player2.paddle.mesh);
 
     if (ball.mesh.position.x < bbox1.min.x - 2) {
+		player2.hasScored = true;
         player2.score++;
         ball.direction.x = -0.1;
 		currentActions.map(subArray => actions.push(subArray));
@@ -22,6 +23,7 @@ async function checkIfScored(ball, player1, player2, environment) {
         actualizeScore(player1, player2, environment, environment.font);
     }
     if (ball.mesh.position.x > bbox2.max.x + 2) {
+		player1.hasScored = true;
         player1.score++; 
         ball.direction.x = 0.1;
 		let transformedActions = currentActions.map(subArray => subArray.map(x => x > 0 ? -x : x));

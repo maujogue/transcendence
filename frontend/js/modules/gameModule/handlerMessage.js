@@ -41,7 +41,7 @@ export function removeGameScreen(env) {
     
 
 async function handlerStopGame(webSocket, env, message) {
-    console.log("handlerStopGame");
+    await updateModule("statisticsModule");
     if (!document.getElementsByClassName("menu")[0])
         createDivMenu("menu");
     await displayErrorPopUp(message, document.getElementsByClassName("menu")[0]);

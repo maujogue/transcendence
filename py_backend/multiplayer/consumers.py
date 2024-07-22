@@ -167,15 +167,20 @@ class PongConsumer(AsyncWebsocketConsumer):
                 if text_data_json.get("type") == "player_pos":
                     await self.getPlayerMove(text_data_json)
         except Lobby.DoesNotExist:
-            print("Lobby does not exist")
+            await self.close()
         except Exception as e:
             await self.send_data({ "type": "error", "message": 'An error occurred'})
 
     async def cancel_game(self):
-        await self.createHistoryMatch()
+        try:
+            await self.get_match_players()
+            await self.remove_user_to_lobby()
+            await self.create_history_match()
+        except Exception as e:
+            print(f'Cancel match error: {e}')
         await self.close_lobby()
         await self.send_status('stop', "connection_lost_opponent")
-        await self.disconnect_user()
+        await self.user_group_discard()
 
     async def disconnect(self, close_code):
         try:
@@ -187,8 +192,8 @@ class PongConsumer(AsyncWebsocketConsumer):
                 await self.disconnect_user()
                 return
             self.is_connected = False
-            if self.lobby.game_started == True:  
-                self.cancel_game()
+            if self.lobby.game_started == True: 
+                await self.cancel_game()
             elif self.scope['user'] is not None:
                 await self.send_status('disconnected', "opponent_left_game")
             await self.disconnect_user()
@@ -197,16 +202,23 @@ class PongConsumer(AsyncWebsocketConsumer):
         except Exception as e:
             print("Disconnect Error: ", e)
 
-    async def disconnect_user(self):
-        await self.channel_layer.group_discard(
-            self.lobby_group_name,
-            self.channel_name
-        )
+    async def remove_user_to_lobby(self):
         try:
             self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
             await self.lobby.disconnectUser(self.player)
         except Exception as e:
             return
+        
+    async def user_group_discard(self):
+        await self.channel_layer.group_discard(
+            self.lobby_group_name,
+            self.channel_name
+        )
+
+    async def disconnect_user(self):
+        await self.user_group_discard()
+        await self.remove_user_to_lobby()
+
   
     async def close_lobby(self):
         try:
@@ -291,16 +303,20 @@ class PongConsumer(AsyncWebsocketConsumer):
             await self.collision(self.opp)
 
     async def setGameOver(self):
-        self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
-        if self.player.name == 'player1' or (self.lobby.player1 is None and not await self.check_if_history_match_exists()):
-            await self.createHistoryMatch()
-            await self.channel_layer.group_send(
-                self.lobby_group_name, { 'type': 'pong.update_lobby', 'uuid': uuid.uuid4()}
-            )
-            await self.channel_layer.group_send(
-                self.lobby_group_name, { 'type': 'pong.status', 'status': 'endGame', 'message': 'The game is over', 'name': self.scope['user'].tournament_username, 'winner': self.winner.tournament_username}
-            )
-            await self.lobby.stopGame()
+        try:
+            self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
+            if self.player.name == 'player1' or (self.lobby.player1 is None and not await self.check_if_history_match_exists()):
+                await self.get_match_players()
+                await self.create_history_match()
+                await self.channel_layer.group_send(
+                    self.lobby_group_name, { 'type': 'pong.update_lobby', 'uuid': uuid.uuid4()}
+                )
+                await self.channel_layer.group_send(
+                    self.lobby_group_name, { 'type': 'pong.status', 'status': 'endGame', 'message': 'The game is over', 'name': self.scope['user'].tournament_username, 'winner': self.winner.tournament_username}
+                )
+                await self.lobby.stopGame()
+        except:
+            await self.close()
 
     async def check_if_history_match_exists(self):
         try:
@@ -314,29 +330,36 @@ class PongConsumer(AsyncWebsocketConsumer):
             return 0
         return sum(exchangeBeforePoint) / len(exchangeBeforePoint)
     
-    async def createHistoryMatch(self):
-        player1 = self.player if self.player.name == 'player1' else self.opp
-        player2 = self.player if self.player.name == 'player2' else self.opp
-
+    async def get_match_players(self):
+        self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
+        self.player1 = self.player if self.player.name == 'player1' else self.opp
+        self.player2 = self.player if self.player.name == 'player2' else self.opp
+        self.player1.user = await self.authenticate_user_with_username(self.lobby.player1)
+        self.player2.user = await self.authenticate_user_with_username(self.lobby.player2)
+    
+    async def create_history_match(self):
         try:
             await Match.objects.aget(lobby_id=str(self.lobby_name))
         except Match.DoesNotExist:
+            self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
+            if self.player1.user is None or self.player2.user is None:
+                return
             if not self.lobby.player2:
-                self.winner = player1.user   
+                self.winner = self.player1.user   
             elif not self.lobby.player1 or (self.player.name == 'player1' and not self.is_connected):
-                self.winner = player2.user
+                self.winner = self.player2.user
             else:
-                self.winner = player1.user if player1.score > player2.score else player2.user
-            loser = player1.user if player1.user != self.winner else player2.user
+                self.winner = self.player1.user if self.player1.score > self.player2.score else self.player2.user
+            loser = self.player1.user if self.player1.user != self.winner else self.player2.user
             match = Match(  lobby_id=str(self.lobby_name),
-                            player1=player1.user.id, 
-                            player2=player2.user.id, 
+                            player1=self.player1.user.id, 
+                            player2=self.player2.user.id, 
                             player1_average_exchange=self.calculateAverageExchange(self.exchangeBeforePointsP1),
                             player2_average_exchange=self.calculateAverageExchange(self.exchangeBeforePointsP2),
                             winner=self.winner.id,
                             loser=loser.id,
-                            player1_score=player1.score, 
-                            player2_score=player2.score)
+                            player1_score=self.player1.score, 
+                            player2_score=self.player2.score)
             await match.asave()
     
     async def sendPlayerMove(self):

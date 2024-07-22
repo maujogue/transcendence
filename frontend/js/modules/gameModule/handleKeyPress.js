@@ -21,7 +21,7 @@ document.addEventListener("keydown", function (event) {
 	keysPressed[key] = true;
 	keyPress = true;
 	switch(event.code){
-		case "ArrowUp": case "ArrowDown": case "ArrowLeft": case "ArrowRight":
+		case "ArrowUp": case "ArrowDown":
 		case "Space": event.preventDefault(); break;
 		default: break;
 	}

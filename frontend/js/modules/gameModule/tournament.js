@@ -79,10 +79,8 @@ async function handlerMessageStatus(data) {
     console.log("Status:", data.status);
     if (data.status == "disqualified")
         playerStatus = "disqualified";
-    }
     if (data.status == "endTournament" && tournamentStatus != "finished")
         tournamentStatus = "finished";
-
     if (data.status == "start")
         tournamentStatus = "started";
     if (data.status == "waiting") {

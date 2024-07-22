@@ -249,5 +249,10 @@
 	"scored": "Marqués",
 	"conceded": "Concédés",
 	"see_blockchain": "Voir sur la blockchain",
-	"waiting_for_transaction": "Transaction en cours"
+	"waiting_for_transaction": "Transaction en cours",
+
+	"Intermediate": "Intermédiaire",
+	"Easy": "Facile",
+	"Solo": "Solo",
+	"Multiplayer": "Multijoueur"
 }

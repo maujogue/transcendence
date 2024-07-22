@@ -8,6 +8,7 @@ from multiplayer.ball import Ball
 from multiplayer.player import Player
 from users.models import CustomUser
 from stats.models import Match
+from channels.db import database_sync_to_async
 
 class PongConsumer(AsyncWebsocketConsumer):
     def check_if_user_is_connected(self):
@@ -55,6 +56,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.lobby = await self.join_lobby()
         if not self.lobby or self.lobby.connected_user >= 2:
             raise Exception("Lobby is full")
+        await self.set_ingame_status(True)
         self.lobby_name = self.lobby.uuid
         self.ball = Ball()
         await self.create_player()
@@ -178,6 +180,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             if self.is_connected == False:
                 return
             self.is_connected = False
+            await self.set_ingame_status(False)
             if (self.lobby.game_started == True):
                 await self.send_status('stop', "connection_lost_opponent")
                 await self.setGameOver()
@@ -530,4 +533,12 @@ class PongConsumer(AsyncWebsocketConsumer):
         except Exception as e:
             print("Error: ", e)
 
-    
+    @database_sync_to_async 
+    def set_online_status(self, status):
+        try:
+            user = CustomUser.objects.get(id=self.scope['user'].id)
+            user.is_ingame = status
+            user.save()
+        except CustomUser.DoesNotExist:
+            return False
+

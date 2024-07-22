@@ -48,6 +48,8 @@ export async function init() {
 
 
 	async function searchFriend(searchFriendForm) {
+		if (isSpamming("search_friend"))
+			return;
 		const userData = new FormData(searchFriendForm);
 		const fetchBody = {
 			username: userData.get("username"),

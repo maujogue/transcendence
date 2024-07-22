@@ -2,7 +2,7 @@
 	<div class="card-header d-flex align-items-center">
 		<i class="bi bi-bar-chart-fill me-2 text-warning"></i>
 		<h3 data-lang="statistics"></h3>
-		<h3 id="usernameStats" class="ms-2"></h3>
+		<h3 id="usernameStats" class="usernameDynamic ms-2"></h3>
 	</div>
 	<div id="gamesPlayedRow" class="card-body">
 		<div class="accordion accordion-flush" id="accordionFlushExample">
@@ -202,7 +202,7 @@
 	#statisticsCard {
 		padding: 20px;
 		box-shadow: 3px 3px 15px black;
-		background-color:#141419;
+		background-color: #141419;
 		color: white;
 	}
 
@@ -216,8 +216,8 @@
 		--bs-accordion-bg: transparent;
 	}
 
-	.accordion-button:not(.collapsed) {
-		background-color: #262426;
+	.accordion-button:after {
+		background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'><path fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/></svg>") !important;
 	}
 
 
@@ -235,9 +235,6 @@
 
 	.chart-container {
 		position: relative;
-		/* max-height: 500px; */
-		/* margin-left: auto;
-      margin-right: auto; */
 	}
 
 	.table-responsive {
@@ -256,7 +253,8 @@
 		width: calc(100% - 1em);
 	}
 
-	#flush-collapseTwo .card, #flush-collapseThree .card {
+	#flush-collapseTwo .card,
+	#flush-collapseThree .card {
 		padding: 15px;
 	}
 </style>

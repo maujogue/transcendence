@@ -11,6 +11,10 @@ export function setKeyPressToFalse() {
 	keyPress = false;
 }
 
+export function clearKeysPressed() {
+	keysPressed = {};
+}
+
 document.addEventListener("keydown", function (event) {
 	let key = event.key;
 	if (event.key.match(/^[aqwd]$/))

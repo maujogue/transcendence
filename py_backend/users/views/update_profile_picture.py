@@ -8,6 +8,7 @@ from users.utils import image_extension_is_valid
 
 import pylibmagic # needed for jrenault's macbook
 import magic
+from PIL import Image
 
 
 @require_http_methods(["POST"])
@@ -36,7 +37,10 @@ def update_profile_picture(request):
         return JsonResponse({'error': "invalid_file_message"}, status=400)
     try:
         request.user.avatar = uploaded_file
+        Image.open(uploaded_file)
         request.user.save()
         return JsonResponse({'status': "profile_picture_updated_message"}, status=200)
     except Exception as e:
-        return JsonResponse({'error': "error_updating_profile_picture_message"}, status=500)
+        request.user.avatar = "avatar.jpg"
+        request.user.save()
+        return JsonResponse({'error': "error_updating_profile_picture_message"}, status=400)

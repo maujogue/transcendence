@@ -23,8 +23,24 @@
 							data-lang="profile_image_alt" />
 					</div>
 					<div class="profileInfo">
-						<h1 class="usernameDynamic text-white mb-4"></h1>
-						<h6 class="bioDynamic text-white"></h6>
+						<div class="container m-0 align-items-center justify-content-around">
+							<div class="row mb-3">
+								<div class="col flex-column justify-content-center">
+									<p class="text-warning m-0" data-lang="username_label"></p>
+									<h2 class="text-white usernameDynamic m-0 me-2 fw-bolder"></h2>
+								</div>
+								<div class="col flex-column justify-content-center">
+									<p class="text-danger m-0" data-lang="game_username_label"></p>
+									<h2 class="text-white tournament_usernameDynamic m-0 fw-bolder"></h2>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col flex-column justify-content-start">
+									<p class="text-success m-0" data-lang="bio_label"></p>
+									<p class="h4 text-white bioDynamic fst-italic fw-lighter"></p>
+								</div>
+							</div>
+						</div>
 					</div>
 				</div>
 				<button id="editProfileBtn" type="button" class="btn btn-primary text-white" data-bs-toggle="modal"
@@ -71,14 +87,16 @@
 					<!-- AVATAR INPUT -->
 					<div class="mb-3">
 						<label for="avatar" class="col-form-label text-primary" data-lang="avatar_label"></label>
-						<input type="file" accept=".jpg,.png, .jpeg, .JPG, .JPEG, .PNG" name="avatar" class="form-control formInputs" id="avatar"
-							placeholder="avatar photo" autocomplete="off" data-lang="avatar_placeholder" />
+						<input type="file" accept=".jpg,.png, .jpeg, .JPG, .JPEG, .PNG" name="avatar"
+							class="form-control formInputs" id="avatar" placeholder="avatar photo" autocomplete="off"
+							data-lang="avatar_placeholder" />
 					</div>
 					<!-- BANNER INPUT -->
 					<div class="mb-3">
 						<label for="banner" class="col-form-label text-primary" data-lang="banner_label"></label>
-						<input type="file" accept=".jpg,.png, .jpeg, .JPG, .JPEG, .PNG" name="banner" class="form-control formInputs" id="banner"
-							placeholder="banner photo" autocomplete="off" data-lang="banner_placeholder" />
+						<input type="file" accept=".jpg,.png, .jpeg, .JPG, .JPEG, .PNG" name="banner"
+							class="form-control formInputs" id="banner" placeholder="banner photo" autocomplete="off"
+							data-lang="banner_placeholder" />
 					</div>
 					<!-- SUBMIT FORM -->
 				</div>
@@ -88,8 +106,9 @@
 						data-lang="update_password_button">Update Password</a>
 					<a id="discardChangesButton" type="button" class="btn btn-outline-danger d-none"
 						data-lang="discard_changes_button">Discard Changes</a>
-					<button type="button" id="saveChangesButton" class="btn btn-primary" data-lang="save_changes_button" disabled>
-						</button>
+					<button type="button" id="saveChangesButton" class="btn btn-primary" data-lang="save_changes_button"
+						disabled>
+					</button>
 				</div>
 			</form>
 		</div>
@@ -172,15 +191,18 @@
 						<div id="updatePasswordHelpBlock" class="form-text">
 							<span data-lang="password_help_block"></span>
 							<br />
-							<span id="updatePassLength" class="passwordHelpLine" data-lang="password_help_length"></span>
+							<span id="updatePassLength" class="passwordHelpLine"
+								data-lang="password_help_length"></span>
 							<br />
 							<span id="updatePassLowercase" class="passwordHelpLine"
 								data-lang="password_help_lowercase"></span><br />
 							<span id="updatePassUppercase" class="passwordHelpLine"
 								data-lang="password_help_uppercase"></span><br />
-							<span id="updatePassNumbers" class="passwordHelpLine" data-lang="password_help_numbers"></span>
+							<span id="updatePassNumbers" class="passwordHelpLine"
+								data-lang="password_help_numbers"></span>
 							<br />
-							<span id="updatePassSpecial" class="passwordHelpLine" data-lang="password_help_special"></span>
+							<span id="updatePassSpecial" class="passwordHelpLine"
+								data-lang="password_help_special"></span>
 						</div>
 					</div>
 					<div class="mb-3">

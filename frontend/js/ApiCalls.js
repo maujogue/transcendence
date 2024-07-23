@@ -73,6 +73,7 @@ async function login(loginForm) {
 async function logout() {
 	if (!(await isLoggedIn()) || isSpamming("logout"))
 		return;
+	console.log('logout')
 	var response = await runEndPoint("users/logout/", "POST",);
 	if (response.statusCode === 200) {
 		closeWs();

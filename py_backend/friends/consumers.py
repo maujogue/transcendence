@@ -9,11 +9,12 @@ import json
 class FriendsConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
+        print('wsfriend: here')
         self.scope['user'] = None
         await self.accept()
 
     async def disconnect(self, exit_code):
-        print('disconnect')
+        print('wsfriend: disconnect')
         try:
             if self.scope['user'] is None:
                 print('disconnect user is None')
@@ -30,6 +31,7 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         try:
             data = json.loads(text_data)
             message_type = data.get('type')
+            print(f'wsfriend: {message_type}')
 
             handlers = {
                 'auth': self.auth,

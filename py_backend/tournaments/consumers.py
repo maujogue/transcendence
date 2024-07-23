@@ -24,8 +24,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if self.tournament is None:
             return await self.close()
         await self.accept()
+        self.group_name = str(self.tournament.id)
         await self.channel_layer.group_add(
-            self.tournament.name,
+            self.group_name,
             self.channel_name
         )
         await self.check_tournament_status()
@@ -52,7 +53,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if not self.tournament.started:
             participants = await self.get_tournament_participants()
             await self.channel_layer.group_send(
-                self.tournament.name,
+                self.group_name,
                 {
                     'type': 'tournament.participants',
                     'participants': participants
@@ -60,7 +61,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             )
         if self.task:
             self.task.cancel()
-        await self.channel_layer.group_discard(self.tournament.name, self.channel_name)
+        await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
     async def handler_status(self, status):
         if status == 'endGame':
@@ -243,7 +244,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         
     async def launch_tournament(self):
         await self.channel_layer.group_send(
-            self.tournament.name,
+            self.group_name,
             {
                 'type': 'tournament.status',
                 'status': 'start'
@@ -353,7 +354,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def send_all_matchups(self):
         await self.channel_layer.group_send(
-            self.tournament.name,
+            self.group_name,
             {
                 'type': 'tournament.matchups'
             }
@@ -361,7 +362,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def send_disqualified(self, username):
         await self.channel_layer.group_send(
-            self.tournament.name,
+            self.group_name,
             {
                 'type': 'tournament.status',
                 'status': 'disqualified',
@@ -372,7 +373,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def send_bracket(self, forAll):
         bracket = await sync_to_async(self.tournament.get_tournament_bracket)()
         await self.channel_layer.group_send(
-            self.tournament.name,
+            self.group_name,
             {
                 'type': 'tournament.bracket',
                 'bracket': bracket,
@@ -383,7 +384,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def send_participants_list(self):
         participants = await self.get_tournament_participants()
         await self.channel_layer.group_send(
-            self.tournament.name,
+            self.group_name,
             {
                 'type': 'tournament.participants',
                 'participants': participants
@@ -392,7 +393,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def send_tournament_end(self):
         await self.channel_layer.group_send(
-            self.tournament.name,
+            self.group_name,
             {
                 'type': 'tournament.status',
                 'status': 'endTournament',

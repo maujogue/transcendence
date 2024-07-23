@@ -10,7 +10,7 @@ User = get_user_model()
 class OAuthCallbackTests(TestCase):
     def setUp(self):
         self.client = Client()
-        self.oauth_callback_url = reverse('oauth_callback')  # Use the name from urls.py
+        self.oauth_callback_url = reverse('oauth_callback')
 
 
     @patch('requests.post')
@@ -24,7 +24,7 @@ class OAuthCallbackTests(TestCase):
         response = self.client.get(self.oauth_callback_url, {'code': 'fake_code'})
 
         self.assertEqual(response.status_code, 302)
-        self.assertIn('/dash?success=false&message=42_auth_error', response.url)
+        self.assertIn('/dash?success=false&message=42_auth_error_user_info', response.url)
 
 
     @patch('requests.post')
@@ -43,5 +43,5 @@ class OAuthCallbackTests(TestCase):
         response = self.client.get(self.oauth_callback_url, {'code': 'fake_code'})
 
         self.assertEqual(response.status_code, 302)
-        self.assertIn('/dash?success=false&message=42_auth_error', response.url)
+        self.assertIn('/dash?success=false&message=42_auth_error_missing_info', response.url)
 

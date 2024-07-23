@@ -20,11 +20,13 @@ document.addEventListener("keydown", function (event) {
 		key = event.key.toLowerCase();
 	keysPressed[key] = true;
 	keyPress = true;
-	switch(event.code){
-		case "ArrowUp": case "ArrowDown":
-		case "Space": event.preventDefault(); break;
-		default: break;
-	}
+	if (event.target == document.body){
+		switch(event.code){
+			case "ArrowUp": case "ArrowDown":
+				case "Space": event.preventDefault(); break;
+				default: break;
+			}
+		}
 	event.stopPropagation();
 });
 

@@ -12,7 +12,7 @@ from users.utils import username_is_unique, email_is_unique
 from django.core.files.base import ContentFile
 from users.models import CustomUser
 from django.db import IntegrityError
-
+from users.views.update_is_online import update_is_online
 
 def login_with_42(request):
     params = {
@@ -60,19 +60,19 @@ def oauth_callback(request):
     access_token = token_json.get('access_token')
     
     if not access_token:
-        return redirect('/dash?success=false&message=42_auth_error')
+        return redirect('/dash?success=false&message=42_auth_error_token')
     
     user_info_url = 'https://api.intra.42.fr/v2/me'
     headers = {'Authorization': f'Bearer {access_token}'}
     user_info_response = requests.get(user_info_url, headers=headers)
     
     if user_info_response.status_code != 200:
-        return redirect('/dash?success=false&message=42_auth_error')
+        return redirect('/dash?success=false&message=42_auth_error_user_info')
 
     user_info = user_info_response.json()
     
     if not all(k in user_info for k in ('login', 'email', 'image')):
-        return redirect('/dash?success=false&message=42_auth_error')
+        return redirect('/dash?success=false&message=42_auth_error_missing_info')
     
     username = user_info.get('login')
     email = user_info.get('email')
@@ -81,10 +81,12 @@ def oauth_callback(request):
         img_url = user_info['image']['versions']['medium']
         avatarMedium = download_image(img_url, username) #TODO secure that
     else:
-        return redirect('/dash?success=false&message=42_auth_error')
+        return redirect('/dash?success=false&message=42_auth_error_image')
     
     try:
         curr_user = CustomUser.objects.get(email=email, username=username, is_42auth=True)
+        if curr_user.is_online:
+            update_is_online(username, False)
         login(request, curr_user)
         return redirect('/dash?success=true&message=42_login_success')
     except CustomUser.DoesNotExist:

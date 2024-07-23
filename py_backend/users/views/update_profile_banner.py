@@ -36,8 +36,8 @@ def update_profile_banner(request):
     except Exception as e:
         return JsonResponse({'error': "Invalid file."}, status=400)
     try:
-        request.user.banner = uploaded_file
         Image.open(uploaded_file)
+        request.user.banner = uploaded_file
         request.user.save()
         return JsonResponse({'status': "profile_banner_updated_message"}, status=200)
     except Exception as e:

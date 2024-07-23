@@ -12,7 +12,7 @@ async function injectUserData(divToFill = null, username = null) {
 			usernameDivs.forEach((div) => {
 				if (div.tagName === "INPUT") div.value = userInfos[info];
 				else if (div.tagName === "IMG") div.setAttribute("src", "data:image/png;base64," + userInfos[info]);
-				else div.innerHTML = userInfos[info];
+				else div.innerText = userInfos[info];
 			});
 		});
 	}

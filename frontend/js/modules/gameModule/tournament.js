@@ -292,7 +292,7 @@ export async function displayErrorPopUp (message, parent) {
     setTimeout(() => {
         if (document.getElementById("errorPopUp"))
             document.getElementById("errorPopUp").remove();
-    }, 30000);
+    }, 4000);
 }
 
 export function createShowBracketButton(parent) {

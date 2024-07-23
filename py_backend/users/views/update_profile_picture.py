@@ -37,11 +37,9 @@ def update_profile_picture(request):
     except Exception as e:
         return JsonResponse({'error': "invalid_file_message"}, status=400)
     try:
-        request.user.avatar = uploaded_file
         Image.open(uploaded_file)
+        request.user.avatar = uploaded_file
         request.user.save()
         return JsonResponse({'status': "profile_picture_updated_message"}, status=200)
     except Exception as e:
-        request.user.avatar = "avatar.jpg"
-        request.user.save()
         return JsonResponse({'error': "error_updating_profile_picture_message"}, status=400)

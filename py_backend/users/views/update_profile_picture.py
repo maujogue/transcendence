@@ -8,6 +8,7 @@ from users.utils import image_extension_is_valid
 
 import pylibmagic # needed for jrenault's macbook
 import magic
+import os
 from PIL import Image
 
 
@@ -31,6 +32,9 @@ def update_profile_picture(request):
     file_type = mime.from_buffer(uploaded_file.read(1024))
     if 'image' not in file_type:
         return JsonResponse({'error': "invalid_file_message"}, status=400)
+
+    if request.user.avatar != 'avatar.jpg':
+        os.remove('../../media/' + request.user.avatar)
     
     try:
         get_image_dimensions(uploaded_file)

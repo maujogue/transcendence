@@ -8,6 +8,7 @@ import { hostname } from "../../Router.js";
 import { wsMatch } from "./online.js";
 import { checkIfWebsocketIsOpen, handlerEndGame } from "./handlerMessage.js";
 import { getKeyTranslation } from "../translationsModule/translationsModule.js";
+import { updateModule } from "../../Modules.js";
 
 export let wsTournament
 export let tournamentStatus;
@@ -87,7 +88,8 @@ async function handlerMessageStatus(data) {
         ask_tournament_status();
     }
     if (data.status == "cancelled") {
-        await displayErrorPopUp(data['message'], document.getElementById('game'));
+        await updateModule("statisticsModule");
+        await displayErrorPopUp(data['message'], document.getElementById('selectMenu'));
         if (checkIfWebsocketIsOpen(wsMatch)) {
             wsMatch.close();
             clearOnlineVariables();
@@ -99,9 +101,11 @@ async function ask_tournament_status() {
     let interval = setInterval(() => {
         if (tournamentStatus != "waiting" || !checkIfWebsocketIsOpen(wsTournament) || playerStatus == "disqualified")
             clearInterval(interval)
-        wsTournament.send(JSON.stringify({
-            'type': 'ask_status',
-        }));
+        if (checkIfWebsocketIsOpen(wsTournament)) {
+            wsTournament.send(JSON.stringify({
+                'type': 'ask_status',
+            }));
+        }
     }, 60000)
 }
 
@@ -297,7 +301,7 @@ export async function displayErrorPopUp (message, parent) {
     setTimeout(() => {
         if (document.getElementById("errorPopUp"))
             document.getElementById("errorPopUp").remove();
-    }, 3000);
+    }, 30000);
 }
 
 export function createShowBracketButton(parent) {

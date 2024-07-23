@@ -9,6 +9,8 @@ import { initSpaceBackground } from "./spaceBackground.js";
 import { characters } from "./gameModule.js"
 import { colors } from "./varGlobal.js"; 
 import * as THREE from 'three';
+import { checkIfUserIsInTournament, wsTournament } from "./tournament.js";
+import { checkIfWebsocketIsOpen } from "./handlerMessage.js";
 
 let width = winWidth;
 let height = winHeight;
@@ -41,6 +43,8 @@ function createWaitingScreen() {
 		<i class="fa-solid fa-xmark close-matchmaking" id="closeMatchmaking"></i> \
 		<img id="avatar_pong" src="" alt="avatar">\
 		<div id="waitingText" data-lang="waiting_for_players_lobby">Waiting for other player</div>';
+	if (checkIfWebsocketIsOpen(wsTournament))
+		document.getElementById('closeMatchmaking')?.remove()
 	
 }
 

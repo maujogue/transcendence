@@ -269,7 +269,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 if not await self.check_if_match_is_started(self.match):
                     await self.send_self_matchup()
             else:
-                print('send bracket check tournament start')
                 await self.send_bracket(False)
         
     async def validate_foreign_keys(self):

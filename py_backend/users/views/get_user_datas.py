@@ -25,14 +25,9 @@ def get_user_data(request, username=None):
             'avatar': convert_image_to_base64(user.avatar),
             'banner': convert_image_to_base64(user.banner),
             'bio': user.bio,
-            'title': user.title,
-            'winrate': user.winrate,
-            'rank': user.rank,
-            'n_games_played': user.n_games_played,
             'is_42auth': user.is_42auth,
             'lang': user.lang,
             'friendslist': utils_get_friendslist_data(user),
-            'is_42auth': user.is_42auth,
             'is_online': user.is_online,
         }
         return JsonResponse({'status': 'success', 'user': user_datas}, status=200)

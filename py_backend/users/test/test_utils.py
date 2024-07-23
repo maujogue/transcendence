@@ -8,8 +8,7 @@ class UtilsFunctionsTest(TestCase):
             username="osterga",
             email="osterga@gmail.com",
             password="UserPassword9+",
-            bio="Bonjours a tous, c'est Osterga",
-            title='L\'Inusable')
+            bio="Bonjours a tous, c'est Osterga",)
         
         self.client.login(username='osterga', password='UserPassword9+')
 

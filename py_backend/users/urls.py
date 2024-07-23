@@ -5,7 +5,7 @@ from users.views.username_available import username_available
 from users.views.update_profile_banner import update_profile_banner
 from users.views.update_lang import update_lang
 from users.views.check_password import check_password
-from users.views.update_is_online import update_is_online
+from users.views.update_is_online import update_is_online_view
 
 urlpatterns = [
     path('register/', register, name='register'),
@@ -30,5 +30,5 @@ urlpatterns = [
     path('update_tournament_name/', update_tournament_name, name='update_tournament_name'),
 	path('check_password/', check_password, name='check_password'),
     path('tournament_username_available/', tournament_username_available, name='tournament_username_available'),
-    path('update_is_online/', update_is_online, name='update_is_online'),
+    path('update_is_online/', update_is_online_view, name='update_is_online'),
 ]

@@ -12,7 +12,6 @@ class GetUserDatas(TestCase):
             email="osterga@gmail.com",
             password="UserPassword9+",
             bio="Bonjours a tous, c'est Osterga",
-            title='L\'Inusable',
             lang='en',
             is_online=False,
             email_is_verified=False)

@@ -39,14 +39,11 @@ function moveAI(player2, state, model, env) {
 }
 
 export async function trainModel(model, epochs) {
-	// Assuming states and actions are arrays of equal lengths
 	const numSamples = states.length;
 
-	// Reshape states and actions to match the model's expectations
 	const stateTensor = tf.tensor2d(states, [numSamples, numStateFeatures]);
 	const actionTensor = tf.tensor2d(actions, [numSamples, 3]);
 	
-	// Train the model
 	await model.fit(stateTensor, actionTensor, {epochs: epochs, batchSize: 32});
 
 	console.log("Training is succesfull !");

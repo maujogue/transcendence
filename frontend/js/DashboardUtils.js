@@ -1,5 +1,6 @@
 import { updateModule } from "./Modules.js";
 import { injectUserData, getUserData } from "./User.js";
+import { disable42LoginElements } from "./Utils.js";
 import { initListenersEmail } from "./modules/emailInputModule/emailInputModule.js";
 import { initListenersTournamentUsername } from "./modules/tournamentUsernameInputModule/tournamentUsernameInputModule.js";
 import { initListenersUsername } from "./modules/usernameInputModule/usernameInputModule.js";
@@ -50,7 +51,7 @@ function resetForm(input) {
 	updatePasswordButton.classList.remove("d-none");
 	saveChangesButton.disabled = true;
 	closeButton.classList.remove("d-none");
-
+	disable42LoginElements();
 }
 
 function disableSaveChangesButton(input) {

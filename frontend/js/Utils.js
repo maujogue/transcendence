@@ -49,7 +49,7 @@ function resetModalFormsInitListeners() {
 }
 
 async function disable42LoginElements() {
-	const elements = document.querySelectorAll(".auth-42-disable input");
+	const elements = document.querySelectorAll(".auth-42-disable");
 	const headers = document.querySelectorAll(".auth-42-disable-header");
 	if (await check_user_42()) {
 		elements.forEach(e => {
@@ -219,4 +219,5 @@ export {
 	resetModalFormsInitListeners,
 	asyncTimeout,
 	setEditButtonProfile,
+	disable42LoginElements
 };

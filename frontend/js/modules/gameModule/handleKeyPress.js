@@ -2,6 +2,7 @@ import { movePaddle } from "./movePaddle.js";
 import { displayCharacter } from "./displayCharacter.js";
 import { moveCursor } from "./menu.js";
 import * as THREE from 'three';
+import { soloMode } from "./gameModule.js";
 
 export let keyPress = false;
 export let keysPressed = {};
@@ -56,7 +57,8 @@ async function handleMenuKeyPress(keysPressed, player1, player2, env) {
 function handleKeyPress(keysPressed, player1, player2, environment) {
 	let playerBox1;
 	let playerBox2;
-	
+	let action = 0;
+
 	if (!player1)
 		return;
 	playerBox1 = new THREE.Box3().setFromObject(player1.paddle.mesh);
@@ -69,17 +71,21 @@ function handleKeyPress(keysPressed, player1, player2, environment) {
 		player1.light.position.y -= 0.15;
 	}
 
-	if (!player2)
-		return;
+	if (!player2 || soloMode)
+		return (-1);
 	playerBox2 = new THREE.Box3().setFromObject(player2.paddle.mesh);
-	if (keysPressed["ArrowUp"] && !environment.border.up.box.intersectsBox(playerBox2)) {
+	if (keysPressed['ArrowUp'] && !environment.border.up.box.intersectsBox(playerBox2)) {
+		action = 1;
 		player2.paddle.mesh.translateY(0.15);
 		player2.light.position.y += 0.15;
 	}
-	if (keysPressed["ArrowDown"] && !environment.border.down.box.intersectsBox(playerBox2)) {
+	else if (keysPressed['ArrowDown'] && !environment.border.down.box.intersectsBox(playerBox2)) {
+		action = 2
 		player2.paddle.mesh.translateY(-0.15);
 		player2.light.position.y -= 0.15;
 	}
+
+	return (action);
 }
 
 export { handleKeyPress, handleMenuKeyPress};

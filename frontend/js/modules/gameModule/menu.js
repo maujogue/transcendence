@@ -303,6 +303,18 @@ function displayMainMenu() {
 	initSpaceBackground();
 }
 
+export function createLocalMenu() {
+	document.getElementById("menu").remove();
+	createDivMenu("localMenu");
+	const parent = document.getElementById("localMenu");
+	parent.innerHTML = '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>';
+	createGamemodeDiv("Multiplayer", parent);
+	createGamemodeDiv("Solo", parent);
+	createSubmode('Multiplayer', "1v1");
+	createSubmode('Solo', "Easy");
+	createSubmode('Solo', "Intermediate");
+}
+
 function createGamemodeDiv(text, parent) {
 	const div = document.createElement("div");
 	div.innerHTML += `<img class="gamemode-img" src="./assets/img/icon/${text}.png" alt="tournament_icon"><p data-lang="${text}">${text}</p>`;

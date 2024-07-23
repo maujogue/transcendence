@@ -253,5 +253,10 @@
 	"scored": "Scored",
 	"conceded": "Conceded",
 	"see_blockchain": "See on blockchain",
-	"waiting_for_transaction": "Waiting for transaction"
+	"waiting_for_transaction": "Waiting for transaction",
+
+	"Intermediate": "Intermediate",
+	"Easy": "Easy",
+	"Solo": "Solo",
+	"Multiplayer": "Multiplayer"
 }

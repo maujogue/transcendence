@@ -8,6 +8,7 @@ import { hostname } from "../../Router.js";
 import { wsMatch } from "./online.js";
 import { checkIfWebsocketIsOpen, handlerEndGame } from "./handlerMessage.js";
 import { getKeyTranslation } from "../translationsModule/translationsModule.js";
+import { updateModule } from "../../Modules.js";
 
 export let wsTournament
 export let tournamentStatus;
@@ -28,7 +29,6 @@ export async function connectToTournament(tournament) {
 
         wsTournament.onmessage = async (event) => {
             const data = JSON.parse(event.data);
-            console.log("Received data:", data);
             if (data.type == "participants")
                 displayPlayerList(data.participants);
             if (data.type == "matchup") {
@@ -50,7 +50,6 @@ export async function connectToTournament(tournament) {
         };
         
         wsTournament.onclose = (event) => {
-            // #TODO Affiche un message d'erreur si la websocket se ferme a cause d'une erreur
             playerStatus = null;
             tournamentStatus = null;
             clearOnlineVariables();
@@ -76,7 +75,6 @@ async function displayTimer(time) {
 }
 
 async function handlerMessageStatus(data) {
-    console.log("Status:", data.status);
     if (data.status == "disqualified")
         playerStatus = "disqualified";
     if (data.status == "endTournament" && tournamentStatus != "finished")
@@ -88,7 +86,8 @@ async function handlerMessageStatus(data) {
         ask_tournament_status();
     }
     if (data.status == "cancelled") {
-        await displayErrorPopUp(data['message'], document.getElementById('game'));
+        await updateModule("statisticsModule");
+        await displayErrorPopUp(data['message'], document.getElementById('selectMenu'));
         if (checkIfWebsocketIsOpen(wsMatch)) {
             wsMatch.close();
             clearOnlineVariables();
@@ -100,9 +99,11 @@ async function ask_tournament_status() {
     let interval = setInterval(() => {
         if (tournamentStatus != "waiting" || !checkIfWebsocketIsOpen(wsTournament) || playerStatus == "disqualified")
             clearInterval(interval)
-        wsTournament.send(JSON.stringify({
-            'type': 'ask_status',
-        }));
+        if (checkIfWebsocketIsOpen(wsTournament)) {
+            wsTournament.send(JSON.stringify({
+                'type': 'ask_status',
+            }));
+        }
     }, 60000)
 }
 
@@ -191,7 +192,6 @@ async function displayEtherscanButton(etherscanBtn, dotInterval) {
 }
 
 function displayTournamentRanking(ranking) {
-    console.log("displayTournamentRanking: ", ranking);
     const rankingDiv = document.createElement("div");
     rankingDiv.className = "ranking";
     rankingDiv.innerHTML = "<h2 class='ranking-title' data-lang='ranking'></h2>";
@@ -223,7 +223,6 @@ function displayTournamentRanking(ranking) {
 
 
 function displayPlayerList(participants) {
-    console.log("displayPlayerList");
     if (document.getElementById("player-list"))
         document.getElementById("player-list").innerHTML = "";
     participants.map((participant) => insertPlayer(participant));
@@ -243,7 +242,6 @@ async function sendUsername() {
 }
 
 export async function unsubscribeFromTournament() {
-    console.log("Unsubscribing from tournament: ", currentTournament);
     fetch(`https://${hostname}:8000/api/tournament/${currentTournament.id}/quit/`, {
         method: "POST",
         headers: {
@@ -254,7 +252,6 @@ export async function unsubscribeFromTournament() {
     .then((response) => {
         if (!response.ok)
             throw new Error("Error while unsubscribing from tournament");
-        console.log("Unsubscribed from tournament");
         returnToMenu();
         wsTournament.close();
     })
@@ -283,13 +280,10 @@ export async function checkIfUserIsInTournament(user) {
 }
 
 export async function displayErrorPopUp (message, parent) {
-    // console.log("displayErrorPopUp", message);
     const errorPopUp = document.createElement("div");
     errorPopUp.id = "errorPopUp";
     errorPopUp.className = "error-pop-up pop-up";
-	console.log("message", message);
 	var errorText = await getKeyTranslation(message);
-	console.log("errorText", errorText);
 	if (!errorText)
     	errorPopUp.innerText = message;
 	else
@@ -298,7 +292,7 @@ export async function displayErrorPopUp (message, parent) {
     setTimeout(() => {
         if (document.getElementById("errorPopUp"))
             document.getElementById("errorPopUp").remove();
-    }, 3000);
+    }, 30000);
 }
 
 export function createShowBracketButton(parent) {
@@ -310,7 +304,6 @@ export function createShowBracketButton(parent) {
 }
 
 function ask_bracket() {
-    console.log('ask bracket')
     wsTournament.send(JSON.stringify({
         'type': 'bracket',
     }));

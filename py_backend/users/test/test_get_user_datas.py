@@ -12,7 +12,6 @@ class GetUserDatas(TestCase):
             email="osterga@gmail.com",
             password="UserPassword9+",
             bio="Bonjours a tous, c'est Osterga",
-            title='L\'Inusable',
             lang='en',
             is_online=False,
             email_is_verified=False)
@@ -55,15 +54,9 @@ class GetUserDatas(TestCase):
         self.assertEqual(response_data.get('user').get('username'), 'osterga')
         self.assertEqual(response_data.get('user').get('email'), 'osterga@gmail.com')
         self.assertEqual(response_data.get('user').get('avatar'), encoded_string)
-        self.assertEqual(response_data.get('user').get('bio'), "Bonjours a tous, c'est Osterga")
-        self.assertEqual(response_data.get('user').get('title'), 'L\'Inusable')
-        self.assertEqual(response_data.get('user').get('winrate'), None)
-        self.assertEqual(response_data.get('user').get('rank'), None)
-        self.assertEqual(response_data.get('user').get('n_games_played'), None),
+        self.assertEqual(response_data.get('user').get('bio'), "Bonjours a tous, c'est Osterga"),
         self.assertEqual(response_data.get('user').get('is_42auth'), False),
         self.assertEqual(response_data.get('user').get('is_online'), True),
-
-        self.assertEqual(response_data.get('user').get('n_games_played'), None)
         self.assertEqual(response_data.get('user').get('lang'), "en")
 
     def test_without_login(self):

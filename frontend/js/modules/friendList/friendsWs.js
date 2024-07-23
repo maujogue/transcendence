@@ -24,6 +24,7 @@ export async function friendsWebsocket() {
 	};
 
 	wsFriends.onclose = (event) => {
+		console.log('wsfriends on close')
 		logout()
 	}
 }

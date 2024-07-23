@@ -16,7 +16,7 @@ export function clearKeysPressed() {
 
 document.addEventListener("keydown", function (event) {
 	let key = event.key;
-	if (event.key.match(/^[aqwd]$/))
+	if (event.key?.match(/^[aqwd]$/))
 		key = event.key.toLowerCase();
 	keysPressed[key] = true;
 	keyPress = true;

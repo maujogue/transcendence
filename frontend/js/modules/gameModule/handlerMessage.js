@@ -104,7 +104,6 @@ function addHtmlIntroScreen(data) {
 }
 
 export function displayIntroScreen(env, data) {
-    console.log("displayIntroScreen:", data);
     document.getElementById("waitingScreen")?.remove();
     ClearAllEnv(env);
     env = createIntroScene(data.player1.character, data.player2.character);

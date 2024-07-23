@@ -49,23 +49,22 @@ function resetModalFormsInitListeners() {
 }
 
 async function disable42LoginElements() {
-	const elements = document.querySelectorAll(".auth-42-disable");
+	const elements = document.querySelectorAll(".auth-42-disable input");
 	const headers = document.querySelectorAll(".auth-42-disable-header");
 	if (await check_user_42()) {
 		elements.forEach(e => {
-			e.classList.add("disabled");
+			e.disabled = true;
 		});
 		headers.forEach(e => {
-			e.innerHTML = "<btn class='btn w-100 bg-warning mb-3 '>You can't modify your username, email or password because you logged in with 42</span>";
+			e.hidden = false;
 		});
 	}
 	else {
 		elements.forEach(e => {
-			if (e.classList.contains("disabled"))
-				e.classList.remove("disabled");
+			e.disabled = false;
 		});
 		headers.forEach(e => {
-			e.innerHTML = "";
+			e.hidden = true;
 		});
 	}
 }

@@ -37,7 +37,6 @@ function createEndScreen(winnerName) {
 }
 
 function returnToMenu() {
-    console.log("returnToMenu");
     const menu = document.getElementsByClassName("menu");
     menu[0].remove();
     displayMainMenu();
@@ -46,8 +45,6 @@ function returnToMenu() {
 export {createEndScreen, returnToMenu }
 
 export async function createTournamentEndScreen(winnerName) {
-    console.log("inside createTournamentEndScree.\nwinnerName:" + winnerName);
-    console.log("tournament username: " + tournament_username);
     createDivMenu("endscreen");
     const div = document.getElementById("endscreen");
     div.classList.add('endscreen');

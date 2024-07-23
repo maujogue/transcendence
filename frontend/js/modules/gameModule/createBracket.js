@@ -178,7 +178,6 @@ function displayRankingButton(parent) {
     parent.appendChild(btn);
 	injectElementTranslations("#game");
     document.getElementById('showRanking').addEventListener('click', () => {
-        console.log('getRqnking')
         wsTournament.send(JSON.stringify({type: "getRanking"}));
     });
 }

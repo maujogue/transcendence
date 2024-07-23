@@ -171,7 +171,6 @@ async function connectToLobby(username) {
             wsMatch.close();
         if (data['type'] == 'character_data') {
             if (data['name'] != player.name) {
-                console.log('displayCharacter:', data['character'], data['name'])
                 displayCharacter(opp, env, data['character'], data['name']).then((res) => {
                     opp = res;
                     opp.character.removeCharacterFromLobby(env);
@@ -274,7 +273,6 @@ async function sendIsReady(wsMatch) {
 }
 
 async function setGameIsStart() {
-    console.log("setGameIsStart");
     if (player && opp && oppInfo) {
         opp.userInfo = oppInfo;
         if (player.name == "player1")

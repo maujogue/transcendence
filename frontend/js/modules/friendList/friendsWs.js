@@ -75,7 +75,6 @@ async function removeFriend(toUser) {
 async function sendMessage(type, payload) {
 	if (!checkIfWebsocketIsOpen(wsFriends))
 		return ;
-	console.log('type:', type, ', payload', payload)
 	const message = JSON.stringify({type, ...payload });
 	wsFriends.send(message);
 }

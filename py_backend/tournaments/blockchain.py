@@ -2,7 +2,6 @@ from web3 import Web3, HTTPProvider
 import os
 import json
 import logging
-from asgiref.sync import sync_to_async
 
 CHAIN_ID = 11155111
 WALLET = os.environ.get("WALLET")
@@ -40,7 +39,7 @@ def set_data_on_blockchain(tournament):
                 'round': str(match.round),
                 'player1': match.player1,
                 'scorePlayer1':str(match.score_player_1),
-                'player2':match.player2,
+                'player2':match.player2 if match.player2 else "None",
                 'scorePlayer2':str(match.score_player_2),
                 'matchWinner': match.winner
             })

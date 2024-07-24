@@ -146,7 +146,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             print(f'self.match.player1: {self.match.player1}, self.match.player2: {self.match.player2}')
             player1 = await self.authenticate_user_with_tournament_username(self.match.player1)
             player2 = await self.authenticate_user_with_tournament_username(self.match.player2)
-            winner = player1 if lobby.player1 else player2
+            winner = player1 if lobby.player1 == player1.tournament_username else player2
             loser = player2 if winner == player1 else player1
             match = Match(  lobby_id=str(lobby.uuid),
                             player1=player1.id, 

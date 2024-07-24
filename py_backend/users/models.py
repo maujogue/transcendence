@@ -34,6 +34,8 @@ class CustomUser(AbstractUser):
 	is_online = models.BooleanField(default=False)
 	is_ingame = models.BooleanField(default=False)
 	lang = models.CharField(max_length=2, default='en')
+	last_avatar_update = models.DateTimeField(null=True, default="")
+	last_banner_update = models.DateTimeField(null=True, default="")
 	
 	def save(self, *args, **kwargs):
 		if not self.tournament_username:

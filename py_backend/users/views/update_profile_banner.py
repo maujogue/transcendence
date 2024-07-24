@@ -2,6 +2,7 @@ from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import requires_csrf_token
 from users.decorators import custom_login_required as login_required, is_in_game
 from django.core.files.images import get_image_dimensions
+from django.utils import timezone
 from django.http import JsonResponse
 
 from users.utils import image_extension_is_valid
@@ -43,6 +44,7 @@ def update_profile_banner(request):
             os.remove(request.user.banner.path)
 
         request.user.banner = uploaded_file
+        request.user.last_banner_update = timezone.now()
         request.user.save()
         return JsonResponse({'status': "profile_banner_updated_message"}, status=200)
     except Exception as e:

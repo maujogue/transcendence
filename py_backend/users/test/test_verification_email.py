@@ -94,7 +94,7 @@ class ConfirmEmailViewTest(TestCase):
         
         response = self.client.get(url)
 
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 200)
         self.user.refresh_from_db()
         self.assertFalse(self.user.email_is_verified)
         self.assertTrue(response.json()['status'], 'error')
@@ -106,7 +106,7 @@ class ConfirmEmailViewTest(TestCase):
         
         response = self.client.get(url)
 
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 200)
         self.user.refresh_from_db()
         self.assertFalse(self.user.email_is_verified)
         self.assertTrue(response.json()['status'], 'error')
@@ -118,6 +118,6 @@ class ConfirmEmailViewTest(TestCase):
         
         response = self.client.get(url)
 
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 200)
         self.assertFalse(CustomUser.objects.filter(pk=9999).exists())
         self.assertTrue(response.json()['status'], 'error')

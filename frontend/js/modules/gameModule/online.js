@@ -16,7 +16,6 @@ import { hostname } from "../../Router.js";
 import { keyPress, keysPressed} from './handleKeyPress.js';
 import { setEditButtonProfile } from '../../Utils.js';
 import { createDivMenu } from "./menu.js"
-import { getKeyTranslation } from "../translationsModule/translationsModule.js";
 
 let requestId
 let env;
@@ -85,20 +84,22 @@ function leaveMatchmaking() {
     paddle.name = "paddle_player";
 }
 
+function createWaitingPlayAgain() {
+    createDivMenu("waiting-opponent");
+    const div = document.getElementById("waiting-opponent");
+    div.classList.add('waiting-opponent');
+
+    const waitingMessage = document.createElement('h3');
+    waitingMessage.innerText = "Waiting for your opponent...";
+    const titleDiv = document.createElement('div');
+    div.append(titleDiv);
+    titleDiv.append(waitingMessage);
+}
+
 function clickHandler(event) {
     if (event.target.id == 'restart') {
         document.getElementById("endscreen")?.remove();
-
-        createDivMenu("endscreen");
-        const div = document.getElementById("endscreen");
-        div.classList.add('endscreen');
-    
-        const waiting = document.createElement('h3');
-        waiting.setAttribute("data-lang", "waiting-play-again");
-        const titleDiv = document.createElement('div');
-        div.append(titleDiv);
-        titleDiv.append(waiting);
-
+        createWaitingPlayAgain();
         sendIsReady(wsMatch);
     }
     if (event.target.id == 'backMenu') {
@@ -283,6 +284,12 @@ async function sendIsReady(wsMatch) {
     wsMatch.send(JSON.stringify({
         'ready': 'true'
     }));
+
+    // const waitingMessage = document.getElementById("waitingMessage");
+    // if (waitingMessage) {
+    //     waitingMessage.remove();
+    //     console.log("Waiting message removed.");
+    //}
 }
 
 async function setGameIsStart() {

@@ -3,7 +3,7 @@ import { getUserData } from "../../User.js"
 import { showAlert } from "../../Utils.js";
 import { fillInbox, initUserRequests } from "./friendList.js";
 import { fillFriendsList } from "./friendList.js";
-import { hostname } from "../../Router.js";
+import { hostname, initPages } from "../../Router.js";
 import { checkIfWebsocketIsOpen } from "../gameModule/handlerMessage.js";
 
 let currentUser;
@@ -25,7 +25,7 @@ export async function friendsWebsocket() {
 
 	wsFriends.onclose = (event) => {
 		console.log('wsfriends on close')
-		logout()
+		logout();
 	}
 }
 
@@ -98,6 +98,10 @@ async function wsMessageRouter(data) {
 		'get_current_user_requests': (data) => fillInbox(data),
 		'get_user_requests': (data) => initUserRequests(data),
 		'friend_accepted_from_user': (data) => showAlert("friend_request_accepted_message", true),
+		'already_connected': async (data) => {
+			showAlert("already_connected_message", false)
+			await initPages();
+		},
 	};
 	const handler = handlers[data.type];
 	if (handler && data) {

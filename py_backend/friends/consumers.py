@@ -53,8 +53,8 @@ class FriendsConsumer(AsyncWebsocketConsumer):
 
     async def auth(self, data):
         try:
-            username = data.get('username')
-            await self.authenticate_user(username)
+            self.username = data.get('username')
+            await self.authenticate_user(self.username)
             await self.channel_layer.group_add(
                 self.scope['user'].username,
                 self.channel_name)
@@ -70,15 +70,15 @@ class FriendsConsumer(AsyncWebsocketConsumer):
                 event = {'type': 'send_friendslist'})
         except Exception as e:
             print('Auth error:', e)
-            await self.channel_layer.group_send(
-                username,
-                {'type': 'logout'})
+            await self.group_send(
+                self.username,
+                event = {'type': 'already_connected', 'username': self.username})
             await self.close()
-                
-    async def logout(self, event):
-        await self.close()
-
-
+            
+    async def already_connected(self, data):
+        if self.username == data.get('username'):
+            await self.send(text_data=json.dumps({
+            "type": "already_connected"}))
 
 
 #----------- friends functions ------------------------------------------------------------------------------------------------------------

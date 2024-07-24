@@ -77,7 +77,7 @@ async function getJsonFromLang() {
 		return await fetch(`../../../../translations/${lang}.json`).then((res) => res.json()).then((data) => { return data });
 	}
 	catch (e) {
-		console.error(`Error loading ${lang}.json file`, e);
+		console.error(`Error loading ${lang}.json file`);
 		return null;
 	}
 }

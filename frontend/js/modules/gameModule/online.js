@@ -109,8 +109,9 @@ function clickHandler(event) {
         if (wsMatch)
             wsMatch.close();
     }
-    if (event.target.id == 'closeMatchmaking')
+    if (event.target.id == 'closeMatchmaking') {
         leaveMatchmaking();
+    }
 }
 
 function removeP2Cursor() {
@@ -224,7 +225,6 @@ async function connectToLobby(username) {
 
     wsMatch.onclose = function(e) {
         console.log('Connection closed', e.code, e.reason);
-        setEditButtonProfile(false);
         status.is_connected = false;
         if (status.start)
             clearOnlineVariables();

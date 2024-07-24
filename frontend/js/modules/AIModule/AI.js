@@ -39,6 +39,7 @@ function moveAI(player2, state, model, env) {
 }
 
 export async function trainModel(model, epochs) {
+	console.log("here");
 	const numSamples = states.length;
 
 	const stateTensor = tf.tensor2d(states, [numSamples, numStateFeatures]);

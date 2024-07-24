@@ -17,6 +17,7 @@ import { createJoinTournamentMenu } from "./joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "./tournament.js";
 import { getModuleDiv, updateModule } from "../../Modules.js";
 import { trainModel, AIMovement, storeData, resetAITimer } from "../AIModule/AI.js";
+import { getState } from "../AIModule/envForAI.js";
 
 import { wsTournament } from "./tournament.js";
 import { createTournamentHistoryMenu } from "./tournamentHistory.js";
@@ -186,6 +187,7 @@ export async function init() {
 		if (player1.score < 5 && player2.score < 5)
 			return;
 
+		await trainModel(model, 1000);
 		let winner = player1.name;
 		if (player2.score > player1.score)
 			winner = player2.name;
@@ -210,17 +212,24 @@ export async function init() {
 			ClearAllEnv(environment);
 			divMenu.remove();
 			model = await tf.loadLayersModel(`https://${hostname}:8000/js/modules/AIModule/model/model.json`);
+			model.compile({
+				optimizer: tf.train.adam(0.001),
+				loss: 'meanSquaredError'
+			});
 			environment = await initGame(player1, player2);
 			player1.score = 0;
 			player2.score = 0;
 		}
 		if (start) {
+			let action = 0;
+			let actualState = getState(environment, player2);
 			if (soloMode)
 				AIMovement(player2, model, environment, firstPrediction);
 			if (keyPress)
-				handleKeyPress(keysPressed, player1, player2, environment);
+				action = handleKeyPress(keysPressed, player1, player2, environment);
+			storeData(actualState, action);
 			checkCollision(environment.ball, player1, player2, environment);
-			resetAITimer(player1, player2, firstPrediction);
+			//resetAITimer(player1, player2, firstPrediction);
 			await setIfGameIsEnd();
 		}
 		if (player1 && player2)

@@ -194,7 +194,7 @@ def image_is_valid(uploaded_file):
 	if uploaded_file is None:
 		return False, f'no_file_provided'
 	if not image_extension_is_valid(uploaded_file.name):
-		return False, f'invalid_image_type'
+		return False, f'invalid_file_type_message'
 	if uploaded_file and uploaded_file.size > 5242880:
-		return False, f'file_exceed_limit'
+		return False, f'file_too_big_message'
 	return True, None

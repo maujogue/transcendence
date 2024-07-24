@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, logout, login as auth_login
 
 from users.utils import decode_json_body, convert_image_to_base64
 from users import forms
-
+import logging
 
 @require_http_methods(["POST"])
 def login_view(request):
@@ -23,7 +23,7 @@ def login_view(request):
         if user is not None:
             if not user.email_is_verified:
                 return JsonResponse({'error': "email_unverified"}, status=400)
-
+            logging.info(f"online status {user.is_online}")
             if user.is_online:
                 return JsonResponse({'error': "logged_elsewhere"}, status=400)
             auth_login(request, user)

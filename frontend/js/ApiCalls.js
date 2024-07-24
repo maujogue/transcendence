@@ -59,8 +59,10 @@ async function login(loginForm) {
 		button.classList.add("btn", "btn-sm", "btn-danger", "text-white", "ms-auto");
 		button.onclick = async () => {
 			response = await runEndPoint("users/update_is_online/", "POST", JSON.stringify({ username: fetchBody.username, online: false }));
-			if (response.statusCode === 200)
+			if (response.statusCode === 200) {	
 				login(loginForm);
+				button.remove();
+			}
 			else
 				showAlert("cant_force_log", button);
 		};
@@ -71,7 +73,7 @@ async function login(loginForm) {
 }
 
 async function logout() {
-	if (!(await isLoggedIn()) || isSpamming("logout"))
+	if (!(await isLoggedIn()))
 		return;
 	var response = await runEndPoint("users/logout/", "POST",);
 	if (response.statusCode === 200) {

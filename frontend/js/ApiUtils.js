@@ -59,7 +59,7 @@ let endpointTab = {};
 function isSpamming(endpoint) {
 	if (endpoint in endpointTab) {
 		var lastCalled = endpointTab[endpoint];
-		if (Date.now() - lastCalled <= 2000){
+		if (Date.now() - lastCalled <= 1000){
 			return true;
 		}
 		else {

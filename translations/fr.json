@@ -261,5 +261,6 @@
 	"Intermediate": "Intermédiaire",
 	"Easy": "Facile",
 	"Solo": "Solo",
-	"Multiplayer": "Multijoueur"
+	"Multiplayer": "Multijoueur",
+	"already_connected_message" : "Vous êtes déjà connecté sur un autre onglet. Veuillez vous connecter à nouveau."
 }

@@ -269,6 +269,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 if not await self.check_if_match_is_started(self.match):
                     await self.send_self_matchup()
                 else:
+                    lobby = await Lobby.objects.aget(pk=self.match.lobby_id)
+                    await self.create_history_match(lobby)
                     await self.endGame()
             else:
                 await self.send_bracket(False)

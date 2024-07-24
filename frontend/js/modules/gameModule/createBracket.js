@@ -124,6 +124,8 @@ export function drawBracket(bracket) {
     updateButtonWithStatus();
     createBracketCanvas(bracket.tournament.name);
     setDimensions();
+    if (boxWidth === 0 || boxHeight === 0)
+        return
     canvas = document.getElementById('bracketCanvas');
     ctx = canvas.getContext('2d');
     ctx.font = '12px Arial';

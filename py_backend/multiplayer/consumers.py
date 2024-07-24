@@ -246,7 +246,10 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
 
     async def gameLoop(self):
-        self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
+        try:
+            self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
+        except Lobby.DoesNotExist:
+            return
         while self.lobby.game_started and self.is_connected:
             await self.movePlayer()
             if self.player.name == 'player1':

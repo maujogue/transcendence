@@ -91,6 +91,8 @@ function createWaitingPlayAgain() {
 
     const waitingMessage = document.createElement('h3');
     waitingMessage.innerText = "Waiting for your opponent...";
+    waitingMessage.setAttribute("data-lang", "waiting-play-again");
+    waitingMessage.id = "waitingMessage";
     const titleDiv = document.createElement('div');
     div.append(titleDiv);
     titleDiv.append(waitingMessage);
@@ -177,8 +179,14 @@ async function connectToLobby(username) {
         }
         if (data['type'] && data['type'] == 'status')
             await handlerStatusMessage(data, wsMatch, env, status);
-        if (data['type'] == 'match_info')
+        if (data['type'] == 'match_info') {
+            const waitingDiv = document.getElementById("waiting-opponent");
+            if (waitingDiv) {
+                console.log("entering in the condition to remove the text");
+                waitingDiv.remove();
+            }
             displayIntroScreen(env, data);
+        }
         if (data['type'] == 'ball_data')
             setBallData(data, env);
         if (data['type'] == 'auth' && data['status'] == 'failed') 

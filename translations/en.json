@@ -258,5 +258,6 @@
 	"Intermediate": "Intermediate",
 	"Easy": "Easy",
 	"Solo": "Solo",
-	"Multiplayer": "Multiplayer"
+	"Multiplayer": "Multiplayer",
+	"already_connected_message": "You are already connected on another tab. Please log in again."
 }

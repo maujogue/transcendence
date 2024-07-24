@@ -97,7 +97,8 @@ export async function init() {
 		const matchHistoryTable = module.querySelector('#match-history').getElementsByTagName('tbody')[0];
 		matchHistoryTable.innerHTML = '';
 
-		matches.forEach(match => {
+		for (let i = matches.length - 1; i >= 0; i--) {
+			const match = matches[i];
 			const row = matchHistoryTable.insertRow();
 			row.className = match.player1 === match.winner ? 'win-row' : 'loss-row';
 
@@ -122,7 +123,7 @@ export async function init() {
 				</span>
 				`;
 			cellDate.innerHTML = '<span class="fs-6" >' + new Date(match.date).toLocaleString() + '</span>';
-		});
+		};
 	}
 
 }

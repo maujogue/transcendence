@@ -1,4 +1,4 @@
-import { updateModule } from "./Modules.js";
+import { updateProfile } from "./ApiCalls.js";
 import { injectUserData, getUserData } from "./User.js";
 import { disable42LoginElements } from "./Utils.js";
 import { initListenersEmail } from "./modules/emailInputModule/emailInputModule.js";
@@ -12,6 +12,13 @@ function inputInitListeners() {
 		var inputClone = input.cloneNode(true);
 		input.parentNode.replaceChild(inputClone, input);
 		inputClone.addEventListener("input", enableDisableSaveButtonOnInput);
+		inputClone.addEventListener('keypress', function (event) {
+			if (event.key === 'Enter') {
+				event.preventDefault();
+				if (document.getElementById("saveChangesButton").disabled === false)
+					updateProfile();
+			}
+		});
 	});
 	initListenersUsername();
 	initListenersTournamentUsername();

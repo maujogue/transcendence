@@ -1,6 +1,6 @@
-import { isLoggedIn, toggleContentOnLogState, resetModalFormsInitListeners } from "./Utils.js";
+import { isLoggedIn, toggleContentOnLogState, resetModalFormsInitListeners, disableCollapsedSidebar } from "./Utils.js";
 import { injectUserData } from "./User.js";
-import { initArray, importFunction, injectModule } from "./Modules.js";
+import { initArray, importFunction, injectModule, updateModule } from "./Modules.js";
 
 export const hostname = window && window.location && window.location.hostname; 
 
@@ -25,12 +25,13 @@ const routes = [
 	new Page("dashboard", "/dash", "html/Dashboard.html", true),
 	new Page("sidebar", "", "html/Sidebar.html", true),
 	new Page("emailVerified", "/emailVerified", "html/EmailVerified.html", true),
+	new Page("about", "/about", "html/About.html", false),
 ];
 
 window.addEventListener("popstate", () => router(routes));
 
 document.addEventListener("DOMContentLoaded", async () => {
-	// document.body.addEventListener("click", async (e) => await navigateOnClick(e));
+	document.body.addEventListener("click", async (e) => await navigateOnClick(e));
 	await initArray(routes);
 	await initPages();
 	resetModalFormsInitListeners();
@@ -46,6 +47,7 @@ async function router() {
 	var previousPage = allPages.find((x) => x.hidden == false);
 	if (previousPage)
 		previousPage.hidden = true;
+	toggleActiveTab(location.pathname);
 	var newPageDiv = allPages.find(page => page.id === newPage.name);
 	if (newPageDiv)
 		newPageDiv.hidden = false;
@@ -85,6 +87,7 @@ async function initPages() {
 		await execPageJavascript(page.name);
 	}
 	router();
+	toggleActiveTab(location.pathname);
 	setLoading(false);
 }
 
@@ -136,6 +139,16 @@ async function execPageJavascript(pageName) {
 		else
 			await page.init();
 	}
+}
+
+function toggleActiveTab(target) {
+	var currentActive = document.querySelector(".active");
+	if (currentActive != null)
+		currentActive.classList.remove("active");
+	if (target == "/")
+		target = "/dash";
+	if (target == "/dash" || target == "/about")
+		document.querySelector("a[href='" + target + "']").classList.add("active");
 }
 
 export { navigateTo, execPageJavascript, routes, initArray, initPages, updatePage };

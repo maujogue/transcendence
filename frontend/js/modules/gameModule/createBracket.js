@@ -20,9 +20,9 @@ function drawMatchBox(x, y, match) {
     const marginHorizontal = boxWidth / 10;
     const marginVertical = boxHeight / 3;
     writePlayerName(x + marginHorizontal,y + marginVertical, match.player1, match.winner);
-    writeScore((x + boxWidth) - marginHorizontal, y + marginVertical, match.player1_score)
+    writeScore((x + boxWidth) - marginHorizontal, y + marginVertical, match.player1_score, match.player1);
     writePlayerName(x + marginHorizontal, (y + boxHeight) - marginVertical + 5, match.player2, match.winner);
-    writeScore((x + boxWidth) - marginHorizontal, (y + boxHeight) - marginVertical + 5, match.player2_score)
+    writeScore((x + boxWidth) - marginHorizontal, (y + boxHeight) - marginVertical + 5, match.player2_score, match.player2);
 }
 
 function writePlayerName(x, y, playerName, winner) {
@@ -34,15 +34,17 @@ function writePlayerName(x, y, playerName, winner) {
         ctx.fillStyle = 'red';
     if (!playerName) {
         playerName = "-";
-        score = "-";
         ctx.fillStyle = "black";
     }
     ctx.fillText(`${playerName}`, x, y);    
     ctx.fillStyle = 'black';
 }
 
-function writeScore(x, y, score) {
-    ctx.fillText(`${score}`, x, y);
+function writeScore(x, y, score, playerName) {
+    if (!playerName)
+        ctx.fillText("-", x, y);
+    else
+        ctx.fillText(`${score}`, x, y);
 }
 
 function drawConnectingLine(x1, y1, x2, y2) {

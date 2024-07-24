@@ -29,6 +29,7 @@ export async function connectToTournament(tournament) {
 
         wsTournament.onmessage = async (event) => {
             const data = JSON.parse(event.data);
+            console.log('received data:', data)
             if (data.type == "participants")
                 displayPlayerList(data.participants);
             if (data.type == "matchup") {
@@ -280,6 +281,7 @@ export async function checkIfUserIsInTournament(user) {
 }
 
 export async function displayErrorPopUp (message, parent) {
+    // TODO append child error
     const errorPopUp = document.createElement("div");
     errorPopUp.id = "errorPopUp";
     errorPopUp.className = "error-pop-up pop-up";

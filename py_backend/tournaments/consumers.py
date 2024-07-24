@@ -163,9 +163,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def launch_match_timer(self, match):
         match.timer = timezone.now()
         await match.asave()
-        if match.player1 == self.scope['user'].username:
+        if match.player1 == self.scope['user'].tournament_username:
             await asyncio.sleep(30)
-        if match.player2 == self.scope['user'].username:
+        if match.player2 == self.scope['user'].tournament_username:
             await asyncio.sleep(32)
 
     async def cancel_match(self):
@@ -229,8 +229,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.match.score_player_2 = match.player2_score
             self.match.winner = player1.tournament_username if match.winner == player1.id else player2.tournament_username
             self.match.finished = True
-            loser = player1.tournament_username if match.winner == match.player1 else player2.tournament_username
-            print(f'set_match_info: {self.match}')
+            loser = player1.tournament_username if match.winner == player2.id else player2.tournament_username
             await self.match.asave()
             await self.send_disqualified(loser)
         except Exception as e:
@@ -334,7 +333,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def authenticate_user_with_tournament_username(self, tournament_username):
         try:
-            print('tournament_username:', tournament_username)
             return CustomUser.objects.get(tournament_username=tournament_username)
         except CustomUser.DoesNotExist:
             raise Exception('user not found')

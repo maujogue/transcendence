@@ -6,13 +6,11 @@ import { fillFriendsList } from "./friendList.js";
 import { hostname } from "../../Router.js";
 import { checkIfWebsocketIsOpen } from "../gameModule/handlerMessage.js";
 
-let currentUser;
 let wsFriends;
 
 export async function friendsWebsocket() {
 	wsFriends = new WebSocket(`wss://${hostname}:8000/ws/friends/`);
 	wsFriends.onopen = async function () {
-		currentUser = await getUserData('username');
 		auth();
 		getCurrentUserRequests();
 		getFriendsList();
@@ -30,15 +28,15 @@ export async function friendsWebsocket() {
 }
 
 async function auth() {
-	sendMessage('auth', {'username': currentUser});
+	sendMessage('auth', {'username': await getUserData('username')});
 }
 
 async function getFriendsList() {
-	sendMessage('get_friendslist', {'username': currentUser});
+	sendMessage('get_friendslist', {'username': await getUserData('username')});
 }
 
 async function getCurrentUserRequests() {
-	sendMessage('get_current_user_requests', {'user': currentUser, 'send': 'true'});
+	sendMessage('get_current_user_requests', {'user': await getUserData('username'), 'send': 'true'});
 }
 
 async function getUserRequests(username) {
@@ -50,25 +48,25 @@ async function getUserRequests(username) {
 async function sendFriendRequest(username) {
 	if (!checkUsername(username))
 		return;
-	sendMessage('friend_request', {'from_user': currentUser, 'to_user': username});
+	sendMessage('friend_request', {'from_user': await getUserData('username'), 'to_user': username});
 }
 
 async function acceptFriendRequest(fromUser) {
 	if (!checkUsername(fromUser))
 		return;
-	sendMessage('accept_request', {'from_user': fromUser, 'to_user': currentUser});
+	sendMessage('accept_request', {'from_user': fromUser, 'to_user': await getUserData('username')});
 }
 
 async function declineFriendRequest(fromUser) {
 	if (!checkUsername(fromUser))
 		return;
-	sendMessage('decline_request', {'from_user': fromUser, 'to_user': currentUser});
+	sendMessage('decline_request', {'from_user': fromUser, 'to_user': await getUserData('username')});
 }
 
 async function removeFriend(toUser) {
 	if (!checkUsername(toUser))
 		return;
-	sendMessage('remove_friend', {'from_user': currentUser, 'to_user': toUser});
+	sendMessage('remove_friend', {'from_user': await getUserData('username'), 'to_user': toUser});
 }
 
 

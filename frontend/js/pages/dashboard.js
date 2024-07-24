@@ -12,7 +12,9 @@ export async function init(queryParams) {
 
 	var saveChangesButton = modal.querySelector("#saveChangesButton");
 	var discardChangesButton = modal.querySelector("#discardChangesButton");
+	var updateProfileForm = modal.querySelector("#updateProfileForm");
 	var confirmPasswordButton = document.querySelector("#confirmPasswordButton");
+	var confirmPasswordPassword = document.querySelector("#confirmPasswordPassword");
 	var updatePasswordButton = document.querySelector("#updatePasswordButton");
 	var password1 = document.querySelector("#updatePasswordFirstPassword");
 	var password2 = document.querySelector("#updatePasswordSecondPassword");
@@ -22,7 +24,14 @@ export async function init(queryParams) {
 	updatePasswordButton.addEventListener("click", () => updatePassword());
 	discardChangesButton.addEventListener("click", () => resetForm());
 	saveChangesButton.addEventListener("click", () => updateProfile());
+	updateProfileForm.addEventListener("submit", (e) => e.preventDefault());
 	confirmPasswordButton.addEventListener("click", () => updateProfileWithPassword());
+	confirmPasswordPassword.addEventListener("keypress", (e) => {
+		if (e.key === "Enter") {
+			e.preventDefault();
+			updateProfileWithPassword();
+		}
+	});
 	
 	password1.addEventListener("input", () => checkPassword("update", password1, password2));
 	password2.addEventListener("input", () => checkPassword("update", password1, password2));

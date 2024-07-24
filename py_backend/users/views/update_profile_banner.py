@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from users.utils import image_extension_is_valid
 
 import magic
+import os
 from PIL import Image
 
 
@@ -37,6 +38,10 @@ def update_profile_banner(request):
         return JsonResponse({'error': "Invalid file."}, status=400)
     try:
         Image.open(uploaded_file)
+
+        if request.user.banner.url != "/media/banner.jpg":
+            os.remove(request.user.banner.path)
+
         request.user.banner = uploaded_file
         request.user.save()
         return JsonResponse({'status': "profile_banner_updated_message"}, status=200)

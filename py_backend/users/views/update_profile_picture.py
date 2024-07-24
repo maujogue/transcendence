@@ -32,9 +32,6 @@ def update_profile_picture(request):
     file_type = mime.from_buffer(uploaded_file.read(1024))
     if 'image' not in file_type:
         return JsonResponse({'error': "invalid_file_message"}, status=400)
-
-    if request.user.avatar != 'avatar.jpg':
-        os.remove('../../media/' + request.user.avatar)
     
     try:
         get_image_dimensions(uploaded_file)
@@ -42,6 +39,10 @@ def update_profile_picture(request):
         return JsonResponse({'error': "invalid_file_message"}, status=400)
     try:
         Image.open(uploaded_file)
+
+        if request.user.avatar.url != "/media/avatar.jpg":
+            os.remove(request.user.avatar.path)
+            
         request.user.avatar = uploaded_file
         request.user.save()
         return JsonResponse({'status': "profile_picture_updated_message"}, status=200)

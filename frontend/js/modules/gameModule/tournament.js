@@ -281,7 +281,8 @@ export async function checkIfUserIsInTournament(user) {
 }
 
 export async function displayErrorPopUp (message, parent) {
-    // TODO append child error
+    if (document.getElementById('errorPopUp'))
+        return
     const errorPopUp = document.createElement("div");
     errorPopUp.id = "errorPopUp";
     errorPopUp.className = "error-pop-up pop-up";

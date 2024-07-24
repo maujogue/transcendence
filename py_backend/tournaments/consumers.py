@@ -143,8 +143,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             match = await Match.objects.aget(lobby_id=str(lobby.uuid))
             return match
         except Match.DoesNotExist:
-            player1 = await self.authenticate_user_with_username(self.match.player1)
-            player2 = await self.authenticate_user_with_username(self.match.player2)
+            print(f'self.match.player1: {self.match.player1}, self.match.player2: {self.match.player2}')
+            player1 = await self.authenticate_user_with_tournament_username(self.match.player1)
+            player2 = await self.authenticate_user_with_tournament_username(self.match.player2)
             winner = player1 if lobby.player1 else player2
             loser = player2 if winner == player1 else player1
             match = Match(  lobby_id=str(lobby.uuid),
@@ -229,6 +230,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             self.match.winner = player1.tournament_username if match.winner == player1.id else player2.tournament_username
             self.match.finished = True
             loser = player1.tournament_username if match.winner == match.player1 else player2.tournament_username
+            print(f'set_match_info: {self.match}')
             await self.match.asave()
             await self.send_disqualified(loser)
         except Exception as e:
@@ -262,6 +264,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         
     async def check_tournament_start(self):
         self.tournament = await self.get_tournament()
+        print(f'tournament start: {await self.is_tournament_full()} and {self.tournament.started}')
         if await self.is_tournament_full() and not self.tournament.started:
             await self.launch_tournament()
         elif self.tournament.started and not self.tournament.finished:
@@ -290,7 +293,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def get_player_match(self, user):
         try:
             self.tournament = await self.get_tournament()
-            return await sync_to_async(self.tournament.get_matches_by_player)(user)
+            return await sync_to_async(self.tournament.get_matches_by_player)(user.tournament_username)
         except Exception as e:
             print(f'get player match: {e}')
         
@@ -322,8 +325,17 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def authenticate_user_with_username(self, username):
         try:
-            print('username: ', username)
+            print(f'username: {username}')
             return CustomUser.objects.get(username=username)
+        except CustomUser.DoesNotExist:
+            print('exception')
+            raise Exception('user not found')
+        
+    @database_sync_to_async
+    def authenticate_user_with_tournament_username(self, tournament_username):
+        try:
+            print('tournament_username:', tournament_username)
+            return CustomUser.objects.get(tournament_username=tournament_username)
         except CustomUser.DoesNotExist:
             raise Exception('user not found')
         
@@ -360,6 +372,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         )
 
     async def send_disqualified(self, username):
+        print('disqualified:', username)
         await self.channel_layer.group_send(
             self.group_name,
             {

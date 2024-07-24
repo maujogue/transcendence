@@ -24,6 +24,7 @@ def create_tournament_match(tournament, playerList, num):
 def get_round_winners(tournament):
     winners = []
     for match in tournament.matchups.filter(round=tournament.current_round - 1):
+        print(f'get round winner: match {match}')
         if match.winner == match.player1:
             winners.append(match.player1)
         else:
@@ -34,7 +35,8 @@ def get_round_winners(tournament):
 
 def generate_bracket(tournament):
     if tournament.current_round == 1:
-        participants = list(tournament.participants.all())
+        all_participants = tournament.participants.all()
+        participants = [participant.tournament_username for participant in all_participants]
         random.shuffle(participants)
     else:
         participants = get_round_winners(tournament)

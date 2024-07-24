@@ -87,12 +87,12 @@ async function handlerMessageStatus(data) {
         ask_tournament_status();
     }
     if (data.status == "cancelled") {
-        await updateModule("statisticsModule");
-        await displayErrorPopUp(data['message'], document.getElementById('selectMenu'));
+        await displayErrorPopUp(data['message'], document.getElementsByClassName('menu')[0]);
         if (checkIfWebsocketIsOpen(wsMatch)) {
             wsMatch.close();
             clearOnlineVariables();
         }
+        await updateModule("statisticsModule");
     }
 }
 
@@ -290,10 +290,11 @@ export async function displayErrorPopUp (message, parent) {
     	errorPopUp.innerText = message;
 	else
 		errorPopUp.innerText = errorText;
-    parent.appendChild(errorPopUp);
+    if (parent)
+        parent.appendChild(errorPopUp);
     setTimeout(() => {
         if (document.getElementById("errorPopUp"))
-            document.getElementById("errorPopUp").remove();
+            document.getElementById("errorPopUp")?.remove();
     }, 4000);
 }
 

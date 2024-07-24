@@ -164,9 +164,9 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         match.timer = timezone.now()
         await match.asave()
         if match.player1 == self.scope['user'].tournament_username:
-            await asyncio.sleep(30)
+            await asyncio.sleep(10)
         if match.player2 == self.scope['user'].tournament_username:
-            await asyncio.sleep(32)
+            await asyncio.sleep(12)
 
     async def cancel_match(self):
         await self.send_data({'type': 'status', 'status': 'cancelled', 'message': f'Match not started in time!'})

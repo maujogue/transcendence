@@ -149,7 +149,7 @@ async function connectToLobby(username) {
     if (!lobbyId)
         wsMatch = new WebSocket(`wss://${hostname}:8000/ws/lobby/`);
     else {
-        wsMatch = new WebSocket(`wss://${hostname}:8080/ws/lobby/${lobbyId}/`);
+        wsMatch = new WebSocket(`wss://${hostname}:8000/ws/lobby/${lobbyId}/`);
     }
     
     tournament_username = username;
@@ -181,10 +181,8 @@ async function connectToLobby(username) {
             await handlerStatusMessage(data, wsMatch, env, status);
         if (data['type'] == 'match_info') {
             const waitingDiv = document.getElementById("waiting-opponent");
-            if (waitingDiv) {
-                console.log("entering in the condition to remove the text");
+            if (waitingDiv)
                 waitingDiv.remove();
-            }
             displayIntroScreen(env, data);
         }
         if (data['type'] == 'ball_data')
@@ -292,12 +290,6 @@ async function sendIsReady(wsMatch) {
     wsMatch.send(JSON.stringify({
         'ready': 'true'
     }));
-
-    // const waitingMessage = document.getElementById("waitingMessage");
-    // if (waitingMessage) {
-    //     waitingMessage.remove();
-    //     console.log("Waiting message removed.");
-    //}
 }
 
 async function setGameIsStart() {

@@ -29,7 +29,7 @@ def update_profile_banner(request):
     if 'image' not in file_type:
         return JsonResponse({'error': "Invalid file."}, status=400)
     
-    cooldown_period = timedelta(seconds=2)
+    cooldown_period = timedelta(seconds=3)
     last_update = getattr(request.user, 'last_banner_update', None)
     now = timezone.now()
     if last_update and now - last_update < cooldown_period:

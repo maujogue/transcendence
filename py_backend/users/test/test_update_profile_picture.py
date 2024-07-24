@@ -47,4 +47,4 @@ class UpdateProfilePictureTest(TestCase):
         self.assertEqual(response.status_code, 400)
         response_data = response.json()
 
-        self.assertEqual(response_data.get('error'), 'invalid_file_type_message')
+        self.assertEqual(response_data.get('error'), 'file_exceed_limit')

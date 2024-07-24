@@ -45,7 +45,7 @@ export function createFormTournament() {
 	</div>\
 	<div class="form-field">\
 		<label for="max_players" class="form-field-max_players glitched" data-lang="max_players">Max players :</label>\
-		<input type="number" class="glitched" id="max_players" name="max_players" min="2" required>\
+		<input type="number" class="glitched" id="max_players" name="max_players" min="2" max="8" required>\
 	</div>\
 	<div class="glitched">\
 		<button class="form-btn tournament-btn" id="form-btn" type="submit">Create</button>\

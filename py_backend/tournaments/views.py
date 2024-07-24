@@ -13,12 +13,6 @@ from .models import Tournament
 
 import json
 
-### debug ###
-# import logging
-
-# logger = logging.getLogger(__name__)
-# #######
-
 CustomUser = get_user_model()
 
 @login_required

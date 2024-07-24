@@ -1,7 +1,6 @@
 from web3 import Web3, HTTPProvider
 import os
 import json
-import logging
 
 CHAIN_ID = 11155111
 WALLET = os.environ.get("WALLET")
@@ -23,8 +22,6 @@ def load_contract_abi():
 
 def set_data_on_blockchain(tournament):
     try:
-        logging.info("entering into set_data_on_blockchain")
-        logging.info(f"CONTRACT_ADDRESS: {CONTRACT_ADDRESS}")
         tournament_winner = tournament.get_winner()
         tournament_name = tournament.name
 
@@ -55,10 +52,7 @@ def set_data_on_blockchain(tournament):
         })
         signed_transaction = w3.eth.account.sign_transaction(transaction, PRIVATE_KEY)
         transaction_hash = w3.eth.send_raw_transaction(signed_transaction.rawTransaction)
-        logging.info("Waiting for transaction to finish...")
         transaction_receipt = w3.eth.wait_for_transaction_receipt(transaction_hash)
-        logging.info("Done! Matches and winner set.")
         return transaction_receipt
     except Exception as e:
-        logging.info(f"Error deploying contract: {e}")
         return None

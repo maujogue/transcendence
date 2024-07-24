@@ -12,10 +12,6 @@ from multiplayer.models import Lobby
 from .models import Tournament, TournamentMatch
 from .bracket import generate_bracket
 
-#import logging
-
-# logger = logging.getLogger(__name__)
-
 class TournamentConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.match = None

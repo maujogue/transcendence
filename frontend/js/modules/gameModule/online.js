@@ -165,7 +165,7 @@ async function connectToLobby(username) {
         createWaitingScreen();
         cancelAnimationFrame(requestId);
         onlineGameLoop(wsMatch);
-        send_ping();
+        // send_ping();
     }
     document.getElementById("game").addEventListener('click', clickHandler);
     

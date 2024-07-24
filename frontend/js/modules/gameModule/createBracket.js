@@ -93,7 +93,7 @@ function displayWaitingText() {
     var timer = setInterval( async () => {
         if (tournamentStatus === "started")
 			textContent = await getKeyTranslation("tournament_start");
-        if (tournamentStatus === "waiting")
+        if (tournamentStatus === "waiting" || tournamentStatus === undefined)
 			textContent = await getKeyTranslation("waiting_for_players_tournament");
         if (playerStatus === "disqualified") {
             waitingText.remove();
@@ -124,6 +124,8 @@ export function drawBracket(bracket) {
     updateButtonWithStatus();
     createBracketCanvas(bracket.tournament.name);
     setDimensions();
+    if (boxWidth === 0 || boxHeight === 0)
+        return
     canvas = document.getElementById('bracketCanvas');
     ctx = canvas.getContext('2d');
     ctx.font = '12px Arial';

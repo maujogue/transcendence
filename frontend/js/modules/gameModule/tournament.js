@@ -29,6 +29,7 @@ export async function connectToTournament(tournament) {
 
         wsTournament.onmessage = async (event) => {
             const data = JSON.parse(event.data);
+            console.log('received data:', data)
             if (data.type == "participants")
                 displayPlayerList(data.participants);
             if (data.type == "matchup") {
@@ -86,12 +87,12 @@ async function handlerMessageStatus(data) {
         ask_tournament_status();
     }
     if (data.status == "cancelled") {
-        await updateModule("statisticsModule");
-        await displayErrorPopUp(data['message'], document.getElementById('selectMenu'));
+        await displayErrorPopUp(data['message'], document.getElementsByClassName('menu')[0]);
         if (checkIfWebsocketIsOpen(wsMatch)) {
             wsMatch.close();
             clearOnlineVariables();
         }
+        await updateModule("statisticsModule");
     }
 }
 
@@ -280,6 +281,7 @@ export async function checkIfUserIsInTournament(user) {
 }
 
 export async function displayErrorPopUp (message, parent) {
+    // TODO append child error
     const errorPopUp = document.createElement("div");
     errorPopUp.id = "errorPopUp";
     errorPopUp.className = "error-pop-up pop-up";
@@ -288,10 +290,11 @@ export async function displayErrorPopUp (message, parent) {
     	errorPopUp.innerText = message;
 	else
 		errorPopUp.innerText = errorText;
-    parent.appendChild(errorPopUp);
+    if (parent)
+        parent.appendChild(errorPopUp);
     setTimeout(() => {
         if (document.getElementById("errorPopUp"))
-            document.getElementById("errorPopUp").remove();
+            document.getElementById("errorPopUp")?.remove();
     }, 4000);
 }
 

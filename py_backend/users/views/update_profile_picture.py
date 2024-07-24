@@ -6,7 +6,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.http import JsonResponse
 
-from users.utils import image_extension_is_valid
+from users.utils import image_is_valid
 
 import pylibmagic # needed for jrenault's macbook
 import magic
@@ -17,18 +17,12 @@ from PIL import Image
 @require_http_methods(["POST"])
 @requires_csrf_token
 @login_required
-@is_in_game
 def update_profile_picture(request):
     uploaded_file = request.FILES.get("image")
     
-    if not image_extension_is_valid(uploaded_file.name):
-        return JsonResponse({'error': "invalid_file_type_message"}, status=400)
-
-    if uploaded_file and uploaded_file.size > 5242880: # 5MB
-        return JsonResponse({'error': "file_too_big_message"}, status=400)
-    
-    if uploaded_file is None:
-        return JsonResponse({'error': "no_file_message"}, status=400)
+    is_valid_image, is_valid_image_error = image_is_valid(uploaded_file)
+    if not is_valid_image:
+        return JsonResponse({'error': is_valid_image_error}, status=400)
     
     mime = magic.Magic()
     file_type = mime.from_buffer(uploaded_file.read(1024))
@@ -38,7 +32,6 @@ def update_profile_picture(request):
     cooldown_period = timedelta(seconds=2)
     last_update = getattr(request.user, 'last_avatar_update', None)
     now = timezone.now()
-
     if last_update and now - last_update < cooldown_period:
         return JsonResponse({'error': "cooldown_message"}, status=400)
     

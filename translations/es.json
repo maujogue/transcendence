@@ -244,6 +244,9 @@
 	"tournament_name_empty": "El nombre del torneo no puede estar vacío.",
 	"tournament_name_used": "El nombre del torneo ya está en uso.",
 	"cooldown_message": "Tienes que esperar 3 segundos para volver a cargar una imagen.",
+	"no_file_provided": "No se proporciona ningún archivo",
+	"invalid_image_type": "Tipo de imagen no válido. Por favor, utilice png, jpg o jpeg",
+	"file_exceed_limit": "La imagen supera el límite de tamaño (5MB).",
 
 	"wins": "gana",
 	"losses": "Pérdidas",

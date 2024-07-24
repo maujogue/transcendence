@@ -6,7 +6,7 @@ from django.utils import timezone
 from datetime import timedelta
 from django.http import JsonResponse
 
-from users.utils import image_extension_is_valid
+from users.utils import image_is_valid
 
 import magic
 import os
@@ -20,14 +20,9 @@ from PIL import Image
 def update_profile_banner(request):
     uploaded_file = request.FILES.get("image")
     
-    if not image_extension_is_valid(uploaded_file.name):
-        return JsonResponse({'error': "Invalid image type."}, status=400)
-
-    if uploaded_file and uploaded_file.size > 5242880: # 5MB
-        return JsonResponse({'error': "File size exceeds the limit."}, status=400)
-    
-    if uploaded_file is None:
-        return JsonResponse({'error': "No file provided."}, status=400)
+    is_valid_image, is_valid_image_error = image_is_valid(uploaded_file)
+    if not is_valid_image:
+        return JsonResponse({'error': is_valid_image_error}, status=400)
     
     mime = magic.Magic()
     file_type = mime.from_buffer(uploaded_file.read(1024))
@@ -37,7 +32,6 @@ def update_profile_banner(request):
     cooldown_period = timedelta(seconds=2)
     last_update = getattr(request.user, 'last_banner_update', None)
     now = timezone.now()
-
     if last_update and now - last_update < cooldown_period:
         return JsonResponse({'error': "cooldown_message"}, status=400)
     

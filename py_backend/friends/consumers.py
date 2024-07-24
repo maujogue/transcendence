@@ -70,7 +70,13 @@ class FriendsConsumer(AsyncWebsocketConsumer):
                 event = {'type': 'send_friendslist'})
         except Exception as e:
             print('Auth error:', e)
+            await self.channel_layer.group_send(
+                username,
+                {'type': 'logout'})
             await self.close()
+                
+    async def logout(self, event):
+        await self.close()
 
 
 
@@ -228,6 +234,10 @@ class FriendsConsumer(AsyncWebsocketConsumer):
         user = await self.authenticate_user_with_username(username)
         if user is not None:
             if user.is_online:
+                await self.channel_layer.group_add(
+                    username,
+                    self.channel_name)
+                
                 raise Exception('user already connected')
             self.scope['user'] = user
             await self.set_online_status(True)

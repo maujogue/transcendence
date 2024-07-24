@@ -34,7 +34,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         try:
             text_data_json = json.loads(text_data)
-            print('text data json:', text_data_json)
+            print('tournament text data json:', text_data_json)
             if text_data_json.get('type') == 'auth':
                 await self.auth(text_data_json)
                 await self.check_tournament_start()
@@ -72,6 +72,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def endGame(self):
         if not await self.validate_foreign_keys():
             return
+        print('endgame')
         await self.set_match_info()
         await self.match_is_over()
 
@@ -219,6 +220,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def set_match_info(self):
         try:
+            print('set_match_info')
             match = await self.get_match_result()
             player1 = await self.authenticate_user_with_id(match.player1)
             player2 = await self.authenticate_user_with_id(match.player2)
@@ -269,9 +271,13 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 if not await self.check_if_match_is_started(self.match):
                     await self.send_self_matchup()
                 else:
-                    lobby = await Lobby.objects.aget(pk=self.match.lobby_id)
-                    await self.create_history_match(lobby)
+                    try:
+                        lobby = await Lobby.objects.aget(pk=self.match.lobby_id)
+                        await self.create_history_match(lobby)
+                    except Lobby.DoesNotExist:
+                        print('Lobby does not exist')
                     await self.endGame()
+                        
             else:
                 await self.send_bracket(False)
         

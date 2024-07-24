@@ -122,10 +122,12 @@ class PongConsumer(AsyncWebsocketConsumer):
             await self.set_ingame_status(True)
             await self.set_player_in_lobby(user)
             await self.send_data({ "type": "auth", "status": "success"})
+            print('auth success')
             await self.channel_layer.group_send(
                 self.lobby_group_name, { 'type': 'pong.user_info', 'user': self.scope['user'], 'name': self.player.name}
             )
         else:
+            print('auth failed')
             await self.send_data({ "type": "auth", "status": "failed"})
             await self.close()
 
@@ -153,6 +155,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         try:
             self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
             text_data_json = json.loads(text_data)
+            # print(f'multi text data json: ${text_data_json}')c
             if text_data_json.get("type") == 'auth':
                 await self.authenticate_user(text_data_json)
             if text_data_json.get("ready"):
@@ -188,6 +191,8 @@ class PongConsumer(AsyncWebsocketConsumer):
         try:
             if self.is_connected == False:
                 return
+            if self.scope['user'] is not None:
+                print(f'${self.scope["user"].username} disconnect')
             try:
                 self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
             except Lobby.DoesNotExist:

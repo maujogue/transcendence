@@ -133,6 +133,7 @@
 	"playagain": "Play Again",
 	"backmenu": "Back to Menu",
 	"win": "Win!",
+	"waiting-play-again": "Waiting for your opponent...",
 	"name": "Name",
 	"create_tournament": "Create Tournament",
 	"show_bracket": "Show Bracket",

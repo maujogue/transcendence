@@ -15,6 +15,7 @@ import { wsTournament } from "./tournament.js";
 import { hostname } from "../../Router.js";
 import { keyPress, keysPressed} from './handleKeyPress.js';
 import { setEditButtonProfile } from '../../Utils.js';
+import { createDivMenu } from "./menu.js"
 
 let requestId
 let env;
@@ -83,9 +84,24 @@ function leaveMatchmaking() {
     paddle.name = "paddle_player";
 }
 
+function createWaitingPlayAgain() {
+    createDivMenu("waiting-opponent");
+    const div = document.getElementById("waiting-opponent");
+    div.classList.add('waiting-opponent');
+
+    const waitingMessage = document.createElement('h3');
+    waitingMessage.innerText = "Waiting for your opponent...";
+    waitingMessage.setAttribute("data-lang", "waiting-play-again");
+    waitingMessage.id = "waitingMessage";
+    const titleDiv = document.createElement('div');
+    div.append(titleDiv);
+    titleDiv.append(waitingMessage);
+}
+
 function clickHandler(event) {
     if (event.target.id == 'restart') {
         document.getElementById("endscreen")?.remove();
+        createWaitingPlayAgain();
         sendIsReady(wsMatch);
     }
     if (event.target.id == 'backMenu') {
@@ -163,8 +179,12 @@ async function connectToLobby(username) {
         }
         if (data['type'] && data['type'] == 'status')
             await handlerStatusMessage(data, wsMatch, env, status);
-        if (data['type'] == 'match_info')
+        if (data['type'] == 'match_info') {
+            const waitingDiv = document.getElementById("waiting-opponent");
+            if (waitingDiv)
+                waitingDiv.remove();
             displayIntroScreen(env, data);
+        }
         if (data['type'] == 'ball_data')
             setBallData(data, env);
         if (data['type'] == 'auth' && data['status'] == 'failed') 

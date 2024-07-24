@@ -133,6 +133,7 @@
 	"playagain": "Rejouer",
 	"backmenu": "Retour au menu",
 	"win": "a gagné!",
+	"waiting-play-again": "En attente de votre adversaire...",
 	"name": "Nom",
 	"create_tournament": "Créer un tournoi",
 	"show_bracket": "Afficher le tableau",

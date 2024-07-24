@@ -997,3 +997,11 @@ border: 3px solid orange;  /* creates padding around scroll thumb */
 	top: 10%;
 	font-size: 1.5em;
 }
+
+.waiting-opponent {
+	position: absolute;
+	color: white;
+	text-align: center;
+	font-size: 2.5em;
+	z-index: 1;
+}

@@ -73,12 +73,12 @@ class FriendsConsumer(AsyncWebsocketConsumer):
             await self.group_send(
                 self.username,
                 event = {'type': 'already_connected', 'username': self.username})
-            await self.close()
             
     async def already_connected(self, data):
         if self.username == data.get('username'):
             await self.send(text_data=json.dumps({
             "type": "already_connected"}))
+            await self.close()
 
 
 #----------- friends functions ------------------------------------------------------------------------------------------------------------

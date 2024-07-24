@@ -133,6 +133,7 @@
 	"playagain": "Juega de nuevo",
 	"backmenu": "Volver al menú",
 	"win": "gaño!",
+	"waiting-play-again": "Esperar al adversario",
 	"name": "Nombre",
 	"create_tournament": "Crear torneo",
 	"show_bracket": "Mostrar soporte",

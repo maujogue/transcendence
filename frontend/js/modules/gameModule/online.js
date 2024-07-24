@@ -15,6 +15,8 @@ import { wsTournament } from "./tournament.js";
 import { hostname } from "../../Router.js";
 import { keyPress, keysPressed} from './handleKeyPress.js';
 import { setEditButtonProfile } from '../../Utils.js';
+import { createDivMenu } from "./menu.js"
+import { getKeyTranslation } from "../translationsModule/translationsModule.js";
 
 let requestId
 let env;
@@ -86,6 +88,17 @@ function leaveMatchmaking() {
 function clickHandler(event) {
     if (event.target.id == 'restart') {
         document.getElementById("endscreen")?.remove();
+
+        createDivMenu("endscreen");
+        const div = document.getElementById("endscreen");
+        div.classList.add('endscreen');
+    
+        const waiting = document.createElement('h3');
+        waiting.setAttribute("data-lang", "waiting-play-again");
+        const titleDiv = document.createElement('div');
+        div.append(titleDiv);
+        titleDiv.append(waiting);
+
         sendIsReady(wsMatch);
     }
     if (event.target.id == 'backMenu') {
@@ -133,7 +146,7 @@ async function connectToLobby(username) {
     if (!lobbyId)
         wsMatch = new WebSocket(`wss://${hostname}:8000/ws/lobby/`);
     else {
-        wsMatch = new WebSocket(`wss://${hostname}:8000/ws/lobby/${lobbyId}/`);
+        wsMatch = new WebSocket(`wss://${hostname}:8080/ws/lobby/${lobbyId}/`);
     }
     
     tournament_username = username;

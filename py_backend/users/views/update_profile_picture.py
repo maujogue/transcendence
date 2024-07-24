@@ -3,6 +3,7 @@ from django.views.decorators.csrf import requires_csrf_token
 from users.decorators import custom_login_required as login_required, is_in_game
 from django.core.files.images import get_image_dimensions
 from django.utils import timezone
+from datetime import timedelta
 from django.http import JsonResponse
 
 from users.utils import image_extension_is_valid
@@ -33,6 +34,13 @@ def update_profile_picture(request):
     file_type = mime.from_buffer(uploaded_file.read(1024))
     if 'image' not in file_type:
         return JsonResponse({'error': "invalid_file_message"}, status=400)
+    
+    cooldown_period = timedelta(seconds=2)
+    last_update = getattr(request.user, 'last_avatar_update', None)
+    now = timezone.now()
+
+    if last_update and now - last_update < cooldown_period:
+        return JsonResponse({'error': "cooldown_message"}, status=400)
     
     try:
         get_image_dimensions(uploaded_file)

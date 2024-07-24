@@ -243,6 +243,8 @@
 	"username_used": "El nombre de usuario ya está utilizado.",
 	"tournament_name_empty": "El nombre del torneo no puede estar vacío.",
 	"tournament_name_used": "El nombre del torneo ya está en uso.",
+	"cooldown_message": "Tienes que esperar 3 segundos para volver a cargar una imagen.",
+
 	"wins": "gana",
 	"losses": "Pérdidas",
 	"exchanges_chart": "gráfico de intercambio",

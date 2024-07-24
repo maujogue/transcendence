@@ -29,4 +29,4 @@ def update_lang(request):
             return JsonResponse({'status': 'error', 'message': 'Invalid language or user not authenticated'}, status=400)
 
     except Exception as e:
-        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)

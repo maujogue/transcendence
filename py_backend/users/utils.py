@@ -42,6 +42,8 @@ def email_is_unique(email):
 
 
 def username_is_valid(username):
+	if not username.isalnum():
+		return False, f'username_special_characters'
 	if not username or username == '':
 		return False, f'missing_username'
 	if len(username) < settings.MIN_LEN_USERNAME:
@@ -126,9 +128,9 @@ def image_extension_is_valid(image_name):
 
 
 def convert_image_to_base64(image_field):
-    with open(image_field.path, "rb") as image_file:
-        encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
-    return encoded_string
+	with open(image_field.path, "rb") as image_file:
+		encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+	return encoded_string
 
 
 def send_confirmation_email(user, request):

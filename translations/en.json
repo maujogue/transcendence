@@ -262,5 +262,6 @@
 	"Easy": "Easy",
 	"Solo": "Solo",
 	"Multiplayer": "Multiplayer",
-	"already_connected_message": "You are already connected on another tab. Please log in again."
+	"already_connected_message": "You are already connected on another tab. Please log in again.",
+	"username_special_characters": "Username cannot contain special characters."
 }

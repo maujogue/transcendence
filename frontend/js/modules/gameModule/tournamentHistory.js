@@ -4,6 +4,8 @@ import { displayErrorPopUp } from "./tournament.js";
 import { hostname } from "../../Router.js";
 import { getUserData } from "../../User.js";
 
+let lastClickTime = 0
+
 async function getUsername() {
     try {
         const userData = await getUserData();
@@ -59,7 +61,11 @@ function createDivTournamentHistory(parent) {
     
     parent.appendChild(listTournament);
     document.getElementById("actualizeIcon").addEventListener("click", () => {
-        displayUserTournaments();
+        const now = new Date().getTime();
+        if (now - lastClickTime > 1000) {
+            displayUserTournaments();
+            lastClickTime = now;
+        }
     });
 }
 

@@ -9,6 +9,7 @@ async function loadModel(fileName) {
     return new Promise((resolve, reject) => {
         const loader = new GLTFLoader();
         const draco = new DRACOLoader();
+		window.createImageBitmap = undefined;
         draco.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.4.3/');
         loader.setDRACOLoader(draco);
 

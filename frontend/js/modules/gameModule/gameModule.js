@@ -24,6 +24,8 @@ import * as THREE from 'three';
 import { injectElementTranslations } from "../translationsModule/translationsModule.js";
 import { updateWinVariables } from "./varGlobal.js";
 import { keyPress, keysPressed, setKeyPressToFalse } from "./handleKeyPress.js";
+import { hostname } from "../../Router.js";
+
 export var lobby;
 export var clock;
 export var characters;
@@ -207,7 +209,7 @@ export async function init() {
 			start = true;
 			ClearAllEnv(environment);
 			divMenu.remove();
-			model = await tf.loadLayersModel('https://127.0.0.1:8000/js/modules/AIModule/model/model.json');
+			model = await tf.loadLayersModel(`https://${hostname}:8000/js/modules/AIModule/model/model.json`);
 			environment = await initGame(player1, player2);
 			player1.score = 0;
 			player2.score = 0;

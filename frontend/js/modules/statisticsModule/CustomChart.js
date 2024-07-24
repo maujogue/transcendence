@@ -1,5 +1,6 @@
 class CustomChart {
 	constructor(module, selector, dropdownSelector, config) {
+		this.destroy();
 		this.ctx = module.querySelector(selector).getContext('2d');
 		this.dropdown = module.querySelector(dropdownSelector);
 		this.config = config;
@@ -8,7 +9,8 @@ class CustomChart {
 		this.initDropdown();
 	}
 	destroy() {
-		this.chart.destroy();
+		if (this.chart)
+			this.chart.destroy();
 	}
 	updateType(type) {
 		this.config.type = type;

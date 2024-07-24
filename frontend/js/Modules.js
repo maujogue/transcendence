@@ -58,8 +58,14 @@ async function updateModule(moduleName) {
 	if (module) {
 		const moduleDivs = document.querySelectorAll("." + moduleName);
 		for (const div of moduleDivs) {
-			div.removeAttribute("id");
-			div.innerHTML = module.html;
+			var newDiv = document.createElement("div");
+			newDiv.innerHTML = module.html;
+			for (const attr of div.attributes) {
+				if (attr.name != "id")
+                	newDiv.setAttribute(attr.name, attr.value);
+            }
+			div.parentElement.insertBefore(newDiv, div);
+			div.remove();
 			await module.init();
 		}
 		await injectTranslations();

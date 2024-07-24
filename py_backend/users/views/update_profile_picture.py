@@ -17,6 +17,7 @@ from PIL import Image
 @require_http_methods(["POST"])
 @requires_csrf_token
 @login_required
+@is_in_game
 def update_profile_picture(request):
     uploaded_file = request.FILES.get("image")
     

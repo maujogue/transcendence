@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import MinValueValidator, MaxValueValidator
-from django.contrib.sessions.models import Session
+from django.utils import timezone
 from py_backend import settings
 from PIL import Image
 import random
@@ -34,6 +33,8 @@ class CustomUser(AbstractUser):
 	is_online = models.BooleanField(default=False)
 	is_ingame = models.BooleanField(default=False)
 	lang = models.CharField(max_length=2, default='en')
+	last_avatar_update = models.DateTimeField(null=True, default=timezone.now())
+	last_banner_update = models.DateTimeField(null=True, default=timezone.now())
 	
 	def save(self, *args, **kwargs):
 		if not self.tournament_username:

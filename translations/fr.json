@@ -243,6 +243,9 @@
 	"username_used": "Le nom d'utilisateur est déjà utilisé.",
 	"tournament_name_empty": "Le nom du tournoi ne peut pas être vide.",
 	"tournament_name_used": "Le nom du tournoi est déjà utilisé.",
+	"cooldown_message": "Vous devez attendre 3 secondes avant de changer d'image",
+	"no_file_provided": "Aucun fichier fourni.",
+
 	"wins": "Victoires",
 	"losses": "Défaites",
 	"exchanges_chart": "Graphique des échanges menés",

@@ -243,6 +243,8 @@
 	"username_used": "Username is already used.",
 	"tournament_name_empty": "Tournament name cannot be empty.",
 	"tournament_name_used": "Tournament name is already used.",
+	"cooldown_message": "You have to wait 3 seconds to reupload an image.",
+	"no_file_provided": "No file provided",
 
 	"wins": "Wins",
 	"losses": "Losses",

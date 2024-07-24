@@ -10,7 +10,6 @@ from asgiref.sync import async_to_sync
 
 @require_http_methods(['POST'])
 @requires_csrf_token
-@is_in_game
 def update_is_online_view(request):
     try:
         data = decode_json_body(request)

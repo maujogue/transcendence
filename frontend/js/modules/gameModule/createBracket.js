@@ -1,3 +1,4 @@
+import { setEditButtonProfile } from "../../Utils.js";
 import { getKeyTranslation, injectElementTranslations } from "../translationsModule/translationsModule.js";
 import { displayMainMenu } from "./menu.js";
 import { playerStatus, tournamentStatus, createEtherscanButton } from "./tournament.js";
@@ -196,6 +197,7 @@ export function createLeaveButton(parent) {
     document.getElementById('leaveTournament').addEventListener('click', () => {
         if (wsTournament)
             wsTournament.close();
+        setEditButtonProfile(false);
         displayMainMenu();
     });
 }

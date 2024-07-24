@@ -17,6 +17,7 @@ import { createJoinTournamentMenu } from "./joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "./tournament.js";
 import { getModuleDiv, updateModule } from "../../Modules.js";
 import { trainModel, AIMovement, storeData, resetAITimer } from "../AIModule/AI.js";
+import { setEditButtonProfile } from '../../Utils.js';
 
 import { wsTournament } from "./tournament.js";
 import { createTournamentHistoryMenu } from "./tournamentHistory.js";
@@ -120,6 +121,7 @@ export async function init() {
 			actualizeScore(player1, player2, environment, environment.font);
 		}
 		if (event.target.id == 'backMenu' || event.target.id == 'backIcon') {
+			setEditButtonProfile(false);
 			localLoop = false;
 			isOnline = false;
 			ClearAllEnv(environment);
@@ -142,6 +144,7 @@ export async function init() {
 			createAISelectMenu();
 		}
 		if (event.target.id == 'onlineGame' && userData) {
+			setEditButtonProfile(true);
 			isOnline = true;
 			createOnlineMenu();
 		}

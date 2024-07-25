@@ -1,12 +1,8 @@
 from web3 import Web3, HTTPProvider
 import os
 import json
-# import logging
-# from asgiref.sync import sync_to_async
 
-# logger = logging.getLogger(__name__)
-
-CHAIN_ID = 11155111 #TODO find if it's working with the env in prod, if not find a solution
+CHAIN_ID = 11155111
 WALLET = os.environ.get("WALLET")
 PRIVATE_KEY = os.environ.get("PRIVATE_KEY")
 PROVIDER_URL = os.environ.get("PROVIDER_URL")
@@ -26,8 +22,6 @@ def load_contract_abi():
 
 def set_data_on_blockchain(tournament):
     try:
-        print("entering into set_data_on_blockchain")
-        print(f"CONTRACT_ADDRESS: {CONTRACT_ADDRESS}")
         tournament_winner = tournament.get_winner()
         tournament_name = tournament.name
 
@@ -42,7 +36,7 @@ def set_data_on_blockchain(tournament):
                 'round': str(match.round),
                 'player1': match.player1,
                 'scorePlayer1':str(match.score_player_1),
-                'player2':match.player2,
+                'player2':match.player2 if match.player2 else "None",
                 'scorePlayer2':str(match.score_player_2),
                 'matchWinner': match.winner
             })
@@ -58,10 +52,7 @@ def set_data_on_blockchain(tournament):
         })
         signed_transaction = w3.eth.account.sign_transaction(transaction, PRIVATE_KEY)
         transaction_hash = w3.eth.send_raw_transaction(signed_transaction.rawTransaction)
-        print("Waiting for transaction to finish...")
         transaction_receipt = w3.eth.wait_for_transaction_receipt(transaction_hash)
-        print("Done! Matches and winner set.")
         return transaction_receipt
     except Exception as e:
-        print(f"Error deploying contract: {e}")
         return None

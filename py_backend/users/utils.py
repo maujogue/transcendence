@@ -42,10 +42,10 @@ def email_is_unique(email):
 
 
 def username_is_valid(username):
-	if not username.isalnum():
-		return False, f'username_special_characters'
 	if not username or username == '':
 		return False, f'missing_username'
+	if not username.isalnum():
+		return False, f'username_special_characters'
 	if len(username) < settings.MIN_LEN_USERNAME:
 		return False, f'username_too_short'
 	if len(username) > settings.MAX_LEN_USERNAME:
@@ -77,6 +77,8 @@ def tournament_username_is_unique(username):
 def tournament_username_is_valid(username):
 	if not username or username == '':
 		return False, f'missing_username'
+	if not username.isalnum():
+		return False, f'username_special_characters'
 	if len(username) > settings.MAX_LEN_TOURNAMENT_USERNAME:
 		return False, f'username_too_long'
 	if any(char in SPECIAL_CHARS for char in username):

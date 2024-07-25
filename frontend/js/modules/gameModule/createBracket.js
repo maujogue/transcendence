@@ -191,6 +191,8 @@ function displayRankingButton(parent) {
 }
 
 export function createLeaveButton(parent) {
+    if (!parent)
+        return;
     const btn = document.createElement('button');
     btn.id = 'leaveTournament';
     btn.classList.add('tournament-btn', 'leave-tournament-btn', 'end-tournament-btn');

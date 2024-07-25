@@ -262,5 +262,6 @@
 	"Easy": "Facile",
 	"Solo": "Solo",
 	"Multiplayer": "Multijoueur",
-	"already_connected_message" : "Vous êtes déjà connecté sur un autre onglet. Veuillez vous connecter à nouveau."
+	"already_connected_message" : "Vous êtes déjà connecté sur un autre onglet. Veuillez vous connecter à nouveau.",
+	"username_special_characters": "Le nom d'utilisateur ne peut pas contenir de caractères spéciaux.",
 }

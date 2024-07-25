@@ -129,19 +129,10 @@ async function showAlert(message, success, button) {
 
 	setTimeout((function (id) {
 		return function () {
-			removeAlert(document.getElementById(`alert${id}`));
+			document.getElementById(`alert${id}`)?.remove();
 		}
 	})(alertId), 5000);
 	alertId++;
-}
-
-function removeAlert(alertDiv) {
-	if (alertDiv) {
-		alertDiv.style.opacity = 0;
-		setTimeout(() => {
-			alertDiv.remove();
-		}, 500);
-	}
 }
 
 function togglePasswordVisibility(togglePasswordInputId, passwordFieldId) {

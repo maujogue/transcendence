@@ -192,12 +192,15 @@ async function displayUserPage(username) {
 	var usernameAvailable = await checkInputAvailable(username, "username");
 	if (usernameAvailable === true)
 		return showAlert("user_not_exist_message");
-	if (username === await getUserData("username"))
+	var userPageName = await getUserData("username");
+	console.log(username, userPageName);
+	if (!userPageName || username.toLowerCase() === userPageName.toLowerCase())
 		return showAlert("cant_visit_own_profile_message");
 	await waitThenInitDashButtons(username);
 	await injectDashData(username);
 	await navigateTo("/dash");
 }
+
 
 async function injectDashData(username, close) {
 	var userDash = document.getElementById("userDash");

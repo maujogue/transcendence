@@ -194,6 +194,13 @@ h1 {
 	right: 0;
 }
 
+#bracketDiv {
+	overflow-y: auto;
+    height: 60%;
+    width: 105%;
+    overflow-x: hidden;
+}
+
 .player-info {
     display: flex;
     align-items: center;
@@ -347,8 +354,7 @@ h1 {
 	perspective: 10%;
 	filter: blur(2%);
 	position: relative;
-	overflow-y: auto;
-	overflow-x: hidden;
+	overflow: hidden;
 	top: -5%;
 	height: 80%;
 	justify-content: start;

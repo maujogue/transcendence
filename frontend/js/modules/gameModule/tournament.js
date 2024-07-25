@@ -29,7 +29,6 @@ export async function connectToTournament(tournament) {
 
         wsTournament.onmessage = async (event) => {
             const data = JSON.parse(event.data);
-            console.log('received data:', data)
             if (data.type == "participants")
                 displayPlayerList(data.participants);
             if (data.type == "matchup") {
@@ -76,8 +75,10 @@ async function displayTimer(time) {
 }
 
 async function handlerMessageStatus(data) {
-    if (data.status == "disqualified")
+    if (data.status == "disqualified") {
         playerStatus = "disqualified";
+        createLeaveButton(document.getElementsByClassName('tournament')[0])
+    }
     if (data.status == "endTournament" && tournamentStatus != "finished")
         tournamentStatus = "finished";
     if (data.status == "start")
@@ -142,26 +143,11 @@ async function getReceiptAddress(tournament_id) {
 
 async function updateEtherscanButton(etherscanBtn, receipt_address) {
     etherscanBtn.disabled = false;
-    etherscanBtn.textContent = await getKeyTranslation("see_blockchain");
+    
+    etherscanBtn.innerText = await getKeyTranslation("see_blockchain");
     etherscanBtn.onclick = () => {
         window.open(`https://sepolia.etherscan.io/tx/${receipt_address}`, '_blank', 'noopener noreferrer');
     }
-}
-
-async function getWaitingTransactionText(etherscanBtn) {
-    let dots = "";
-    let maxDots = 3;
-    let interval = 500;
-
-    let timer = setInterval( async () => {
-        if (dots.length < maxDots) {
-            dots += ".";
-        } else {
-            dots = "";
-        }
-        etherscanBtn.textContent = await getKeyTranslation("waiting_for_transaction") + dots;
-    }, interval);
-    return timer;
 }
 
 export async function createEtherscanButton(parent) {
@@ -170,26 +156,25 @@ export async function createEtherscanButton(parent) {
     parent.appendChild(etherscanBtn);
     etherscanBtn.disabled = true;
     etherscanBtn.textContent = await getKeyTranslation("waiting_for_transaction");
-    const dotInterval = getWaitingTransactionText(etherscanBtn);
-    await displayEtherscanButton(etherscanBtn, dotInterval);
+    await displayEtherscanButton(etherscanBtn);
 }
 
-async function displayEtherscanButton(etherscanBtn, dotInterval) {
+async function displayEtherscanButton(etherscanBtn) {
     let tournament_id = currentTournament.id;
 
     const receipt_address = await getReceiptAddress(tournament_id);
     if (receipt_address && receipt_address !== "0x0") {
-        clearInterval(dotInterval);
         updateEtherscanButton(etherscanBtn, receipt_address)
     }
-    const interval = setInterval(async () => {
-        const receipt_address = await getReceiptAddress(tournament_id);
-        if (receipt_address && receipt_address !== "0x0") {
-            updateEtherscanButton(etherscanBtn, receipt_address)
-            clearInterval(dotInterval);
-            clearInterval(interval);
-        }
-    }, 1000);
+    else {
+        const interval = setInterval(async () => {
+            const receipt_address = await getReceiptAddress(tournament_id);
+            if (receipt_address && receipt_address !== "0x0") {
+                updateEtherscanButton(etherscanBtn, receipt_address)
+                clearInterval(interval);
+            }
+        }, 1000);
+    }
 }
 
 function displayTournamentRanking(ranking) {
@@ -281,7 +266,8 @@ export async function checkIfUserIsInTournament(user) {
 }
 
 export async function displayErrorPopUp (message, parent) {
-    // TODO append child error
+    if (document.getElementById('errorPopUp'))
+        return
     const errorPopUp = document.createElement("div");
     errorPopUp.id = "errorPopUp";
     errorPopUp.className = "error-pop-up pop-up";

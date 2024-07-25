@@ -191,15 +191,13 @@ class PongConsumer(AsyncWebsocketConsumer):
         try:
             if self.is_connected == False:
                 return
-            if self.scope['user'] is not None:
-                print(f'${self.scope["user"].username} disconnect')
+            await self.set_ingame_status(False)
             try:
                 self.lobby = await Lobby.objects.aget(uuid=self.lobby_name)
             except Lobby.DoesNotExist:
                 await self.disconnect_user()
                 return
             self.is_connected = False
-            await self.set_ingame_status(False)
             if self.lobby.game_started == True: 
                 await self.cancel_game()
             elif self.scope['user'] is not None:
@@ -568,6 +566,8 @@ class PongConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async 
     def set_ingame_status(self, status):
         try:
+            if self.scope['user'] is None:
+                return
             user = CustomUser.objects.get(id=self.scope['user'].id)
             user.is_ingame = status
             user.save()

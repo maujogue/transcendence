@@ -46,7 +46,7 @@ def get_point_scored_per_match(request, user):
 @user_exists
 def get_user_winrate(request, user):
     matchsWin = Match.objects.filter(winner=user.id).count()
-    matchsTotal = Match.objects.count()
+    matchsTotal = matchsWin + Match.objects.filter(loser=user.id).count()
     if (matchsTotal == 0):
         return JsonResponse({"winrate": 0}, status=200)
     return JsonResponse({"winrate": round(matchsWin / matchsTotal * 100)}, status=200)
@@ -96,7 +96,7 @@ def get_average_exchange_before_goal(request, user):
         return JsonResponse({"average_exchange_before_goal": 0}, status=200)
     total_exchange = 0
     for match in matchs:
-        if match.player1 == user:
+        if match.player1 == user.id:
             total_exchange += match.player1_average_exchange
         else:
             total_exchange += match.player2_average_exchange
@@ -111,13 +111,14 @@ def get_user_win_streak(request, user):
     current_series_length = 0 
 
     for match in matches:
-        if match.winner == user:
+        if match.winner == user.id:
             current_series_length += 1
         else:
             max_series_length = max(max_series_length, current_series_length)  
-            current_series_length = 0 
+            current_series_length = 0
     max_series_length = max(max_series_length, current_series_length)
-
+    if matches.last().winner != user.id:
+        max_series_length = 0
     return JsonResponse({"win_streak": max_series_length}, status=200)
 
 @require_http_methods(["GET"])

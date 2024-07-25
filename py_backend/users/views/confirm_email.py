@@ -1,11 +1,10 @@
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
-from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth import get_user_model
 from django.shortcuts import redirect
+from django.http import HttpResponse
 
-from users.models import CustomUser
 from users.tokens import account_activation_token
 
 
@@ -22,4 +21,4 @@ def confirm_email(request, uidb64, token):
         user.email_is_verified = True
         user.save()
         return redirect('/emailVerified')
-    return JsonResponse({'status': "error"}, status=400)
+    return HttpResponse('Activation link is invalid!')

@@ -1,3 +1,4 @@
+import { setEditButtonProfile } from "../../Utils.js";
 import { getKeyTranslation, injectElementTranslations } from "../translationsModule/translationsModule.js";
 import { displayMainMenu } from "./menu.js";
 import { playerStatus, tournamentStatus, createEtherscanButton } from "./tournament.js";
@@ -5,7 +6,7 @@ import { wsTournament } from "./tournament.js";
 
 let canvas;
 let ctx;
-const startX = 75;
+const startX = 20;
 const startY = 20;
 let boxWidth;
 let boxHeight;
@@ -60,12 +61,15 @@ function drawConnectingLine(x1, y1, x2, y2) {
 function createBracketCanvas() {
     if (document.getElementById('bracketCanvas'))
         document.getElementById('bracketCanvas').remove();
-    const tournamentDiv = document.getElementsByClassName('tournament')[0];
+    const tournamentDiv = document.getElementsByClassName('tournament')[0]
+    const bracketDiv = document.createElement('div')
+    bracketDiv.id = 'bracketDiv'
     const canvas = document.createElement('canvas');
     canvas.id = 'bracketCanvas';
     canvas.width = tournamentDiv.offsetWidth - 20;
     canvas.height = tournamentDiv.offsetHeight - 20;
-    tournamentDiv?.appendChild(canvas);
+    tournamentDiv.appendChild(bracketDiv)
+    bracketDiv.appendChild(canvas);
 }
 
 function updateButtonWithStatus() {
@@ -196,6 +200,7 @@ export function createLeaveButton(parent) {
     document.getElementById('leaveTournament').addEventListener('click', () => {
         if (wsTournament)
             wsTournament.close();
+        setEditButtonProfile(false);
         displayMainMenu();
     });
 }

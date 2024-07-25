@@ -60,7 +60,7 @@ async function navigateTo(url) {
 
 async function navigateOnClick(e) {
 	let target = e.target;
-	while (target && target.parentNode !== document.body && !target.getAttribute("href"))
+	while (target && target.parentNode !== document.body && !target.hasAttribute("href"))
 		target = target.parentNode;
 	if (target && target.matches("[navlink]")) {
 		e.preventDefault();

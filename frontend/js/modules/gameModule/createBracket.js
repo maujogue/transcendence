@@ -199,7 +199,7 @@ export async function createLeaveButton(parent) {
 	btn.setAttribute("data-lang", "exit");
     parent.appendChild(btn);
 	injectElementTranslations("#game");
-    document.getElementById('leaveTournament').addEventListener('click', () => {
+    btn.addEventListener('click', () => {
         if (wsTournament)
             wsTournament.close();
         setEditButtonProfile(false);

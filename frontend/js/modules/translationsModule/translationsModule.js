@@ -11,7 +11,7 @@ export async function init() {
 
 	await initLanguageSwitcher();
 	await initDropdownListeners();
-	await injectTranslations();
+	injectTranslations();
 
 	async function initLanguageSwitcher() {
 		var button = module.querySelector('.languageSwitcher');
@@ -49,7 +49,7 @@ export async function init() {
 					await setLanguage(lang);
 				Cookies.set("lang", lang);
 				await disableCollapsedSidebar(true);
-				await injectTranslations();
+				injectTranslations();
 			});
 		});
 	}

@@ -66,7 +66,7 @@ export function AIMovement(player2, model, env) {
 		actualState = getState(env, player2);
 		firstPrediction = false;
 	}
-	moveAI(player2, actualState, model, env);
+	return (moveAI(player2, actualState, model, env));
 }
 
 export function resetAITimer(player1, player2, firstPrediction) {

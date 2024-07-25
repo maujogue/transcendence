@@ -224,7 +224,7 @@ export async function init() {
 			let action = 0;
 			let actualState = getState(environment, player2);
 			if (soloMode)
-				AIMovement(player2, model, environment, firstPrediction);
+				action = AIMovement(player2, model, environment, firstPrediction);
 			if (keyPress)
 				action = handleKeyPress(keysPressed, player1, player2, environment);
 			storeData(actualState, action);

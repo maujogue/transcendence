@@ -3,7 +3,10 @@ FORBIDDEN_USERNAMES_REGEXPS = [
     'Sudo',
     'sudo',
     'SUDO',
-    
+    'null',
+    'Null',
+    'NULL',
+
     'about',
 	'account',
 	'activate',

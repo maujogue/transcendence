@@ -11,7 +11,7 @@ export const lobbyPaddlePos = -0.3;
 
 export function updateWinVariables() {
 	winWidth = document.getElementById("content-container").getBoundingClientRect().width * 8/12;
-	winHeight = winWidth * 9 / 16;
+	winHeight = winWidth * (9 / 16);
 	var gameModule = document.querySelector('.gameModule');
 	var game = document.querySelector('#game');
 	var profileCard = document.querySelector('#profileCard');
@@ -22,6 +22,6 @@ export function updateWinVariables() {
 	game.style.width = winWidth + 'px';
 	game.style.height = winHeight + 'px';
 	gameModule.style.width = winWidth + 'px';
-	profileCard.style.maxHeight = gameModule.style.height +'px';
+	profileCard.style.height = game.style.height +'px!important';
 }
 

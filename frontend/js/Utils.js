@@ -111,7 +111,7 @@ async function showAlert(message, success, button) {
 	var currentdate = new Date();
 	var minutes = currentdate.getMinutes();
 	var datetime = currentdate.getHours() + ":" + (minutes < 10 ? "0" : "") + minutes;
-
+	var message = await getKeyTranslation(message);
 	alertDiv.innerHTML += `
 	<div id="alert${alertId}" class="notification d-flex flex-column mt-2">
 		<div class="notification-header ${bgColor} text-white d-flex justify-content-between align-items-center px-3 py-2">
@@ -120,7 +120,7 @@ async function showAlert(message, success, button) {
 		<button type="button" class="ms-2 btn-close btn-close-white" onclick="this.parentNode.parentNode.remove();"></button>
 		</div>
 		<div class="notification-body px-3 py-2">
-			${await getKeyTranslation(message)}
+			${message}
 		</div>
 	</div>
 	`;

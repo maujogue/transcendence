@@ -1,0 +1,43 @@
+#sidebar {
+  width: 250px;
+  position: fixed;
+  transition: width 0.5s;
+  z-index: 1;
+  background-color: #141419;
+  border-radius: 20px;
+  margin:20px;
+  box-shadow: 3px 3px 15px black;
+}
+
+#sidebar.collapsed {
+  width: 80px;
+}
+
+#content-container {
+  padding: 20px;
+  margin-left: 250px;
+  transition: margin-left 0.5s;
+}
+
+#content-container.collapsed {
+  margin-left: 80px;
+}
+
+.section-name {
+  position: absolute;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.section-name-collapsed {
+  opacity: 0;
+}
+
+li.nav-item > a:hover {
+  background-color: #1d2126;
+  color: white;
+}
+
+a {
+	text-decoration: none;
+}

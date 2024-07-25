@@ -1,0 +1,203 @@
+<link rel="stylesheet" href="/css/sidebar.css" />
+
+<nav id="sidebar" class="sidebar opened-sidebar d-flex flex-column flex-shrink-0 p-3 text-white mb-5">
+	<ul id="navList" class="nav nav-pills flex-column logInContent">
+		<li class="nav-item text-white">
+			<a href="/dash" class="nav-link active" navlink>
+				<i class="bi bi-house me-2"></i>
+				<span class="section-name" data-lang="sidebar_dashboard">Dashboard</span>
+			</a>
+		</li>
+		<li class="nav-item text-white">
+			<a href="/about" class="nav-link" navlink>
+				<i class="bi bi-info-circle me-2"></i>
+				<span class="section-name" data-lang="sidebar_about">About</span>
+			</a>
+		</li>
+		<hr>
+	</ul>
+	<div class="friendList">
+
+	</div>
+
+	<!-- LOGIN BUTTON / REGISTER BUTTON -->
+	<div class="logOutContent">
+		<div class="d-flex flex-column align-items-center">
+			<img src="../../../assets/img/pong-cropped.svg" alt="Pong" class="img-fluid" />
+			<div class="text-primary" style="font-size: 100px;"><i class="fas fa-sign-in-alt"></i></div>
+		</div>
+	</div>
+
+	<div class="logOutContent mt-auto">
+		<div class="translationsModule"></div>
+		<div class="d-flex">
+			<button class="btn btn-outline-secondary mb-2 w-100 me-1" data-bs-toggle="modal" data-bs-target="#login"
+				data-lang="log_in_button">
+				Log In
+			</button>
+			<button class="btn btn-outline-info mb-2 w-100" data-bs-toggle="modal" data-lang="sign_up_button"
+				data-bs-target="#register">
+				Sign up
+			</button>
+		</div>
+	</div>
+	<!-- DROPUP -->
+	<div class="logInContent mt-auto">
+		<div class="ms-2 mb-3 dropup d-flex align-items-center">
+			<ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+				<div id="friendRequestInbox" class="d-flex flex-column gap-3"></div>
+			</ul>
+			<a class="d-flex align-items-center text-white text-decoration-none friendsNavbarBtn">
+				<div id="notificationsBadge"></div>
+				<span class="section-name ms-2" style="position: relative" data-lang="notifications"></span>
+			</a>
+		</div>
+		<hr />
+		<a id="collapseButton" class="nav-link text-white ms-2" style="cursor: pointer;">
+			<i class="bi bi-arrows-collapse-vertical text-white me-2"></i>
+			<span class="section-name ms-1" data-lang="collapse_button">Collapse</span>
+		</a>
+		<div class="translationsModule"></div>
+		<hr />
+		<div class="dropup d-flex align-items-center">
+			<ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+				<li><a id="logoutButton" class="dropdown-item" data-lang="sign_out_button">Sign out</a></li>
+			</ul>
+			<a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+				data-bs-toggle="dropdown" style="cursor: pointer;">
+				<img width="30" height="30" class="rounded-circle me-2 avatarDynamic" />
+			</a>
+			<span class="section-name ms-2 usernameDynamic" style="position: relative"></span>
+		</div>
+</nav>
+<!-- LOGIN MODAL -->
+<div class="modal fade" id="login" tabindex="-1">
+	<div class="modal-dialog">
+		<form id="loginForm" class="modal-content">
+			<!-- LOGIN TITLE -->
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" data-lang="login_modal_title">Login</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<!-- LOGIN COMMENT -->
+			<div id="loginComment" class="d-none text-white mx-3 mt-3 p-2 rounded-1"></div>
+			<!-- USERNAME INPUT -->
+			<div class="modal-body">
+				<div class="auth42 px-0"></div>
+				<div class="mb-3">
+					<label for="usernameLogin" class="col-form-label text-primary" data-lang="login_username_label">Username</label>
+					<input type="text" name="username" class="form-control" id="usernameLogin" placeholder="Tazz1998"
+						autocomplete="username" required />
+				</div>
+				<!-- PASSWORD INPUT -->
+				<div class="mb-3">
+					<label for="loginPassword" class="col-form-label" data-lang="login_password_label">Password</label>
+					<div class="d-flex align-items-center gap-2">
+						<input type="password" name="password" class="form-control" id="loginPassword"
+							autocomplete="current-password" required />
+						<i id="loginPasswordToggle" class="fas fa-eye"></i>
+					</div>
+				</div>
+			</div>
+			<!-- SIGN UP REDIRECTION -->
+			<div class="modal-footer d-sm-flex">
+				<div class="d-flex align-items-center me-auto">
+					<p class="m-0 me-1" data-lang="new_user_prompt">New here ?</p>
+					<a class="text-info" data-bs-target="#register" data-bs-toggle="modal" data-lang="sign_up_link">Sign
+						up</a>
+				</div>
+				<!-- CLOSE BUTTON -->
+				<div>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-lang="close_button">
+						Close
+					</button>
+					<button type="submit" class="btn btn-primary" data-lang="login_button">Login</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<!-- REGISTER MODAL -->
+<div class="modal fade" id="register" tabindex="-1">
+	<div class="modal-dialog">
+		<form id="registrationForm" class="modal-content">
+			<!-- REGISTER TITLE -->
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" data-lang="register_modal_title">Sign Up</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<!-- REGISTER COMMENT -->
+			<div id="registerComment" class="d-none text-white mx-3 mt-3 p-2 rounded-1"></div>
+			<!-- USERNAME INPUT -->
+			<div class="modal-body">
+				<div class="auth42 px-0"></div>
+				<!-- USERNAME INPUT -->
+				<div class="mb-3 usernameInputModule">
+				</div>
+				<!-- EMAIL INPUT -->
+				<div class="mb-3 emailInputModule">
+				</div>
+				<!-- PASSWORD INPUT -->
+				<div class="mb-3">
+					<label for="registerPassword" class="col-form-label"
+						data-lang="register_password_label">Password</label>
+					<div class="d-flex align-items-center gap-2">
+						<input id="registerPassword" class="form-control" type="password" name="password" minlength="8"
+							maxlength="20" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+]).{8,20}$"
+							autocomplete="new-password" required />
+						<i id="registerPasswordToggle" class="fas fa-eye"></i>
+					</div>
+					<div id="passwordHelpBlock" class="form-text">
+						<span data-lang="password_help_block">Your password must contain :</span>
+						<br />
+						<span id="registerPassLength" class="passwordHelpLine" data-lang="password_help_length">- 8 to
+							20 characters</span><br />
+						<span id="registerPassLowercase" class="passwordHelpLine" data-lang="password_help_lowercase">-
+							Lowercase</span><br />
+						<span id="registerPassUppercase" class="passwordHelpLine" data-lang="password_help_uppercase">-
+							Uppercase</span><br />
+						<span id="registerPassNumbers" class="passwordHelpLine" data-lang="password_help_numbers">-
+							Number</span><br />
+						<span id="registerPassSpecial" class="passwordHelpLine" data-lang="password_help_special">-
+							Special character</span>
+					</div>
+				</div>
+				<!-- PASSWORD AGAIN -->
+				<div class="mb-3">
+					<label for="registerPasswordAgain" class="col-form-label"
+						data-lang="register_repeat_password_label">Repeat Password</label>
+					<div class="d-flex align-items-center gap-2">
+						<input id="registerPasswordAgain" class="form-control" type="password" name="passwordagain"
+							minlength="8" maxlength="20"
+							pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+]).{8,20}$"
+							autocomplete="new-password" required />
+						<i id="registerPasswordAgainToggle" class="fas fa-eye"></i>
+					</div>
+					<div id="registerPasswordAgainHelpBlock" class="form-text text-danger d-none"
+						data-lang="password_mismatch">
+						Passwords don't match
+					</div>
+				</div>
+			</div>
+			<!-- LOGIN REDIRECTION -->
+			<div class="modal-footer d-sm-flex">
+				<div class="d-flex align-items-center me-auto">
+					<p class="m-0 me-1" data-lang="have_account_prompt">Have an account ?</p>
+					<a class="text-primary" data-bs-target="#login" data-bs-toggle="modal" data-lang="log_in_link">Log
+						In</a>
+				</div>
+				<!-- CLOSE BUTTON -->
+				<div>
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-lang="close_button">
+						Close
+					</button>
+					<!-- SUBMIT FORM  -->
+					<button type="submit" class="btn btn-info text-white" data-lang="register_button">
+						Sign up
+					</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<script type="module" src="../js/Sidebar.js"></script>

@@ -1,0 +1,19 @@
+psycopg2-binary==2.9.6
+asgiref==3.7.2
+Django==4.2.9
+sqlparse==0.4.4
+typing-extensions==4.9.0
+channels==4.0.0
+daphne>=4.0.0
+django-cors-headers==4.3.1
+pillow==10.2.0
+websocket
+requests-toolbelt
+pylibmagic # for jrenault's macbook
+mimetypes-magic
+six
+django-friendship
+# for blockchain module
+web3
+py-solc-x
+eth_tester

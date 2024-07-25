@@ -1,0 +1,237 @@
+<section class="ms-3">
+	<!-- LOGGED IN DASHBOARD -->
+	<div id="userDash" class="container-fluid logInContent position-relative pt-0" style="transition: opacity 0.1s;">
+		<div id="onProfileButtonsDiv" hidden>
+			<div class="d-flex mb-2 ms-0">
+				<div id="closeProfileBtn">
+					<button class="btn btn-warning">
+						<i class="pt-1 fa-solid fa-arrow-left text-white"></i>
+						<span class="pt-1 ms-2 text-white" data-lang="back"></span>
+					</button>
+				</div>
+				<div id="manageFriendshipBtn" class="ms-2"></div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="gameModule col-8 p-0 bg-transparent"></div>
+			<!-- PROFILE SECTION -->
+			<div id="profileCard" class="col p-0 card ms-3 rounded-4 w-100 position-relative">
+				<img src="" class="card-img-top rounded-4 bannerDynamic" alt="sky-banner" />
+				<div class="card-body flex-column justify-content-center align-items-center">
+					<div class="mb-3 position-relative d-flex flex-column align-items-center">
+						<img class="rounded-circle avatarDynamic" src="" alt="profile image"
+							data-lang="profile_image_alt" />
+					</div>
+					<div class="profileInfo">
+						<div class="container m-0 align-items-center justify-content-around">
+							<div class="row pt-5">
+								<div class="col flex-column justify-content-center p-2">
+									<p class="text-warning m-0" data-lang="username_label"></p>
+									<h2 class="text-white usernameDynamic m-0 me-2 fw-bolder"></h2>
+								</div>
+								<div class="col flex-column justify-content-center p-2">
+									<p class="text-danger m-0" data-lang="game_username_label"></p>
+									<h2 class="text-white tournament_usernameDynamic m-0 fw-bolder"></h2>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col flex-column justify-content-start p-2">
+									<p class="text-success m-0" data-lang="bio_label"></p>
+									<p class="h4 text-white bioDynamic fst-italic fw-lighter"></p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<button id="editProfileBtn" type="button" class="btn btn-primary text-white" data-bs-toggle="modal"
+					data-bs-target="#updateProfileModal"><i class="bi bi-pencil-square"></i>
+					</button>
+				</div>
+			</div>
+		</div>
+		<div class="row statisticsModule">
+		</div>
+	</div>
+	<div class="aboutModule logOutContent">
+	</div>
+</section>
+
+<!-- UPDATE PROFILE MODAL-->
+
+<div class="modal modal-no-reset fade" id="updateProfileModal" data-bs-backdrop="static" data-bs-keyboard="false">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form id="updateProfileForm" autocomplete="off" class="novalidate">
+				<div class="modal-header">
+					<h3 class="modal-title" data-lang="update_profile_modal_title"></h3>
+					<button id="closeButtonUpdateProfile" type="button" class="btn-close"
+						data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					<!-- USERNAME INPUT -->
+					<div class="auth-42-disable-header btn w-100 bg-warning mb-3" style="text-wrap: wrap;" data-lang="update_42_error_message" disabled></div>
+					<div class="mb-3 usernameInputModule">
+					</div>
+					<!-- EMAIL INPUT -->
+					<div class="mb-3 emailInputModule">
+					</div>
+					<!-- TOURNAMENT USERNAME INPUT -->
+					<div class="mb-3 tournamentUsernameInputModule">
+					</div>
+					<!-- BIO INPUT -->
+					<div class="mb-3">
+						<label for="bio" class="col-form-label text-primary" data-lang="bio_label"></label>
+						<textarea maxlength="150" rows="3" cols="50" name="bio"
+							class="form-control bioDynamic formInputs" id="bio" placeholder="What about you ?"
+							autocomplete="off" style="resize: none;" data-lang="bio_placeholder"></textarea>
+					</div>
+					<!-- AVATAR INPUT -->
+					<div class="mb-3">
+						<label for="avatar" class="col-form-label text-primary" data-lang="avatar_label"></label>
+						<input type="file" accept=".jpg,.png, .jpeg, .JPG, .JPEG, .PNG" name="avatar"
+							class="form-control formInputs" id="avatar" placeholder="avatar photo" autocomplete="off"
+							data-lang="avatar_placeholder" />
+					</div>
+					<!-- BANNER INPUT -->
+					<div class="mb-3">
+						<label for="banner" class="col-form-label text-primary" data-lang="banner_label"></label>
+						<input type="file" accept=".jpg,.png, .jpeg, .JPG, .JPEG, .PNG" name="banner"
+							class="form-control formInputs" id="banner" placeholder="banner photo" autocomplete="off"
+							data-lang="banner_placeholder" />
+					</div>
+					<!-- SUBMIT FORM -->
+				</div>
+				<div class="modal-footer">
+					<button type="button" id="updatePassword" class="btn btn-outline-secondary me-auto auth-42-disable"
+						data-bs-toggle="modal" data-bs-target="#updatePasswordModal"
+						data-lang="update_password_button">Update Password</button>
+					<a id="discardChangesButton" type="button" class="btn btn-outline-danger d-none"
+						data-lang="discard_changes_button">Discard Changes</a>
+					<button type="button" id="saveChangesButton" class="btn btn-primary" data-lang="save_changes_button"
+						disabled>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- CONFIRM PASSWORD MODAL -->
+<div class="modal fade" id="confirmPasswordModal" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<!-- LOGIN TITLE -->
+			<div class="modal-header">
+				<h1 class="modal-title fs-5" data-lang="password_check_title"></h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<!-- LOGIN COMMENT -->
+			<div id="confirmPasswordComment" class="d-none text-white mx-3 mt-3 p-2 rounded-1"></div>
+			<!-- PASSWORD INPUT -->
+			<div class="modal-body">
+				<div class="mb-3">
+					<label for="confirmPasswordPassword" class="col-form-label"
+						data-lang="password_label">Password</label>
+					<div class="d-flex align-items-center gap-2">
+						<input form="updateProfileForm" type="password" name="password" class="form-control"
+							id="confirmPasswordPassword" autocomplete="current-password" required />
+						<i id="confirmPasswordToggle" class="fas fa-eye"></i>
+					</div>
+				</div>
+			</div>
+			<div class="modal-footer d-sm-flex">
+				<!-- CLOSE BUTTON -->
+				<div>
+					<button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+						data-bs-target="#updateProfileModal" data-lang="back">
+						Back
+					</button>
+					<button type="button" id="confirmPasswordButton" class="btn btn-primary"
+						data-lang="confirm_password_button">
+						Confirm Password
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- UPDATE PASSWORD MODAL -->
+<div class="modal fade" id="updatePasswordModal" tabindex="-1">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form id="updatePasswordForm">
+				<!-- LOGIN TITLE -->
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" data-lang="password_update_title"></h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<!-- COMMENT -->
+				<div id="updatePasswordComment" class="d-none text-white mx-3 mt-3 p-2 rounded-1"></div>
+				<!-- PASSWORD INPUT -->
+				<div class="modal-body">
+					<div class="mb-3">
+						<label for="updatePasswordCurrentPassword" class="col-form-label"
+							data-lang="current_password_label"></label>
+						<div class="d-flex align-items-center gap-2">
+							<input type="password" name="password" class="form-control"
+								id="updatePasswordCurrentPassword" autocomplete="current-password" required />
+							<i id="updatePasswordCurrentPasswordToggle" class="fas fa-eye"></i>
+						</div>
+					</div>
+					<div class="mb-3">
+						<label for="updatePasswordFirstPassword" class="col-form-label"
+							data-lang="new_password_label"></label>
+						<div class="d-flex align-items-center gap-2">
+							<input id="updatePasswordFirstPassword" type="password" name="new_password1"
+								class="form-control" autocomplete="current-password" minlength="8" maxlength="20"
+								pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+]).{8,20}$"
+								autocomplete="new-password" required />
+							<i id="updatePasswordFirstPasswordToggle" class="fas fa-eye"></i>
+						</div>
+						<div id="updatePasswordHelpBlock" class="form-text">
+							<span data-lang="password_help_block"></span>
+							<br />
+							<span id="updatePassLength" class="passwordHelpLine"
+								data-lang="password_help_length"></span>
+							<br />
+							<span id="updatePassLowercase" class="passwordHelpLine"
+								data-lang="password_help_lowercase"></span><br />
+							<span id="updatePassUppercase" class="passwordHelpLine"
+								data-lang="password_help_uppercase"></span><br />
+							<span id="updatePassNumbers" class="passwordHelpLine"
+								data-lang="password_help_numbers"></span>
+							<br />
+							<span id="updatePassSpecial" class="passwordHelpLine"
+								data-lang="password_help_special"></span>
+						</div>
+					</div>
+					<div class="mb-3">
+						<label for="updatePasswordSecondPassword" class="col-form-label"
+							data-lang="repeat_new_password_label"></label>
+						<div class="d-flex align-items-center gap-2">
+							<input id="updatePasswordSecondPassword" type="password" name="new_password2"
+								class="form-control" autocomplete="current-password" minlength="8" maxlength="20"
+								pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+]).{8,20}$"
+								autocomplete="new-password" required />
+							<i id="updatePasswordSecondPasswordToggle" class="fas fa-eye"></i>
+						</div>
+						<div id="updatePasswordAgainHelpBlock" class="form-text text-danger d-none"
+							data-lang="password_mismatch">
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer d-sm-flex">
+					<!-- CLOSE BUTTON -->
+					<div>
+						<button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+							data-bs-target="#updateProfileModal" data-lang="back">
+						</button>
+						<button type="button" id="updatePasswordButton" class="btn btn-primary"
+							data-lang="confirm_password_button">
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

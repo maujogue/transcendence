@@ -1,0 +1,15 @@
+FROM python:3.10
+
+RUN mkdir -p /code/staticfiles
+
+COPY requirements.txt code/requirements.txt
+RUN pip install --upgrade pip
+RUN pip install -r code/requirements.txt
+
+COPY ./entrypoint.prod.sh /code/entrypoint.prod.sh
+
+ARG CACHEBUST
+RUN echo $CACHEBUST
+COPY .. /code
+WORKDIR /code
+CMD ["sh","docker/entrypoint.dev.sh"]

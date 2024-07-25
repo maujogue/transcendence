@@ -17,20 +17,16 @@ def create_tournament_match(tournament, playerList, num):
         lobby_id=match_lobby.uuid,
         finished=finished
     )
-    print(f"match: {match}")
     tournament.matchups.add(match)
     tournament.save()
 
 def get_round_winners(tournament):
     winners = []
     for match in tournament.matchups.filter(round=tournament.current_round - 1):
-        print(f'get round winner: match {match}')
         if match.winner == match.player1:
             winners.append(match.player1)
         else:
             winners.append(match.player2)
-    winners.reverse()
-    print(f"winners: {winners}")
     return winners
 
 def generate_bracket(tournament):

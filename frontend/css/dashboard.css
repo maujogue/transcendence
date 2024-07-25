@@ -5,11 +5,9 @@
 	background-color: #141419;
 }
 
-#profileCard .profileInfo {
-	transform: translateY(-60%);
-}
 #profileCard .avatarDynamic {
-	transform: translateY(-100px);
+	position: absolute;
+	bottom: 75%;
 	width: 30%;
 	max-width: 250px;
 	aspect-ratio: 1;

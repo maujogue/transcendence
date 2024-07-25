@@ -139,7 +139,9 @@ function removeAlert(alertDiv) {
 	if (alertDiv) {
 		alertDiv.style.opacity = 0;
 		setTimeout(() => {
-			alertDiv.remove();
+			return function () {
+				alertDiv.remove();
+			}
 		}, 500);
 	}
 }

@@ -543,7 +543,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             player1_info = await self.create_json_data(player1, self.lobby.player1_character)
             player2_info = await self.create_json_data(player2, self.lobby.player2_character)
             await self.send_data({ "type": "match_info", "player1": player1_info, "player2": player2_info})
-            await asyncio.sleep(5)
+            await asyncio.sleep(3)
         except Exception as e:
             print("Error: ", e)
 

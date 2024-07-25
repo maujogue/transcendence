@@ -12,7 +12,7 @@ from users.utils import convert_image_to_base64, utils_get_friendslist_data
 @login_required
 def get_user_data(request, username=None):
     if username:
-        user = get_object_or_404(CustomUser, username=username)
+        user = get_object_or_404(CustomUser, username__iexact=username)
     else:
         user = request.user
         

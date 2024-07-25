@@ -190,7 +190,6 @@ export async function init() {
 		if (player1.score < 5 && player2.score < 5)
 			return;
 
-		await trainModel(model, 1000);
 		let winner = player1.name;
 		if (player2.score > player1.score)
 			winner = player2.name;
@@ -215,24 +214,17 @@ export async function init() {
 			ClearAllEnv(environment);
 			divMenu.remove();
 			model = await tf.loadLayersModel(`https://${hostname}:8000/js/modules/AIModule/model/model.json`);
-			model.compile({
-				optimizer: tf.train.adam(0.001),
-				loss: 'meanSquaredError'
-			});
 			environment = await initGame(player1, player2);
 			player1.score = 0;
 			player2.score = 0;
 		}
 		if (start) {
-			let action = 0;
-			let actualState = getState(environment, player2);
 			if (soloMode)
-				action = AIMovement(player2, model, environment, firstPrediction);
+				AIMovement(player2, model, environment, firstPrediction);
 			if (keyPress)
-				action = handleKeyPress(keysPressed, player1, player2, environment);
-			storeData(actualState, action);
+				handleKeyPress(keysPressed, player1, player2, environment);
 			checkCollision(environment.ball, player1, player2, environment);
-			//resetAITimer(player1, player2, firstPrediction);
+			resetAITimer(player1, player2, firstPrediction);
 			await setIfGameIsEnd();
 		}
 		if (player1 && player2)

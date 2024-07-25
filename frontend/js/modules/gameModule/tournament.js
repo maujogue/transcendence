@@ -29,7 +29,6 @@ export async function connectToTournament(tournament) {
 
         wsTournament.onmessage = async (event) => {
             const data = JSON.parse(event.data);
-            console.log('received data:', data)
             if (data.type == "participants")
                 displayPlayerList(data.participants);
             if (data.type == "matchup") {
@@ -76,8 +75,10 @@ async function displayTimer(time) {
 }
 
 async function handlerMessageStatus(data) {
-    if (data.status == "disqualified")
+    if (data.status == "disqualified") {
         playerStatus = "disqualified";
+        createLeaveButton(document.getElementsByClassName('tournament')[0])
+    }
     if (data.status == "endTournament" && tournamentStatus != "finished")
         tournamentStatus = "finished";
     if (data.status == "start")

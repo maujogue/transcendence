@@ -51,8 +51,8 @@ export async function init() {
 	var target = document.querySelector('#game');
 	var config = { attributes: true, childList: true, characterData: true };
 	var observer = new MutationObserver(function (mutations) {
-		mutations.forEach(() => {
-			injectElementTranslations("#game")
+		mutations.forEach(async () => {
+			await injectElementTranslations("#game")
 		});
 	});
 	observer.observe(target, config);

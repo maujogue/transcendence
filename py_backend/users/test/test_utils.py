@@ -14,7 +14,7 @@ class UtilsFunctionsTest(TestCase):
 
     def test_unique_username(self):
         update_datas = {
-            'username': 'damien-cooper'
+            'username': 'damiencooper'
         }
 
         response = self.client.post(

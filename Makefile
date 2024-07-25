@@ -57,9 +57,6 @@ clean:	prod_clean dev_clean
 
 fclean:	prod_fclean dev_fclean	removecontainers 
 
-nomail:
-		python3 disableMailVerification.py
-
 removecontainers:
 		@if [ -n "$$(docker ps -aq)" ]; then \
 			docker stop $$(docker ps -aq); \

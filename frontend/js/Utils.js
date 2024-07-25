@@ -1,6 +1,6 @@
 import { runEndPoint } from "./ApiUtils.js"
 import { getUserData, injectUserData } from "./User.js";
-import { getKeyTranslation, injectElementTranslations, injectTranslations } from "./modules/translationsModule/translationsModule.js";
+import { getKeyTranslation } from "./modules/translationsModule/translationsModule.js";
 
 async function isLoggedIn() {
 	var response = await runEndPoint("users/check_user_logged_in/", "GET");
@@ -111,7 +111,7 @@ async function showAlert(message, success, button) {
 	var currentdate = new Date();
 	var minutes = currentdate.getMinutes();
 	var datetime = currentdate.getHours() + ":" + (minutes < 10 ? "0" : "") + minutes;
-
+	var message = await getKeyTranslation(message);
 	alertDiv.innerHTML += `
 	<div id="alert${alertId}" class="notification d-flex flex-column mt-2">
 		<div class="notification-header ${bgColor} text-white d-flex justify-content-between align-items-center px-3 py-2">
@@ -120,7 +120,7 @@ async function showAlert(message, success, button) {
 		<button type="button" class="ms-2 btn-close btn-close-white" onclick="this.parentNode.parentNode.remove();"></button>
 		</div>
 		<div class="notification-body px-3 py-2">
-			${await getKeyTranslation(message)}
+			${message}
 		</div>
 	</div>
 	`;
@@ -129,19 +129,10 @@ async function showAlert(message, success, button) {
 
 	setTimeout((function (id) {
 		return function () {
-			removeAlert(document.getElementById(`alert${id}`));
+			document.getElementById(`alert${id}`)?.remove();
 		}
 	})(alertId), 5000);
 	alertId++;
-}
-
-function removeAlert(alertDiv) {
-	if (alertDiv) {
-		alertDiv.style.opacity = 0;
-		setTimeout(() => {
-			alertDiv.remove();
-		}, 500);
-	}
 }
 
 function togglePasswordVisibility(togglePasswordInputId, passwordFieldId) {

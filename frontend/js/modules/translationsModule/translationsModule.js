@@ -11,7 +11,7 @@ export async function init() {
 
 	await initLanguageSwitcher();
 	await initDropdownListeners();
-	await injectTranslations();
+	injectTranslations();
 
 	async function initLanguageSwitcher() {
 		var button = module.querySelector('.languageSwitcher');
@@ -49,7 +49,7 @@ export async function init() {
 					await setLanguage(lang);
 				Cookies.set("lang", lang);
 				await disableCollapsedSidebar(true);
-				await injectTranslations();
+				injectTranslations();
 			});
 		});
 	}
@@ -77,7 +77,7 @@ async function getJsonFromLang() {
 		return await fetch(`../../../../translations/${lang}.json`).then((res) => res.json()).then((data) => { return data });
 	}
 	catch (e) {
-		console.error(`Error loading ${lang}.json file`, e);
+		console.error(`Error loading ${lang}.json file`);
 		return null;
 	}
 }

@@ -19,7 +19,7 @@
 	"our_team": "Our team",
 	"team_description": "The individuals behind the remaster",
 	"clement_name": "<span class='text-success'> Clément</span>",
-	"clement_role": "Game Development - 3D",
+	"clement_role": "Game Development - 3D - Backend",
 	"clement_image_alt": "Clément",
 	"mathis_name": "<span class='text-primary'> Mathis</span>",
 	"mathis_role": "Frontend - Docker Services",
@@ -28,10 +28,10 @@
 	"leo_role": "Backend - API",
 	"leo_image_alt": "Léo",
 	"maxime_name": "<span class='text-warning'> Maxime</span>",
-	"maxime_role": "3D assistant",
+	"maxime_role": "3D - AI",
 	"maxime_image_alt": "Maxime",
 	"jocelyn_name": "<span class='text-danger'> Jocelyn</span>",
-	"jocelyn_role": "Blockchain integration",
+	"jocelyn_role": "Backend - Blockchain Integration",
 	"jocelyn_image_alt": "Jocelyn",
 	"profile_image_alt": "profile image",
 	"edit_profile_button": "Edit",
@@ -269,5 +269,6 @@
 	"Easy": "Easy",
 	"Solo": "Solo",
 	"Multiplayer": "Multiplayer",
-	"already_connected_message": "You are already connected on another tab. Please log in again."
+	"already_connected_message": "You are already connected on another tab. Please log in again.",
+	"username_special_characters": "Username cannot contain special characters."
 }

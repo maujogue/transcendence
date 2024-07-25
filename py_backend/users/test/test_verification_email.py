@@ -23,7 +23,7 @@ class VerificationEmail(TestCase):
         
     def test_new_user_in_database(self):
         newUser = {
-            'username': 'bob_seger',
+            'username': 'bobseger',
             'email': 'damian4cooper@gmail.com',
             'password1': 'Mewtransse9+',
             'password2': 'Mewtransse9+'
@@ -41,7 +41,7 @@ class VerificationEmail(TestCase):
 
     def test_email_confirmation(self):
         newUser = {
-            'username': 'bob_seger',
+            'username': 'bobseger',
             'email': 'bobseger@gmail.com',
             'password1': 'Mewtransse9+',
             'password2': 'Mewtransse9+'

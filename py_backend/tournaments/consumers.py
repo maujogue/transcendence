@@ -30,7 +30,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         try:
             text_data_json = json.loads(text_data)
-            print('tournament text data json:', text_data_json)
             if text_data_json.get('type') == 'auth':
                 await self.auth(text_data_json)
                 await self.check_tournament_start()
@@ -68,7 +67,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
     async def endGame(self):
         if not await self.validate_foreign_keys():
             return
-        print('endgame')
         await self.set_match_info()
         await self.match_is_over()
 
@@ -112,7 +110,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
         if not self.tournament.finished:
             self.tournament.finished = True
             await self.tournament.asave()
-            print(f'send tournament end')
             await self.send_tournament_end()
 
 
@@ -201,6 +198,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.send_tournament_end()
         elif not self.tournament.started:
             await self.send_participants_list()
+        elif self.tournament.started:
+            await self.send_bracket(False)
 
     @database_sync_to_async
     def get_match_result(self):
@@ -216,7 +215,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def set_match_info(self):
         try:
-            print('set_match_info')
             match = await self.get_match_result()
             player1 = await self.authenticate_user_with_id(match.player1)
             player2 = await self.authenticate_user_with_id(match.player2)
@@ -273,7 +271,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     except Lobby.DoesNotExist:
                         print('Lobby does not exist')
                     await self.endGame()
-                        
             else:
                 await self.send_bracket(False)
         

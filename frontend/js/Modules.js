@@ -68,7 +68,7 @@ async function updateModule(moduleName) {
 			div.remove();
 			await module.init();
 		}
-		await injectTranslations();
+		injectTranslations();
 	}
 }
 

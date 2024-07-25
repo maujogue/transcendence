@@ -177,20 +177,22 @@ export function drawBracket(bracket) {
     });
 }
 
-function displayRankingButton(parent) {
+async function displayRankingButton(parent) {
     const btn = document.createElement('button');
     btn.id = 'showRanking';
     btn.classList.add('tournament-btn', 'show-ranking-btn', 'end-tournament-btn');
 
 	btn.setAttribute("data-lang", "show_ranking");
     parent.appendChild(btn);
-	injectElementTranslations("#game");
+	await injectElementTranslations("#game");
     document.getElementById('showRanking').addEventListener('click', () => {
         wsTournament.send(JSON.stringify({type: "getRanking"}));
     });
 }
 
-export function createLeaveButton(parent) {
+export async function createLeaveButton(parent) {
+    if (!parent)
+        return;
     const btn = document.createElement('button');
     btn.id = 'leaveTournament';
     btn.classList.add('tournament-btn', 'leave-tournament-btn', 'end-tournament-btn');

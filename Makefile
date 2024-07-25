@@ -1,11 +1,9 @@
 .PHONY:	all
 NAME				=	transcendence
 
-DOCKER_COMPOSE_DEV_PATH	=	$(DIR_SRC)docker-compose.yaml
-DOCKER_COMPOSE_PROD_PATH	=	$(DIR_SRC)docker-compose.prod.yaml
+DOCKER_COMPOSE_PATH	=	$(DIR_SRC)docker-compose.yaml
 
-DOCKER_COMPOSE_DEV		=	docker-compose -f $(DOCKER_COMPOSE_DEV_PATH)
-DOCKER_COMPOSE_PROD		=	docker-compose -f $(DOCKER_COMPOSE_PROD_PATH)
+DOCKER_COMPOSE		=	docker-compose -f $(DOCKER_COMPOSE_PATH)
 
 DIR_SRC				=	./docker/
 
@@ -16,46 +14,27 @@ $(NAME):
 		$(MAKE) prod_up
 
 prod_up:
-		$(DOCKER_COMPOSE_PROD) up -d --build
-
-dev_up:
-		$(DOCKER_COMPOSE_DEV) up -d --build
+		$(DOCKER_COMPOSE) up -d --build
 
 prod_down:
-		$(DOCKER_COMPOSE_PROD) down
-
-dev_down:
-		$(DOCKER_COMPOSE_DEV) down
+		$(DOCKER_COMPOSE) down
 
 prod_clean:
-		$(DOCKER_COMPOSE_PROD) down --volumes --rmi all
-
-dev_clean:
-		$(DOCKER_COMPOSE_DEV) down --volumes --rmi all
+		$(DOCKER_COMPOSE) down --volumes --rmi all
 
 prod_fclean: prod_clean clean-migrations-cache-db
 
-dev_fclean: dev_clean clean-migrations-cache-db
-
 prod_re:
-	$(DOCKER_COMPOSE_PROD) build --build-arg CACHEBUST=$(shell date +%s)
-	$(DOCKER_COMPOSE_PROD) up -d 
+	$(DOCKER_COMPOSE) build --build-arg CACHEBUST=$(shell date +%s)
+	$(DOCKER_COMPOSE) up -d 
 
-dev_re:
-	$(DOCKER_COMPOSE_DEV) build --build-arg CACHEBUST=$(shell date +%s)
-	$(DOCKER_COMPOSE_DEV) up -d
+prod_fre:	prod_fclean
+		$(DOCKER_COMPOSE) build --no-cache
+		$(DOCKER_COMPOSE) up -d
 
-prod_fre:	prod_fclean dev_fclean
-		$(DOCKER_COMPOSE_PROD) build --no-cache
-		$(DOCKER_COMPOSE_PROD) up -d
+clean:	prod_clean 
 
-dev_fre:	prod_fclean dev_fclean
-		$(DOCKER_COMPOSE_DEV) build --no-cache
-		$(DOCKER_COMPOSE_DEV) up -d
-
-clean:	prod_clean dev_clean
-
-fclean:	prod_fclean dev_fclean	removecontainers 
+fclean:	prod_fclean	removecontainers 
 
 removecontainers:
 		@if [ -n "$$(docker ps -aq)" ]; then \

@@ -157,6 +157,13 @@
 	"user_already_in_tournament": "Error: User is already in the tournament.",
 	"tournament_full": "Error: Tournament is full.",
 	"tournament_joined_success": "You joined the tournament successfully.",
+
+	"tournament_joined_failure": "Error: could not join the tournament.",
+	"tournament_quit_failure": "Error: could not leave the tournament.",
+	"tournament_list_participants_failure": "Error: could not get the list of the participants.",
+	"tournament_list_failure": "Error: could not get the list of the tournaments.",
+	"tournament_name_error": "Error: invalid tournament name",
+
 	"user_not_in_tournament": "Error: User is not in the tournament.",
 	"quit_delete_tournament_success": "You quit the tournament and deleted it successfully.",
 	"quit_tournament_success": "You quit the tournament successfully.",

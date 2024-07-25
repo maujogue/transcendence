@@ -41,10 +41,12 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                 await self.send_tournament_ranking()
         except Exception as e:
             print('receive error: ', e)
+    
 
     async def disconnect(self, close_code):
         if self.tournament is None:
             return
+        print('disconnect')
         if not self.tournament.started:
             participants = await self.get_tournament_participants()
             await self.channel_layer.group_send(
@@ -54,6 +56,8 @@ class TournamentConsumer(AsyncWebsocketConsumer):
                     'participants': participants
                 }
             )
+        if self.tournament.started and self.check_if_match_is_started(self.match):
+            self.cancel_match()
         if self.task:
             self.task.cancel()
         await self.channel_layer.group_discard(self.group_name, self.channel_name)
@@ -163,7 +167,7 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
     async def cancel_match(self):
         await self.send_data({'type': 'status', 'status': 'cancelled', 'message': f'Match not started in time!'})
-        await asyncio.sleep(5)
+        await asyncio.sleep(2)
         await self.endGame()
 
     async def check_if_match_is_started(self, match):
@@ -198,8 +202,6 @@ class TournamentConsumer(AsyncWebsocketConsumer):
             await self.send_tournament_end()
         elif not self.tournament.started:
             await self.send_participants_list()
-        elif self.tournament.started:
-            await self.send_bracket(False)
 
     @database_sync_to_async
     def get_match_result(self):
@@ -451,10 +453,13 @@ class TournamentConsumer(AsyncWebsocketConsumer):
 
 
     async def tournament_bracket(self, event):
-        if event['forAll'] or not await sync_to_async(self.tournament.check_if_player_is_in_match)(self.scope['user'].tournament_username):
-            await self.send_data({'type': 'bracket', 'bracket': event['bracket']})
-        if event['forAll']:
-            await asyncio.sleep(8)
+        try:
+            if event['forAll'] or not await sync_to_async(self.tournament.check_if_player_is_in_match)(self.scope['user'].tournament_username):
+                await self.send_data({'type': 'bracket', 'bracket': event['bracket']})
+            if event['forAll']:
+                await asyncio.sleep(8)
+        except Exception as e:
+            print('error:', e)
 
     async def send_data(self, data):
         try:

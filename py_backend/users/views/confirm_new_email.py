@@ -19,6 +19,7 @@ def confirm_new_email(request, uidb64, token, new_email):
     
     if user is not None and email_update_token.check_token(user, token):
         user.email = new_email
+        user.update_email = ""
         user.save()
         user.refresh_from_db()
         return redirect('/emailVerified')

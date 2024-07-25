@@ -75,7 +75,7 @@ def tournament_username_is_unique(username):
 		return False, f'tournament_name_empty'
 	response = CustomUser.objects.filter(tournament_username=username).exists()
 	if response:
-		return False, f'tournamet_name_used'
+		return False, f'tournament_name_used'
 	return True, None
 
 def tournament_username_is_valid(username):

@@ -251,9 +251,9 @@ async function initManageFriendshipBtn(username) {
 		manageFriendshipBtn.innerHTML = `<button class="btn btn-danger " disabled data-lang="friend_request_sent"></button>`;
 	else
 		manageFriendshipBtn.innerHTML = `<button class="btn btn-success " data-lang="add_friend">Add Friend</button>`;
-	injectTranslations();
+	await injectTranslations();
 	var btn = manageFriendshipBtn.querySelector("button");
-	btn.addEventListener("click", () => {
+	btn.addEventListener("click", async () => {
 		if (friend) {
 			removeFriend(username);
 			btn.remove();
@@ -262,7 +262,7 @@ async function initManageFriendshipBtn(username) {
 		else if (!requestSent) {
 			sendFriendRequest(username);
 			manageFriendshipBtn.innerHTML = `<button class="btn btn-danger " disabled data-lang="friend_request_sent"></button>`;
-			injectTranslations();
+			await injectTranslations();
 		}
 	});
 }

@@ -1,6 +1,6 @@
 import { runEndPoint } from "./ApiUtils.js"
 import { getUserData, injectUserData } from "./User.js";
-import { getKeyTranslation, injectElementTranslations, injectTranslations } from "./modules/translationsModule/translationsModule.js";
+import { getKeyTranslation } from "./modules/translationsModule/translationsModule.js";
 
 async function isLoggedIn() {
 	var response = await runEndPoint("users/check_user_logged_in/", "GET");

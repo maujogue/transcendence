@@ -36,7 +36,8 @@ def email_is_unique(email):
 	if not email or email == '':
 		return False, f'missing_email'
 	response = CustomUser.objects.filter(email=email).exists()
-	if response:
+	response_update = CustomUser.objects.filter(update_email=email).exists()
+	if response or response_update:
 		return False, f'email_used'
 	return True, None
 

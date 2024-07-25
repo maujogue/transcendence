@@ -9,7 +9,7 @@
 	"about_tournaments_title": "Participer à des tournois",
 	"about_tournaments_description": "Jouez de manière compétitive en rejoignant des tournois et gravissez les marches pour devenir le champion !",
 	"what_is_pong": "Bienvenue à Pong !",
-	"play_pong_title": "Jouons <span class='text-success'>Pong !",
+	"play_pong_title": "Jouons à <span class='text-success'>Pong !",
 	"play_pong_description": "Pong est l'un des plus <span class='text-primary'>jeux emblématiques</span> de tous les temps. <br> Pourquoi ne pas lui donner un <span class='text-warning'>levage?</span> <br> <span class='text-danger'>Rencontrez Pong ! </span>, la version 3D moderne en ligne du jeu original.",
 	"pong_image_alt": "pong",
 	"how_do_i_play": "Que puis-je faire ?",
@@ -268,5 +268,5 @@
 	"Solo": "Solo",
 	"Multiplayer": "Multijoueur",
 	"already_connected_message" : "Vous êtes déjà connecté sur un autre onglet. Veuillez vous connecter à nouveau.",
-	"username_special_characters": "Le nom d'utilisateur ne peut pas contenir de caractères spéciaux.",
+	"username_special_characters": "Le nom d'utilisateur ne peut pas contenir de caractères spéciaux."
 }

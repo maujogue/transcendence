@@ -145,7 +145,6 @@ export async function init() {
 			createAISelectMenu();
 		}
 		if (event.target.id == 'onlineGame' && userData) {
-			setEditButtonProfile(true);
 			isOnline = true;
 			createOnlineMenu();
 		}

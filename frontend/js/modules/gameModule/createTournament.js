@@ -33,6 +33,7 @@ export async function sendTournamentForm(form) {
 
 export function createFormTournament() {
 	createTournamentDiv();
+	document.getElementsByClassName('tournament')[0].style.overflowY = 'auto'
 	document.getElementsByClassName("menu")[0].innerHTML += '<i class="fa-solid fa-arrow-left icon" id="backIcon"></i>';
 	const parent = document.getElementsByClassName("tournament")[0];
 	parent.innerHTML += '\

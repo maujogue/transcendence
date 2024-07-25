@@ -9,6 +9,7 @@ import { wsMatch } from "./online.js";
 import { checkIfWebsocketIsOpen, handlerEndGame } from "./handlerMessage.js";
 import { getKeyTranslation } from "../translationsModule/translationsModule.js";
 import { updateModule } from "../../Modules.js";
+import { setEditButtonProfile } from "../../Utils.js";
 
 export let wsTournament
 export let tournamentStatus;
@@ -23,6 +24,7 @@ export async function connectToTournament(tournament) {
         wsTournament = new WebSocket(`wss://${hostname}:8000/ws/tournament/${tournament.id}/`);
     
         wsTournament.onopen = () => {
+            setEditButtonProfile(true)
             createWaitingScreenTournament(tournament);
             fillUserData().then(sendUsername);
         };
@@ -50,6 +52,7 @@ export async function connectToTournament(tournament) {
         };
         
         wsTournament.onclose = (event) => {
+            setEditButtonProfile(false)
             playerStatus = null;
             tournamentStatus = null;
             clearOnlineVariables();

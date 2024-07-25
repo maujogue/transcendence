@@ -224,6 +224,8 @@ async function connectToLobby(username) {
     }
 
     wsMatch.onclose = function(e) {
+        if (checkIfWebsocketIsOpen(wsTournament))
+            setEditButtonProfile(false)
         console.log('Connection closed', e.code, e.reason);
         status.is_connected = false;
         if (status.start)

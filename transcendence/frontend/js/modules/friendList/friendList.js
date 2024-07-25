@@ -193,6 +193,7 @@ async function displayUserPage(username) {
 	if (usernameAvailable === true)
 		return showAlert("user_not_exist_message");
 	var userPageName = await getUserData("username");
+	console.log(username, userPageName);
 	if (!userPageName || username.toLowerCase() === userPageName.toLowerCase())
 		return showAlert("cant_visit_own_profile_message");
 	await waitThenInitDashButtons(username);

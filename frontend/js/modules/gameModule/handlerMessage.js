@@ -111,7 +111,6 @@ export function displayIntroScreen(env, data) {
 }
 
 export async function handlerStatusMessage(data, webSocket, env, status) {
-    console.log("status", data);
     if (data['status'] == 'disconnected')
         await handlerPlayerDisconnect(data, env, webSocket);
     if (data['status'] == 'stop')

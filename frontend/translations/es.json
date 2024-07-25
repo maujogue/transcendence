@@ -244,6 +244,7 @@
 	"username_too_short": "El nombre de usuario es demasiado corto.",
 	"username_too_long": "El nombre de usuario es demasiado largo.",
 	"username_forbidden": "El nombre de usuario contiene caracteres prohibidos.",
+	"is_forbidden_username": "El nombre de usuario está prohibido.",
 	"username_space": "El nombre de usuario contiene espacios.",
 	"username_empty": "El nombre de usuario está vacío.",
 	"username_used": "El nombre de usuario ya está utilizado.",

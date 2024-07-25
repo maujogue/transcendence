@@ -246,6 +246,7 @@
 	"username_too_short": "Username is too short.",
 	"username_too_long": "Username is too long.",
 	"username_forbidden": "Username contains forbidden characters.",
+	"is_forbidden_username": "Username is forbidden",
 	"username_space": "Username contains spaces.",
 	"username_empty": "Username is empty.",
 	"username_used": "Username is already used.",

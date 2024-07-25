@@ -8,6 +8,7 @@ from django.core.mail import EmailMessage
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
+from users.forbidden_usernames import check_if_forbidden_username
 from users.tokens import account_activation_token, email_update_token
 from py_backend import settings
 import base64
@@ -55,6 +56,8 @@ def username_is_valid(username):
 		return False, f'username_forbidden'
 	if re.search(r'\s', username):
 		return False, 'username_space'
+	if check_if_forbidden_username(username):
+		return False, 'is_forbidden_username'
 	return True, None
 
 
@@ -86,6 +89,8 @@ def tournament_username_is_valid(username):
 		return False, f'username_forbidden'
 	if re.search(r'\s', username):
 		return False, f'username_space'
+	if check_if_forbidden_username(username):
+		return False, 'is_forbidden_username'
 	return True, None
 
 def validation_register(data):

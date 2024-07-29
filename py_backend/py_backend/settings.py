@@ -125,10 +125,10 @@ else:
 	"default": {
 		"ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
 		"NAME": os.environ.get("SQL_DATABASE"),
-		"USER": os.environ.get("SQL_USER", "user"),
-		"PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
-		"HOST": os.environ.get("SQL_HOST", "localhost"),
-		"PORT": os.environ.get("SQL_PORT", "5432"),
+		"USER": os.environ.get("POSTGRES_USER"),
+		"PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
+		"HOST": os.environ.get("POSTGRES_HOST"),
+		"PORT": 5432,
 	}
 }
 
@@ -226,8 +226,8 @@ CORS_ORIGIN_WHITELIST = [
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'backend.amos@gmail.com'
-EMAIL_HOST_PASSWORD = 'hvqzjctapjxiijjf'
 EMAIL_USE_TLS = True
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')

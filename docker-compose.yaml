@@ -1,14 +1,14 @@
 services:
   django_backend:
     build:
-        context: ../py_backend/docker
+        context: ./py_backend/docker
         dockerfile: Dockerfile
     volumes:
        - staticfiles:/staticfiles
-       - ../py_backend:/code
+       - ./py_backend:/code
        - certificates:/etc/nginx/ssl  
     env_file:
-      - ./.env
+      - .env
     depends_on:
       db:
         condition: service_healthy
@@ -19,7 +19,7 @@ services:
     image: postgres:latest
     user: postgres
     env_file:
-      - ./.env.db
+      - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     healthcheck:
@@ -31,16 +31,15 @@ services:
 
   nginx_frontend:
     build:
-      context: ../frontend
+      context: ./frontend
       dockerfile: Dockerfile
     working_dir: /usr/app/
     volumes:
       - certificates:/etc/nginx/ssl  
       - staticfiles:/staticfiles
-      - ../frontend:/usr/share/nginx/html
+      - ./frontend:/usr/share/nginx/html
     depends_on:
-      db:
-        condition: service_healthy
+      - django_backend
     ports:
       - 8000:80
     restart: always

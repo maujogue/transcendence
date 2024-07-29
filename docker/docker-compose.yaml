@@ -22,7 +22,6 @@ services:
       - ./.env.db
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: [ "CMD", "pg_isready" ]
       interval: 10s
@@ -39,6 +38,9 @@ services:
       - certificates:/etc/nginx/ssl  
       - staticfiles:/staticfiles
       - ../frontend:/usr/share/nginx/html
+    depends_on:
+      db:
+        condition: service_healthy
     ports:
       - 8000:80
     restart: always

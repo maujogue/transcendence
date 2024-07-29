@@ -3,7 +3,7 @@
 import logging
 from django.db import connections
 from django.db.utils import OperationalError
-from django.http import JsonResponse
+from django.http import HttpResponse
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +17,7 @@ class DatabaseCheckMiddleware:
             db_conn.cursor()
         except OperationalError as e:
             logger.error(f"Database connection error: {e}")
-            return JsonResponse("Database connection error", status=503)
+            return HttpResponse("Database connection error", status=503)
         
         response = self.get_response(request)
         return response

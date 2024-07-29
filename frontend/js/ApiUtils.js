@@ -1,8 +1,7 @@
 import { resetForm, toggleModal, inputInitListeners } from "./DashboardUtils.js";
 import { showAlert } from "./Utils.js";
 import { injectUserData } from "./User.js";
-import { hostname, navigateTo } from "./Router.js";
-import { setLoading } from "./Router.js";
+import { hostname } from "./Router.js";
 
 async function get_csrf_token() {
 	return fetch(`https://${hostname}:8000/api/users/get_csrf_token/`, {
@@ -27,19 +26,12 @@ async function runEndPoint(endpoint, method, fetchBody) {
 		body: fetchBody,
 	})
 		.then((response) => {
-			if (response.statusCode == 200)
-				return response.json().then((data) => {
-					return { statusCode: response.status, data };
-				});
-			else
-				throw response.statusText;
+			return response.json().then((data) => {
+				return { statusCode: response.status, data };
+			});
 		})
 		.catch((error) => {
 			console.error("Authentification failed", error);
-			navigateTo("/serviceDown");
-			document.querySelector("#errorMessage").textContent = error;
-			setLoading(false);
-			document.getElementById("sidebar-container").hidden = true;
 			return error;
 		});
 }

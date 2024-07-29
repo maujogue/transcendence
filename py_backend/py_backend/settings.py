@@ -85,6 +85,7 @@ MIDDLEWARE = [
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'py_backend.middleware.DatabaseCheckMiddleware',
 ]
 
 ROOT_URLCONF = 'py_backend.urls'

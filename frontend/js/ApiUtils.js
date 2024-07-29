@@ -31,7 +31,7 @@ async function runEndPoint(endpoint, method, fetchBody) {
 				return response.json().then((data) => {
 					return { statusCode: response.status, data };
 				});
-			else
+			else if (response.statusCode >= 500 && response.statusCode < 600)
 				throw response.statusText;
 		})
 		.catch((error) => {

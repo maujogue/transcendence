@@ -1,40 +1,34 @@
-.PHONY:	all
+.PHONY:	all up down clean fclean re fre removecontainers armageddon clean-migrations-cache-db
 NAME				=	transcendence
 
-DOCKER_COMPOSE_PATH	=	$(DIR_SRC)docker-compose.yaml
-
-DOCKER_COMPOSE		=	docker-compose -f $(DOCKER_COMPOSE_PATH)
-
-DIR_SRC				=	./docker/
+DOCKER_COMPOSE		=	docker-compose 
 
 
 all: $(NAME)
 
 $(NAME): 
-		$(MAKE) prod_re
+		$(MAKE) re
 
-prod_up:
+up:
 		$(DOCKER_COMPOSE) up -d --build
 
-prod_down:
+down:
 		$(DOCKER_COMPOSE) down
 
-prod_clean:
+clean:
 		$(DOCKER_COMPOSE) down --volumes --rmi all
 
-prod_fclean: prod_clean clean-migrations-cache-db
+fclean: clean clean-migrations-cache-db
 
-prod_re:
+re:
 	$(DOCKER_COMPOSE) build --build-arg CACHEBUST=$(shell date +%s)
 	$(DOCKER_COMPOSE) up -d 
 
-prod_fre:	prod_fclean
+fre:	fclean
 		$(DOCKER_COMPOSE) build --no-cache
-		$(DOCKER_COMPOSE) up -d
+		$(DOCKER_COMPOSE) up -d 
 
-clean:	prod_clean 
-
-fclean:	prod_fclean	removecontainers 
+fclean:	clean	removecontainers 
 
 removecontainers:
 		@if [ -n "$$(docker ps -aq)" ]; then \
@@ -43,9 +37,6 @@ removecontainers:
 		fi; \
 
 armageddon: removecontainers clean-migrations-cache-db
-		@if [ -f py_backend/db.sqlite3 ]; then \
-			rm py_backend/db.sqlite3; \
-		fi
 		@-docker network prune -f
 		@if [ -n "$$(docker volume ls --filter dangling=true -q)" ]; then \
 			docker volume rm $$(docker volume ls --filter dangling=true -q); \
@@ -62,6 +53,3 @@ clean-migrations-cache-db:
 		@rm -rf py_backend/__pycache__
 		@rm -rf py_backend/*/migrations
 		@rm -rf py_backend/*/__pycache__
-		@if [ -f py_backend/db.sqlite3 ]; then \
-			rm py_backend/db.sqlite3; \
-		fi

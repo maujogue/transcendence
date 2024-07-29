@@ -26,6 +26,9 @@ def update_profile_password(request):
     new_password1 = data.get('new_password1')
     new_password2 = data.get('new_password2')
 
+    if not new_password1 or not new_password2:
+        return JsonResponse({'status': 'password_missing_message'}, status=400)
+
     password_validators = PasswordValidators()
     try:
         password_validators.validate(new_password1)

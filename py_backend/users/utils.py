@@ -124,8 +124,10 @@ def decode_json_body(request):
 				data[key] = str(value)
 
 		return data
-	except json.JSONDecodeError:
+	except json.JSONDecodeError as e:
 		return JsonResponse(data={'error': "Invalid JSON format"}, status=406)
+	except Exception as e:
+		return JsonResponse(data={'error': "Error during the decoding of the JSON"}, status=406)
 	
 
 def image_extension_is_valid(image_name):

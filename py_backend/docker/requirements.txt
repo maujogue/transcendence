@@ -17,3 +17,4 @@ django-friendship
 web3
 py-solc-x
 eth_tester
+setuptools<72.0.0

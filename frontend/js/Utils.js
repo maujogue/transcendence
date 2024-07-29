@@ -4,7 +4,10 @@ import { getKeyTranslation } from "./modules/translationsModule/translationsModu
 
 async function isLoggedIn() {
 	var response = await runEndPoint("users/check_user_logged_in/", "GET");
-	return response.data.is_logged_in;
+	if (response && response.data)
+		return response.data.is_logged_in;
+	else
+		return false;
 }
 
 async function check_user_42() {

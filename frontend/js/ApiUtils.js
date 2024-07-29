@@ -40,7 +40,7 @@ async function runEndPoint(endpoint, method, fetchBody) {
 			document.querySelector("#errorMessage").textContent = error;
 			setLoading(false);
 			document.getElementById("sidebar-container").hidden = true;
-			return error;
+			return null;
 		});
 }
 

@@ -26,6 +26,7 @@ const routes = [
 	new Page("sidebar", "", "html/Sidebar.html", true),
 	new Page("emailVerified", "/emailVerified", "html/EmailVerified.html", true),
 	new Page("about", "/about", "html/About.html", false),
+	new Page("serviceDown", "/serviceDown", "html/ServiceDown.html", false),
 ];
 
 window.addEventListener("popstate", () => router(routes));
@@ -151,4 +152,4 @@ function toggleActiveTab(target) {
 		document.querySelector("a[href='" + target + "']").classList.add("active");
 }
 
-export { navigateTo, execPageJavascript, routes, initArray, initPages, updatePage };
+export { navigateTo, execPageJavascript, routes, initArray, initPages, updatePage, setLoading };

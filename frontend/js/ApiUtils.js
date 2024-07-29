@@ -27,12 +27,12 @@ async function runEndPoint(endpoint, method, fetchBody) {
 		body: fetchBody,
 	})
 		.then((response) => {
-			if (response.statusCode == 200)
+			if (response.statusCode >= 500 && response.statusCode < 600)
+				throw response.statusText;
+			else
 				return response.json().then((data) => {
 					return { statusCode: response.status, data };
 				});
-			else if (response.statusCode >= 500 && response.statusCode < 600)
-				throw response.statusText;
 		})
 		.catch((error) => {
 			console.error("Authentification failed", error);

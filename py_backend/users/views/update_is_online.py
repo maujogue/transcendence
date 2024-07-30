@@ -28,8 +28,12 @@ def update_is_online(username, online):
         return JsonResponse({'status': 'error', 'message': 'Invalid username type', 'type': type(username)}, status=400)
     if not isinstance(online, bool):
         return JsonResponse({'status': 'error', 'message': 'Invalid is_online state', 'type': type(online)}, status=400)
-    user = CustomUser.objects.get(username=username)
-    if not user:
+    
+    try:
+        user = CustomUser.objects.get(username=username)
+        if not user:
+            return JsonResponse({'status': 'error', 'message': 'User not found'}, status=404)
+    except CustomUser.DoesNotExist:
         return JsonResponse({'status': 'error', 'message': 'User not found'}, status=404)
 
     user.is_online = online

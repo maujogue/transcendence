@@ -5,6 +5,7 @@ import string
 from django.contrib.auth import get_user_model
 from users.decorators import custom_login_required as login_required
 from django.views.decorators.http import require_http_methods
+from users.utils import decode_json_body
 
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
@@ -18,16 +19,18 @@ CustomUser = get_user_model()
 @login_required
 @require_http_methods(["POST"])
 def create_tournament(request):
+	data = decode_json_body(request)
+	if isinstance(data, JsonResponse):
+		return data
+	
+	name = data.get('name')
+	max_players = data.get('max_players')
+	if not name or not max_players:
+		return JsonResponse({"errors": "missing_name_or_max_players"},
+				status=400)
 	try:
-		data = json.loads(request.body.decode("utf-8"))
-	except json.JSONDecodeError:
-		return JsonResponse(data = {"errors": "Invalid JSON format"},
-					status=406)
-
-	name = str(data.get('name'))
-	try:
-		max_players = int(data.get('max_players'))
-	except ValueError:
+		max_players = int(max_players)
+	except:
 		return JsonResponse({"errors": "invalid_number_of_players"},
 					status=400)
 	try:
@@ -216,7 +219,5 @@ def return_receipt_address(request, tournament_id):
 	except Tournament.DoesNotExist:
 		return JsonResponse({"errors": "Tournament not found."},
 					status=404)
-	# logger.info(f"logger receipt address in view: {tournament.receipt_address}")
-	# print(f"print receipt address in view: {tournament.receipt_address}")
 	return JsonResponse({"receipt_address": tournament.receipt_address},
 					status=200)

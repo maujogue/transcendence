@@ -12,8 +12,9 @@ from users.utils import convert_image_to_base64, utils_get_friendslist_data
 @login_required
 def get_user_data(request, username=None):
 	if username:
-		user = CustomUser.objects.get(username=username)
-		if not user:
+		try:
+			user = CustomUser.objects.get(username=username)
+		except CustomUser.DoesNotExist:
 			return JsonResponse({'status': 'error', 'message': 'user_not_found_message'}, status=400)
 	else:
 		user = request.user

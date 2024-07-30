@@ -271,5 +271,6 @@
 	"Solo": "Solo",
 	"Multiplayer": "Multiplayer",
 	"already_connected_message": "You are already connected on another tab. Please log in again.",
-	"username_special_characters": "Username cannot contain special characters."
+	"username_special_characters": "Username cannot contain special characters.",
+	"password_forbidden_char": "Password contains forbidden characters."
 }

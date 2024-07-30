@@ -59,6 +59,15 @@ class MinLengthValidator:
     
     def get_help_text(self):
         return _("Your password is too short.")
+    
+class IsValidPassword:
+    def validate(self, password, user=None):
+        if not all(char.isalnum() or char in SPECIAL_CHARS for char in password):
+            raise ValidationError(
+                _("Your password contains invalid characters."),
+                code='password_invalid_chars')
+    def get_help_text(self):
+        return _("Your password contains invalid characters.")
 
 
 class PasswordValidators:
@@ -69,6 +78,7 @@ class PasswordValidators:
             ContainsUppercaseValidator(),
             ContainsLowercaseValidator(),
             MinLengthValidator(),
+            IsValidPassword(),
         ]
 
     def validate(self, password):

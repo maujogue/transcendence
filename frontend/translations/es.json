@@ -266,5 +266,6 @@
 	"Solo": "Solo",
 	"Multiplayer": "Multijugador",
 	"already_connected_message": "Ya estás conectado en otra pestaña. Por favor, conéctate de nuevo",
-	"username_special_characters": "El nombre de usuario no puede contener caracteres especiales."
+	"username_special_characters": "El nombre de usuario no puede contener caracteres especiales.",
+	"password_forbidden_char": "El nombre de usuario contene caracteres prohibidos."
 }

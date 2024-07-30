@@ -29,11 +29,11 @@ def update_profile_password(request):
     if not new_password1 or not new_password2:
         return JsonResponse({'status': 'password_missing_message'}, status=400)
 
-    password_validators = PasswordValidators()
     try:
+        password_validators = PasswordValidators()
         password_validators.validate(new_password1)
-    except ValidationError as e:
-        return JsonResponse({'status': str(e)}, status=400)
+    except:
+        return JsonResponse({'error': "password_forbidden_char"}, status=400)
 
     if new_password1 and new_password2:
         if new_password1 == new_password2:

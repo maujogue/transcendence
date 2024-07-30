@@ -31,6 +31,7 @@ async function register(registerForm) {
 	} else {
 		if (data.error.password2)
 			await showAlert(data.error.password2[0]);
+		else if (data.error && typeof (data.error) === "string") await showAlert(data.error);
 		else if (data.error && typeof (data.error[0]) === "string") await showAlert(data.error[0]);
 		else await showAlert("error_message");
 	}

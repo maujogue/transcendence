@@ -1,5 +1,7 @@
 ft_transcendence is the final project of the Common Core of 42 school.
 
+<img width="1417" alt="Screenshot 2024-08-05 at 15 10 31" src="https://github.com/user-attachments/assets/869e9716-b5d4-4571-9dd5-8e8a40b03885">
+
 # What is Transcendence ?
 This project consists in creating a website to take part in a competition of the famous game Pong!
 

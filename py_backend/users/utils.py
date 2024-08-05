@@ -8,6 +8,7 @@ from django.core.mail import EmailMessage
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError
 
+from users.forbidden_usernames import check_if_forbidden_username
 from users.tokens import account_activation_token, email_update_token
 from py_backend import settings
 import base64
@@ -55,13 +56,15 @@ def username_is_valid(username):
 		return False, f'username_forbidden'
 	if re.search(r'\s', username):
 		return False, 'username_space'
+	if check_if_forbidden_username(username):
+		return False, 'is_forbidden_username'
 	return True, None
 
 
 def username_is_unique(username):
 	if not username or username == '':
 		return False, f'username_empty'
-	response = CustomUser.objects.filter(username__iexact=username).exists()
+	response = CustomUser.objects.filter(username=username).exists()
 	if response:
 		return False, f'username_used'
 	return True, None
@@ -70,9 +73,9 @@ def username_is_unique(username):
 def tournament_username_is_unique(username):
 	if not username or username == '':
 		return False, f'tournament_name_empty'
-	response = CustomUser.objects.filter(tournament_username__iexact=username).exists()
+	response = CustomUser.objects.filter(tournament_username=username).exists()
 	if response:
-		return False, f'tournamet_name_used'
+		return False, f'tournament_name_used'
 	return True, None
 
 def tournament_username_is_valid(username):
@@ -86,6 +89,8 @@ def tournament_username_is_valid(username):
 		return False, f'username_forbidden'
 	if re.search(r'\s', username):
 		return False, f'username_space'
+	if check_if_forbidden_username(username):
+		return False, 'is_forbidden_username'
 	return True, None
 
 def validation_register(data):
@@ -119,8 +124,10 @@ def decode_json_body(request):
 				data[key] = str(value)
 
 		return data
-	except json.JSONDecodeError:
+	except json.JSONDecodeError as e:
 		return JsonResponse(data={'error': "Invalid JSON format"}, status=406)
+	except Exception as e:
+		return JsonResponse(data={'error': "Error during the decoding of the JSON"}, status=406)
 	
 
 def image_extension_is_valid(image_name):

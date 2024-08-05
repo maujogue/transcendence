@@ -246,6 +246,7 @@
 	"username_too_short": "Username is too short.",
 	"username_too_long": "Username is too long.",
 	"username_forbidden": "Username contains forbidden characters.",
+	"is_forbidden_username": "Username is forbidden",
 	"username_space": "Username contains spaces.",
 	"username_empty": "Username is empty.",
 	"username_used": "Username is already used.",
@@ -270,5 +271,6 @@
 	"Solo": "Solo",
 	"Multiplayer": "Multiplayer",
 	"already_connected_message": "You are already connected on another tab. Please log in again.",
-	"username_special_characters": "Username cannot contain special characters."
+	"username_special_characters": "Username cannot contain special characters.",
+	"password_forbidden_char": "Password does not meet requirements."
 }

@@ -17,6 +17,7 @@ import { createJoinTournamentMenu } from "./joinTournament.js";
 import { checkIfUserIsInTournament, connectToTournament } from "./tournament.js";
 import { getModuleDiv, updateModule } from "../../Modules.js";
 import { trainModel, AIMovement, storeData, resetAITimer } from "../AIModule/AI.js";
+import { getState } from "../AIModule/envForAI.js";
 import { setEditButtonProfile } from '../../Utils.js';
 
 import { wsTournament } from "./tournament.js";
@@ -144,7 +145,6 @@ export async function init() {
 			createAISelectMenu();
 		}
 		if (event.target.id == 'onlineGame' && userData) {
-			setEditButtonProfile(true);
 			isOnline = true;
 			createOnlineMenu();
 		}

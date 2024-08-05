@@ -244,6 +244,7 @@
 	"username_too_short": "Le nom d'utilisateur est trop court.",
 	"username_too_long": "Le nom d'utilisateur est trop long.",
 	"username_forbidden": "Le nom d'utilisateur contient des caractères interdits.",
+	"is_forbidden_username": "Le nom d'utilisateur est interdit.",
 	"username_space": "Le nom d'utilisateur contient des espaces.",
 	"username_empty": "Le nom d'utilisateur est vide.",
 	"username_used": "Le nom d'utilisateur est déjà utilisé.",
@@ -268,5 +269,6 @@
 	"Solo": "Solo",
 	"Multiplayer": "Multijoueur",
 	"already_connected_message" : "Vous êtes déjà connecté sur un autre onglet. Veuillez vous connecter à nouveau.",
-	"username_special_characters": "Le nom d'utilisateur ne peut pas contenir de caractères spéciaux."
+	"username_special_characters": "Le nom d'utilisateur ne peut pas contenir de caractères spéciaux.",
+	"password_forbidden_char": "Le mot de passe ne respecte pas les règles de sécurité."
 }

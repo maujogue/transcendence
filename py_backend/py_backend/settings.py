@@ -37,9 +37,9 @@ MAX_LEN_USERNAME = 25
 MAX_LEN_TOURNAMENT_USERNAME = 10
 MAX_LEN_EMAIL = 50
 MAX_LEN_TEXT = 500
-FORTY_TWO_UID = 'u-s4t2ud-92889d666741a2b0d333c0b63e74d6491194432da0c98a38a82560e58f9b0f83'
+FORTY_TWO_UID = os.environ.get('FORTY_TWO_UID')
 FORTY_TWO_SECRET = os.environ.get("FORTY_TWO_SECRET")
-FORTY_TWO_REDIRECT_URI = 'https://127.0.0.1:8000/api/auth42/callback/'
+FORTY_TWO_REDIRECT_URI = os.environ.get("FORTY_TWO_URL")
 LANG = ['en', 'fr', 'es']
 IMAGE_EXTENSION = ['.png', '.PNG', '.jpg', '.JPG', '.jpeg', '.JPEG']
 
@@ -68,10 +68,6 @@ ASGI_APPLICATION = 'py_backend.asgi.application'
 CHANNEL_LAYERS = {
 	"default": {
 		 "BACKEND": "channels.layers.InMemoryChannelLayer"
-		# "BACKEND": "channels_redis.core.RedisChannelLayer",
-		# "CONFIG": {
-		#     "hosts": [("127.0.0.1", 6379)],
-		# },
 	},
 }
 
@@ -85,6 +81,7 @@ MIDDLEWARE = [
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'py_backend.middleware.DatabaseCheckMiddleware',
 ]
 
 ROOT_URLCONF = 'py_backend.urls'
@@ -124,10 +121,10 @@ else:
 	"default": {
 		"ENGINE": os.environ.get("SQL_ENGINE", "django.db.backends.postgresql"),
 		"NAME": os.environ.get("SQL_DATABASE"),
-		"USER": os.environ.get("SQL_USER", "user"),
-		"PASSWORD": os.environ.get("SQL_PASSWORD", "password"),
-		"HOST": os.environ.get("SQL_HOST", "localhost"),
-		"PORT": os.environ.get("SQL_PORT", "5432"),
+		"USER": os.environ.get("POSTGRES_USER"),
+		"PASSWORD": os.environ.get("POSTGRES_PASSWORD"),
+		"HOST": os.environ.get("POSTGRES_HOST"),
+		"PORT": 5432,
 	}
 }
 
@@ -225,8 +222,8 @@ CORS_ORIGIN_WHITELIST = [
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'backend.amos@gmail.com'
-EMAIL_HOST_PASSWORD = 'hvqzjctapjxiijjf'
 EMAIL_USE_TLS = True
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')

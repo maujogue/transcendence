@@ -5,12 +5,13 @@ import { currentActions, actions, states, clockAI, setTimer } from '../gameModul
 import { checkElapsedTime, resetElapsedTime } from './envForAI.js';
 
 const numStateFeatures = 5;
+const numOutputs = 3;
 
 export async function createModel() {
 	const model = tf.sequential();
 	model.add(tf.layers.dense({inputShape: [numStateFeatures], units: 24, activation: 'relu'}));
 	model.add(tf.layers.dense({units: 24, activation: 'relu'}));
-	model.add(tf.layers.dense({units: 3, activation: 'linear'}));
+	model.add(tf.layers.dense({units: numOutputs, activation: 'linear'}));
 	model.compile({
 		optimizer: tf.train.adam(0.001),
 		loss: 'meanSquaredError'
@@ -21,7 +22,7 @@ export async function createModel() {
 function moveAI(player2, state, model, env) {
 	const prediction = model.predict(tf.tensor(state, [1, 5]));
 	const maxIndexTensor = prediction.argMax(1);
-	const AIAction = maxIndexTensor.squeeze().dataSync()[0]; // Convert to a numeric value
+	const AIAction = maxIndexTensor.squeeze().dataSync()[0];
 
 	if (!player2)
 		return;
@@ -42,9 +43,9 @@ export async function trainModel(model, epochs) {
 	const numSamples = states.length;
 
 	const stateTensor = tf.tensor2d(states, [numSamples, numStateFeatures]);
-	const actionTensor = tf.tensor2d(actions, [numSamples, 3]);
+	const actionTensor = tf.tensor2d(actions, [numSamples, numOutputs]);
 	
-	await model.fit(stateTensor, actionTensor, {epochs: epochs, batchSize: 32});
+	await model.fit(stateTensor, actionTensor, {epochs: epochs, batchSize: 64});
 
 	console.log("Training is succesfull !");
 	await model.save('downloads://model');
@@ -65,7 +66,7 @@ export function AIMovement(player2, model, env) {
 		actualState = getState(env, player2);
 		firstPrediction = false;
 	}
-	moveAI(player2, actualState, model, env);
+	return (moveAI(player2, actualState, model, env));
 }
 
 export function resetAITimer(player1, player2, firstPrediction) {

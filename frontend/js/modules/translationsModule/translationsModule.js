@@ -73,6 +73,8 @@ async function injectTranslations() {
 
 async function getJsonFromLang() {
 	var lang = Cookies.get("lang");
+	if (!lang)
+		return ;
 	try {
 		return await fetch(`../../../../translations/${lang}.json`).then((res) => res.json()).then((data) => { return data });
 	}

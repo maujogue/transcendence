@@ -6,10 +6,10 @@ COPY requirements.txt code/requirements.txt
 RUN pip install --upgrade pip
 RUN pip install -r code/requirements.txt
 
-COPY ./entrypoint.prod.sh /code/entrypoint.prod.sh
+COPY ./entrypoint.sh /code/entrypoint.sh
 
 ARG CACHEBUST
 RUN echo $CACHEBUST
 COPY .. /code
 WORKDIR /code
-CMD ["sh","docker/entrypoint.prod.sh"]
+CMD ["sh","docker/entrypoint.sh"]

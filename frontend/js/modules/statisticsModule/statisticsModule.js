@@ -18,7 +18,7 @@ export async function init() {
 	module.querySelector("#usernameStats").innerText = username;
 	if (!username)
 		return;
-	var response = await runEndPoint("stats/" + username + "/matchs", "GET");
+	var response = await runEndPoint("stats/" + username + "/matchs/", "GET");
 	if (response.statusCode == 200)
 		var matchs = response.data.matchs;
 	if (matchs.length == 0) {
@@ -27,22 +27,22 @@ export async function init() {
 			</span>`;
 		return;
 	}
-	response = await runEndPoint("stats/" + username + "/winrate", "GET");
+	response = await runEndPoint("stats/" + username + "/winrate/", "GET");
 	if (response.statusCode == 200)
 		var winrate = response.data.winrate;
-	response = await runEndPoint("stats/" + username + "/matchs/win", "GET");
+	response = await runEndPoint("stats/" + username + "/matchs/win/", "GET");
 	if (response.statusCode == 200)
 		var wins = response.data.matchs;
-	response = await runEndPoint("stats/" + username + "/matchs/loose", "GET");
+	response = await runEndPoint("stats/" + username + "/matchs/loose/", "GET");
 	if (response.statusCode == 200)
 		var losses = response.data.matchs;
-	response = await runEndPoint("stats/" + username + "/matchs/win/streak", "GET");
+	response = await runEndPoint("stats/" + username + "/matchs/win/streak/", "GET");
 	if (response.statusCode == 200)
 		var winstreak = response.data.win_streak;
-	response = await runEndPoint("stats/" + username + "/average-exchange-before-goal", "GET");
+	response = await runEndPoint("stats/" + username + "/average-exchange-before-goal/", "GET");
 	if (response.statusCode == 200)
 		var averageExchanged = response.data.average_exchange_before_goal;
-	response = await runEndPoint("stats/" + username + "/average-scored-per-match", "GET");
+	response = await runEndPoint("stats/" + username + "/average-scored-per-match/", "GET");
 	if (response.statusCode == 200) {
 		var averageScored = response.data.average_scored_per_match;
 		var averageConceded = response.data.average_conceded_per_match;

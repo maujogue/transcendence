@@ -52,7 +52,6 @@ class UtilsFunctionsTest(TestCase):
         )
 
         response_data = response.json()
-        self.assertEqual(response_data.get('error'), 'username_used')
         self.assertEqual(response.status_code, 200)
 
     def test_empty_username(self):

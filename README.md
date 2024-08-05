@@ -9,8 +9,9 @@ The aim of the project is to immerse students in a project they have no experien
 
 # Getting Started
 - go at the root of the repository.
-- type `make prod_up` in the terminal.
-- Without the secret keys in the env, you will not be able to try the 42 authentification and the tournaments data will not be sent to the blockchain. The rest should works just fine.
+- type `make` in the terminal.
+- Go to `https://127.0.0.1:8000` in you browser, or `https://YOUR_IP_ADDRESS:8000`
+- You will need the .env for the project to work correctly.
 
 # Features
 - User authentification with e-mail confirmation

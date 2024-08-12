@@ -27,11 +27,35 @@ This using the following stack:
 - Language - [JavaScript](https://www.javascript.com/)
 - Styling - [Bootstrap](https://getbootstrap.com/)
 
+#### Modules
+We implemented a module system, you can read more about it [here](frontend/js/modules/documentation.md)
+
+This makes our code :
+- more reusable
+- more refactorable
+- more categorized
+- less prone to errors
+
+#### Translations 
+We implemented a library-free translation system, which you can learn about [here](frontend/js/modules/translationsModule/documentation.md)
+
+It is :
+- fast
+- easy to update
+- not very feature rich
+- moderately scalable
+
 # Backend
 This using the following stack:
 - Language - [Python](https://www.python.org/)
 - Framework - [Django](https://www.djangoproject.com/)
 - Database - [postgreSQL](https://www.postgresql.org/)
+  
+### 42 Authentification
+You can create an account and login using a password-free authentification with your 42 account.
+I will retrieve your school's profile picture, username and email.
+
+![image](https://github.com/user-attachments/assets/b8fcca15-b888-4dd4-838d-2c330498fdbc)
 
 # Game
 [in progress]

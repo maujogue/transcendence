@@ -73,7 +73,7 @@ async function disable42LoginElements() {
 async function disableCollapsedSidebar(forceDisable) {
 	const sidebar = document.getElementById("sidebar");
 	const content = document.getElementById("content-container");
-	if (!(await isLoggedIn()) || forceDisable) {
+	if ((!(await isLoggedIn()) || forceDisable) && window.innerWidth > 768) {
 		sidebar.classList.remove("collapsed");
 		content.classList.remove("collapsed");
 

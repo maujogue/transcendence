@@ -53,7 +53,7 @@ function toggleSidebarCollapse(state) {
 		sectionNames.forEach(function (name) {
 			name.classList.add("section-name-collapsed");
 		});
-		toggleSearchBar();
+		toggleSearchBar(true);
 		return;
 	}
 	if (state == false) {
@@ -62,7 +62,7 @@ function toggleSidebarCollapse(state) {
 		sectionNames.forEach(function (name) {
 			name.classList.remove("section-name-collapsed");
 		});
-		toggleSearchBar();
+		toggleSearchBar(true);
 		return;
 	}
 	else {

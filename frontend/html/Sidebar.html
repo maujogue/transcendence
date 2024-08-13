@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="/css/sidebar.css" />
 
-<nav id="sidebar" class="sidebar opened-sidebar d-flex flex-column flex-shrink-0 p-3 text-white mb-5">
-	<ul id="navList" class="nav nav-pills flex-column logInContent">
+<div id="sidebar">
+	<ul id="navList" class="nav nav-pills logInContent">
 		<li class="nav-item text-white">
 			<a href="/dash" class="nav-link active" navlink>
 				<i class="bi bi-house me-2"></i>
@@ -21,28 +21,26 @@
 	</div>
 
 	<!-- LOGIN BUTTON / REGISTER BUTTON -->
-	<div class="logOutContent">
-		<div class="d-flex flex-column align-items-center">
+	<div class="logOutContent content">
+		<div class="header">
 			<img src="../../../assets/img/pong-cropped.svg" alt="Pong" class="img-fluid" />
-			<div class="text-primary" style="font-size: 100px;"><i class="fas fa-sign-in-alt"></i></div>
 		</div>
-	</div>
-
-	<div class="logOutContent mt-auto">
-		<div class="translationsModule"></div>
-		<div class="d-flex">
-			<button class="btn btn-outline-secondary mb-2 w-100 me-1" data-bs-toggle="modal" data-bs-target="#login"
-				data-lang="log_in_button">
-				Log In
-			</button>
-			<button class="btn btn-outline-info mb-2 w-100" data-bs-toggle="modal" data-lang="sign_up_button"
-				data-bs-target="#register">
-				Sign up
-			</button>
+		<div class="footer">
+			<div class="translationsModule"></div>
+			<div class="d-flex">
+				<button id="loginModalBtn" class="btn btn-info w-100 me-1" data-bs-toggle="modal"
+					data-bs-target="#login" data-lang="log_in_button">
+					Log In
+				</button>
+				<button class="btn btn-outline-info w-100" data-bs-toggle="modal" data-lang="sign_up_button"
+					data-bs-target="#register">
+					Sign up
+				</button>
+			</div>
 		</div>
 	</div>
 	<!-- DROPUP -->
-	<div class="logInContent mt-auto">
+	<div class="logInContent">
 		<div class="ms-2 mb-3 dropup d-flex align-items-center">
 			<ul class="dropdown-menu dropdown-menu-dark text-small shadow">
 				<div id="friendRequestInbox" class="d-flex flex-column gap-3"></div>
@@ -69,7 +67,8 @@
 			</a>
 			<span class="section-name ms-2 usernameDynamic" style="position: relative"></span>
 		</div>
-</nav>
+	</div>
+</div>
 <!-- LOGIN MODAL -->
 <div class="modal fade" id="login" tabindex="-1">
 	<div class="modal-dialog">
@@ -85,7 +84,8 @@
 			<div class="modal-body">
 				<div class="auth42 px-0"></div>
 				<div class="mb-3">
-					<label for="usernameLogin" class="col-form-label text-primary" data-lang="login_username_label">Username</label>
+					<label for="usernameLogin" class="col-form-label text-primary"
+						data-lang="login_username_label">Username</label>
 					<input type="text" name="username" class="form-control" id="usernameLogin" placeholder="Tazz1998"
 						autocomplete="username" required />
 				</div>
@@ -150,7 +150,8 @@
 					<div id="passwordHelpBlock" class="form-text">
 						<span data-lang="password_help_block">Your password must contain :</span>
 						<br />
-						<span id="registerPassLength" class="passwordHelpLine" data-lang="password_help_length">- 8 to
+						<span id="registerPassLength" class="passwordHelpLine" data-lang="password_help_length">- 8
+							to
 							20 characters</span><br />
 						<span id="registerPassLowercase" class="passwordHelpLine" data-lang="password_help_lowercase">-
 							Lowercase</span><br />
@@ -200,4 +201,3 @@
 		</form>
 	</div>
 </div>
-<script type="module" src="../js/Sidebar.js"></script>

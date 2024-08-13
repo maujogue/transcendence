@@ -40,14 +40,21 @@ export var setTimer;
 
 export const field = await createField();
 
-
 export async function init() {
 	var module = getModuleDiv("gameModule");
 	if (!module)
 		return;
-
 	updateWinVariables();
 
+	let btn = module.querySelector("#resizeGameBtn");
+	btn.addEventListener('click', function() {
+		btn.remove();
+		updateModule("gameModule");
+	});
+	window.addEventListener('resize', function(event) {
+		btn.hidden = false;
+	});
+	
 	var target = document.querySelector('#game');
 	var config = { attributes: true, childList: true, characterData: true };
 	var observer = new MutationObserver(function (mutations) {

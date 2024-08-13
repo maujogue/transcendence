@@ -1,41 +1,107 @@
 #sidebar {
-  width: 250px;
-  position: fixed;
-  transition: width 0.5s;
-  z-index: 1;
-  background-color: #141419;
-  border-radius: 20px;
-  margin:20px;
-  box-shadow: 3px 3px 15px black;
+	width: 250px;
+	height: 98%;
+	color: white;
+	position: fixed;
+	padding: 20px;
+	transition: width 0.5s;
+	z-index: 1000;
+	background-color: #141419;
+	border-radius: 20px;
+	margin: 10px;
+	box-shadow: 3px 3px 15px black;
 }
 
-#sidebar.collapsed {
-  width: 80px;
+#navList {
+	flex-direction: column;
+}
+
+@media (min-width: 768px) {
+	#sidebar {
+		top: 0
+	}
+
+	#sidebar.collapsed {
+		width: 80px;
+	}
+}
+
+@media (max-width: 768px) {
+	#content-container {
+		left: 0px !important;
+		max-width: 2400px !important;
+		overflow-x: hidden;
+	}
+
+	#sidebar {
+		bottom: 0;
+		height: 100px;
+		width: 90vw;
+		margin-left: 5vw;
+		margin-right: 5vw;
+	}
+
+	#sidebar .content {
+		flex-direction: row !important;
+		align-items: center;
+
+	}
+
+	#sidebar .footer {
+		flex-direction: row !important;
+		justify-content: center;
+		align-items: center;
+		margin-left: auto;
+		margin-top: 0 !important;
+	}
+
+	#navList {
+		flex-direction: row;
+	}
+}
+
+#sidebar .content {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: 100%;
+}
+
+#sidebar .footer {
+	display: flex;
+	flex-direction: column;
+	margin-top: auto;
+	margin-left: 0;
 }
 
 #content-container {
-  padding: 20px;
-  margin-left: 250px;
-  transition: margin-left 0.5s;
+	max-width: calc(100% - 250px);
+	position: relative;
+	padding: 20px;
+	left: 250px;
+	margin-left: 5px;
+	transition: left 0.5s;
 }
 
-#content-container.collapsed {
-  margin-left: 80px;
+#content-container>* {
+	max-width: 100%;
+	overflow-x: hidden;
 }
 
 .section-name {
-  position: absolute;
-  opacity: 1;
-  transition: opacity 0.2s;
+	position: absolute;
+	opacity: 1;
+	transition: opacity 0.2s;
 }
 
 .section-name-collapsed {
-  opacity: 0;
+	opacity: 0;
+	top: -9000px;
 }
 
-li.nav-item > a:hover {
-  background-color: #1d2126;
-  color: white;
+li.nav-item>a:hover {
+	background-color: #1d2126;
+	color: white;
 }
 
 a {

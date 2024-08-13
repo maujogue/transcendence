@@ -58,12 +58,18 @@ I will retrieve your school's profile picture, username and email.
 ![image](https://github.com/user-attachments/assets/b8fcca15-b888-4dd4-838d-2c330498fdbc)
 
 # Game
-[in progress]
+The Game is a modern twist on the classic Pong, built with JavaScript and Three.js. this game offers both Quick Play and Tournament modes. Choose from 4 characters and compete to become the Pong champion!
 
-<img width="797" alt="Screenshot 2024-08-05 at 15 13 50" src="https://github.com/user-attachments/assets/2b136034-3f19-4af8-bd61-340f4a597e42">
-<img width="534" alt="Screenshot 2024-08-05 at 15 19 55" src="https://github.com/user-attachments/assets/2d33ebde-d1b6-4d41-884b-9c649aed3042">
-<img width="776" alt="Screenshot 2024-08-05 at 15 20 32" src="https://github.com/user-attachments/assets/2bf8eef7-5669-4450-9ddf-ed9c690da435">
-<img width="835" alt="Screenshot 2024-08-05 at 15 29 30" src="https://github.com/user-attachments/assets/14ffb21e-6145-4262-ab21-39f46dd4b903">
+<h3>Features</h3>
+<ul>
+  <li>Quick Play: Instantly find and play against another player online.</li>
+  <li>8-Player Tournament: Compete tournament with 8 participants max.</li>
+</ul>
+
+<img width="200" alt="Screenshot 2024-08-05 at 15 13 50" src="https://github.com/user-attachments/assets/2b136034-3f19-4af8-bd61-340f4a597e42">
+<img width="200" alt="Screenshot 2024-08-05 at 15 19 55" src="https://github.com/user-attachments/assets/2d33ebde-d1b6-4d41-884b-9c649aed3042">
+<img width="200" alt="Screenshot 2024-08-05 at 15 20 32" src="https://github.com/user-attachments/assets/2bf8eef7-5669-4450-9ddf-ed9c690da435">
+<img width="200" alt="Screenshot 2024-08-05 at 15 29 30" src="https://github.com/user-attachments/assets/14ffb21e-6145-4262-ab21-39f46dd4b903">
 
 
 This using the following stack:

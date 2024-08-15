@@ -7,6 +7,18 @@ This project consists in creating a website to take part in a competition of the
 
 The aim of the project is to immerse students in a project they have no experience of. They have to learn Web development from scratch in order to successfully complete the project.
 
+They is a mandatory part to this project, and a bunch of modules to choose from to complete it. 
+
+You can see read the whole subject [here](en.subject.pdf). There are the modules we chose :
+
+![image](https://github.com/user-attachments/assets/9ecfe766-aa62-4fd4-8cee-6183d1700e63)
+![image](https://github.com/user-attachments/assets/5ae1a0dc-4139-4ab9-8c0c-535c15b2f520)
+![image](https://github.com/user-attachments/assets/a09cda88-000a-41aa-bd2d-48bd45d152df)
+![image](https://github.com/user-attachments/assets/509d2e30-18f8-4295-9640-8d6a2f8b983a)
+![image](https://github.com/user-attachments/assets/0528bf53-d46b-451e-814f-1294b6b10488)
+![image](https://github.com/user-attachments/assets/30b994fa-770b-41a6-865d-fd17938b26c1)
+
+
 # Getting Started
 - go at the root of the repository.
 - type `make` in the terminal.

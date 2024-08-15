@@ -14,7 +14,6 @@ export function updateWinVariables() {
 	winHeight = winWidth * (9 / 16);
 	var gameModule = document.querySelector('.gameModule');
 	var game = document.querySelector('#game');
-	var profileCard = document.querySelector('#profileCard');
 	if (winWidth < 768) {
 		var contentContainer = document.getElementById("content-container");
 		winWidth = contentContainer.offsetWidth - 80;
@@ -23,6 +22,5 @@ export function updateWinVariables() {
 	game.style.width = winWidth + 'px';
 	game.style.height = winHeight + 'px';
 	gameModule.style.width = winWidth + 'px';
-	profileCard.style.height = game.style.height + 'px!important';
 }
 

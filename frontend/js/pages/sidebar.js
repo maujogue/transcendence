@@ -35,11 +35,13 @@ export function init(queryParams) {
 	togglePasswordVisibility("registerPasswordAgainToggle", "registerPasswordAgain");
 }
 
+var windowPreviousWidth = window.innerWidth;
 function resizeSidebarOnWidth(){
 	if (window.innerWidth < 768)
 		toggleSidebarCollapse(true);
-	else
+	else if (window.innerWidth > 768 && windowPreviousWidth < 768)
 		toggleSidebarCollapse(false);
+	windowPreviousWidth = window.innerWidth;
 }
 
 function toggleSidebarCollapse(state) {

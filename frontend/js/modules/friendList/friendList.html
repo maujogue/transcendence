@@ -1,21 +1,32 @@
 <section class="logInContent">
-	<div class="d-flex mb-3 mt-md-1 ms-2 friendsNavbarBtn" style="position:relative;">
-		<i class="mt-1 ms-2 bi bi-people-fill text-warning"></i>
-		<h4 class="ms-5 section-name" data-lang="friends"></h4>
-	</div>
-	<form id="searchFriendForm">
-		<div id="searchButton" class="ms-2 input-group input-group-sm my-md-3 friendsNavbarBtn">
-			<button type="submit" class="btn btn-secondary input-group-text"><i class="bi bi-search"></i></button>
-			<input type="text" name="username" class="me-3 me-md-4 form-control" placeholder="Search" autocomplete="off" data-lang="search" maxlength="25" style="transition: opacity 0.3s; opacity:1;">
+	<div id="wrapper" class="d-flex flex-row flex-md-column mb-1">
+		<div class="d-flex mt-md-1 ms-2 friendsNavbarBtn" style="position:relative; order: 1;">
+			<i class="mt-1 ms-2 bi bi-people-fill text-warning"></i>
+			<h4 class="ms-5 section-name" data-lang="friends"></h4>
 		</div>
-	</form>
+		<form id="searchFriendForm">
+			<div id="searchButton" class="ms-2 input-group input-group-sm my-md-3 friendsNavbarBtn">
+				<button type="submit" class="btn btn-secondary input-group-text"><i class="bi bi-search"></i></button>
+				<input type="text" name="username" class="me-3 me-md-4 form-control" placeholder="Search"
+					autocomplete="off" data-lang="search" maxlength="25" style="transition: opacity 0.3s; opacity:1;">
+			</div>
+		</form>
+	</div>
 	<div id="friendScroll" class="d-flex flex-column gap-2">
 
 	</div>
 </section>
 
 <style>
+	@media screen and (max-width: 768px) {
+		#friendScroll {
+			flex-direction: row !important;
+		}
+
+	}
+
 	#friendScroll {
+		order: 3;
 		overflow: scroll;
 		position: relative;
 	}
@@ -29,6 +40,11 @@
 	#friendScroll {
 		scrollbar-width: none;
 	}
+
+	#searchFriendForm {
+		order: 2;
+	}
+
 
 	#searchButton input {
 		transition: width 0.5s;

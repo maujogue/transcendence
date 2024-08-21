@@ -104,6 +104,18 @@ This using the following stack:
 `Address of the Smart Contract: 0xD7CFDC73171139dbd48f80c23974712D4c5952AB`
 
 # AI
-[in progress]
+An AI agent is implemented in the game using a deep neural network.
+The AI is trained during games between two human players so it can reach competitive levels of play.
+
+Core Features:
+- AI plays Pong using supervised learning.
+- Trained using TensorFlow and a deep neural network.
+- Adjustable difficulty levels or training parameters.
+
+Technologies used : 
+- Building and training the neural network - [TensorFlow](https://www.tensorflow.org/?hl=fr)
+- Language - [JavaScript](https://www.javascript.com/)
+- Data manipulation and preprocessing - [NumPy](https://numpy.org/)
+
 
 made with @gclement42, @maujogue, @LezardSC, @boulatrousse, @MarcelCerdan

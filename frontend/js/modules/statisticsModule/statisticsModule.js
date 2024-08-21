@@ -109,20 +109,20 @@ export async function init() {
 			var p2Color = match.player2 === match.winner ? 'green' : 'red';
 			if (username == match.player1)
 				cellScore.innerHTML =
-					`<span class="fs-5" >
+					`<span class="fs-5 w-50" >
 					<span style="color: ${p1Color}"> ${match.player1} </span>
 					${match.player1_score} - ${match.player2_score}
 					<span style="color: ${p2Color}"> ${match.player2} </span>
 				</span>`;
 			else
 				cellScore.innerHTML = `
-				<span class="fs-5" >
+				<span class="fs-5 w-50" >
 					<span style="color: ${p2Color}"> ${match.player2} </span>
 					${match.player2_score} - ${match.player1_score}
 					<span style="color: ${p1Color}"> ${match.player1} </span>
 				</span>
 				`;
-			cellDate.innerHTML = '<span class="fs-6" >' + new Date(match.date).toLocaleString() + '</span>';
+			cellDate.innerHTML = '<span class="fs-6 w-50" >' + new Date(match.date).toLocaleString() + '</span>';
 		};
 	}
 

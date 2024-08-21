@@ -1,4 +1,4 @@
-<div id="statisticsCard" class="mt-4 card p-0 rounded-4">
+<div id="statisticsCard" class="card p-0 rounded-4">
 	<div class="card-header d-flex align-items-center">
 		<i class="bi bi-bar-chart-fill me-2 text-warning"></i>
 		<h3 data-lang="statistics"></h3>
@@ -206,6 +206,10 @@
 		color: white;
 	}
 
+	#statisticsCard h3 {
+		text-wrap: wrap;
+	}
+
 	#statisticsCard .accordion {
 		color: white;
 		--bs-accordion-bg: transparent;
@@ -256,5 +260,45 @@
 	#flush-collapseTwo .card,
 	#flush-collapseThree .card {
 		padding: 15px;
+	}
+
+
+	#match-history {
+		width: 100%;
+		table-layout: auto;
+		word-wrap: break-word;
+	}
+
+	#match-history tbody tr {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		/* Ensures the cells are spread out evenly */
+	}
+
+	#match-history tbody td {
+		flex: 1 1 45%;
+		/* Each cell takes up about 45% of the row, adjust as needed */
+		padding: 8px;
+	}
+
+	@media (max-width: 768px) {
+		#match-history tbody td {
+			flex: 1 1 100%;
+			/* Stack cells vertically on smaller screens */
+			display: block;
+			text-align: left;
+			/* Align text to the left for readability */
+		}
+
+		#match-history .fs-5 {
+			font-size: 1rem;
+			/* Adjust as needed */
+		}
+
+		#match-history .fs-6 {
+			font-size: 0.875rem;
+			/* Adjust as needed */
+		}
 	}
 </style>

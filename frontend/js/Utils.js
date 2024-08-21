@@ -21,11 +21,11 @@ async function toggleContentOnLogState() {
 	const logOutContent = document.querySelectorAll(".logOutContent");
 
 	if (await isLoggedIn()) {
-		logInContent.forEach((e) => (e.style.display = "block"));
-		logOutContent.forEach((e) => (e.style.display = "none"));
+		logInContent.forEach((e) => (e.hidden = false));
+		logOutContent.forEach((e) => (e.hidden = true));
 	} else {
-		logInContent.forEach((e) => (e.style.display = "none"));
-		logOutContent.forEach((e) => (e.style.display = "block"));
+		logInContent.forEach((e) => (e.hidden = true));
+		logOutContent.forEach((e) => (e.hidden = false));
 	}
 	disableCollapsedSidebar();
 	disable42LoginElements();
@@ -73,7 +73,7 @@ async function disable42LoginElements() {
 async function disableCollapsedSidebar(forceDisable) {
 	const sidebar = document.getElementById("sidebar");
 	const content = document.getElementById("content-container");
-	if (!(await isLoggedIn()) || forceDisable) {
+	if ((!(await isLoggedIn()) || forceDisable) && window.innerWidth > 768) {
 		sidebar.classList.remove("collapsed");
 		content.classList.remove("collapsed");
 

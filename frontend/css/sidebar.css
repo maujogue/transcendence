@@ -15,11 +15,6 @@
 #navList {
 	flex-direction: column;
 }
-@media screen and (orientation:landscape) {
-	#sidebar {
-		display: none;
-	}
- }
 
 @media (min-width: 769px) {
 	#sidebar {

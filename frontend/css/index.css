@@ -8,6 +8,9 @@
 	transition: none !important;
 }
 
+#body * {
+	text-wrap: wrap;
+}
 h1,
 h2,
 h3 {
@@ -22,21 +25,12 @@ p {
 	font-family: "Satoshi-regular", Arial, Helvetica, sans-serif;
 }
 
-.logOutContent {
-	display: block;
-}
-
-.logInContent {
-	display: none;
-}
-
 img {
 	pointer-events: none;
 }
 
 html {
 	overflow-y: scroll;
-	/* height: 101vh; */
 }
 
 #alertContainer{

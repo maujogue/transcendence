@@ -1,75 +1,80 @@
 <link rel="stylesheet" href="/css/sidebar.css" />
 
-<nav id="sidebar" class="sidebar opened-sidebar d-flex flex-column flex-shrink-0 p-3 text-white mb-5">
-	<ul id="navList" class="nav nav-pills flex-column logInContent">
-		<li class="nav-item text-white">
-			<a href="/dash" class="nav-link active" navlink>
-				<i class="bi bi-house me-2"></i>
-				<span class="section-name" data-lang="sidebar_dashboard">Dashboard</span>
-			</a>
-		</li>
-		<li class="nav-item text-white">
-			<a href="/about" class="nav-link" navlink>
-				<i class="bi bi-info-circle me-2"></i>
-				<span class="section-name" data-lang="sidebar_about">About</span>
-			</a>
-		</li>
-		<hr>
-	</ul>
-	<div class="friendList">
-
-	</div>
-
+<div id="sidebar">
 	<!-- LOGIN BUTTON / REGISTER BUTTON -->
-	<div class="logOutContent">
-		<div class="d-flex flex-column align-items-center">
+	<div class="logOutContent content">
+		<div class="header">
 			<img src="../../../assets/img/pong-cropped.svg" alt="Pong" class="img-fluid" />
-			<div class="text-primary" style="font-size: 100px;"><i class="fas fa-sign-in-alt"></i></div>
 		</div>
-	</div>
-
-	<div class="logOutContent mt-auto">
-		<div class="translationsModule"></div>
-		<div class="d-flex">
-			<button class="btn btn-outline-secondary mb-2 w-100 me-1" data-bs-toggle="modal" data-bs-target="#login"
-				data-lang="log_in_button">
-				Log In
-			</button>
-			<button class="btn btn-outline-info mb-2 w-100" data-bs-toggle="modal" data-lang="sign_up_button"
-				data-bs-target="#register">
-				Sign up
-			</button>
+		<div class="footer">
+			<div class="translationsModule"></div>
+			<div class="d-flex">
+				<button id="loginModalBtn" class="btn btn-info w-100 me-1" data-bs-toggle="modal"
+					data-bs-target="#login" data-lang="log_in_button">
+					Log In
+				</button>
+				<button class="btn btn-outline-info w-100" data-bs-toggle="modal" data-lang="sign_up_button"
+					data-bs-target="#register">
+					Sign up
+				</button>
+			</div>
 		</div>
 	</div>
 	<!-- DROPUP -->
-	<div class="logInContent mt-auto">
-		<div class="ms-2 mb-3 dropup d-flex align-items-center">
-			<ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-				<div id="friendRequestInbox" class="d-flex flex-column gap-3"></div>
+	<div class="logInContent content">
+		<div class="header">
+			<ul id="navList" class="nav nav-pills">
+				<li class="nav-item text-white">
+					<a href="/dash" class="nav-link active" navlink>
+						<i class="bi bi-house me-2"></i>
+						<span class="section-name" data-lang="sidebar_dashboard">Dashboard</span>
+					</a>
+				</li>
+				<li class="nav-item text-white">
+					<a href="/about" class="nav-link" navlink>
+						<i class="bi bi-info-circle me-2"></i>
+						<span class="section-name" data-lang="sidebar_about">About</span>
+					</a>
+				</li>
+				<hr>
 			</ul>
-			<a class="d-flex align-items-center text-white text-decoration-none friendsNavbarBtn">
-				<div id="notificationsBadge"></div>
-				<span class="section-name ms-2" style="position: relative" data-lang="notifications"></span>
-			</a>
+			<div class="friendList">
+
+			</div>
 		</div>
-		<hr />
-		<a id="collapseButton" class="nav-link text-white ms-2" style="cursor: pointer;">
-			<i class="bi bi-arrows-collapse-vertical text-white me-2"></i>
-			<span class="section-name ms-1" data-lang="collapse_button">Collapse</span>
-		</a>
-		<div class="translationsModule"></div>
-		<hr />
-		<div class="dropup d-flex align-items-center">
-			<ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-				<li><a id="logoutButton" class="dropdown-item" data-lang="sign_out_button">Sign out</a></li>
-			</ul>
-			<a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+		<div class="footer">
+			<div class="d-block ">
+
+				<div id="notificationsDiv" class="dropup d-flex align-items-center">
+					<ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+						<div id="friendRequestInbox" class="d-flex flex-column gap-3"></div>
+					</ul>
+					<a class="d-flex align-items-center text-white text-decoration-none friendsNavbarBtn">
+						<div id="notificationsBadge"></div>
+						<span class="section-name ms-2" data-lang="notifications"></span>
+					</a>
+				</div>
+				<hr/>
+				<a id="collapseButton" class="nav-link text-white ms-2" style="cursor: pointer;">
+					<i class="bi bi-arrows-collapse-vertical text-white me-2"></i>
+					<span class="section-name ms-1" data-lang="collapse_button">Collapse</span>
+				</a>
+				<div class="translationsModule"></div>
+			</div>
+			<hr />
+			<div class="dropup d-flex align-items-center">
+				<ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+					<li><a id="logoutButton" class="dropdown-item" data-lang="sign_out_button">Sign out</a></li>
+				</ul>
+				<a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
 				data-bs-toggle="dropdown" style="cursor: pointer;">
 				<img width="30" height="30" class="rounded-circle me-2 avatarDynamic" />
 			</a>
-			<span class="section-name ms-2 usernameDynamic" style="position: relative"></span>
+			<span class="section-name ms-2 usernameDynamic"></span>
 		</div>
-</nav>
+	</div>
+	</div>
+</div>
 <!-- LOGIN MODAL -->
 <div class="modal fade" id="login" tabindex="-1">
 	<div class="modal-dialog">
@@ -85,7 +90,8 @@
 			<div class="modal-body">
 				<div class="auth42 px-0"></div>
 				<div class="mb-3">
-					<label for="usernameLogin" class="col-form-label text-primary" data-lang="login_username_label">Username</label>
+					<label for="usernameLogin" class="col-form-label text-primary"
+						data-lang="login_username_label">Username</label>
 					<input type="text" name="username" class="form-control" id="usernameLogin" placeholder="Tazz1998"
 						autocomplete="username" required />
 				</div>
@@ -150,7 +156,8 @@
 					<div id="passwordHelpBlock" class="form-text">
 						<span data-lang="password_help_block">Your password must contain :</span>
 						<br />
-						<span id="registerPassLength" class="passwordHelpLine" data-lang="password_help_length">- 8 to
+						<span id="registerPassLength" class="passwordHelpLine" data-lang="password_help_length">- 8
+							to
 							20 characters</span><br />
 						<span id="registerPassLowercase" class="passwordHelpLine" data-lang="password_help_lowercase">-
 							Lowercase</span><br />
@@ -200,4 +207,3 @@
 		</form>
 	</div>
 </div>
-<script type="module" src="../js/Sidebar.js"></script>

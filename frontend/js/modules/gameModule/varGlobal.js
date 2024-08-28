@@ -1,4 +1,4 @@
-export var winWidth = document.getElementById("content-container").getBoundingClientRect().width * 8/12;
+export var winWidth = document.getElementById("content-container").offsetWidth * 8 / 12;
 export var winHeight = winWidth * 9 / 16;
 export const charactersNames = ['chupacabra', 'elvis', 'granny', 'peasant'];
 export const colors = new Map();
@@ -10,18 +10,17 @@ export const lobbyCharPos = -0.5;
 export const lobbyPaddlePos = -0.3;
 
 export function updateWinVariables() {
-	winWidth = document.getElementById("content-container").getBoundingClientRect().width * 8/12;
+	winWidth = document.getElementById("content-container").offsetWidth * 8 / 12;
 	winHeight = winWidth * (9 / 16);
 	var gameModule = document.querySelector('.gameModule');
 	var game = document.querySelector('#game');
-	var profileCard = document.querySelector('#profileCard');
-	if (winWidth < 523 || winHeight < 294) {
-		winWidth = 523;
-		winHeight = 294;
+	if (winWidth < 768) {
+		var contentContainer = document.getElementById("content-container");
+		winWidth = contentContainer.offsetWidth - 80;
+		winHeight = winWidth * (9 / 16);
 	}
 	game.style.width = winWidth + 'px';
 	game.style.height = winHeight + 'px';
 	gameModule.style.width = winWidth + 'px';
-	profileCard.style.height = game.style.height +'px!important';
 }
 

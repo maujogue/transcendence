@@ -1,6 +1,6 @@
 ft_transcendence is the final project of the Common Core of 42 school.
 
-<img width="1417" alt="Screenshot 2024-08-05 at 15 10 31" src="https://github.com/user-attachments/assets/869e9716-b5d4-4571-9dd5-8e8a40b03885">
+![Demo: one-click demo login, a 2-player online tournament and the blockchain record](demo/demo.gif)
 
 # What is Transcendence ?
 This project consists in creating a website to take part in a competition of the famous game Pong!
@@ -23,7 +23,8 @@ You can see read the whole subject [here](en.subject.pdf). There are the modules
 - go at the root of the repository.
 - type `make` in the terminal.
 - Go to `https://127.0.0.1:8000` in you browser, or `https://YOUR_IP_ADDRESS:8000`
-- You will need the .env for the project to work correctly.
+- You will need the .env for the project to work correctly (see `.env_template`).
+- Set `DEMO_MODE=True` in the .env to enable the "Try demo mode" button, which logs you in as a fresh demo user without email confirmation.
 
 # Features
 - User authentification with e-mail confirmation

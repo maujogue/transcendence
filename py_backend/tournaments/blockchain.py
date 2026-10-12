@@ -8,6 +8,11 @@ PRIVATE_KEY = os.environ.get("PRIVATE_KEY")
 PROVIDER_URL = os.environ.get("PROVIDER_URL")
 CONTRACT_ADDRESS = os.environ.get("CONTRACT_ADDRESS")
 
+RECEIPT_UNAVAILABLE = "unavailable"
+
+def is_blockchain_configured():
+    return all([WALLET, PRIVATE_KEY, PROVIDER_URL, CONTRACT_ADDRESS])
+
 def load_abi_from_file(json_path):
     with open(json_path, "r") as file:
         compiled_solidity = json.load(file)
@@ -21,6 +26,8 @@ def load_contract_abi():
     return abi
 
 def set_data_on_blockchain(tournament):
+    if not is_blockchain_configured():
+        return None
     try:
         tournament_winner = tournament.get_winner()
         tournament_name = tournament.name

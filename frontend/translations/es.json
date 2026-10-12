@@ -260,6 +260,7 @@
 	"conceded": "Concedido",
 	"see_blockchain": "Ver en la blockchain",
 	"waiting_for_transaction": "Esperando transacción",
+	"blockchain_unavailable": "Blockchain no disponible",
 	
 	"Intermediate": "Intermedio",
 	"Easy": "Fácil",

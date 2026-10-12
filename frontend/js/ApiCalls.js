@@ -73,6 +73,20 @@ async function login(loginForm) {
 		showAlert(response.data.error);
 }
 
+// DEMO ONLY: logs in as a freshly created demo user (backend needs DEMO_MODE=True)
+async function demoLogin() {
+	if (await isLoggedIn() || isSpamming("demo_login"))
+		return ;
+	var response = await runEndPoint("users/demo_login/", "POST");
+
+	if (response.statusCode === 200) {
+		await initPages();
+		await navigateTo("/dash");
+	}
+	else
+		showAlert("error_message");
+}
+
 async function logout() {
 	if (!(await isLoggedIn()))
 		return;
@@ -243,6 +257,7 @@ export {
 	checkInputAvailable,
 	register,
 	login,
+	demoLogin,
 	logout,
 	updateInfo,
 	updatePassword,

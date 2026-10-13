@@ -71,6 +71,7 @@
 	"sidebar_about": "Acerca de",
 	"log_in_button": "Acceso",
 	"sign_up_button": "Inscribirse",
+	"demo_mode_button": "Probar el modo demo",
 	"close_button": "Cerca",
 	"collapse_button": "Colapsar",
 	"sign_out_button": "desconectar",
@@ -260,6 +261,7 @@
 	"conceded": "Concedido",
 	"see_blockchain": "Ver en la blockchain",
 	"waiting_for_transaction": "Esperando transacción",
+	"blockchain_unavailable": "Blockchain no disponible",
 	
 	"Intermediate": "Intermedio",
 	"Easy": "Fácil",

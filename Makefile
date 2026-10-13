@@ -1,7 +1,7 @@
 .PHONY:	all up down clean fclean re fre removecontainers armageddon clean-migrations-cache-db
 NAME				=	transcendence
 
-DOCKER_COMPOSE		=	docker-compose 
+DOCKER_COMPOSE		=	docker compose
 
 
 all: $(NAME)

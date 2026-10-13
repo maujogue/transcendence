@@ -162,22 +162,34 @@ export async function createEtherscanButton(parent) {
     await displayEtherscanButton(etherscanBtn);
 }
 
+async function displayBlockchainUnavailable(etherscanBtn) {
+    etherscanBtn.disabled = true;
+    etherscanBtn.innerText = await getKeyTranslation("blockchain_unavailable");
+}
+
+async function handleReceiptAddress(etherscanBtn, receipt_address) {
+    if (receipt_address === "unavailable") {
+        displayBlockchainUnavailable(etherscanBtn);
+        return true;
+    }
+    if (receipt_address && receipt_address !== "0x0") {
+        updateEtherscanButton(etherscanBtn, receipt_address);
+        return true;
+    }
+    return false;
+}
+
 async function displayEtherscanButton(etherscanBtn) {
     let tournament_id = currentTournament.id;
 
     const receipt_address = await getReceiptAddress(tournament_id);
-    if (receipt_address && receipt_address !== "0x0") {
-        updateEtherscanButton(etherscanBtn, receipt_address)
-    }
-    else {
-        const interval = setInterval(async () => {
-            const receipt_address = await getReceiptAddress(tournament_id);
-            if (receipt_address && receipt_address !== "0x0") {
-                updateEtherscanButton(etherscanBtn, receipt_address)
-                clearInterval(interval);
-            }
-        }, 1000);
-    }
+    if (await handleReceiptAddress(etherscanBtn, receipt_address))
+        return;
+    const interval = setInterval(async () => {
+        const receipt_address = await getReceiptAddress(tournament_id);
+        if (await handleReceiptAddress(etherscanBtn, receipt_address))
+            clearInterval(interval);
+    }, 1000);
 }
 
 function displayTournamentRanking(ranking) {

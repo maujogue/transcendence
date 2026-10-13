@@ -1,7 +1,7 @@
 from django.db.models.signals import pre_save, post_save
 from django.dispatch import receiver
 from .models import Tournament
-from .blockchain import set_data_on_blockchain
+from .blockchain import set_data_on_blockchain, RECEIPT_UNAVAILABLE
 
 import threading
 
@@ -18,7 +18,9 @@ def get_receipt_address(instance):
     transaction_receipt = set_data_on_blockchain(instance)
     if transaction_receipt:
         instance.receipt_address = transaction_receipt['transactionHash'].hex()
-        instance.save(update_fields=['receipt_address'])
+    else:
+        instance.receipt_address = RECEIPT_UNAVAILABLE
+    instance.save(update_fields=['receipt_address'])
 @receiver(post_save, sender=Tournament)
 def set_signal_for_blockchain(sender, instance, **kwargs):
     if kwargs.get('created', False):

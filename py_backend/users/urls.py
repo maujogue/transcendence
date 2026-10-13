@@ -6,10 +6,12 @@ from users.views.update_profile_banner import update_profile_banner
 from users.views.update_lang import update_lang
 from users.views.check_password import check_password
 from users.views.update_is_online import update_is_online_view
+from users.views.demo_login import demo_login
 
 urlpatterns = [
     path('register/', register, name='register'),
     path('login/', login_view, name='login'),
+    path('demo_login/', demo_login, name='demo_login'),
 	path('logout/', logout_view, name='logout'),
     path('get_csrf_token/', get_csrf_token, name='get_csrf_token'),
     path('update_bio/', update_profile_bio, name='update_bio'),

@@ -1,4 +1,4 @@
-import { register, login, logout } from "../ApiCalls.js";
+import { register, login, demoLogin, logout } from "../ApiCalls.js";
 import { toggleModal } from "../DashboardUtils.js";
 import { togglePasswordVisibility, checkPassword, toggleSearchBar } from "../Utils.js";
 import { printQueryParamsMessage } from "../modules/translationsModule/translationsModule.js";
@@ -16,6 +16,7 @@ export function init(queryParams) {
 	window.addEventListener('resize', resizeSidebarOnWidth);
 	collapseButton.addEventListener("click", () => {toggleSidebarCollapse();});
 	logoutButton.addEventListener("click", () => logout());
+	document.getElementById("demoLoginBtn").addEventListener("click", () => demoLogin());
 	loginForm.addEventListener("submit", (event) => {
 		event.preventDefault();
 		login(loginForm);

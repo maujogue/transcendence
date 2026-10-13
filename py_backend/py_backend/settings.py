@@ -27,6 +27,8 @@ SECRET_KEY = os.environ.get("SECRET_KEY", get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 0) == 'True'
+# DEMO ONLY: enables the one-click demo login and the mocked blockchain
+DEMO_MODE = os.environ.get('DEMO_MODE') == 'True'
 ALLOWED_HOSTS = ['*']
 
 # Define for backend
